@@ -16,8 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Astra Motors — запчасти для вашего авто",
-  description: "Astra Motors: оригинальные и аналоговые автозапчасти, быстрый подбор и доставка. Оставьте заявку — перезвоним и подберём нужное.",
+  title: "Astra Motors — автозапчасти VAG и GM в Екатеринбурге",
+  description:
+    "Магазин Astra Motors: запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественный аналог, доставка по [твой город].",
+  openGraph: {
+    title: "Astra Motors — автозапчасти VAG и GM",
+    description:
+      "Запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, доставка.",
+    url: "https://astramotors.shop",
+    siteName: "Astra Motors",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -39,3 +48,4 @@ export default function RootLayout({
     </html>
   );
 }
+
