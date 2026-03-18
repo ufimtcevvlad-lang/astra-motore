@@ -99,6 +99,10 @@ export default function RootLayout({
 
   return (
     <html lang="ru">
+      <head>
+        {/* Яндекс.Вебмастер: подтверждение прав */}
+        <meta name="yandex-verification" content="62d469a9a0693298" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <script
           type="application/ld+json"
