@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Каталог автозапчастей",
   description:
-    "Каталог Astra Motors: запчасти VAG и GM, подбор по VIN, оригинал и качественные аналоги. Быстрый поиск по названию, бренду, авто и артикулу.",
+    "Каталог Astra Motors: автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественные аналоги. Быстрый поиск по названию, бренду, авто и артикулу.",
   alternates: { canonical: "/" },
 };
 
@@ -19,12 +19,12 @@ export default function HomePage() {
               Специализация
             </p>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              Запчасти для VAG{" "}
+              Автозапчасти GM{" "}
               <span className="text-[#F5E266]">&amp;</span>{" "}
-              GM с подбором по VIN
+              Opel &amp; Chevrolet с подбором по VIN
             </h1>
             <p className="text-slate-200 text-sm sm:text-base max-w-xl">
-              Оригинальные и проверенные аналоги для популярных моделей Opel, Chevrolet, VW, Audi, Skoda, Seat, Cadillac и Hummer.
+              Оригинальные и проверенные аналоги для популярных моделей Opel, Chevrolet, Cadillac и Hummer.
               Подберём по VIN и доставим в короткий срок.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
@@ -55,14 +55,14 @@ export default function HomePage() {
               <div className="w-1/2">
                 <div className="h-20 sm:h-28 md:h-32 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 shadow-lg flex items-end justify-center">
                   <span className="mb-2 text-[11px] font-semibold text-slate-200">
-                    VW / Audi / Skoda / Seat
+                    Opel / Chevrolet
                   </span>
                 </div>
               </div>
               <div className="w-1/2 -ml-4 sm:-ml-6">
                 <div className="h-20 sm:h-28 md:h-32 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 shadow-lg flex items-end justify-center">
                   <span className="mb-2 text-[11px] font-semibold text-slate-200">
-                    Opel / Chevrolet / Cadillac / Hummer
+                    Cadillac / Hummer
                   </span>
                 </div>
               </div>
@@ -75,24 +75,24 @@ export default function HomePage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-xl border border-slate-200/70 bg-white/90 p-4 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 mb-1">
-              GM
+              Opel
             </p>
             <p className="text-sm font-medium text-slate-800 mb-1">
-              Opel, Chevrolet, Cadillac, Hummer
+              Astra, Zafira, Insignia и другие модели
             </p>
             <p className="text-xs text-slate-600">
-              Astra, Zafira, Cruze, Captiva, Escalade и другие популярные модели.
+              Подбор запчастей по VIN и под заказ
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 bg-white/90 p-4 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 mb-1">
-              VAG
+              Chevrolet
             </p>
             <p className="text-sm font-medium text-slate-800 mb-1">
-              Volkswagen, Audi, Skoda, Seat
+              Cruze, Captiva, Equinox и другие модели
             </p>
             <p className="text-xs text-slate-600">
-              Polo, Jetta, Passat, Tiguan, Octavia, Kodiaq, Leon и другие.
+              Оригиналы и качественные аналоги
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 bg-white/90 p-4 shadow-sm">
@@ -115,12 +115,12 @@ export default function HomePage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
         <h2 className="text-lg font-semibold text-slate-900">
-          Подбор автозапчастей VAG и GM по VIN — быстро и без ошибок
+          Подбор автозапчастей GM (Opel, Chevrolet) по VIN — быстро и без ошибок
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <p className="text-sm text-slate-600">
-              Поможем подобрать оригинальные детали и проверенные аналоги для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer.
+              Поможем подобрать оригинальные детали и проверенные аналоги для Opel, Chevrolet, Cadillac и Hummer.
               Достаточно VIN или данных автомобиля — уточним совместимость, срок и цену.
             </p>
             <p className="text-sm text-slate-600">

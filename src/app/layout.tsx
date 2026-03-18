@@ -21,11 +21,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Astra Motors — автозапчасти VAG и GM в Екатеринбурге",
+    default: "Astra Motors — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге",
     template: "%s — Astra Motors",
   },
   description:
-    "Магазин Astra Motors: запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественный аналог, доставка по Екатеринбургу.",
+    "Магазин Astra Motors: автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественные аналоги, доставка по Екатеринбургу.",
   alternates: {
     canonical: "/",
   },
@@ -41,18 +41,18 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Astra Motors — автозапчасти VAG и GM",
+    title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
     description:
-      "Запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, доставка.",
+      "Автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и аналоги, доставка по Екатеринбургу.",
     url: siteUrl,
     siteName: "Astra Motors",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Astra Motors — автозапчасти VAG и GM",
+    title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
     description:
-      "Запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, доставка.",
+      "Автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и аналоги, доставка по Екатеринбургу.",
   },
 };
 

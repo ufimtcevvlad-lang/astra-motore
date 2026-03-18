@@ -16,7 +16,7 @@ export function Header() {
               Astra Motors
             </span>
             <span className="text-[11px] font-medium text-slate-300 hidden sm:inline">
-              VAG &amp; GM запчасти
+              Запчасти GM (Opel, Chevrolet)
             </span>
           </Link>
           <nav className="flex items-center gap-3 sm:gap-5">
@@ -52,10 +52,6 @@ export function Header() {
           <span>Hummer</span>
           <span>Cadillac</span>
           <span className="h-3 w-px bg-slate-700 mx-1" />
-          <span>Volkswagen</span>
-          <span>Audi</span>
-          <span>Skoda</span>
-          <span>Seat</span>
         </div>
       </div>
     </header>
