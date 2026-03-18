@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: "https://astramotors.shop/sitemap.xml",
-    host: "https://astramotors.shop",
+    host: "astramotors.shop",
   };
 }
 
