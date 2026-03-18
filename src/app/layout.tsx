@@ -26,9 +26,6 @@ export const metadata: Metadata = {
   },
   description:
     "Магазин Astra Motors: автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественные аналоги, доставка по Екатеринбургу.",
-  alternates: {
-    canonical: "/",
-  },
   robots: {
     index: true,
     follow: true,

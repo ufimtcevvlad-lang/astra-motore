@@ -15,13 +15,25 @@ export function generateStaticParams() {
   return products.map((p) => ({ id: p.id }));
 }
 
-export function generateMetadata({ params }: { params: { id: string } }): Metadata {
-  const product = products.find((p) => String(p.id) === String(params.id));
+export async function generateMetadata({
+  params,
+}: {
+  params: { id?: string } | Promise<{ id?: string }>;
+}): Promise<Metadata> {
+  const resolved = (await params) || {};
+  const id = resolved?.id;
+
+  const product = id
+    ? products.find((p) => String(p.id) === String(id))
+    : undefined;
 
   if (!product) {
     return {
-      title: "Товар — Astra Motors",
-      robots: { index: false, follow: false },
+      title: "Каталог товаров — Astra Motors",
+      description:
+        "Подбор запчастей по VIN и артикулу. Оригинальные детали и качественные аналоги.",
+      robots: { index: true, follow: true },
+      alternates: { canonical: "/product" },
     };
   }
 
