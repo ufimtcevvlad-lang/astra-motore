@@ -172,7 +172,7 @@ export default function CartPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              placeholder="+7 (999) 123-45-67"
+              placeholder="+7 (902) 254-01-11"
             />
           </div>
           <div>

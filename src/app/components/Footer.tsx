@@ -20,9 +20,21 @@ export function Footer() {
             <Link href="/contacts" className="text-sm text-sky-200 hover:text-white transition">
               Контакты
             </Link>
-            <a href="tel:+79991234567" className="text-sm font-semibold text-amber-300 hover:text-amber-200 transition">
-              +7 (999) 123-45-67
-            </a>
+            <div className="text-sm font-semibold text-amber-300 transition">
+              <a
+                href="tel:+79022540111"
+                className="hover:text-amber-200 transition"
+              >
+                +7 (902) 254-01-11
+              </a>
+              <br />
+              <a
+                href="tel:+73432061535"
+                className="hover:text-amber-200 transition"
+              >
+                +7 (343) 206-15-35
+              </a>
+            </div>
           </nav>
         </div>
       </div>
