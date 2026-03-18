@@ -1,20 +1,95 @@
-"use client";
-
-import { use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { ProductImage } from "../../components/ProductImage";
 import { products } from "../../data/products";
-import { useCart } from "../../components/CartContext";
+import { ProductClient } from "./ProductClient";
 
-function ProductDetails({ id }: { id: string }) {
-  const product = products.find(p => p.id === id);
-  const { addToCart } = useCart();
+const siteUrl = "https://astramotors.shop";
 
+export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+  const product = products.find((p) => p.id === params.id);
+  if (!product) {
+    return {
+      title: "Товар не найден",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const title = `${product.name} — ${product.brand}`;
+  const description = `${product.description} Марка: ${product.brand}. Авто: ${product.car}. Артикул: ${product.sku}.`;
+  const url = `/product/${product.id}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}${url}`,
+      type: "article",
+      images: product.image ? [{ url: `${siteUrl}${product.image}` }] : undefined,
+    },
+  };
+}
+
+export default function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const product = products.find((p) => p.id === params.id);
   if (!product) return notFound();
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Каталог",
+        item: siteUrl + "/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: product.name,
+        item: siteUrl + `/product/${product.id}`,
+      },
+    ],
+  };
+
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    sku: product.sku,
+    brand: { "@type": "Brand", name: product.brand },
+    image: product.image ? [siteUrl + product.image] : undefined,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "RUB",
+      price: product.price,
+      availability:
+        product.inStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: siteUrl + `/product/${product.id}`,
+    },
+  };
 
   return (
     <div className="space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+      />
+
       <Link href="/" className="inline-block text-sm text-sky-600 hover:text-sky-700 font-medium">
         ← Назад в каталог
       </Link>
@@ -29,41 +104,15 @@ function ProductDetails({ id }: { id: string }) {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
-        <h1 className="text-xl font-semibold">{product.name}</h1>
-        <p className="text-sm text-slate-600">{product.description}</p>
-        <p className="text-sm text-slate-500">
-          Марка: {product.brand} • Авто: {product.car}
-        </p>
-        <p className="text-sm text-slate-500">Артикул: {product.sku}</p>
-      </div>
-      <div className="space-y-4 rounded-lg bg-white p-4 shadow-sm border border-slate-200 h-fit">
-        <p className="text-lg font-bold text-sky-600">
-          {product.price.toLocaleString("ru-RU")} ₽
-        </p>
-        <p className="text-xs text-slate-500">
-          В наличии: {product.inStock} шт.
-        </p>
-        <button
-          onClick={() => addToCart(product)}
-          className="w-full rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-sky-700 transition shadow-sm"
-        >
-          В корзину
-        </button>
-        <p className="text-xs text-slate-500">
-          После оформления заказа менеджер свяжется с вами для подтверждения и
-          подбора аналогов при необходимости.
-        </p>
-      </div>
+          <h1 className="text-xl font-semibold">{product.name}</h1>
+          <p className="text-sm text-slate-600">{product.description}</p>
+          <p className="text-sm text-slate-500">
+            Марка: {product.brand} • Авто: {product.car}
+          </p>
+          <p className="text-sm text-slate-500">Артикул: {product.sku}</p>
+        </div>
+        <ProductClient product={product} />
       </div>
     </div>
   );
-}
-
-export default function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  return <ProductDetails id={id} />;
 }

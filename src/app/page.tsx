@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { ProductCatalog } from "./components/ProductCatalog";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Каталог автозапчастей",
+  description:
+    "Каталог Astra Motors: запчасти VAG и GM, подбор по VIN, оригинал и качественные аналоги. Быстрый поиск по названию, бренду, авто и артикулу.",
+  alternates: { canonical: "/" },
+};
 
 export default function HomePage() {
   return (
@@ -25,6 +33,12 @@ export default function HomePage() {
                 className="rounded-full bg-[#F5E266] px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
               >
                 Подобрать по VIN
+              </Link>
+              <Link
+                href="/contacts"
+                className="rounded-full border border-slate-500/70 px-5 py-2.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+              >
+                Контакты и режим работы
               </Link>
               <Link
                 href="#catalog"
@@ -97,6 +111,39 @@ export default function HomePage() {
 
       <section id="catalog">
         <ProductCatalog />
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Подбор автозапчастей VAG и GM по VIN — быстро и без ошибок
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <p className="text-sm text-slate-600">
+              Поможем подобрать оригинальные детали и проверенные аналоги для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer.
+              Достаточно VIN или данных автомобиля — уточним совместимость, срок и цену.
+            </p>
+            <p className="text-sm text-slate-600">
+              Если нужной позиции нет в каталоге, всё равно напишите — привезём под заказ.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm text-slate-600">
+              Работаем с ходовой, тормозной системой, фильтрами, свечами, АКБ и другими категориями. Подбор по артикулу и кроссам.
+            </p>
+            <p className="text-sm text-slate-600">
+              Условия уточняй на странице{" "}
+              <Link href="/how-to-order" className="text-sky-700 font-medium hover:underline">
+                «Как заказать»
+              </Link>{" "}
+              или в{" "}
+              <Link href="/contacts" className="text-sky-700 font-medium hover:underline">
+                контактах
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );

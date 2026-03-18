@@ -1,8 +1,30 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Как заказать",
+  description:
+    "Как заказать запчасти в Astra Motors: выбор товара, оформление корзины, подтверждение менеджером. Подбор по VIN, оригинал и аналоги.",
+  alternates: { canonical: "/how-to-order" },
+};
 
 export default function HowToOrderPage() {
+  const siteUrl = "https://astramotors.shop";
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Каталог", item: siteUrl + "/" },
+      { "@type": "ListItem", position: 2, name: "Как заказать", item: siteUrl + "/how-to-order" },
+    ],
+  };
+
   return (
     <div className="space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <h1 className="text-2xl font-bold text-sky-900">Как заказать в Astra Motors</h1>
       <p className="text-slate-600">Несколько простых шагов — и заказ у вас.</p>
 
