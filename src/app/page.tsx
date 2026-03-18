@@ -41,6 +41,18 @@ export default function HomePage() {
                 Контакты и режим работы
               </Link>
               <Link
+                href="/zapchasti-opel"
+                className="rounded-full border border-slate-500/70 px-5 py-2.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+              >
+                Запчасти Opel
+              </Link>
+              <Link
+                href="/zapchasti-chevrolet"
+                className="rounded-full border border-slate-500/70 px-5 py-2.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+              >
+                Запчасти Chevrolet
+              </Link>
+              <Link
                 href="#catalog"
                 className="rounded-full border border-slate-500/70 px-5 py-2.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
               >
