@@ -40,7 +40,23 @@ export default function ProductPage({
   params: { id: string };
 }) {
   const product = products.find((p) => String(p.id) === String(params.id));
-  if (!product) return notFound();
+  if (!product) {
+    const ids = products.map((p) => p.id).join(", ");
+    return (
+      <div className="space-y-3 rounded-xl border border-red-200 bg-white p-6">
+        <h1 className="text-xl font-bold text-red-600">Товар не найден</h1>
+        <p className="text-sm text-slate-700">
+          params.id: <b>{String(params.id)}</b>
+        </p>
+        <p className="text-sm text-slate-700">
+          доступные id в каталоге: <b>{ids}</b>
+        </p>
+        <Link href="/" className="inline-block text-sm text-sky-600 hover:text-sky-700 font-medium">
+          ← Назад в каталог
+        </Link>
+      </div>
+    );
+  }
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
