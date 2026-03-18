@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "metrika:daily": "node scripts/metrika-daily.mjs"
+    "metrika:daily": "node scripts/metrika-daily.mjs",
+    "bot:telegram": "node scripts/telegram-bot.mjs"
   },
   "dependencies": {
     "next": "16.1.6",

@@ -81,3 +81,29 @@ crontab -e
 ```bash
 tail -n 100 /var/log/metrika-daily.log
 ```
+
+## Telegram-бот: меню «Статистика / Заказы»
+
+Чтобы по кнопкам в Telegram получать актуальную статистику и сводку заказов, есть отдельный бот-скрипт:
+
+```bash
+npm run bot:telegram
+```
+
+### Требования
+
+- В `.env.local` на сервере должны быть:
+  - `TELEGRAM_BOT_TOKEN`
+  - `TELEGRAM_CHAT_ID` (используется как админ-чат по умолчанию)
+  - `YANDEX_METRIKA_OAUTH_TOKEN`
+  - `YANDEX_METRIKA_COUNTER_ID`
+  - `REPORT_TIMEZONE` (например `Asia/Yekaterinburg`)
+- Заказы сохраняются в `data/orders.ndjson` при вызове `/api/send-order`.
+
+### Запуск через PM2 (рекомендуется)
+
+```bash
+cd /var/www/astra-motors
+pm2 start "npm run -s bot:telegram" --name astra-telegram-bot
+pm2 save
+```

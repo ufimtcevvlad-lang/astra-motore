@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 type OrderItem = {
   name: string;
@@ -15,11 +17,24 @@ type Body = {
   total: number;
 };
 
+type PersistedOrder = Body & {
+  createdAt: string;
+  userAgent?: string;
+  ip?: string;
+};
+
 function escapeTelegram(text: string): string {
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+async function persistOrder(order: PersistedOrder) {
+  const dir = path.join(process.cwd(), "data");
+  const file = path.join(dir, "orders.ndjson");
+  await fs.mkdir(dir, { recursive: true });
+  await fs.appendFile(file, JSON.stringify(order) + "\n", "utf8");
 }
 
 export async function POST(request: Request) {
@@ -43,6 +58,25 @@ export async function POST(request: Request) {
   const { name, phone, comment, items, total } = body;
   if (!name?.trim() || !phone?.trim() || !Array.isArray(items) || typeof total !== "number") {
     return NextResponse.json({ error: "Не заполнены имя, телефон или корзина" }, { status: 400 });
+  }
+
+  // Сохраняем заказ в append-only лог на сервере (для меню бота: «Заказы»)
+  try {
+    await persistOrder({
+      createdAt: new Date().toISOString(),
+      name: name.trim(),
+      phone: phone.trim(),
+      comment: comment?.trim() || "",
+      items,
+      total,
+      userAgent: request.headers.get("user-agent") || undefined,
+      ip:
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        undefined,
+    });
+  } catch {
+    // Не блокируем оформление заказа, даже если не удалось записать лог
   }
 
   const lines: string[] = [

@@ -1,130 +1,14 @@
-import fs from "node:fs";
-import path from "node:path";
+import { loadDotEnvLocalFromCwd, requireEnv } from "./lib/env.mjs";
+import {
+  fetchMetrikaSummary,
+  getYesterdayDateString,
+  secondsToHhMmSs,
+} from "./lib/metrika.mjs";
 
-function loadEnvFile(filePath) {
-  if (!fs.existsSync(filePath)) return;
-  const raw = fs.readFileSync(filePath, "utf8");
-
-  for (const line of raw.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-
-    const key = trimmed.slice(0, eq).trim();
-    let val = trimmed.slice(eq + 1).trim();
-
-    // Strip surrounding quotes if present
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
-      val = val.slice(1, -1);
-    }
-
-    if (key && process.env[key] === undefined) {
-      process.env[key] = val;
-    }
-  }
-}
-
-// For node scripts, .env.local isn't loaded automatically (unlike next build/start).
-// Load it from current working directory if present.
-loadEnvFile(path.join(process.cwd(), ".env.local"));
-
-function requireEnv(name) {
-  const v = process.env[name];
-  if (!v) {
-    throw new Error(`Missing env var: ${name}`);
-  }
-  return v;
-}
+loadDotEnvLocalFromCwd();
 
 function escapeHtml(text) {
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function formatDateInTZ(date, timeZone) {
-  // YYYY-MM-DD
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-  const get = (t) => parts.find((p) => p.type === t)?.value;
-  return `${get("year")}-${get("month")}-${get("day")}`;
-}
-
-function getYesterdayDateString(timeZone) {
-  const now = new Date();
-  // "Вчера" в нужном TZ: берём дату "сегодня" в TZ, затем -1 день по UTC (достаточно для отчётных дат)
-  const todayStr = formatDateInTZ(now, timeZone);
-  const [y, m, d] = todayStr.split("-").map(Number);
-  const utc = new Date(Date.UTC(y, m - 1, d));
-  utc.setUTCDate(utc.getUTCDate() - 1);
-  return formatDateInTZ(utc, timeZone);
-}
-
-function secondsToHhMmSs(totalSeconds) {
-  const s = Math.max(0, Math.round(Number(totalSeconds) || 0));
-  const hh = Math.floor(s / 3600);
-  const mm = Math.floor((s % 3600) / 60);
-  const ss = s % 60;
-  if (hh > 0) return `${hh}ч ${String(mm).padStart(2, "0")}м`;
-  return `${mm}м ${String(ss).padStart(2, "0")}с`;
-}
-
-async function fetchMetrikaSummary({ oauthToken, counterId, date1, date2 }) {
-  const metrics = [
-    "ym:s:visits",
-    "ym:s:users",
-    "ym:s:pageviews",
-    "ym:s:bounceRate",
-    "ym:s:avgVisitDurationSeconds",
-  ].join(",");
-
-  const url = new URL("https://api-metrika.yandex.net/stat/v1/data");
-  url.searchParams.set("ids", String(counterId));
-  url.searchParams.set("metrics", metrics);
-  url.searchParams.set("date1", date1);
-  url.searchParams.set("date2", date2);
-  url.searchParams.set("accuracy", "full");
-  url.searchParams.set("limit", "1");
-
-  const res = await fetch(url.toString(), {
-    headers: {
-      Authorization: `OAuth ${oauthToken}`,
-    },
-  });
-
-  const text = await res.text();
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    throw new Error(`Metrika API returned non-JSON (status ${res.status})`);
-  }
-
-  if (!res.ok) {
-    const msg = data?.message || data?.errors?.[0]?.message || text;
-    throw new Error(`Metrika API error ${res.status}: ${msg}`);
-  }
-
-  const totals = Array.isArray(data?.totals) ? data.totals : null;
-  if (!totals || totals.length < 5) {
-    throw new Error("Metrika API: unexpected response shape (no totals)");
-  }
-
-  const [visits, users, pageviews, bounceRate, avgVisitDurationSeconds] = totals;
-  return {
-    visits: Number(visits) || 0,
-    users: Number(users) || 0,
-    pageviews: Number(pageviews) || 0,
-    bounceRate: Number(bounceRate) || 0,
-    avgVisitDurationSeconds: Number(avgVisitDurationSeconds) || 0,
-  };
 }
 
 async function sendTelegramMessage({ token, chatId, text }) {
