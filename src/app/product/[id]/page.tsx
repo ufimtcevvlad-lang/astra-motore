@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { ProductImage } from "../../components/ProductImage";
 import { products } from "../../data/products";
 import { ProductClient } from "./ProductClient";
+import { use } from "react";
 
 const siteUrl = "https://astramotors.shop";
 
@@ -42,8 +43,13 @@ export function generateMetadata({ params }: { params: { id: string } }): Metada
   };
 }
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => String(p.id) === String(params.id));
+export default function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const product = products.find((p) => String(p.id) === String(id));
   if (!product) return notFound();
 
   const breadcrumbLd = {
