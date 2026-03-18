@@ -35,3 +35,49 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # astra-motore
+
+## Telegram: ежедневная статистика из Яндекс.Метрики
+
+В проекте есть скрипт, который берёт сводку из Яндекс.Метрики за **вчера (по МСК)** и отправляет в Telegram.
+
+### Переменные окружения
+
+Смотри `.env.example`. На сервере в `/var/www/astra-motors/.env.local` должны быть:
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- `YANDEX_METRIKA_OAUTH_TOKEN`
+- `YANDEX_METRIKA_COUNTER_ID` (по умолчанию `107737371`)
+
+### Получить OAuth-токен Яндекс.Метрики
+
+Нужен OAuth-токен с доступом к Метрике. Его можно получить в кабинете Яндекса (раздел OAuth / токены) и выдать доступ к Метрике.
+
+### Ручной запуск (проверка)
+
+На сервере:
+
+```bash
+cd /var/www/astra-motors
+npm run metrika:daily
+```
+
+### Автоматически каждый день (cron)
+
+Пример: отправка каждый день в 10:00 по серверному времени:
+
+```bash
+crontab -e
+```
+
+Добавь строку:
+
+```cron
+0 10 * * * cd /var/www/astra-motors && /usr/bin/npm run -s metrika:daily >> /var/log/metrika-daily.log 2>&1
+```
+
+Логи:
+
+```bash
+tail -n 100 /var/log/metrika-daily.log
+```
