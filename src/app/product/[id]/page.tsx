@@ -8,7 +8,7 @@ import { ProductClient } from "./ProductClient";
 const siteUrl = "https://astramotors.shop";
 
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
-  const product = products.find((p) => p.id === params.id);
+  const product = products.find((p) => String(p.id) === String(params.id));
   if (!product) {
     return {
       title: "Товар не найден",
@@ -39,7 +39,7 @@ export default function ProductPage({
 }: {
   params: { id: string };
 }) {
-  const product = products.find((p) => p.id === params.id);
+  const product = products.find((p) => String(p.id) === String(params.id));
   if (!product) return notFound();
 
   const breadcrumbLd = {
