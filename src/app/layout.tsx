@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
+import { YandexMetrika } from "./components/YandexMetrika";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Astra Motors — автозапчасти VAG и GM в Екатеринбурге",
   description:
-    "Магазин Astra Motors: запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественный аналог, доставка по [твой город].",
+    "Магазин Astra Motors: запчасти для Volkswagen, Audi, Skoda, Seat, Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественный аналог, доставка по Екатеринбургу.",
   openGraph: {
     title: "Astra Motors — автозапчасти VAG и GM",
     description:
@@ -37,6 +38,8 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <YandexMetrika />
+
         <CartProvider>
           <Header />
           <main className="mx-auto max-w-5xl px-4 py-6 min-h-[60vh]">
@@ -48,4 +51,3 @@ export default function RootLayout({
     </html>
   );
 }
-
