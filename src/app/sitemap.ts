@@ -13,6 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/zapchasti-chevrolet`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${siteUrl}/zapchasti-cadillac`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${siteUrl}/zapchasti-hummer`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/podbor-po-vin`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    {
+      url: `${siteUrl}/dostavka-zapchastey-ekaterinburg`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
     { url: `${siteUrl}/how-to-order`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${siteUrl}/contacts`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];

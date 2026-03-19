@@ -29,7 +29,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
-                href="/how-to-order"
+                href="/podbor-po-vin"
                 className="rounded-full bg-[#F5E266] px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
               >
                 Подобрать по VIN
