@@ -34,11 +34,54 @@ export default function OpelPage() {
     ],
   };
 
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Как вы подбираете запчасти Opel по VIN?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Сверяем VIN и комплектацию, определяем применимость детали и предлагаем оригинальные варианты и качественные аналоги.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Оригинал или аналог — что выбрать?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Мы покажем варианты оригинала и качественных аналогов, а вы выбираете по бюджету и срокам. При необходимости уточним нюансы совместимости.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Есть ли доставка в Екатеринбурге?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да. Доставку организуем по Екатеринбургу и согласуем сроки после проверки наличия.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Можно ли заказать, если нужной позиции нет в каталоге?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да. Если позиции нет в каталоге, оформите запрос — подберём и привезём под заказ.",
+        },
+      },
+    ],
+  };
+
   return (
     <div className="space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <h1 className="text-2xl font-bold text-sky-900">Запчасти Opel в Екатеринбурге</h1>
@@ -55,6 +98,48 @@ export default function OpelPage() {
           <li>Сверяем совместимость по VIN и комплектации</li>
           <li>Предлагаем оригинальные детали и аналоги</li>
           <li>Организуем доставку по Екатеринбургу</li>
+        </ul>
+      </section>
+
+      <section className="rounded-xl border border-sky-200 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">
+          Какие категории запчастей Opel подбираем
+        </h2>
+        <p className="text-slate-600">
+          Подбор по VIN и артикулу для популярных систем автомобиля:
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            "тормозная система",
+            "фильтры",
+            "свечи",
+            "аккумуляторы",
+            "радиаторы",
+            "тормозная жидкость",
+            "расходники",
+          ].map((t) => (
+            <span
+              key={t}
+              className="rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-700"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-sky-200 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">
+          Оригинал vs качественный аналог
+        </h2>
+        <p className="text-slate-600">
+          Мы не “впариваем” один вариант. Предоставляем сравнение: оригинальные детали и качественные аналоги,
+          чтобы вы выбрали по цене, срокам и задачам.
+        </p>
+        <ul className="list-disc pl-5 text-slate-700 space-y-1">
+          <li>Помогаем подобрать совместимость</li>
+          <li>Объясняем различия по характеристикам</li>
+          <li>Подсказываем лучший вариант под ваш бюджет</li>
         </ul>
       </section>
 

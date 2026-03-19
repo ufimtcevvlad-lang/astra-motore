@@ -34,11 +34,54 @@ export default function ChevroletPage() {
     ],
   };
 
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Как подобрать запчасти Chevrolet по VIN?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Мы сверяем VIN и данные автомобиля, после чего подбираем оригинальные варианты и качественные аналоги с учётом применимости.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Сколько времени занимает ответ по подбору?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Обычно отвечаем оперативно. Если требуется проверка по наличию у поставщиков — уточним сроки после VIN.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Есть ли доставка в Екатеринбурге?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да, доставляем по Екатеринбургу. Условия согласуем после подбора и проверки наличия.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Можно заказать аналог вместо оригинала?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да. Мы предложим оригинал и качественный аналог, чтобы вы могли выбрать по цене и срокам.",
+        },
+      },
+    ],
+  };
+
   return (
     <div className="space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <h1 className="text-2xl font-bold text-sky-900">Запчасти Chevrolet в Екатеринбурге</h1>
@@ -56,6 +99,43 @@ export default function ChevroletPage() {
           <li>Даём варианты оригинала и аналогов</li>
           <li>Подбираем под бюджет и сроки</li>
         </ul>
+      </section>
+
+      <section className="rounded-xl border border-sky-200 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">
+          Часто ищут на Chevrolet: что подбираем чаще всего
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {[
+            "тормозные колодки и диски",
+            "фильтры",
+            "масло и расходники",
+            "свечи зажигания",
+            "аккумуляторы",
+            "системы охлаждения",
+          ].map((t) => (
+            <span
+              key={t}
+              className="rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-700"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+        <p className="text-slate-600">
+          Если нужной позиции нет в каталоге — оставьте заявку, подберём и привезём под заказ.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">Как оформить заказ</h2>
+        <p className="text-slate-600">
+          Самый быстрый путь —{" "}
+          <Link href="/podbor-po-vin" className="text-sky-700 font-medium hover:underline">
+            подбор по VIN
+          </Link>{" "}
+          . Далее вы получаете варианты оригинала и качественного аналога, согласуете сроки и мы организуем поставку.
+        </p>
       </section>
 
       <section className="space-y-3">
