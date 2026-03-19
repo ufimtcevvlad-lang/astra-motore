@@ -29,6 +29,15 @@ export function Header() {
             <Link href="/contacts" className="text-sm font-medium text-slate-100 hover:text-white transition">
               Контакты
             </Link>
+            <Link href="/auth/login" className="text-sm font-medium text-slate-100 hover:text-white transition">
+              Войти
+            </Link>
+            <Link
+              href="/auth/register"
+              className="rounded-md border border-slate-500 px-3 py-1.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+            >
+              Регистрация
+            </Link>
             <Link
               href="/cart"
               className="flex items-center gap-1.5 rounded-full bg-[#F5E266] px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
