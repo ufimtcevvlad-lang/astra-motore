@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "metrika:daily": "node scripts/metrika-daily.mjs",
-    "bot:telegram": "node scripts/telegram-bot.mjs"
+    "bot:telegram": "node scripts/telegram-bot.mjs",
+    "indexnow:send": "node scripts/indexnow-send.mjs"
   },
   "dependencies": {
     "next": "16.1.6",

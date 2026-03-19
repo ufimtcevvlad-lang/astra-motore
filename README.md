@@ -82,6 +82,17 @@ crontab -e
 tail -n 100 /var/log/metrika-daily.log
 ```
 
+## Индексация через IndexNow (ускорение для Яндекса)
+После деплоя можно “пнуть” Яндекс об изменениях через IndexNow:
+
+```bash
+npm run indexnow:send
+```
+
+Скрипт:
+- использует ключ `public/astramotors-indexnow-20260319.txt`
+- отправляет в `https://yandex.com/indexnow` список главных страниц + `/product/:id`
+
 ## Telegram-бот: меню «Статистика / Заказы»
 
 Чтобы по кнопкам в Telegram получать актуальную статистику и сводку заказов, есть отдельный бот-скрипт:
