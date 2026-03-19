@@ -9,6 +9,7 @@ import {
 type Body = {
   login: string;
   password: string;
+  rememberMe?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -30,7 +31,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Неверные данные для входа" }, { status: 401 });
   }
 
-  const { token, expiresAt } = await createSession(user.id);
+  const rememberMe = Boolean(body.rememberMe);
+  const { token, expiresAt } = await createSession(user.id, {
+    ttlDays: rememberMe ? 30 : 1,
+  });
   const response = NextResponse.json({
     ok: true,
     user: {

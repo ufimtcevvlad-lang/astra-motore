@@ -1,16 +1,45 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
+
+type MeResponse = {
+  user: null | {
+    id: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    createdAt: string;
+  };
+};
 
 export function Header() {
   const { items } = useCart();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+  const [user, setUser] = useState<MeResponse["user"]>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data: MeResponse) => {
+        if (!mounted) return;
+        setUser(data.user);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setUser(null);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
       <div className="mx-auto max-w-5xl px-4">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 py-4">
           <Link href="/" className="group flex items-baseline gap-2">
             <span className="text-xl font-bold tracking-tight text-white drop-shadow-sm">
               Astra Motors
@@ -19,6 +48,7 @@ export function Header() {
               Запчасти GM (Opel, Chevrolet)
             </span>
           </Link>
+
           <nav className="flex items-center gap-3 sm:gap-5">
             <Link href="/" className="text-sm font-medium text-slate-100 hover:text-white transition">
               Каталог
@@ -29,15 +59,29 @@ export function Header() {
             <Link href="/contacts" className="text-sm font-medium text-slate-100 hover:text-white transition">
               Контакты
             </Link>
-            <Link href="/auth/login" className="text-sm font-medium text-slate-100 hover:text-white transition">
-              Войти
-            </Link>
-            <Link
-              href="/auth/register"
-              className="rounded-md border border-slate-500 px-3 py-1.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
-            >
-              Регистрация
-            </Link>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-2">
+            {user ? (
+              <Link
+                href="/account"
+                className="rounded-md border border-slate-500 px-3 py-1.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+              >
+                ЛК
+              </Link>
+            ) : (
+              <>
+                <Link href="/auth/login" className="text-sm font-medium text-slate-100 hover:text-white transition">
+                  Войти
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="rounded-md border border-slate-500 px-3 py-1.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
+                >
+                  Регистрация
+                </Link>
+              </>
+            )}
             <Link
               href="/cart"
               className="flex items-center gap-1.5 rounded-full bg-[#F5E266] px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
@@ -49,7 +93,7 @@ export function Header() {
                 </span>
               )}
             </Link>
-          </nav>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pb-3 text-[11px] text-slate-300/80">

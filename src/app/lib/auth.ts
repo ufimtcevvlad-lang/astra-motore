@@ -231,10 +231,14 @@ export async function registerUserWithProvider(input: {
   };
 }
 
-export async function createSession(userId: string): Promise<{ token: string; expiresAt: Date }> {
+export async function createSession(
+  userId: string,
+  options?: { ttlDays?: number }
+): Promise<{ token: string; expiresAt: Date }> {
   const token = randomBytes(32).toString("base64url");
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + SESSION_TTL_DAYS * 24 * 60 * 60 * 1000);
+  const ttlDays = options?.ttlDays ?? SESSION_TTL_DAYS;
+  const expiresAt = new Date(now.getTime() + ttlDays * 24 * 60 * 60 * 1000);
   const row: SessionRecord = {
     tokenHash: hashToken(token),
     userId,
