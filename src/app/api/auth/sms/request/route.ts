@@ -22,6 +22,7 @@ async function sendCodeViaSmsRu(
 ): Promise<{ smsru: unknown }> {
   const apiId = process.env.SMSRU_API_ID;
   if (!apiId) throw new Error("SMS.ru не настроен: задайте SMSRU_API_ID");
+  const sender = process.env.SMSRU_SENDER;
 
   const message = `Astra Motors. Код подтверждения: ${code}`;
   const ip = await getClientIp(request);
@@ -32,6 +33,7 @@ async function sendCodeViaSmsRu(
     msg: message,
     json: "1",
   });
+  if (sender) params.set("from", sender);
   if (ip) params.set("ip", ip);
 
   // Важно: sms.ru рекомендует ставить captcha на стороне веба.
