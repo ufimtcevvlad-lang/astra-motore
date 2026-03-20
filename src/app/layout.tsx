@@ -103,6 +103,8 @@ export default function RootLayout({
       <head>
         {/* Яндекс.Вебмастер: подтверждение прав */}
         <meta name="yandex-verification" content="62d469a9a0693298" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/favicon.svg" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <script

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Minimal official mark for dark UI: yellow on black -->
+  <defs>
+    <style>
+      .stroke { stroke: #F5E266; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .accent { fill: #E11D48; }
+    </style>
+  </defs>
+
+  <!-- Dark background to match site theme -->
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="#0B1220"/>
+
+  <!-- Outer emblem -->
+  <circle cx="32" cy="32" r="18" class="stroke"/>
+
+  <!-- Monogram "AM" (stroke letters for small size clarity) -->
+  <path class="stroke" d="M24 46 L32 18 L40 46"/>
+  <path class="stroke" d="M27.5 34 H36.5"/>
+
+  <path class="stroke" d="M44 46 V26 L38 32 L32 26 V46"/>
+
+  <!-- One small accent element -->
+  <rect x="31" y="31" width="2.5" height="8" rx="1.25" class="accent" transform="rotate(45 32 35)"/>
+</svg>
+
