@@ -84,11 +84,11 @@ export function Header() {
             )}
             <Link
               href="/cart"
-              className="flex items-center gap-1.5 rounded-full bg-[#F5E266] px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
+              className="flex items-center gap-1.5 rounded-full bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-rose-400 transition"
             >
               Корзина
               {totalItems > 0 && (
-                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-[#F5E266]">
+                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-rose-200">
                   {totalItems}
                 </span>
               )}

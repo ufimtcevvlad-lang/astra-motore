@@ -25,10 +25,10 @@ export default function HowToOrderPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <h1 className="text-2xl font-bold text-sky-900">Как заказать в Astra Motors</h1>
+      <h1 className="text-2xl font-bold text-rose-900">Как заказать в Astra Motors</h1>
       <p className="text-slate-600">Несколько простых шагов — и заказ у вас.</p>
 
-      <div className="rounded-xl border border-sky-100 bg-white p-6 shadow-sm space-y-6">
+      <div className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-6">
         <section>
           <h2 className="text-lg font-medium text-slate-800 mb-2">1. Выберите товар</h2>
           <p className="text-sm text-slate-600">
@@ -62,7 +62,10 @@ export default function HowToOrderPage() {
         </section>
 
         <p className="text-sm text-slate-600 pt-2">
-          <Link href="/contacts" className="text-sky-600 hover:text-sky-700 hover:underline font-medium">
+          <Link
+            href="/contacts"
+            className="text-rose-600 hover:text-rose-700 hover:underline font-medium"
+          >
             Контакты
           </Link>
           {" "}— адрес, телефон и режим работы.

@@ -66,7 +66,7 @@ export function AccountPanel() {
         <div className="flex gap-2">
           <Link
             href="/auth/login"
-            className="inline-flex rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
+            className="inline-flex rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
           >
             Войти
           </Link>

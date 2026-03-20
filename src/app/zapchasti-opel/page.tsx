@@ -84,13 +84,13 @@ export default function OpelPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <h1 className="text-2xl font-bold text-sky-900">Запчасти Opel в Екатеринбурге</h1>
+      <h1 className="text-2xl font-bold text-rose-900">Запчасти Opel в Екатеринбурге</h1>
       <p className="text-slate-600">
         Подберём запчасти Opel по VIN или по артикулу: оригинал и качественные аналоги.
         Дадим срок и ориентировочную стоимость, поможем подобрать совместимость.
       </p>
 
-      <section className="rounded-xl border border-sky-100 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">
           Подбор по VIN — быстро и без ошибок
         </h2>
@@ -101,7 +101,7 @@ export default function OpelPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-sky-200 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-rose-200 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">
           Какие категории запчастей Opel подбираем
         </h2>
@@ -128,7 +128,7 @@ export default function OpelPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-sky-200 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-rose-200 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">
           Оригинал vs качественный аналог
         </h2>
@@ -152,16 +152,16 @@ export default function OpelPage() {
             {items.slice(0, 6).map((p) => (
               <article
                 key={p.id}
-                className="rounded-xl bg-white shadow-md border border-sky-100 p-4 flex flex-col gap-2"
+                className="rounded-xl bg-white shadow-md border border-rose-100 p-4 flex flex-col gap-2"
               >
                 <h3 className="font-semibold text-sm line-clamp-2">{p.name}</h3>
                 <p className="text-xs text-slate-500">{p.car}</p>
-                <p className="text-sm font-bold text-sky-600">
+                <p className="text-sm font-bold text-rose-600">
                   {p.price.toLocaleString("ru-RU")} ₽
                 </p>
                 <Link
                   href={`/product/${p.id}`}
-                  className="mt-auto inline-flex justify-center rounded-lg bg-sky-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-sky-700 transition shadow-sm"
+                  className="mt-auto inline-flex justify-center rounded-lg bg-rose-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-rose-700 transition shadow-sm"
                 >
                   Подробнее
                 </Link>
@@ -175,7 +175,7 @@ export default function OpelPage() {
         <h2 className="text-lg font-semibold text-slate-800">Как заказать</h2>
         <p className="text-slate-600">
           Оставьте заявку на сайте или нажмите{" "}
-          <Link href="/how-to-order" className="text-sky-700 font-medium hover:underline">
+          <Link href="/how-to-order" className="text-rose-700 font-medium hover:underline">
             «Как заказать»
           </Link>
           . Менеджер свяжется с вами и уточнит детали.

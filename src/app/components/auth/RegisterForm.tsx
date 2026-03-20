@@ -122,7 +122,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 disabled:opacity-60"
         >
           {sending ? "Создаем аккаунт..." : "Зарегистрироваться"}
         </button>
@@ -130,7 +130,7 @@ export function RegisterForm() {
 
       <div className="text-sm text-slate-600">
         Уже есть аккаунт?{" "}
-        <Link href="/auth/login" className="font-medium text-sky-700 hover:underline">
+        <Link href="/auth/login" className="font-medium text-rose-700 hover:underline">
           Войти
         </Link>
       </div>

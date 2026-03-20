@@ -61,23 +61,23 @@ export default function ContactsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointLd) }}
       />
-      <h1 className="text-2xl font-bold text-sky-900">Контакты</h1>
-      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-sky-700">Astra Motors</span> — ответим и подберём запчасти.</p>
+      <h1 className="text-2xl font-bold text-rose-900">Контакты</h1>
+      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-rose-700">Astra Motors</span> — ответим и подберём запчасти.</p>
 
-      <div className="rounded-xl border border-sky-100 bg-white p-6 shadow-sm space-y-4">
+      <div className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-4">
         <div>
           <p className="text-sm font-medium text-slate-500">Телефон</p>
           <p className="text-lg">
             <a
               href="tel:+79022540111"
-              className="text-sky-600 font-medium hover:text-sky-700 hover:underline"
+              className="text-rose-600 font-medium hover:text-rose-700 hover:underline"
             >
               +7 (902) 254-01-11
             </a>
             <br />
             <a
               href="tel:+73432061535"
-              className="text-sky-600 font-medium hover:text-sky-700 hover:underline"
+              className="text-rose-600 font-medium hover:text-rose-700 hover:underline"
             >
               +7 (343) 206-15-35
             </a>

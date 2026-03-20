@@ -7,7 +7,7 @@ import { products, type Product } from "../data/products";
 
 function ProductCard({ p }: { p: Product }) {
   return (
-    <article className="rounded-xl bg-white shadow-md border border-sky-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-sky-200 transition">
+    <article className="rounded-xl bg-white shadow-md border border-rose-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-rose-200 transition">
       <div className="aspect-[4/3] relative bg-slate-100 rounded-t-lg overflow-hidden">
         <ProductImage
           src={p.image}
@@ -22,7 +22,7 @@ function ProductCard({ p }: { p: Product }) {
         <p className="text-xs text-slate-500">
           {p.brand} • {p.car}
         </p>
-        <p className="text-sm font-bold text-sky-600">
+        <p className="text-sm font-bold text-rose-600">
           {p.price.toLocaleString("ru-RU")} ₽
         </p>
         <p className="text-xs text-slate-500">
@@ -31,7 +31,7 @@ function ProductCard({ p }: { p: Product }) {
         <div className="mt-auto pt-2">
           <Link
             href={`/product/${p.id}`}
-            className="inline-flex w-full justify-center rounded-lg bg-sky-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-sky-700 transition shadow-sm"
+            className="inline-flex w-full justify-center rounded-lg bg-rose-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-rose-700 transition shadow-sm"
           >
             Подробнее
           </Link>
@@ -68,7 +68,7 @@ export function ProductCatalog() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Например: тормозные, Toyota, TRW..."
-          className="w-full sm:w-64 rounded-lg border border-sky-200 px-3 py-2 text-sm placeholder:text-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none"
+          className="w-full sm:w-64 rounded-lg border border-rose-200 px-3 py-2 text-sm placeholder:text-slate-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none"
         />
       </div>
       {filtered.length === 0 ? (
@@ -77,7 +77,7 @@ export function ProductCatalog() {
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="text-sky-600 hover:underline font-medium"
+            className="text-rose-600 hover:underline font-medium"
           >
             очистите поле
           </button>

@@ -112,7 +112,7 @@ export default function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
       />
 
-      <Link href="/" className="inline-block text-sm text-sky-600 hover:text-sky-700 font-medium">
+      <Link href="/" className="inline-block text-sm text-rose-600 hover:text-rose-700 font-medium">
         ← Назад в каталог
       </Link>
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">

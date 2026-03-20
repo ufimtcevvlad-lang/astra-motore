@@ -64,11 +64,11 @@ export default function CartPage() {
 
   if (items.length === 0 && !sent) {
     return (
-      <div className="rounded-xl border border-sky-100 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-xl border border-rose-100 bg-white p-8 text-center shadow-sm">
         <p className="text-slate-600">Корзина пуста.</p>
         <Link
           href="/"
-          className="mt-4 inline-block font-medium text-sky-600 hover:text-sky-700"
+          className="mt-4 inline-block font-medium text-rose-600 hover:text-rose-700"
         >
           Перейти в каталог
         </Link>
@@ -78,14 +78,14 @@ export default function CartPage() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-sky-100 bg-white p-8 text-center shadow-sm">
-        <p className="text-lg font-bold text-sky-700">Заказ принят!</p>
+      <div className="rounded-xl border border-rose-100 bg-white p-8 text-center shadow-sm">
+        <p className="text-lg font-bold text-rose-700">Заказ принят!</p>
         <p className="mt-2 text-slate-600">
-          Менеджер <span className="font-medium text-sky-700">Astra Motors</span> свяжется с вами в ближайшее время.
+          Менеджер <span className="font-medium text-rose-700">Astra Motors</span> свяжется с вами в ближайшее время.
         </p>
         <Link
           href="/"
-          className="mt-4 inline-block font-medium text-sky-600 hover:text-sky-700"
+          className="mt-4 inline-block font-medium text-rose-600 hover:text-rose-700"
         >
           Вернуться в каталог
         </Link>
@@ -110,7 +110,7 @@ export default function CartPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <p className="font-semibold text-sky-600">
+              <p className="font-semibold text-rose-600">
                 {(item.product.price * item.quantity).toLocaleString("ru-RU")} ₽
               </p>
               <button
@@ -126,7 +126,7 @@ export default function CartPage() {
 
       <div className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-lg font-semibold">
-          Итого: <span className="text-sky-600 font-bold">{total.toLocaleString("ru-RU")} ₽</span>
+          Итого: <span className="text-rose-600 font-bold">{total.toLocaleString("ru-RU")} ₽</span>
         </p>
         <div className="flex gap-2">
           <button
@@ -137,7 +137,7 @@ export default function CartPage() {
           </button>
           <button
             onClick={() => setShowForm(true)}
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 shadow-sm"
+            className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 shadow-sm"
           >
             Оформить заказ
           </button>
@@ -215,7 +215,7 @@ export default function CartPage() {
             <button
               type="submit"
               disabled={sending}
-              className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:opacity-50 shadow-sm"
+              className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 disabled:opacity-50 shadow-sm"
             >
               {sending ? "Отправка…" : "Отправить заказ"}
             </button>

@@ -20,7 +20,7 @@ export default function HomePage() {
             </p>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
               Автозапчасти GM{" "}
-              <span className="text-[#F5E266]">&amp;</span>{" "}
+              <span className="text-rose-400">&amp;</span>{" "}
               Opel &amp; Chevrolet с подбором по VIN
             </h1>
             <p className="text-slate-200 text-sm sm:text-base max-w-xl">
@@ -30,7 +30,7 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
                 href="/podbor-po-vin"
-                className="rounded-full bg-[#F5E266] px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-md hover:bg-[#F6D96F] transition"
+                className="rounded-full bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-rose-400 transition"
               >
                 Подобрать по VIN
               </Link>
@@ -62,7 +62,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative h-40 sm:h-52 md:h-60">
-            <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(245,226,102,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(59,130,246,0.18),_transparent_55%)]" />
+            <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(225,29,72,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(225,29,72,0.18),_transparent_55%)]" />
             <div className="relative flex h-full items-end justify-between px-3 sm:px-6">
               <div className="w-1/2">
                 <div className="h-20 sm:h-28 md:h-32 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 shadow-lg flex items-end justify-center">
@@ -145,11 +145,11 @@ export default function HomePage() {
             </p>
             <p className="text-sm text-slate-600">
               Условия уточняй на странице{" "}
-              <Link href="/how-to-order" className="text-sky-700 font-medium hover:underline">
+              <Link href="/how-to-order" className="text-rose-700 font-medium hover:underline">
                 «Как заказать»
               </Link>{" "}
               или в{" "}
-              <Link href="/contacts" className="text-sky-700 font-medium hover:underline">
+              <Link href="/contacts" className="text-rose-700 font-medium hover:underline">
                 контактах
               </Link>
               .

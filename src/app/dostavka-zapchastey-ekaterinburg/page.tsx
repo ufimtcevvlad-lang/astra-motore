@@ -74,13 +74,13 @@ export default function DeliveryPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <h1 className="text-2xl font-bold text-sky-900">Доставка запчастей в Екатеринбурге</h1>
+      <h1 className="text-2xl font-bold text-rose-900">Доставка запчастей в Екатеринбурге</h1>
       <p className="text-slate-600">
         Поможем подобрать запчасти GM (Opel, Chevrolet, Cadillac, Hummer) по VIN. Доставим в Екатеринбурге — сроки и наличие
         уточняем после проверки.
       </p>
 
-      <section className="rounded-xl border border-sky-100 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">Что вы получаете</h2>
         <ul className="list-disc pl-5 text-slate-700 space-y-1">
           <li>Подбор по VIN и применимость</li>
@@ -94,18 +94,18 @@ export default function DeliveryPage() {
         <h2 className="text-lg font-semibold text-slate-800">Начать заявку</h2>
         <p className="text-slate-600">
           Оформите запрос на сайте и менеджер свяжется с вами:{" "}
-          <Link href="/podbor-po-vin" className="text-sky-700 font-medium hover:underline">
+          <Link href="/podbor-po-vin" className="text-rose-700 font-medium hover:underline">
             подбор по VIN
           </Link>{" "}
           или{" "}
-          <Link href="/contacts" className="text-sky-700 font-medium hover:underline">
+          <Link href="/contacts" className="text-rose-700 font-medium hover:underline">
             контакты
           </Link>
           .
         </p>
         <p className="text-slate-600">
           Как оформить заказ:{" "}
-          <Link href="/how-to-order" className="text-sky-700 font-medium hover:underline">
+          <Link href="/how-to-order" className="text-rose-700 font-medium hover:underline">
             «Как заказать»
           </Link>
           .

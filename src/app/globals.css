@@ -3,9 +3,10 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --astra-dark: #0c4a6e;
-  --astra-accent: #f59e0b;
-  --astra-accent-hover: #d97706;
+  /* Official accent palette (strict minimalism + vivid highlights) */
+  --astra-dark: #0b1220;
+  --astra-accent: #e11d48; /* rose-600 */
+  --astra-accent-hover: #be123c; /* rose-700 */
 }
 
 @theme inline {
