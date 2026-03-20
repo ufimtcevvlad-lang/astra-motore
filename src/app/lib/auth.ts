@@ -41,7 +41,13 @@ export const SOCIAL_PENDING_COOKIE = "am_social_pending";
 const SESSION_TTL_DAYS = 30;
 
 function normalizePhone(phone: string): string {
-  return phone.replace(/[^\d+]/g, "");
+  // Для стабильного матчинга убираем все кроме цифр, а '+' и форматирование (скобки/пробелы) игнорируем.
+  let digits = phone.replace(/\D/g, "");
+  // Типичный ввод: 8XXXXXXXXXX -> приводим к 7XXXXXXXXXX
+  if (digits.startsWith("8")) digits = "7" + digits.slice(1);
+  // Если ввели 10 цифр (например без кода 7) — добавляем 7
+  if (digits.length === 10) digits = "7" + digits;
+  return digits;
 }
 
 function normalizeEmail(email: string): string {
