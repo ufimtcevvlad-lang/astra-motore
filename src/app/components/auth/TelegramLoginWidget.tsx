@@ -1,15 +1,43 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 export function TelegramLoginWidget() {
-  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://astramotors.shop";
+  const [botUsername, setBotUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/auth/telegram/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        setBotUsername(typeof data?.username === "string" ? data.username : null);
+      })
+      .catch(() => {
+        if (!active) return;
+        setBotUsername(null);
+      })
+      .finally(() => {
+        if (!active) return;
+        setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (loading) {
+    return <p className="text-sm text-slate-600">Загрузка входа Telegram...</p>;
+  }
 
   if (!botUsername) {
     return (
       <p className="text-sm text-amber-700">
-        Telegram-вход пока не настроен. Добавьте `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` в `.env.local`.
+        Не удалось получить username Telegram-бота. Проверьте переменные окружения (
+        `TELEGRAM_BOT_TOKEN`) и перезапустите сервер.
       </p>
     );
   }
