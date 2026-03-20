@@ -26,12 +26,46 @@ export default function GmPage() {
       },
     ],
   };
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Как подобрать запчасти GM по VIN?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Сверяем VIN и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Оригинал или аналог — что выбрать?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Мы покажем варианты оригинальных деталей и качественных аналогов. Вы выбираете по цене и срокам, а менеджер поможет с совместимостью.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Есть ли доставка по Екатеринбургу?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да. Доставка по Екатеринбургу организуется после проверки наличия и подтверждения заявки.",
+        },
+      },
+    ],
+  };
 
   return (
     <div className="space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <h1 className="text-2xl font-bold text-rose-900">
@@ -93,6 +127,64 @@ export default function GmPage() {
               </Link>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">Закажите подбор по VIN</h2>
+        <p className="text-sm text-slate-600">
+          Если нужной позиции нет в каталоге или вы сомневаетесь в совместимости, отправьте VIN.
+          Мы подберём оригинальные запчасти GM и качественные аналоги, уточним наличие и сроки в Екатеринбурге.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Link
+            href="/podbor-po-vin"
+            className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+          >
+            Подбор по VIN
+          </Link>
+          <Link
+            href="/how-to-order"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Как заказать
+          </Link>
+          <Link
+            href="/contacts"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Контакты
+          </Link>
+        </div>
+      </section>
+
+      <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-slate-900">Вопросы и ответы</h2>
+        <div className="space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-800">
+              Как подобрать запчасти GM по VIN?
+            </h3>
+            <p className="text-sm text-slate-600">
+              Сверяем VIN и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-800">
+              Оригинал или аналог — что выбрать?
+            </h3>
+            <p className="text-sm text-slate-600">
+              Мы показываем варианты оригинальных деталей и качественных аналогов. Вы выбираете по цене и срокам, а менеджер помогает с совместимостью.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-800">
+              Есть ли доставка по Екатеринбургу?
+            </h3>
+            <p className="text-sm text-slate-600">
+              Да. Доставка по Екатеринбургу организуется после проверки наличия и подтверждения заявки.
+            </p>
+          </div>
         </div>
       </section>
     </div>

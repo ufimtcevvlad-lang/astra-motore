@@ -146,6 +146,21 @@ export default function PodborVinPage() {
           .
         </p>
       </section>
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center pt-2">
+        <Link
+          href="/contacts"
+          className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+        >
+          Связаться с менеджером
+        </Link>
+        <Link
+          href="/"
+          className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+        >
+          Перейти в каталог
+        </Link>
+      </div>
     </div>
   );
 }

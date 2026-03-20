@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -99,6 +100,21 @@ export default function ContactsPage() {
         <p className="text-sm text-slate-600 pt-2">
           Оставьте заявку на сайте или позвоните — подберём запчасти и уточним наличие.
         </p>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a
+          href="tel:+79022540111"
+          className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+        >
+          Позвонить
+        </a>
+        <Link
+          href="/how-to-order"
+          className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+        >
+          Как заказать
+        </Link>
       </div>
     </div>
   );
