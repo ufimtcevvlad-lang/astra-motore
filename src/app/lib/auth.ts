@@ -9,9 +9,6 @@ type UserRecord = {
   phone: string;
   passwordSalt: string;
   passwordHash: string;
-  vkId?: string;
-  tgId?: string;
-  tgUsername?: string;
   createdAt: string;
 };
 
@@ -37,7 +34,6 @@ const SESSIONS_FILE = path.join(DATA_DIR, "sessions.ndjson");
 const SMS_CODES_FILE = path.join(DATA_DIR, "sms-codes.ndjson");
 
 export const SESSION_COOKIE = "am_session";
-export const SOCIAL_PENDING_COOKIE = "am_social_pending";
 const SESSION_TTL_DAYS = 30;
 
 function normalizePhone(phone: string): string {
@@ -120,24 +116,9 @@ export async function findUserByLogin(login: string): Promise<UserRecord | null>
   return candidate || null;
 }
 
-export function normalizePhoneForAuth(phone: string): string {
-  return normalizePhone(phone);
-}
-
 export async function findUserById(userId: string): Promise<UserRecord | null> {
   const users = await readUsers();
   return users.find((u) => u.id === userId) || null;
-}
-
-export async function findUserByProvider(
-  provider: "vk" | "telegram",
-  providerUserId: string
-): Promise<UserRecord | null> {
-  const users = await readUsers();
-  if (provider === "vk") {
-    return users.find((u) => u.vkId === providerUserId) || null;
-  }
-  return users.find((u) => u.tgId === providerUserId) || null;
 }
 
 export async function registerUser(input: {
@@ -191,52 +172,6 @@ export async function registerUser(input: {
   };
 }
 
-export async function registerUserWithProvider(input: {
-  fullName: string;
-  email: string;
-  phone: string;
-  password: string;
-  provider: "vk" | "telegram";
-  providerUserId: string;
-  tgUsername?: string;
-}): Promise<{ ok: true; user: Omit<UserRecord, "passwordSalt" | "passwordHash"> } | { ok: false; reason: string }> {
-  const base = await registerUser({
-    fullName: input.fullName,
-    email: input.email,
-    phone: input.phone,
-    password: input.password,
-  });
-  if (!base.ok) return base;
-
-  const users = await readUsers();
-  const idx = users.findIndex((u) => u.id === base.user.id);
-  if (idx === -1) {
-    return { ok: false, reason: "Не удалось сохранить соцсвязку" };
-  }
-  if (input.provider === "vk") {
-    users[idx].vkId = input.providerUserId;
-  } else {
-    users[idx].tgId = input.providerUserId;
-    users[idx].tgUsername = input.tgUsername;
-  }
-  await writeUsers(users);
-
-  const updated = users[idx];
-  return {
-    ok: true,
-    user: {
-      id: updated.id,
-      fullName: updated.fullName,
-      email: updated.email,
-      phone: updated.phone,
-      vkId: updated.vkId,
-      tgId: updated.tgId,
-      tgUsername: updated.tgUsername,
-      createdAt: updated.createdAt,
-    },
-  };
-}
-
 export async function createSession(
   userId: string,
   options?: { ttlDays?: number }
@@ -283,9 +218,6 @@ export async function getSessionUser(token: string): Promise<Omit<UserRecord, "p
     fullName: user.fullName,
     email: user.email,
     phone: user.phone,
-    vkId: user.vkId,
-    tgId: user.tgId,
-    tgUsername: user.tgUsername,
     createdAt: user.createdAt,
   };
 }
