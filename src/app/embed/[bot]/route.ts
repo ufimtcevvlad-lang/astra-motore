@@ -17,7 +17,15 @@ export async function GET(
   }`;
 
   const res = await fetch(target);
-  const body = await res.text();
+  let body = await res.text();
+
+  // Важно для прокси:
+  // embed-сайт использует относительные ссылки вида `/file/...`, `/tile/...` и т.п.
+  // Чтобы они подгружались с telegram.org, задаём base href.
+  // Если base уже есть — не ломаем.
+  if (!/radar href=["']https?:\/\/telegram\.org\//i.test(body)) {
+    body = body.replace(/<head([^>]*)>/i, `<head$1><base href="https://telegram.org/">`);
+  }
 
   const contentType =
     res.headers.get("content-type") || "text/html; charset=utf-8";
