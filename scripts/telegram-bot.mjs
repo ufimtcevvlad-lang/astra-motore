@@ -203,10 +203,11 @@ async function poll() {
       const chatId = msg.chat?.id;
       if (!chatId) continue;
 
-      // Security: respond only to admin chat
+      const text = msg.text.trim();
+
+      // Security: other commands respond only to admin chat
       if (ADMIN_CHAT_ID && Number(chatId) !== Number(ADMIN_CHAT_ID)) continue;
 
-      const text = msg.text.trim();
       try {
         await handleCommand(chatId, text);
       } catch (e) {

@@ -128,21 +128,6 @@ export function RegisterForm() {
         </button>
       </form>
 
-      <div className="space-y-2">
-        <Link
-          href="/api/auth/social/vk/start"
-          className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
-        >
-          Регистрация через VK
-        </Link>
-        <Link
-          href="/auth/telegram"
-          className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
-        >
-          Регистрация через Telegram
-        </Link>
-      </div>
-
       <div className="text-sm text-slate-600">
         Уже есть аккаунт?{" "}
         <Link href="/auth/login" className="font-medium text-sky-700 hover:underline">
