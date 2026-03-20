@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
+import { MaintenanceNotice } from "./components/MaintenanceNotice";
 import { YandexMetrika } from "./components/YandexMetrika";
 import "./globals.css";
 
@@ -58,6 +59,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const maintenanceMode = process.env.MAINTENANCE_MODE === "1";
+  const maintenanceMessage = process.env.MAINTENANCE_MESSAGE || "Ведутся работы по улучшению сайта.";
+
   const organizationLd = {
     "@context": "https://schema.org",
     "@type": "AutoPartsStore",
@@ -115,6 +119,7 @@ export default function RootLayout({
         <CartProvider>
           <Header />
           <main className="mx-auto max-w-5xl px-4 py-6 min-h-[60vh]">
+            {maintenanceMode ? <MaintenanceNotice message={maintenanceMessage} /> : null}
             {children}
           </main>
           <Footer />
