@@ -2,26 +2,14 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
 
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 часа
+// Для отладки Telegram виджета кэш лучше отключить,
+// чтобы прокси всегда возвращал актуальный и переписанный JS.
+const CACHE_TTL_MS = 0; // 0 = не использовать кэш
 
-const CACHE_FILE = path.join(process.cwd(), "data", "cache", "telegram-widget.proxy.v2.js");
+const CACHE_FILE = path.join(process.cwd(), "data", "cache", "telegram-widget.proxy.v3.js");
 
 export async function GET() {
-  try {
-    const stat = await fs.stat(CACHE_FILE);
-    const age = Date.now() - stat.mtimeMs;
-    if (age < CACHE_TTL_MS) {
-      const cached = await fs.readFile(CACHE_FILE, "utf8");
-      return new NextResponse(cached, {
-        headers: {
-          "Content-Type": "application/javascript; charset=utf-8",
-          "Cache-Control": "public, max-age=86400, s-maxage=86400",
-        },
-      });
-    }
-  } catch {
-    // ignore cache miss
-  }
+  // Кэш отключен (CACHE_TTL_MS=0), всегда переписываем свежий JS.
 
   // Фетчим виджет со стороны сервера и кешируем, чтобы браузер не зависел от доступности telegram.org.
   // Также переписываем относительный URL iframe (/embed/...) в абсолютный telegram.org/embed/...
@@ -29,8 +17,12 @@ export async function GET() {
   const res = await fetch("https://telegram.org/js/telegram-widget.js?22");
   let code = await res.text();
 
-  // Нормализуем встраивание виджета на случай прокси скрипта.
-  code = code.replace(/(["'`])\/embed\//g, `$1https://telegram.org/embed/`);
+  // Нормализуем встраивание виджета:
+  // Telegram виджет строит iframe src как "/embed/<bot>...".
+  // Без замены будет 404 на нашем домене: /embed/<bot>.
+  code = code.replace(/(["'`])\/embed\//g, "$1https://telegram.org/embed/");
+  // На всякий случай (если встретится без завершающего слэша)
+  code = code.replace(/(["'`])\/embed(?=\w)/g, "$1https://telegram.org/embed");
 
   await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
   await fs.writeFile(CACHE_FILE, code, "utf8");
@@ -38,7 +30,7 @@ export async function GET() {
   return new NextResponse(code, {
     headers: {
       "Content-Type": "application/javascript; charset=utf-8",
-      "Cache-Control": "public, max-age=86400, s-maxage=86400",
+      "Cache-Control": "no-store",
     },
   });
 }
