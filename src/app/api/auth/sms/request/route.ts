@@ -3,6 +3,7 @@ import { createSmsCodeForPhone } from "../../../../lib/auth";
 
 type Body = {
   phone: string;
+  debug?: boolean;
 };
 
 async function getClientIp(request: Request): Promise<string | undefined> {
@@ -13,7 +14,12 @@ async function getClientIp(request: Request): Promise<string | undefined> {
   );
 }
 
-async function sendCodeViaSmsRu(phone: string, code: string, request: Request): Promise<void> {
+async function sendCodeViaSmsRu(
+  phone: string,
+  code: string,
+  request: Request,
+  debug: boolean
+): Promise<{ smsru: unknown }> {
   const apiId = process.env.SMSRU_API_ID;
   if (!apiId) throw new Error("SMS.ru не настроен: задайте SMSRU_API_ID");
 
@@ -42,6 +48,8 @@ async function sendCodeViaSmsRu(phone: string, code: string, request: Request): 
       JSON.stringify(data).slice(0, 300);
     throw new Error(`SMS.ru отправка не удалась: ${detail}`);
   }
+
+  return { smsru: debug ? data : { status: data?.status, status_code: data?.status_code } };
 }
 
 export async function POST(request: Request) {
@@ -52,13 +60,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Неверный формат данных" }, { status: 400 });
   }
 
+  const debug = Boolean(body.debug);
   const result = await createSmsCodeForPhone(String(body.phone || ""));
   if (!result.ok) {
     return NextResponse.json({ error: result.reason }, { status: 400 });
   }
 
   try {
-    await sendCodeViaSmsRu(result.phone, result.code, request);
+    const smsru = await sendCodeViaSmsRu(result.phone, result.code, request, debug);
+    if (debug) {
+      return NextResponse.json({ ok: true, message: "Код отправлен", smsru });
+    }
     return NextResponse.json({ ok: true, message: "Код отправлен" });
   } catch (e) {
     if (process.env.NODE_ENV !== "production") {
