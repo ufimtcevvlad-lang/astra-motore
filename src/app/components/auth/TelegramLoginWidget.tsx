@@ -18,7 +18,8 @@ export function TelegramLoginWidget({ botUsername }: { botUsername: string }) {
     const script = document.createElement("script");
     script.id = "tg-widget-script";
     // Важно: отдаём виджет со своего домена, чтобы не зависеть от доступности telegram.org.
-    script.src = `${siteUrl}/api/telegram/widget.js`;
+    // Важно: наш endpoint называется /api/telegram/widget (без расширения .js)
+    script.src = `${siteUrl}/api/telegram/widget`;
     script.async = true;
     script.setAttribute("data-telegram-login", botUsername);
     script.setAttribute("data-size", "large");
