@@ -8,7 +8,9 @@ export async function GET(
 ) {
   const url = new URL(request.url);
   const { bot } = await params;
-  const origin = url.origin;
+  // Не используем url.origin (в Next handler он иногда бывает http://localhost:3000),
+  // иначе iframe начинает ходить на localhost и получаем ERR_CONNECTION_REFUSED.
+  const tproxyRoot = "/tproxy/";
 
   // Прокси страницы embed Telegram:
   // наш фронт/виджет иногда запрашивает iframe src как `/embed/<bot>...`
@@ -24,19 +26,19 @@ export async function GET(
   // Поэтому переписываем URL так, чтобы все обращения шли через наш сервер:
   // 1) https://telegram.org/* => https://<наш_домен>/tproxy/*
   // 2) /file/*, /tile/*, /Auth/* => /tproxy/file/*, /tproxy/tile/*, /tproxy/Auth/*
-  const tproxyPrefix = `${origin}/tproxy/`;
+  // 1) Telegram absolute ссылки -> /tproxy/*
   body = body
-    .replace(/https:\/\/telegram\.org\//g, tproxyPrefix)
-    .replace(/\/\/telegram\.org\//g, tproxyPrefix);
+    .replace(/https:\/\/telegram\.org\//g, tproxyRoot)
+    .replace(/\/\/telegram\.org\//g, tproxyRoot);
 
   body = body
-    .replace(/(["'`])\/file\//g, `$1${origin}/tproxy/file/`)
-    .replace(/(["'`])\/tile\//g, `$1${origin}/tproxy/tile/`)
-    .replace(/(["'`])\/Auth\//g, `$1${origin}/tproxy/Auth/`)
-    .replace(/(["'`])\/auth\//gi, `$1${origin}/tproxy/auth/`)
-    .replace(/(["'`])\/js\//g, `$1${origin}/tproxy/js/`)
-    .replace(/(["'`])\/css\//g, `$1${origin}/tproxy/css/`)
-    .replace(/(["'`])\/img\//g, `$1${origin}/tproxy/img/`);
+    .replace(/(["'`])\/file\//g, `$1${tproxyRoot}file/`)
+    .replace(/(["'`])\/tile\//g, `$1${tproxyRoot}tile/`)
+    .replace(/(["'`])\/Auth\//g, `$1${tproxyRoot}Auth/`)
+    .replace(/(["'`])\/auth\//gi, `$1${tproxyRoot}auth/`)
+    .replace(/(["'`])\/js\//g, `$1${tproxyRoot}js/`)
+    .replace(/(["'`])\/css\//g, `$1${tproxyRoot}css/`)
+    .replace(/(["'`])\/img\//g, `$1${tproxyRoot}img/`);
 
   // Некоторые версии виджета используют относительные ссылки без префикса quotes.
   body = body
