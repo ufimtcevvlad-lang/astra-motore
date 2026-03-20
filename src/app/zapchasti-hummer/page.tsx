@@ -33,12 +33,46 @@ export default function HummerPage() {
       },
     ],
   };
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Как подобрать запчасти Hummer по VIN?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Сверяем VIN и комплектацию, подбираем оригинальные детали и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Оригинал или аналог — что выбрать?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Предложим варианты оригинала и качественных аналогов. Вы выбираете по цене, срокам и задаче, а менеджер поможет подобрать совместимость.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Доставляете по Екатеринбургу?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Да. Доставка по Екатеринбургу организуется после проверки наличия и подтверждения заявки.",
+        },
+      },
+    ],
+  };
 
   return (
     <div className="space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <h1 className="text-2xl font-bold text-rose-900">Запчасти Hummer в Екатеринбурге</h1>
@@ -93,6 +127,59 @@ export default function HummerPage() {
           </Link>{" "}
           и отправьте заявку. Менеджер уточнит детали и наличие.
         </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-800">Вопросы и ответы</h2>
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <p className="font-semibold">Как подобрать Hummer по VIN?</p>
+            <p className="text-slate-600">
+              Сверяем VIN и комплектацию, подбираем оригинальные детали и качественные аналоги, уточняем
+              наличие и сроки.
+            </p>
+          </div>
+          <div>
+            <p className="font-semibold">Можно ли заказать аналог вместо оригинала?</p>
+            <p className="text-slate-600">
+              Да. Предложим варианты оригинала и качественных аналогов, чтобы вы выбрали по цене и задаче.
+            </p>
+          </div>
+          <div>
+            <p className="font-semibold">Доставляете по Екатеринбургу?</p>
+            <p className="text-slate-600">
+              Да. Доставка по Екатеринбургу организуется после проверки наличия и подтверждения заявки.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Закажите подбор по Hummer</h2>
+        <p className="text-sm text-slate-600">
+          Оставьте VIN или артикул — подберём оригинальные запчасти Hummer и качественные аналоги, уточним
+          наличие и сроки.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Link
+            href="/podbor-po-vin"
+            className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+          >
+            Подбор по VIN
+          </Link>
+          <Link
+            href="/how-to-order"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Как заказать
+          </Link>
+          <Link
+            href="/contacts"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Контакты
+          </Link>
+        </div>
       </section>
     </div>
   );

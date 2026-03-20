@@ -205,6 +205,34 @@ export default function OpelPage() {
           </div>
         </div>
       </section>
+
+      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Закажите подбор по Opel</h2>
+        <p className="text-sm text-slate-600">
+          Оставьте VIN или данные автомобиля — подберём оригинальные детали и качественные аналоги, уточним
+          наличие и сроки в Екатеринбурге.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Link
+            href="/podbor-po-vin"
+            className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+          >
+            Подбор по VIN
+          </Link>
+          <Link
+            href="/how-to-order"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Как заказать
+          </Link>
+          <Link
+            href="/contacts"
+            className="inline-flex justify-center rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+          >
+            Контакты
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
