@@ -32,13 +32,15 @@ export function TelegramLoginWidget({ botUsername }: { botUsername: string }) {
         src={iframeSrc}
         style={{
           width: "100%",
-          // В embed-странице виджет/кнопка может находиться ниже, поэтому фиксируем высоту больше.
-          height: 260,
+          // В embed-странице UI может быть ниже первого экрана, поэтому делаем высоту заметно больше.
+          // Иначе пользователь видит только "Telegram" превью без кнопки.
+          height: 650,
           border: 0,
           borderRadius: 12,
-          overflow: "hidden",
+          overflow: "auto",
           background: "transparent",
         }}
+        loading="lazy"
       />
 
       <p className="text-xs text-slate-500 break-all">
