@@ -5,35 +5,42 @@ type Body = {
   phone: string;
 };
 
-async function sendCodeViaTelegram(phone: string, code: string): Promise<void> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) {
-    throw new Error("SMS не настроен: задайте TELEGRAM_BOT_TOKEN и TELEGRAM_CHAT_ID");
-  }
+async function getClientIp(request: Request): Promise<string | undefined> {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    undefined
+  );
+}
 
-  const text = [
-    "🔐 <b>Код входа (SMS)</b>",
-    "",
-    `📞 <b>Телефон:</b> ${phone}`,
-    `🔢 <b>Код:</b> ${code}`,
-    "",
-    "Этот код предназначен для входа в личный кабинет.",
-  ].join("\n");
+async function sendCodeViaSmsRu(phone: string, code: string, request: Request): Promise<void> {
+  const apiId = process.env.SMSRU_API_ID;
+  if (!apiId) throw new Error("SMS.ru не настроен: задайте SMSRU_API_ID");
 
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
+  const message = `Astra Motors. Код подтверждения: ${code}`;
+  const ip = await getClientIp(request);
+
+  const params = new URLSearchParams({
+    api_id: apiId,
+    to: phone,
+    msg: message,
+    json: "1",
+  });
+  if (ip) params.set("ip", ip);
+
+  // Важно: sms.ru рекомендует ставить captcha на стороне веба.
+  // В нашем случае отправка происходит по серверному API, поэтому используем минимальную схему.
+  const res = await fetch(`https://sms.ru/sms/send?${params.toString()}`, {
+    method: "GET",
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok || !data.ok) {
-    throw new Error(data?.description || "Ошибка отправки кода");
+  if (!res.ok || data?.status !== "OK" || data?.status_code !== 100) {
+    const detail =
+      data?.sms?.[phone]?.status_text ||
+      data?.status_text ||
+      data?.message ||
+      JSON.stringify(data).slice(0, 300);
+    throw new Error(`SMS.ru отправка не удалась: ${detail}`);
   }
 }
 
@@ -51,7 +58,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendCodeViaTelegram(result.phone, result.code);
+    await sendCodeViaSmsRu(result.phone, result.code, request);
     return NextResponse.json({ ok: true, message: "Код отправлен" });
   } catch (e) {
     if (process.env.NODE_ENV !== "production") {
