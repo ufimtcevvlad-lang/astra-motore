@@ -121,7 +121,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="catalog">
+      <section id="catalog" className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold text-slate-900">Каталог запчастей</h2>
+          <p className="text-sm text-slate-600">
+            Разделы по типу деталей и поиск. Нужна позиция не из списка —{" "}
+            <Link href="/podbor-po-vin" className="text-rose-700 font-medium hover:underline">
+              подбор по VIN
+            </Link>
+            .
+          </p>
+        </div>
         <ProductCatalog />
       </section>
 

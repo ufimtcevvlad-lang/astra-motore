@@ -45,7 +45,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 583.83,
     brand: "Bosch",
     country: "Германия",
-    category: "Свечи зажигания",
+    category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (моторы Ecotec)",
     image: "/images/catalog/opel-1.jpg",
     description:
@@ -60,7 +60,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 802.15,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Система охлаждения двигателя",
+    category: "Двигатель",
     car: "Opel 1.6 Z16XER",
     image: "/images/catalog/opel-2.jpg",
     description:
@@ -74,7 +74,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 452.44,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Chevrolet Cruze, Opel (F16D4, F18D4)",
     image: "/images/catalog/opel-3456-rings.jpg",
     description:
@@ -104,7 +104,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 274.94,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
     image: "/images/catalog/opel-3456-rings.jpg",
     description:
@@ -119,7 +119,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 279.81,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
     image: "/images/catalog/opel-3456-rings.jpg",
     description:
@@ -134,7 +134,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 570.49,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Turbo и атмосферные Ecotec",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -148,7 +148,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 543.75,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel Z16XEL, Z18XER",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -177,7 +177,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 657.93,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Свечи зажигания",
+    category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
     image: "/images/catalog/opel-10.jpg",
     description:
@@ -192,7 +192,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 530.23,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel Z18XER, Z16LET / LEL / LER",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -207,7 +207,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 524.57,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Ecotec (LET, LER, XEP и др.)",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -222,7 +222,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 1308.45,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel Astra H/J, Zafira B (Ecotec)",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -237,7 +237,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 52.25,
     brand: "Bosch",
     country: "Германия",
-    category: "Электрооборудование",
+    category: "Автосвет и электрика",
     car: "Универсальная W5W (T10), уточняйте по авто",
     image: "/images/wipers.jpg",
     description:
@@ -265,7 +265,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 2046.39,
     brand: "Elring",
     country: "Германия",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet Ecotec (см. наименование)",
     image: "/images/catalog/opel-78-rings.jpg",
     description:
@@ -279,7 +279,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 932.93,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Система охлаждения",
+    category: "Охлаждение",
     car: "Opel Astra H/J, Corsa D и др.",
     image: "/images/catalog/opel-2.jpg",
     description:
@@ -294,7 +294,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 790.94,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Система охлаждения",
+    category: "Охлаждение",
     car: "Chevrolet Cruze, Opel Astra J, Insignia и др.",
     image: "/images/radiator.jpg",
     description:
@@ -309,7 +309,7 @@ const OPEL_PILOT_RAW: Array<{
     priceRaw: 628.43,
     brand: "GM OE",
     country: "Европейский склад GM",
-    category: "Прокладки и уплотнения",
+    category: "Прокладки, сальники и кольца",
     car: "Chevrolet Cruze 1.8 F18D4",
     image: "/images/catalog/opel-3456-rings.jpg",
     description:
