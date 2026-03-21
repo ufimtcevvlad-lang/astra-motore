@@ -22,7 +22,7 @@ export type Product = {
   analogIds?: string[];
 };
 
-/** Пилот: первые 10 строк из «топ 100 продаж опель.xlsx» (название, артикул, кол-во, цена продажи). */
+/** Пилот: строки 1–20 из «топ 100 продаж опель.xlsx» (название, артикул, кол-во, цена продажи). */
 const OPEL_PILOT_RAW: Array<{
   id: string;
   name: string;
@@ -183,6 +183,151 @@ const OPEL_PILOT_RAW: Array<{
     description:
       "Оригинальная свеча зажигания GM для ряда бензиновых Ecotec. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
     analogIds: ["opel-1"],
+  },
+  {
+    id: "opel-11",
+    name: "Прокладка корпуса масляного фильтра Z18XER, Z16LET/LEL/LER",
+    sku: "55353321",
+    qty: 404,
+    priceRaw: 530.23,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки и уплотнения",
+    car: "Opel Z18XER, Z16LET / LEL / LER",
+    image: "/images/catalog/opel-78-rings.jpg",
+    description:
+      "Прокладка между корпусом масляного фильтра и блоком для ряда моторов Ecotec. При течи масла в зоне фильтра меняется вместе с очисткой посадочных поверхностей.",
+    analogIds: ["opel-12"],
+  },
+  {
+    id: "opel-12",
+    name: "Прокладка корпуса масляного фильтра Z1.8XER, Z1.6LET, LEL, LER, XEP",
+    sku: "55353319",
+    qty: 403,
+    priceRaw: 524.57,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки и уплотнения",
+    car: "Opel 1.6 / 1.8 Ecotec (LET, LER, XEP и др.)",
+    image: "/images/catalog/opel-78-rings.jpg",
+    description:
+      "Альтернативный номер прокладки корпуса масляного фильтра под другие варианты компоновки Ecotec. Перед заказом сверяйте с каталогом по VIN и снятой деталью.",
+    analogIds: ["opel-11"],
+  },
+  {
+    id: "opel-13",
+    name: "Прокладка корпуса масляного фильтра к охладителю A16XER, A18XER, Z16XER, Z18XER",
+    sku: "25199750",
+    qty: 369,
+    priceRaw: 1308.45,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки и уплотнения",
+    car: "Opel Astra H/J, Zafira B (Ecotec)",
+    image: "/images/catalog/opel-78-rings.jpg",
+    description:
+      "Прокладка узла масляного фильтра в зоне теплообменника с охлаждением масла. Рекомендуется менять при снятии корпуса или при течи в этом сопряжении.",
+    analogIds: ["opel-11", "opel-12"],
+  },
+  {
+    id: "opel-14",
+    name: "Лампа подсветки номера BOSCH W5W (5W)",
+    sku: "1987302206",
+    qty: 303,
+    priceRaw: 52.25,
+    brand: "Bosch",
+    country: "Германия",
+    category: "Электрооборудование",
+    car: "Универсальная W5W (T10), уточняйте по авто",
+    image: "/images/wipers.jpg",
+    description:
+      "Галогеновая лампа Bosch W5W 5 Вт для подсветки номерного знака и других цоколей W2.1x9.5d. Соответствуйте мощность и тип цоколя штатной лампе.",
+  },
+  {
+    id: "opel-15",
+    name: "Тяга стабилизатора передняя DELPHI Astra-H c IDS+",
+    sku: "TC879",
+    qty: 258,
+    priceRaw: 1214.75,
+    brand: "Delphi",
+    country: "США / ЕС",
+    category: "Подвеска",
+    car: "Opel Astra H с IDS+",
+    image: "/images/brake-pads.jpg",
+    description:
+      "Передняя тяга / стойка стабилизатора Delphi для Astra H с системой IDS+. Влияет на крен и сцепление с дорогой; люфт и стуки при проезде неровностей — повод проверить наконечники и втулки стабилизатора.",
+  },
+  {
+    id: "opel-16",
+    name: "Прокладка клапанной крышки ELRING Z18XER, Z16XER/XN/LEL/LER, A16XER",
+    sku: "354030",
+    qty: 223,
+    priceRaw: 2046.39,
+    brand: "Elring",
+    country: "Германия",
+    category: "Прокладки и уплотнения",
+    car: "Opel / Chevrolet Ecotec (см. наименование)",
+    image: "/images/catalog/opel-78-rings.jpg",
+    description:
+      "Прокладка клапанной крышки Elring для ряда бензиновых Ecotec. Меняется при течи масла сверху двигателя или при снятии крышки для регулировки клапанов.",
+  },
+  {
+    id: "opel-17",
+    name: "Датчик температуры охлаждающей жидкости Г образный Astra-H, J, Corsa-D",
+    sku: "55591401",
+    qty: 222,
+    priceRaw: 932.93,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Система охлаждения",
+    car: "Opel Astra H/J, Corsa D и др.",
+    image: "/images/catalog/opel-2.jpg",
+    description:
+      "Датчик температуры ОЖ с Г-образным патрубком для системы охлаждения. Неисправность даёт ошибки по температуре, работу вентилятора и показания на панели.",
+    analogIds: ["opel-18"],
+  },
+  {
+    id: "opel-18",
+    name: "Крышка расширительного бачка Cruze, Astra-J, Insignia, T300",
+    sku: "YR00269780",
+    qty: 213,
+    priceRaw: 790.94,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Система охлаждения",
+    car: "Chevrolet Cruze, Opel Astra J, Insignia и др.",
+    image: "/images/radiator.jpg",
+    description:
+      "Крышка расширительного бачка системы охлаждения. Поддерживает рабочее давление в контуре; трещины и износ уплотнения приводят к потере ОЖ и перегреву.",
+    analogIds: ["opel-17"],
+  },
+  {
+    id: "opel-19",
+    name: "Сальник распредвала передний Cruze F18D4",
+    sku: "55563374",
+    qty: 211,
+    priceRaw: 628.43,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки и уплотнения",
+    car: "Chevrolet Cruze 1.8 F18D4",
+    image: "/images/catalog/opel-3456-rings.jpg",
+    description:
+      "Передний сальник распределительного вала для двигателя F18D4. При течи масла со стороны ГРМ меняется при снятии привода или цепи по регламенту.",
+  },
+  {
+    id: "opel-20",
+    name: "Колпачёк маслосъёмный Cruze F18D4",
+    sku: "55574221",
+    qty: 192,
+    priceRaw: 186.46,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Двигатель",
+    car: "Chevrolet Cruze 1.8 F18D4",
+    image: "/images/catalog/opel-3456-rings.jpg",
+    description:
+      "Маслосъёмный колпачок клапана для F18D4. Износ колпачков даёт дым из выхлопа на холостом ходу и повышенный расход масла — замена комплектом по головке.",
   },
 ];
 
