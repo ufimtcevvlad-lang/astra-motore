@@ -49,7 +49,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи зажигания",
     car: "Opel Astra H/J, Zafira B и др. (моторы Ecotec)",
-    image: "/images/spark-plugs.jpg",
+    image: "/images/catalog/opel-1.jpg",
     description:
       "Свеча зажигания Bosch Super Plus для бензиновых двигателей GM Ecotec с резьбой M14. Обеспечивает устойчивое воспламенение и ресурс в городском цикле. Подходит для замены по регламенту ТО.",
     analogIds: ["opel-10"],
@@ -64,7 +64,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Система охлаждения двигателя",
     car: "Opel 1.6 Z16XER",
-    image: "/images/radiator.jpg",
+    image: "/images/catalog/opel-2.jpg",
     description:
       "Оригинальная масляная форсунка для охлаждения днища поршня на двигателе Z16XER. Подаёт масло на теплонагруженные зоны; при закоксовке или течи двигатель перегревается — замену лучше не откладывать.",
   },
@@ -78,7 +78,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки и уплотнения",
     car: "Chevrolet Cruze, Opel (F16D4, F18D4)",
-    image: "/images/air-filter.jpg",
+    image: "/images/catalog/opel-3456-rings.jpg",
     description:
       "Уплотнительное кольцо впускного канала теплообменника масла. При замене маслоохладителя или течи с сопряжения рекомендуется ставить новое кольцо для герметичности системы смазки.",
     analogIds: ["opel-5", "opel-6"],
@@ -93,7 +93,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Масляные фильтры",
     car: "Opel Astra H/J, Zafira B и др.",
-    image: "/images/oil-filter.jpg",
+    image: "/images/catalog/opel-4.jpg",
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
     analogIds: ["opel-9"],
@@ -108,7 +108,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки и уплотнения",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/brake-fluid.jpg",
+    image: "/images/catalog/opel-3456-rings.jpg",
     description:
       "Кольцо уплотнения на патрубке маслоохладителя. Мелкая деталь, от которой зависит герметичность контуры охлаждения масла — при снятии трубки заменяйте обязательно.",
     analogIds: ["opel-3", "opel-6"],
@@ -123,7 +123,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки и уплотнения",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/wipers.jpg",
+    image: "/images/catalog/opel-3456-rings.jpg",
     description:
       "Альтернативный номер уплотнительного кольца для линий маслоохладителя на тех же моторах A14XER/A16XER. Уточняйте по схеме узла при заказе — взаимозаменяемость с другими позициями из вашего файла указана в блоке аналогов.",
     analogIds: ["opel-3", "opel-5"],
@@ -138,7 +138,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки и уплотнения",
     car: "Opel 1.6 / 1.8 Turbo и атмосферные Ecotec",
-    image: "/images/brake-pads.jpg",
+    image: "/images/catalog/opel-78-rings.jpg",
     description:
       "Уплотнение выпускного канала маслоохладителя для ряда турбо и атмосферных двигателей Ecotec. При течи масла в зоне теплообменника меняется в комплекте с разбором узла.",
   },
@@ -152,7 +152,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки и уплотнения",
     car: "Opel Z16XEL, Z18XER",
-    image: "/images/battery.jpg",
+    image: "/images/catalog/opel-78-rings.jpg",
     description:
       "Кольцо на выпуск из маслоохладителя для Z16XEL и Z18XER. После демонтажа деталь не рекомендуется ставить повторно из‑за потери упругости.",
   },
@@ -166,7 +166,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Масляные фильтры",
     car: "Opel Astra H/J, Zafira B и др.",
-    image: "/images/oil-filter.jpg",
+    image: "/images/catalog/opel-9.jpg",
     description:
       "Другая заводская спецификация масляного фильтра Hengst для тех же семейств Ecotec, что и E611HD442. Перед заказом сверяйте номер с установленным фильтром или каталогом по VIN.",
     analogIds: ["opel-4"],
@@ -181,7 +181,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Свечи зажигания",
     car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
-    image: "/images/spark-plugs.jpg",
+    image: "/images/catalog/opel-10.jpg",
     description:
       "Оригинальная свеча зажигания GM для ряда бензиновых Ecotec. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
     analogIds: ["opel-1"],

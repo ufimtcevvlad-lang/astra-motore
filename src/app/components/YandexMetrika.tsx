@@ -76,6 +76,8 @@ export function YandexMetrika() {
   return (
     <noscript>
       <div>
+        {/* next/image в <noscript> не подходит — счётчик без JS */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://mc.yandex.ru/watch/${COUNTER_ID}`}
           style={{ position: "absolute", left: "-9999px" }}

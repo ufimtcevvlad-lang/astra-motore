@@ -90,10 +90,6 @@ async function readUsers(): Promise<UserRecord[]> {
   return readNdjsonFile<UserRecord>(USERS_FILE);
 }
 
-async function writeUsers(users: UserRecord[]): Promise<void> {
-  await rewriteNdjson(USERS_FILE, users);
-}
-
 export function hashPassword(password: string, salt?: string): { salt: string; hash: string } {
   const resolvedSalt = salt || randomBytes(16).toString("hex");
   const hash = scryptSync(password, resolvedSalt, 64).toString("hex");
