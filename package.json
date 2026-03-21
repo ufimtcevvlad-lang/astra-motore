@@ -9,7 +9,8 @@
     "lint": "eslint",
     "metrika:daily": "node scripts/metrika-daily.mjs",
     "bot:telegram": "node scripts/telegram-bot.mjs",
-    "indexnow:send": "node scripts/indexnow-send.mjs"
+    "indexnow:send": "node scripts/indexnow-send.mjs",
+    "opel:excel-preview": "node scripts/opel-excel-to-ts.mjs"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -25,6 +26,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }

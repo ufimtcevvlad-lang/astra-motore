@@ -19,6 +19,7 @@ function ProductCard({ p }: { p: Product }) {
       </div>
       <div className="p-4 flex flex-col gap-2 flex-1">
         <h2 className="font-semibold text-sm line-clamp-2">{p.name}</h2>
+        <p className="text-xs text-rose-700/90 font-medium">{p.category}</p>
         <p className="text-xs text-slate-500">
           {p.brand} • {p.car}
         </p>
@@ -52,7 +53,9 @@ export function ProductCatalog() {
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
         p.car.toLowerCase().includes(q) ||
-        p.sku.toLowerCase().includes(q)
+        p.sku.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.country.toLowerCase().includes(q)
     );
   }, [query]);
 

@@ -3,13 +3,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ProductImage } from "../../components/ProductImage";
 import { products } from "../../data/products";
+import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
 
 const siteUrl = "https://astramotors.shop";
 
-// Чтобы Next при сборке однозначно прегенерировал все `/product/:id`,
-// и `params.id` не приходил `undefined` на старых/нестабильных окружениях.
 export const dynamicParams = false;
 export function generateStaticParams() {
   return products.map((p) => ({ id: p.id }));
@@ -38,7 +37,7 @@ export async function generateMetadata({
   }
 
   const title = `${product.name} — ${product.brand}`;
-  const description = `${product.description} Марка: ${product.brand}. Авто: ${product.car}. Артикул: ${product.sku}.`;
+  const description = `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Страна: ${product.country}. Артикул: ${product.sku}.`;
   const url = `/product/${product.id}`;
 
   return {
@@ -63,6 +62,8 @@ export default function ProductPage({
   const { id } = use(params);
   const product = products.find((p) => String(p.id) === String(id));
   if (!product) return notFound();
+
+  const cheaperAnalogs = getCheaperAnalogs(product, products);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -117,6 +118,9 @@ export default function ProductPage({
       </Link>
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-rose-600">
+            {product.category}
+          </p>
           <div className="aspect-[4/3] relative rounded-lg bg-slate-100 overflow-hidden">
             <ProductImage
               src={product.image}
@@ -128,13 +132,61 @@ export default function ProductPage({
           </div>
           <h1 className="text-xl font-semibold">{product.name}</h1>
           <p className="text-sm text-slate-600">{product.description}</p>
-          <p className="text-sm text-slate-500">
-            Марка: {product.brand} • Авто: {product.car}
-          </p>
-          <p className="text-sm text-slate-500">Артикул: {product.sku}</p>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
+            <p className="text-base font-semibold text-slate-900 border-l-4 border-rose-500 pl-3">
+              Номер запчасти:{" "}
+              <span className="font-mono tracking-wide">{product.sku}</span>
+            </p>
+            <p className="text-slate-700">
+              <span className="font-medium text-slate-900">Бренд:</span> {product.brand}
+            </p>
+            <p className="text-slate-700">
+              <span className="font-medium text-slate-900">Страна:</span> {product.country}
+            </p>
+            <p className="text-slate-600">
+              <span className="font-medium text-slate-800">Применяемость:</span> {product.car}
+            </p>
+            {product.sourcePriceRub != null && product.sourcePriceRub !== product.price && (
+              <p className="text-xs text-slate-500">
+                Базовая цена из прайса до округления: {product.sourcePriceRub.toLocaleString("ru-RU")}{" "}
+                ₽ → на витрине: {product.price.toLocaleString("ru-RU")} ₽
+              </p>
+            )}
+          </div>
         </div>
         <ProductClient product={product} />
       </div>
+
+      {cheaperAnalogs.length > 0 ? (
+        <section className="rounded-xl border border-rose-100 bg-white p-5 shadow-sm space-y-3">
+          <h2 className="text-lg font-semibold text-slate-900">Аналоги дешевле</h2>
+          <p className="text-xs text-slate-500">
+            Варианты из того же каталога (ваша выгрузка), цена ниже текущей карточки.
+          </p>
+          <ul className="space-y-2">
+            {cheaperAnalogs.map((a) => (
+              <li key={a.id}>
+                <Link
+                  href={`/product/${a.id}`}
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-slate-200 px-4 py-3 hover:border-rose-300 hover:bg-rose-50/40 transition"
+                >
+                  <div>
+                    <span className="font-medium text-slate-900 line-clamp-2">{a.name}</span>
+                    <span className="block text-xs text-slate-500 mt-1">
+                      Номер: <span className="font-mono">{a.sku}</span> • {a.brand} •{" "}
+                      {a.category}
+                    </span>
+                  </div>
+                  <span className="text-lg font-bold text-rose-600 whitespace-nowrap">
+                    {a.price.toLocaleString("ru-RU")} ₽
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }
