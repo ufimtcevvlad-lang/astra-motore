@@ -11,8 +11,7 @@ import os from "node:os";
 
 function roundRetailRubles(raw) {
   if (!Number.isFinite(raw) || raw <= 0) return 0;
-  if (raw < 500) return Math.ceil(raw / 50) * 50;
-  return Math.ceil(raw / 100) * 100;
+  return Math.ceil(raw / 50) * 50;
 }
 
 const fileArg =

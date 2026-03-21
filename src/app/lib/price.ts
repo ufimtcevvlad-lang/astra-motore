@@ -1,11 +1,8 @@
 /**
- * Округление розничной цены вверх по ТЗ:
- * до 500 ₽ — шаг 50 ₽; от 500 ₽ — шаг 100 ₽.
+ * Округление розничной цены вверх с шагом 50 ₽
+ * (например 802,15 → 850; 583,83 → 600).
  */
 export function roundRetailRubles(raw: number): number {
   if (!Number.isFinite(raw) || raw <= 0) return 0;
-  if (raw < 500) {
-    return Math.ceil(raw / 50) * 50;
-  }
-  return Math.ceil(raw / 100) * 100;
+  return Math.ceil(raw / 50) * 50;
 }

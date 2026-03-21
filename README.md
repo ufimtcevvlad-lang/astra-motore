@@ -100,7 +100,7 @@ npm run indexnow:send
 
 ### Пилот Opel (первые 10 строк Excel)
 
-- Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и **цена продажи** из файла; на витрине цена **округлена вверх** (`src/app/lib/price.ts`: до 500 ₽ — шаг 50 ₽, от 500 ₽ — шаг 100 ₽).
+- Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и **цена продажи** из файла; на витрине цена **округлена вверх с шагом 50 ₽** (`src/app/lib/price.ts`).
 - Сверка с Excel на своей машине: положите файл на рабочий стол как `топ 100 продаж опель.xlsx` и выполните `npm run opel:excel-preview` (или `node scripts/opel-excel-to-ts.mjs "/путь/к/файлу.xlsx" 10`).
 - Фото пилота: `public/images/catalog/` (источники — Wikimedia Commons, см. `public/images/catalog/ATTRIBUTION.md`). Повторная загрузка: `npm run catalog:images`. Это **тип детали**, не гарантия 1:1 с вашим артикулом; для точного вида по OEM — свои фото.
 
