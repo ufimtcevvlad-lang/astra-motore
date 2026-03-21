@@ -30,7 +30,7 @@ export async function generateMetadata({
     return {
       title: "Каталог товаров — Astra Motors",
       description:
-        "Подбор запчастей по VIN и артикулу. Оригинальные детали и качественные аналоги.",
+        "Подбор запчастей по артикулу. Оригинальные детали и качественные аналоги.",
       robots: { index: true, follow: true },
       alternates: { canonical: "/product" },
     };

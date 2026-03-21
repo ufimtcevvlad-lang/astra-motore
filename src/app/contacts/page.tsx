@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Контакты",
   description:
-    "Контакты Astra Motors: телефон, адрес и режим работы. Подбор запчастей GM (Opel, Chevrolet) по VIN, заказ и консультация.",
+    "Контакты Astra Motors: телефон, адрес и режим работы. Запчасти GM (Opel, Chevrolet), заказ и консультация.",
   alternates: { canonical: "/contacts" },
 };
 

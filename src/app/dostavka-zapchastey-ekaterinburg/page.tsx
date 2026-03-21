@@ -6,12 +6,12 @@ const siteUrl = "https://astramotors.shop";
 export const metadata: Metadata = {
   title: "Доставка запчастей в Екатеринбурге — Astra Motors",
   description:
-    "Доставка запчастей GM (Opel, Chevrolet, Cadillac, Hummer) в Екатеринбурге. Подбор по VIN, оригинал и качественные аналоги. Уточним сроки и наличие.",
+    "Доставка запчастей GM (Opel, Chevrolet) в Екатеринбурге. Оригинал и качественные аналоги. Уточним сроки и наличие.",
   alternates: { canonical: "/dostavka-zapchastey-ekaterinburg" },
   openGraph: {
     title: "Доставка запчастей в Екатеринбурге",
     description:
-      "Доставка, подбор по VIN, оригинал и аналоги. Екатеринбург.",
+      "Доставка, оригинал и аналоги. Екатеринбург.",
     url: `${siteUrl}/dostavka-zapchastey-ekaterinburg`,
     type: "article",
   },
@@ -41,7 +41,7 @@ export default function DeliveryPage() {
         name: "Доставляете по Екатеринбургу?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Да. Доставку организуем по Екатеринбургу и согласуем условия после подбора по VIN и наличию.",
+          text: "Да. Доставку организуем по Екатеринбургу и согласуем условия после подбора и проверки наличия.",
         },
       },
       {
@@ -49,7 +49,7 @@ export default function DeliveryPage() {
         name: "Как быстро можно получить заказ?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Срок зависит от наличия и поставки. Мы сразу уточним ожидаемые сроки после проверки VIN.",
+          text: "Срок зависит от наличия и поставки. Мы сразу уточним ожидаемые сроки после согласования заказа.",
         },
       },
       {
@@ -76,14 +76,14 @@ export default function DeliveryPage() {
 
       <h1 className="text-2xl font-bold text-rose-900">Доставка запчастей в Екатеринбурге</h1>
       <p className="text-slate-600">
-        Поможем подобрать запчасти GM (Opel, Chevrolet, Cadillac, Hummer) по VIN. Доставим в Екатеринбурге — сроки и наличие
+        Поможем подобрать запчасти GM (Opel, Chevrolet) по артикулу. Доставим в Екатеринбурге — сроки и наличие
         уточняем после проверки.
       </p>
 
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">Что вы получаете</h2>
         <ul className="list-disc pl-5 text-slate-700 space-y-1">
-          <li>Подбор по VIN и применимость</li>
+          <li>Подбор по артикулу и применимость</li>
           <li>Оригинал и качественные аналоги</li>
           <li>Согласование сроков и стоимости</li>
           <li>Организация доставки по Екатеринбургу</li>
@@ -94,10 +94,6 @@ export default function DeliveryPage() {
         <h2 className="text-lg font-semibold text-slate-800">Начать заявку</h2>
         <p className="text-slate-600">
           Оформите запрос на сайте и менеджер свяжется с вами:{" "}
-          <Link href="/podbor-po-vin" className="text-rose-700 font-medium hover:underline">
-            подбор по VIN
-          </Link>{" "}
-          или{" "}
           <Link href="/contacts" className="text-rose-700 font-medium hover:underline">
             контакты
           </Link>

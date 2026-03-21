@@ -7,12 +7,12 @@ const siteUrl = "https://astramotors.shop";
 export const metadata: Metadata = {
   title: "Запчасти Opel в Екатеринбурге — купить оригинал и аналоги",
   description:
-    "Подбор запчастей Opel в Екатеринбурге по VIN. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
+    "Подбор запчастей Opel в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-opel" },
   openGraph: {
     title: "Запчасти Opel в Екатеринбурге — Astra Motors",
     description:
-      "Подбор по VIN, оригинал и аналоги запчастей Opel. Екатеринбург.",
+      "Оригинал и аналоги запчастей Opel. Екатеринбург.",
     url: `${siteUrl}/zapchasti-opel`,
     type: "article",
   },
@@ -40,10 +40,10 @@ export default function OpelPage() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Как вы подбираете запчасти Opel по VIN?",
+        name: "Как вы подбираете запчасти Opel?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Сверяем VIN и комплектацию, определяем применимость детали и предлагаем оригинальные варианты и качественные аналоги.",
+          text: "Сверяем артикул и комплектацию, определяем применимость детали и предлагаем оригинальные варианты и качественные аналоги.",
         },
       },
       {
@@ -86,16 +86,16 @@ export default function OpelPage() {
 
       <h1 className="text-2xl font-bold text-rose-900">Запчасти Opel в Екатеринбурге</h1>
       <p className="text-slate-600">
-        Подберём запчасти Opel по VIN или по артикулу: оригинал и качественные аналоги.
+        Подберём запчасти Opel по артикулу и каталогу: оригинал и качественные аналоги.
         Дадим срок и ориентировочную стоимость, поможем подобрать совместимость.
       </p>
 
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">
-          Подбор по VIN — быстро и без ошибок
+          Подбор по артикулу — быстро и без ошибок
         </h2>
         <ul className="list-disc pl-5 text-slate-700 space-y-1">
-          <li>Сверяем совместимость по VIN и комплектации</li>
+          <li>Сверяем совместимость по артикулу и комплектации</li>
           <li>Предлагаем оригинальные детали и аналоги</li>
           <li>Организуем доставку по Екатеринбургу</li>
         </ul>
@@ -106,7 +106,7 @@ export default function OpelPage() {
           Какие категории запчастей Opel подбираем
         </h2>
         <p className="text-slate-600">
-          Подбор по VIN и артикулу для популярных систем автомобиля:
+          Подбор по артикулу для популярных систем автомобиля:
         </p>
         <div className="flex flex-wrap gap-2">
           {[
@@ -186,9 +186,9 @@ export default function OpelPage() {
         <h2 className="text-lg font-semibold text-slate-800">Вопросы и ответы</h2>
         <div className="space-y-3 text-slate-700">
           <div>
-            <p className="font-semibold">Можете подобрать по VIN?</p>
+            <p className="font-semibold">Можете подобрать по артикулу?</p>
             <p className="text-slate-600">
-              Да, достаточно VIN или данных автомобиля — подберём подходящую деталь и аналоги.
+              Да, достаточно артикула или данных автомобиля — подберём подходящую деталь и аналоги.
             </p>
           </div>
           <div>
@@ -209,15 +209,15 @@ export default function OpelPage() {
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Закажите подбор по Opel</h2>
         <p className="text-sm text-slate-600">
-          Оставьте VIN или данные автомобиля — подберём оригинальные детали и качественные аналоги, уточним
+          Оставьте артикул или данные автомобиля — подберём оригинальные детали и качественные аналоги, уточним
           наличие и сроки в Екатеринбурге.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            href="/podbor-po-vin"
+            href="/contacts"
             className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
           >
-            Подбор по VIN
+            Связаться с менеджером
           </Link>
           <Link
             href="/how-to-order"

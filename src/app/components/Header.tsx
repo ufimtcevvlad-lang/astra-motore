@@ -102,8 +102,6 @@ export function Header() {
           </span>
           <span>Opel</span>
           <span>Chevrolet</span>
-          <span>Hummer</span>
-          <span>Cadillac</span>
           <span className="h-3 w-px bg-slate-700 mx-1" />
         </div>
       </div>

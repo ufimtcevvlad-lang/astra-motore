@@ -31,8 +31,6 @@ async function main() {
     `${siteUrl}/zapchasti-gm`,
     `${siteUrl}/zapchasti-opel`,
     `${siteUrl}/zapchasti-chevrolet`,
-    `${siteUrl}/zapchasti-cadillac`,
-    `${siteUrl}/zapchasti-hummer`,
     ...ids.map((id) => `${siteUrl}/product/${id}`),
   ];
 

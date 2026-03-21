@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Каталог автозапчастей",
   description:
-    "Каталог Astra Motors: автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественные аналоги. Быстрый поиск по названию, бренду, авто и артикулу.",
+    "Каталог Astra Motors: автозапчасти GM — Opel и Chevrolet. Оригинал и качественные аналоги. Быстрый поиск по названию, бренду, авто и артикулу.",
   alternates: { canonical: "/" },
 };
 
@@ -21,24 +21,24 @@ export default function HomePage() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
               Автозапчасти GM{" "}
               <span className="text-rose-400">&amp;</span>{" "}
-              Opel &amp; Chevrolet с подбором по VIN
+              Opel &amp; Chevrolet
             </h1>
             <p className="text-slate-200 text-sm sm:text-base max-w-xl">
-              Оригинальные и проверенные аналоги для популярных моделей Opel, Chevrolet, Cadillac и Hummer.
-              Подберём по VIN и доставим в короткий срок.
+              Оригинальные и проверенные аналоги для популярных моделей Opel и Chevrolet.
+              Подберём по артикулу и доставим в короткий срок.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
-                href="/podbor-po-vin"
+                href="/contacts"
                 className="rounded-full bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-rose-400 transition"
               >
-                Подобрать по VIN
+                Консультация менеджера
               </Link>
               <Link
-                href="/contacts"
+                href="/how-to-order"
                 className="rounded-full border border-slate-500/70 px-5 py-2.5 text-sm font-medium text-slate-100 hover:border-slate-300 hover:text-white transition"
               >
-                Контакты и режим работы
+                Как заказать
               </Link>
               <Link
                 href="/zapchasti-opel"
@@ -67,14 +67,14 @@ export default function HomePage() {
               <div className="w-1/2">
                 <div className="h-20 sm:h-28 md:h-32 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 shadow-lg flex items-end justify-center">
                   <span className="mb-2 text-[11px] font-semibold text-slate-200">
-                    Opel / Chevrolet
+                    Opel
                   </span>
                 </div>
               </div>
               <div className="w-1/2 -ml-4 sm:-ml-6">
                 <div className="h-20 sm:h-28 md:h-32 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 shadow-lg flex items-end justify-center">
                   <span className="mb-2 text-[11px] font-semibold text-slate-200">
-                    Cadillac / Hummer
+                    Chevrolet
                   </span>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
               Astra, Zafira, Insignia и другие модели
             </p>
             <p className="text-xs text-slate-600">
-              Подбор запчастей по VIN и под заказ
+              Подбор по артикулу и под заказ
             </p>
           </div>
           <div className="rounded-xl border border-slate-200/70 bg-white/90 p-4 shadow-sm">
@@ -112,10 +112,10 @@ export default function HomePage() {
               Обслуживание
             </p>
             <p className="text-sm font-medium text-slate-800 mb-1">
-              Подбор по VIN и под заказ
+              Подбор по артикулу и под заказ
             </p>
             <p className="text-xs text-slate-600">
-              Находим нужную деталь по VIN, предлагаем оригинал и аналог, при необходимости везём под заказ.
+              Находим нужную деталь по каталогу и артикулу, предлагаем оригинал и аналог, при необходимости везём под заказ.
             </p>
           </div>
         </div>
@@ -126,8 +126,8 @@ export default function HomePage() {
           <h2 className="text-xl font-semibold text-slate-900">Каталог запчастей</h2>
           <p className="text-sm text-slate-600">
             Разделы по типу деталей и поиск. Нужна позиция не из списка —{" "}
-            <Link href="/podbor-po-vin" className="text-rose-700 font-medium hover:underline">
-              подбор по VIN
+            <Link href="/contacts" className="text-rose-700 font-medium hover:underline">
+              напишите менеджеру
             </Link>
             .
           </p>
@@ -137,13 +137,13 @@ export default function HomePage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
         <h2 className="text-lg font-semibold text-slate-900">
-          Подбор автозапчастей GM (Opel, Chevrolet) по VIN — быстро и без ошибок
+          Подбор автозапчастей GM (Opel, Chevrolet) — быстро и без ошибок
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <p className="text-sm text-slate-600">
-              Поможем подобрать оригинальные детали и проверенные аналоги для Opel, Chevrolet, Cadillac и Hummer.
-              Достаточно VIN или данных автомобиля — уточним совместимость, срок и цену.
+              Поможем подобрать оригинальные детали и проверенные аналоги для Opel и Chevrolet.
+              Достаточно артикула или данных автомобиля — уточним совместимость, срок и цену.
             </p>
             <p className="text-sm text-slate-600">
               Если нужной позиции нет в каталоге, всё равно напишите — привезём под заказ.

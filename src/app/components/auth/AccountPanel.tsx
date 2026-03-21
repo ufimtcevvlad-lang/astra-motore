@@ -105,9 +105,9 @@ export function AccountPanel() {
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="font-semibold text-slate-900">Мои автомобили (VIN)</h2>
+          <h2 className="font-semibold text-slate-900">Мои автомобили</h2>
           <p className="mt-2 text-sm text-slate-600">
-            На следующем этапе здесь появится гараж автомобилей и история VIN-поиска.
+            На следующем этапе здесь появится гараж автомобилей для быстрого подбора запчастей.
           </p>
         </section>
       </div>

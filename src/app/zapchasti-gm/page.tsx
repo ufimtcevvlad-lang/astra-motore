@@ -5,9 +5,9 @@ import { products } from "../data/products";
 const siteUrl = "https://astramotors.shop";
 
 export const metadata: Metadata = {
-  title: "Запчасти GM (Opel, Chevrolet) в Екатеринбурге — подбор по VIN",
+  title: "Запчасти GM (Opel, Chevrolet) в Екатеринбурге",
   description:
-    "Запчасти GM в Екатеринбурге: Opel, Chevrolet, Cadillac, Hummer. Подбор по VIN, оригинал и аналоги. Доставка и консультация.",
+    "Запчасти GM в Екатеринбурге: Opel и Chevrolet. Оригинал и аналоги. Доставка и консультация.",
   alternates: { canonical: "/zapchasti-gm" },
 };
 
@@ -32,10 +32,10 @@ export default function GmPage() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Как подобрать запчасти GM по VIN?",
+        name: "Как подобрать запчасти GM?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Сверяем VIN и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.",
+          text: "Сверяем артикул и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.",
         },
       },
       {
@@ -72,8 +72,8 @@ export default function GmPage() {
         Запчасти GM (Opel, Chevrolet) в Екатеринбурге
       </h1>
       <p className="text-slate-600">
-        Подберём запчасти GM по VIN или артикулу: оригинальные детали и качественные аналоги.
-        Работаем с Opel, Chevrolet, Cadillac и Hummer. Быстро ответим, уточним наличие и сроки.
+        Подберём запчасти GM по артикулу: оригинальные детали и качественные аналоги.
+        Работаем с Opel и Chevrolet. Быстро ответим, уточним наличие и сроки.
       </p>
 
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
@@ -90,18 +90,6 @@ export default function GmPage() {
             className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:border-slate-500 hover:text-slate-900 transition"
           >
             Chevrolet
-          </Link>
-          <Link
-            href="/zapchasti-cadillac"
-            className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:border-slate-500 hover:text-slate-900 transition"
-          >
-            Cadillac
-          </Link>
-          <Link
-            href="/zapchasti-hummer"
-            className="rounded-full border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-800 hover:border-slate-500 hover:text-slate-900 transition"
-          >
-            Hummer
           </Link>
         </div>
       </section>
@@ -131,17 +119,17 @@ export default function GmPage() {
       </section>
 
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">Закажите подбор по VIN</h2>
+        <h2 className="text-lg font-semibold text-slate-800">Закажите консультацию</h2>
         <p className="text-sm text-slate-600">
-          Если нужной позиции нет в каталоге или вы сомневаетесь в совместимости, отправьте VIN.
+          Если нужной позиции нет в каталоге или вы сомневаетесь в совместимости, напишите менеджеру.
           Мы подберём оригинальные запчасти GM и качественные аналоги, уточним наличие и сроки в Екатеринбурге.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            href="/podbor-po-vin"
+            href="/contacts"
             className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
           >
-            Подбор по VIN
+            Связаться с менеджером
           </Link>
           <Link
             href="/how-to-order"
@@ -163,10 +151,10 @@ export default function GmPage() {
         <div className="space-y-3">
           <div>
             <h3 className="text-sm font-semibold text-slate-800">
-              Как подобрать запчасти GM по VIN?
+              Как подобрать запчасти GM?
             </h3>
             <p className="text-sm text-slate-600">
-              Сверяем VIN и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.
+              Сверяем артикул и комплектацию, проверяем применимость детали и предлагаем оригинальные варианты и качественные аналоги. Уточним наличие и сроки в Екатеринбурге.
             </p>
           </div>
           <div>

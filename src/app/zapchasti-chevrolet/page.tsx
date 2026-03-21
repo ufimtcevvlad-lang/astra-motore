@@ -7,12 +7,12 @@ const siteUrl = "https://astramotors.shop";
 export const metadata: Metadata = {
   title: "Запчасти Chevrolet в Екатеринбурге — купить оригинал и аналоги",
   description:
-    "Подбор запчастей Chevrolet в Екатеринбурге по VIN. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
+    "Подбор запчастей Chevrolet в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-chevrolet" },
   openGraph: {
     title: "Запчасти Chevrolet в Екатеринбурге — Astra Motors",
     description:
-      "Подбор по VIN, оригинал и аналоги запчастей Chevrolet. Екатеринбург.",
+      "Оригинал и аналоги запчастей Chevrolet. Екатеринбург.",
     url: `${siteUrl}/zapchasti-chevrolet`,
     type: "article",
   },
@@ -40,10 +40,10 @@ export default function ChevroletPage() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Как подобрать запчасти Chevrolet по VIN?",
+        name: "Как подобрать запчасти Chevrolet?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Мы сверяем VIN и данные автомобиля, после чего подбираем оригинальные варианты и качественные аналоги с учётом применимости.",
+          text: "Мы сверяем артикул и данные автомобиля, после чего подбираем оригинальные варианты и качественные аналоги с учётом применимости.",
         },
       },
       {
@@ -51,7 +51,7 @@ export default function ChevroletPage() {
         name: "Сколько времени занимает ответ по подбору?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Обычно отвечаем оперативно. Если требуется проверка по наличию у поставщиков — уточним сроки после VIN.",
+          text: "Обычно отвечаем оперативно. Если требуется проверка по наличию у поставщиков — уточним сроки после согласования заявки.",
         },
       },
       {
@@ -86,16 +86,16 @@ export default function ChevroletPage() {
 
       <h1 className="text-2xl font-bold text-rose-900">Запчасти Chevrolet в Екатеринбурге</h1>
       <p className="text-slate-600">
-        Подберём запчасти Chevrolet по VIN или по артикулу: оригинал и качественные аналоги.
+        Подберём запчасти Chevrolet по артикулу: оригинал и качественные аналоги.
         Поможем с совместимостью, сроками и стоимостью.
       </p>
 
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">
-          Подбор по VIN — оригинал и аналоги
+          Подбор по артикулу — оригинал и аналоги
         </h2>
         <ul className="list-disc pl-5 text-slate-700 space-y-1">
-          <li>Проверяем совместимость по VIN</li>
+          <li>Проверяем совместимость по артикулу и каталогу</li>
           <li>Даём варианты оригинала и аналогов</li>
           <li>Подбираем под бюджет и сроки</li>
         </ul>
@@ -131,8 +131,8 @@ export default function ChevroletPage() {
         <h2 className="text-lg font-semibold text-slate-800">Как оформить заказ</h2>
         <p className="text-slate-600">
           Самый быстрый путь —{" "}
-          <Link href="/podbor-po-vin" className="text-rose-700 font-medium hover:underline">
-            подбор по VIN
+          <Link href="/contacts" className="text-rose-700 font-medium hover:underline">
+            связаться с менеджером
           </Link>{" "}
           . Далее вы получаете варианты оригинала и качественного аналога, согласуете сроки и мы организуем поставку.
         </p>
@@ -181,9 +181,9 @@ export default function ChevroletPage() {
         <h2 className="text-lg font-semibold text-slate-800">Вопросы и ответы</h2>
         <div className="space-y-3 text-slate-700">
           <div>
-            <p className="font-semibold">Как подобрать Chevrolet по VIN?</p>
+            <p className="font-semibold">Как подобрать Chevrolet?</p>
             <p className="text-slate-600">
-              Сверяем VIN и комплектацию, подбираем оригинальные детали и качественные аналоги с учётом применимости.
+              Сверяем артикул и комплектацию, подбираем оригинальные детали и качественные аналоги с учётом применимости.
               Уточним наличие и сроки.
             </p>
           </div>
@@ -205,15 +205,15 @@ export default function ChevroletPage() {
       <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Закажите подбор по Chevrolet</h2>
         <p className="text-sm text-slate-600">
-          Оставьте VIN или артикул — подберём оригинальные запчасти Chevrolet и качественные аналоги, уточним
+          Оставьте артикул или данные автомобиля — подберём оригинальные запчасти Chevrolet и качественные аналоги, уточним
           наличие и сроки.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            href="/podbor-po-vin"
+            href="/contacts"
             className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
           >
-            Подбор по VIN
+            Связаться с менеджером
           </Link>
           <Link
             href="/how-to-order"

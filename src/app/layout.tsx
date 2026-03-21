@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s — Astra Motors",
   },
   description:
-    "Магазин Astra Motors: автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и качественные аналоги, доставка по Екатеринбургу.",
+    "Магазин Astra Motors: автозапчасти GM — Opel и Chevrolet. Оригинал и качественные аналоги, доставка по Екатеринбургу.",
   robots: {
     index: true,
     follow: true,
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
     description:
-      "Автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и аналоги, доставка по Екатеринбургу.",
+      "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
     url: siteUrl,
     siteName: "Astra Motors",
     type: "website",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
     description:
-      "Автозапчасти GM — Opel, Chevrolet, Cadillac и Hummer. Подбор по VIN, оригинал и аналоги, доставка по Екатеринбургу.",
+      "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
   },
 };
 

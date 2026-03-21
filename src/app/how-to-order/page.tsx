@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Как заказать",
   description:
-    "Как заказать запчасти в Astra Motors: выбор товара, оформление корзины, подтверждение менеджером. Подбор по VIN, оригинал и аналоги.",
+    "Как заказать запчасти в Astra Motors: выбор товара, оформление корзины, подтверждение менеджером. Оригинал и аналоги.",
   alternates: { canonical: "/how-to-order" },
 };
 

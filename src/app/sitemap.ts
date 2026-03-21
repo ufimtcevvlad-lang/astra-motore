@@ -11,9 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/zapchasti-gm`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${siteUrl}/zapchasti-opel`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${siteUrl}/zapchasti-chevrolet`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${siteUrl}/zapchasti-cadillac`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${siteUrl}/zapchasti-hummer`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${siteUrl}/podbor-po-vin`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     {
       url: `${siteUrl}/dostavka-zapchastey-ekaterinburg`,
       lastModified: now,
