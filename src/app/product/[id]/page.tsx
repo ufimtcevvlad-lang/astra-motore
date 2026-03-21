@@ -147,12 +147,6 @@ export default function ProductPage({
             <p className="text-slate-600">
               <span className="font-medium text-slate-800">Применяемость:</span> {product.car}
             </p>
-            {product.sourcePriceRub != null && product.sourcePriceRub !== product.price && (
-              <p className="text-xs text-slate-500">
-                Базовая цена из прайса до округления: {product.sourcePriceRub.toLocaleString("ru-RU")}{" "}
-                ₽ → на витрине: {product.price.toLocaleString("ru-RU")} ₽
-              </p>
-            )}
           </div>
         </div>
         <ProductClient product={product} />

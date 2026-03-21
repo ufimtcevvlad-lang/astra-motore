@@ -13,10 +13,8 @@ export type Product = {
   country: string;
   category: string;
   car: string;
-  /** Цена на витрине после округления вверх */
+  /** Цена, ₽ */
   price: number;
-  /** Цена из файла до округления (справочно) */
-  sourcePriceRub?: number;
   inStock: number;
   image: string;
   description: string;
@@ -196,7 +194,6 @@ export const products: Product[] = OPEL_PILOT_RAW.map((r) => ({
   country: r.country,
   category: r.category,
   car: r.car,
-  sourcePriceRub: Math.round(r.priceRaw * 100) / 100,
   price: roundRetailRubles(r.priceRaw),
   inStock: Math.min(999, Math.max(0, Math.floor(r.qty))),
   image: r.image,
