@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { CatalogChrome } from "../../components/catalog/CatalogChrome";
 import { ProductImage } from "../../components/ProductImage";
 import { products } from "../../data/products";
 import { getCheaperAnalogs } from "../../lib/product-analogs";
@@ -119,9 +120,20 @@ export default function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
       />
 
-      <Link href="/catalog" className="inline-block text-sm text-amber-600 hover:text-amber-700 font-medium">
-        ← Назад в каталог
-      </Link>
+      <CatalogChrome
+        crumbs={[
+          { label: "Главная", href: "/" },
+          { label: "Каталог", href: "/catalog" },
+          { label: "Товар" },
+        ]}
+        title={product.name}
+        description={
+          <p className="text-slate-600">
+            {product.category} • {product.brand} • арт. {product.sku}
+          </p>
+        }
+      />
+
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
@@ -136,7 +148,6 @@ export default function ProductPage({
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
-          <h1 className="text-xl font-semibold">{product.name}</h1>
           <p className="text-sm text-slate-600">{product.description}</p>
 
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
@@ -159,8 +170,10 @@ export default function ProductPage({
       </div>
 
       {cheaperAnalogs.length > 0 ? (
-        <section className="rounded-xl border border-amber-100 bg-white p-5 shadow-sm space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Аналоги дешевле</h2>
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+          <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
+            Аналоги дешевле
+          </h2>
           <p className="text-xs text-slate-500">
             Варианты из того же каталога (ваша выгрузка), цена ниже текущей карточки.
           </p>

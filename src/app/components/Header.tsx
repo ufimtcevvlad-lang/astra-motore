@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CatalogHubStrip } from "./catalog/CatalogHubStrip";
 import { useCart } from "./CartContext";
 
 type MeResponse = {
@@ -99,14 +100,14 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pb-3 text-[11px] text-slate-300/80">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pb-2 text-[11px] text-slate-300/80">
           <span className="uppercase tracking-[0.2em] text-[10px] text-slate-500">
             Бренды
           </span>
           <span>Opel</span>
           <span>Chevrolet</span>
-          <span className="h-3 w-px bg-slate-700 mx-1" />
         </div>
+        <CatalogHubStrip />
       </div>
     </header>
   );

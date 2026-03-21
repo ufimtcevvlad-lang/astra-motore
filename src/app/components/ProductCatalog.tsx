@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ProductImage } from "./ProductImage";
+import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { products, type Product } from "../data/products";
 import {
   CATALOG_GROUPS,
@@ -10,43 +10,6 @@ import {
   sectionsInGroup,
   sortProductsById,
 } from "../data/catalog-sections";
-
-function ProductCard({ p }: { p: Product }) {
-  return (
-    <article className="rounded-xl bg-white shadow-md border border-amber-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-200 transition">
-      <div className="aspect-[4/3] relative bg-slate-100 rounded-t-lg overflow-hidden">
-        <ProductImage
-          src={p.image}
-          alt={p.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-      </div>
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h2 className="font-semibold text-sm line-clamp-2">{p.name}</h2>
-        <p className="text-xs text-amber-700/90 font-medium">{p.category}</p>
-        <p className="text-xs text-slate-500">
-          {p.brand} • {p.car}
-        </p>
-        <p className="text-sm font-bold text-amber-600">
-          {p.price.toLocaleString("ru-RU")} ₽
-        </p>
-        <p className="text-xs text-slate-500">
-          Артикул: {p.sku} • В наличии: {p.inStock}
-        </p>
-        <div className="mt-auto pt-2">
-          <Link
-            href={`/product/${p.id}`}
-            className="inline-flex w-full justify-center rounded-lg bg-amber-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
-          >
-            Подробнее
-          </Link>
-        </div>
-      </div>
-    </article>
-  );
-}
 
 function Chip({
   active,
@@ -81,7 +44,12 @@ function productMatchesBrand(p: Product, brand: BrandFilter): boolean {
   return t.includes("chevrolet");
 }
 
-export function ProductCatalog() {
+type ProductCatalogProps = {
+  /** Скрыть дублирующий блок ссылок на марки (полоска «Каталоги» уже в шапке) */
+  hideHubIntro?: boolean;
+};
+
+export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
   const [query, setQuery] = useState("");
   const [activeSlug, setActiveSlug] = useState<string | "all">("all");
   const [brandFilter, setBrandFilter] = useState<BrandFilter>("all");
@@ -118,33 +86,34 @@ export function ProductCatalog() {
 
   return (
     <section className="space-y-6">
-      {/* Структура как у крупных каталогов: марка → витрина по типу детали */}
-      <div className="rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-3 text-sm">
-        <p className="font-medium text-slate-800">Каталоги по марке</p>
-        <p className="mt-1 text-xs text-slate-600">
-          Отдельные страницы с текстом и примерами позиций — удобно, если заходите сразу под Opel или Chevrolet.
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          <Link
-            href="/zapchasti-opel"
-            className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
-          >
-            Каталог Opel
-          </Link>
-          <Link
-            href="/zapchasti-chevrolet"
-            className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
-          >
-            Каталог Chevrolet
-          </Link>
-          <Link
-            href="/zapchasti-gm"
-            className="inline-flex rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-300"
-          >
-            Все запчасти GM
-          </Link>
+      {!hideHubIntro ? (
+        <div className="rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-3 text-sm">
+          <p className="font-medium text-slate-800">Каталоги по марке</p>
+          <p className="mt-1 text-xs text-slate-600">
+            Отдельные страницы с текстом и примерами — дублируют путь в шапке «Каталоги».
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Link
+              href="/zapchasti-opel"
+              className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
+            >
+              Каталог Opel
+            </Link>
+            <Link
+              href="/zapchasti-chevrolet"
+              className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
+            >
+              Каталог Chevrolet
+            </Link>
+            <Link
+              href="/zapchasti-gm"
+              className="inline-flex rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-300"
+            >
+              Все запчасти GM
+            </Link>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="space-y-2">
         <p className="text-xs font-medium text-slate-600">Фильтр по марке в каталоге</p>
@@ -280,7 +249,7 @@ export function ProductCatalog() {
                           </div>
                           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {items.map((p) => (
-                              <ProductCard key={p.id} p={p} />
+                              <CatalogProductCard key={p.id} p={p} />
                             ))}
                           </div>
                         </div>
@@ -293,7 +262,7 @@ export function ProductCatalog() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((p) => (
-                <ProductCard key={p.id} p={p} />
+                <CatalogProductCard key={p.id} p={p} />
               ))}
             </div>
           )}

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { CatalogChrome } from "../components/catalog/CatalogChrome";
+import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
+import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
 import { products } from "../data/products";
 
 const siteUrl = "https://astramotors.shop";
@@ -69,16 +72,18 @@ export default function GmPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <h1 className="text-2xl font-bold text-amber-900">
-        Запчасти GM (Opel, Chevrolet) в Екатеринбурге
-      </h1>
-      <p className="text-slate-600">
-        Подберём запчасти GM по артикулу: оригинальные детали и качественные аналоги.
-        Работаем с Opel и Chevrolet. Быстро ответим, уточним наличие и сроки.
-      </p>
+      <CatalogChrome
+        crumbs={[
+          { label: "Главная", href: "/" },
+          { label: "Каталог", href: "/catalog" },
+          { label: "GM" },
+        ]}
+        title="Запчасти GM (Opel, Chevrolet) в Екатеринбурге"
+        description="Подбор по артикулу: оригинал и аналоги. Opel и Chevrolet — ответим и уточним наличие."
+      />
 
-      <section className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">Ключевые направления</h2>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+        <CatalogSectionHeading>Ключевые направления</CatalogSectionHeading>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/zapchasti-opel"
@@ -95,32 +100,13 @@ export default function GmPage() {
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">Примеры товаров</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((p) => (
-            <article
-              key={p.id}
-              className="rounded-xl bg-white shadow-md border border-amber-100 p-4 flex flex-col gap-2"
-            >
-              <h3 className="font-semibold text-sm line-clamp-2">{p.name}</h3>
-              <p className="text-xs text-slate-500">{p.car}</p>
-              <p className="text-sm font-bold text-amber-600">
-                {p.price.toLocaleString("ru-RU")} ₽
-              </p>
-              <Link
-                href={`/product/${p.id}`}
-                className="mt-auto inline-flex justify-center rounded-lg bg-amber-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
-              >
-                Подробнее
-              </Link>
-            </article>
-          ))}
-        </div>
+      <section className="space-y-4">
+        <CatalogSectionHeading>Примеры товаров</CatalogSectionHeading>
+        <CatalogProductGrid items={items} />
       </section>
 
-      <section className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-3">
-        <h2 className="text-lg font-semibold text-slate-800">Закажите консультацию</h2>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+        <CatalogSectionHeading>Закажите консультацию</CatalogSectionHeading>
         <p className="text-sm text-slate-600">
           Если нужной позиции нет в каталоге или вы сомневаетесь в совместимости, напишите менеджеру.
           Мы подберём оригинальные запчасти GM и качественные аналоги, уточним наличие и сроки в Екатеринбурге.
@@ -148,7 +134,7 @@ export default function GmPage() {
       </section>
 
       <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">Вопросы и ответы</h2>
+        <CatalogSectionHeading>Вопросы и ответы</CatalogSectionHeading>
         <div className="space-y-3">
           <div>
             <h3 className="text-sm font-semibold text-slate-800">
