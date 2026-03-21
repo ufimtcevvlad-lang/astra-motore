@@ -1,42 +1,87 @@
 /**
- * Разделы каталога: порядок на странице, якоря, подсказки.
+ * Разделы каталога: порядок, якоря, подсказки.
  * Поле `category` у товара должно совпадать с `title`.
+ *
+ * Группы (`CATALOG_GROUPS`) — логика как у «Витрины» на vdopel.ru:
+ * крупные блоки → внутри тематические подразделы.
  */
+export const CATALOG_GROUPS = [
+  {
+    slug: "to-rashod",
+    title: "ТО и расходники",
+    hint: "Регламентное обслуживание: свечи, фильтры",
+  },
+  {
+    slug: "motor",
+    title: "Двигатель и смазка",
+    hint: "Узлы мотора, масляные каналы",
+  },
+  {
+    slug: "ohlazhdenie",
+    title: "Охлаждение",
+    hint: "Контур ОЖ, датчики, бачки",
+  },
+  {
+    slug: "uplotneniya",
+    title: "Прокладки и уплотнения",
+    hint: "Сальники, кольца, прокладки",
+  },
+  {
+    slug: "podveska",
+    title: "Подвеска",
+    hint: "Рычаги, стабилизатор",
+  },
+  {
+    slug: "elektrika",
+    title: "Свет и электрика",
+    hint: "Лампы, электрооборудование",
+  },
+] as const;
+
+export type CatalogGroupSlug = (typeof CATALOG_GROUPS)[number]["slug"];
+
 export const CATALOG_SECTIONS = [
   {
     slug: "svechi",
     title: "Свечи и зажигание",
     hint: "Bosch, GM OE для моторов Ecotec",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
   },
   {
     slug: "filtry",
     title: "Масляные фильтры",
     hint: "Hengst и другие для ТО",
-  },
-  {
-    slug: "ohlazhdenie",
-    title: "Охлаждение",
-    hint: "Датчики, крышки бачка, контур ОЖ",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
   },
   {
     slug: "dvigatel",
     title: "Двигатель",
     hint: "Смазка, маслосъёмные колпачки",
+    groupSlug: "motor" satisfies CatalogGroupSlug,
+  },
+  {
+    slug: "ohlazhdenie",
+    title: "Охлаждение",
+    hint: "Датчики, крышки бачка, контур ОЖ",
+    groupSlug: "ohlazhdenie" satisfies CatalogGroupSlug,
   },
   {
     slug: "prokladki",
     title: "Прокладки, сальники и кольца",
     hint: "Кольца, прокладки, сальники",
+    groupSlug: "uplotneniya" satisfies CatalogGroupSlug,
   },
   {
     slug: "podveska",
     title: "Подвеска",
     hint: "Стабилизатор, рычаги",
+    groupSlug: "podveska" satisfies CatalogGroupSlug,
   },
   {
     slug: "elektrika",
     title: "Автосвет и электрика",
     hint: "Лампы и расходники",
+    groupSlug: "elektrika" satisfies CatalogGroupSlug,
   },
 ] as const;
 
@@ -52,4 +97,9 @@ export function sortProductsById(a: { id: string }, b: { id: string }): number {
   const na = parseInt(/\d+/.exec(a.id)?.[0] ?? "0", 10);
   const nb = parseInt(/\d+/.exec(b.id)?.[0] ?? "0", 10);
   return na - nb;
+}
+
+/** Секции внутри группы — в порядке из CATALOG_SECTIONS */
+export function sectionsInGroup(groupSlug: CatalogGroupSlug) {
+  return CATALOG_SECTIONS.filter((s) => s.groupSlug === groupSlug);
 }
