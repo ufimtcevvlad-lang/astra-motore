@@ -14,8 +14,9 @@ export default function HowToOrderPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Каталог", item: siteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "Как заказать", item: siteUrl + "/how-to-order" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
+      { "@type": "ListItem", position: 3, name: "Как заказать", item: siteUrl + "/how-to-order" },
     ],
   };
 
@@ -25,10 +26,10 @@ export default function HowToOrderPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <h1 className="text-2xl font-bold text-rose-900">Как заказать в Astra Motors</h1>
+      <h1 className="text-2xl font-bold text-amber-900">Как заказать в Astra Motors</h1>
       <p className="text-slate-600">Несколько простых шагов — и заказ у вас.</p>
 
-      <div className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-6">
+      <div className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-6">
         <section>
           <h2 className="text-lg font-medium text-slate-800 mb-2">1. Выберите товар</h2>
           <p className="text-sm text-slate-600">
@@ -64,7 +65,7 @@ export default function HowToOrderPage() {
         <p className="text-sm text-slate-600 pt-2">
           <Link
             href="/contacts"
-            className="text-rose-600 hover:text-rose-700 hover:underline font-medium"
+            className="text-amber-600 hover:text-amber-700 hover:underline font-medium"
           >
             Контакты
           </Link>
@@ -74,8 +75,8 @@ export default function HowToOrderPage() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
         <Link
-          href="/"
-          className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+          href="/catalog"
+          className="inline-flex justify-center rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 transition shadow-sm"
         >
           Перейти в каталог
         </Link>

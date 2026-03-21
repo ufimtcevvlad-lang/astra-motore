@@ -13,7 +13,7 @@ import {
 
 function ProductCard({ p }: { p: Product }) {
   return (
-    <article className="rounded-xl bg-white shadow-md border border-rose-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-rose-200 transition">
+    <article className="rounded-xl bg-white shadow-md border border-amber-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-200 transition">
       <div className="aspect-[4/3] relative bg-slate-100 rounded-t-lg overflow-hidden">
         <ProductImage
           src={p.image}
@@ -25,11 +25,11 @@ function ProductCard({ p }: { p: Product }) {
       </div>
       <div className="p-4 flex flex-col gap-2 flex-1">
         <h2 className="font-semibold text-sm line-clamp-2">{p.name}</h2>
-        <p className="text-xs text-rose-700/90 font-medium">{p.category}</p>
+        <p className="text-xs text-amber-700/90 font-medium">{p.category}</p>
         <p className="text-xs text-slate-500">
           {p.brand} • {p.car}
         </p>
-        <p className="text-sm font-bold text-rose-600">
+        <p className="text-sm font-bold text-amber-600">
           {p.price.toLocaleString("ru-RU")} ₽
         </p>
         <p className="text-xs text-slate-500">
@@ -38,7 +38,7 @@ function ProductCard({ p }: { p: Product }) {
         <div className="mt-auto pt-2">
           <Link
             href={`/product/${p.id}`}
-            className="inline-flex w-full justify-center rounded-lg bg-rose-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-rose-700 transition shadow-sm"
+            className="inline-flex w-full justify-center rounded-lg bg-amber-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
           >
             Подробнее
           </Link>
@@ -63,8 +63,8 @@ function Chip({
       onClick={onClick}
       className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
         active
-          ? "border-rose-600 bg-rose-600 text-white shadow-sm"
-          : "border-rose-200 bg-white text-slate-700 hover:border-rose-300 hover:bg-rose-50"
+          ? "border-amber-600 bg-amber-600 text-white shadow-sm"
+          : "border-amber-200 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50"
       }`}
     >
       {children}
@@ -119,7 +119,7 @@ export function ProductCatalog() {
   return (
     <section className="space-y-6">
       {/* Структура как у крупных каталогов: марка → витрина по типу детали */}
-      <div className="rounded-xl border border-rose-100 bg-rose-50/40 px-4 py-3 text-sm">
+      <div className="rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-3 text-sm">
         <p className="font-medium text-slate-800">Каталоги по марке</p>
         <p className="mt-1 text-xs text-slate-600">
           Отдельные страницы с текстом и примерами позиций — удобно, если заходите сразу под Opel или Chevrolet.
@@ -127,13 +127,13 @@ export function ProductCatalog() {
         <div className="mt-2 flex flex-wrap gap-2">
           <Link
             href="/zapchasti-opel"
-            className="inline-flex rounded-lg border border-rose-200 bg-white px-3 py-1.5 text-sm font-medium text-rose-800 hover:border-rose-400 hover:bg-rose-50"
+            className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
           >
             Каталог Opel
           </Link>
           <Link
             href="/zapchasti-chevrolet"
-            className="inline-flex rounded-lg border border-rose-200 bg-white px-3 py-1.5 text-sm font-medium text-rose-800 hover:border-rose-400 hover:bg-rose-50"
+            className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
           >
             Каталог Chevrolet
           </Link>
@@ -171,7 +171,7 @@ export function ProductCatalog() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Например: фильтр, Cruze, Hengst, артикул…"
-          className="w-full rounded-lg border border-rose-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 outline-none"
+          className="w-full rounded-lg border border-amber-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
         />
       </div>
 
@@ -207,7 +207,7 @@ export function ProductCatalog() {
             <a
               key={g.slug}
               href={`#catalog-group-${g.slug}`}
-              className="rounded-full bg-white border border-slate-200 px-2.5 py-1 text-slate-700 hover:border-rose-300 hover:text-rose-800"
+              className="rounded-full bg-white border border-slate-200 px-2.5 py-1 text-slate-700 hover:border-amber-300 hover:text-amber-800"
             >
               {g.title}
             </a>
@@ -221,7 +221,7 @@ export function ProductCatalog() {
           <button
             type="button"
             onClick={clearFilters}
-            className="text-rose-600 hover:underline font-medium"
+            className="text-amber-600 hover:underline font-medium"
           >
             Сбросить фильтры
           </button>
@@ -254,7 +254,7 @@ export function ProductCatalog() {
                     id={`catalog-group-${group.slug}`}
                     className="scroll-mt-28 space-y-8"
                   >
-                    <div className="border-b border-rose-200/80 pb-3">
+                    <div className="border-b border-amber-200/80 pb-3">
                       <h2 className="text-xl font-semibold text-slate-900">{group.title}</h2>
                       <p className="text-xs text-slate-500 mt-1">{group.hint}</p>
                     </div>

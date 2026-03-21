@@ -26,6 +26,7 @@ async function main() {
 
   const urlList = [
     siteUrl,
+    `${siteUrl}/catalog`,
     `${siteUrl}/contacts`,
     `${siteUrl}/how-to-order`,
     `${siteUrl}/zapchasti-gm`,

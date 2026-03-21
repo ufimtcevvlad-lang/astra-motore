@@ -140,20 +140,20 @@ export function LoginForm() {
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
+            className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
           />
           Запомнить меня
         </label>
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60"
         >
           {sending ? "Входим..." : "Войти"}
         </button>
         <Link
           href="/auth/sms"
-          className="block text-center text-sm font-medium text-rose-700 hover:underline"
+          className="block text-center text-sm font-medium text-amber-700 hover:underline"
         >
           Войти по SMS-коду
         </Link>
@@ -161,7 +161,7 @@ export function LoginForm() {
 
       <div className="text-sm text-slate-600">
         Нет аккаунта?{" "}
-        <Link href="/auth/register" className="font-medium text-rose-700 hover:underline">
+        <Link href="/auth/register" className="font-medium text-amber-700 hover:underline">
           Регистрация
         </Link>
       </div>

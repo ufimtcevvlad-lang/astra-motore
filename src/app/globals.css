@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  /* Official accent palette (strict minimalism + vivid highlights) */
+  --background: #f4f2eb;
+  --foreground: #0c0a09;
+  /* Тёмные шапка/подвал + жёлто-янтарные акценты (amber / yellow) */
   --astra-dark: #0b1220;
-  --astra-accent: #e11d48; /* rose-600 */
-  --astra-accent-hover: #be123c; /* rose-700 */
+  --astra-accent: #fbbf24; /* amber-400 — жёлтый акцент на тёмном */
+  --astra-accent-hover: #f59e0b; /* amber-500 */
 }
 
 @theme inline {

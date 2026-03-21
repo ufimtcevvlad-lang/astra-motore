@@ -72,12 +72,18 @@ export default function ProductPage({
       {
         "@type": "ListItem",
         position: 1,
-        name: "Каталог",
+        name: "Главная",
         item: siteUrl + "/",
       },
       {
         "@type": "ListItem",
         position: 2,
+        name: "Каталог",
+        item: siteUrl + "/catalog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
         name: product.name,
         item: siteUrl + `/product/${product.id}`,
       },
@@ -113,12 +119,12 @@ export default function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
       />
 
-      <Link href="/" className="inline-block text-sm text-rose-600 hover:text-rose-700 font-medium">
+      <Link href="/catalog" className="inline-block text-sm text-amber-600 hover:text-amber-700 font-medium">
         ← Назад в каталог
       </Link>
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-rose-600">
+          <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
             {product.category}
           </p>
           <div className="aspect-[4/3] relative rounded-lg bg-slate-100 overflow-hidden">
@@ -134,7 +140,7 @@ export default function ProductPage({
           <p className="text-sm text-slate-600">{product.description}</p>
 
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
-            <p className="text-base font-semibold text-slate-900 border-l-4 border-rose-500 pl-3">
+            <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
               Номер запчасти:{" "}
               <span className="font-mono tracking-wide">{product.sku}</span>
             </p>
@@ -153,7 +159,7 @@ export default function ProductPage({
       </div>
 
       {cheaperAnalogs.length > 0 ? (
-        <section className="rounded-xl border border-rose-100 bg-white p-5 shadow-sm space-y-3">
+        <section className="rounded-xl border border-amber-100 bg-white p-5 shadow-sm space-y-3">
           <h2 className="text-lg font-semibold text-slate-900">Аналоги дешевле</h2>
           <p className="text-xs text-slate-500">
             Варианты из того же каталога (ваша выгрузка), цена ниже текущей карточки.
@@ -163,7 +169,7 @@ export default function ProductPage({
               <li key={a.id}>
                 <Link
                   href={`/product/${a.id}`}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-slate-200 px-4 py-3 hover:border-rose-300 hover:bg-rose-50/40 transition"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-slate-200 px-4 py-3 hover:border-amber-300 hover:bg-amber-50/40 transition"
                 >
                   <div>
                     <span className="font-medium text-slate-900 line-clamp-2">{a.name}</span>
@@ -172,7 +178,7 @@ export default function ProductPage({
                       {a.category}
                     </span>
                   </div>
-                  <span className="text-lg font-bold text-rose-600 whitespace-nowrap">
+                  <span className="text-lg font-bold text-amber-600 whitespace-nowrap">
                     {a.price.toLocaleString("ru-RU")} ₽
                   </span>
                 </Link>

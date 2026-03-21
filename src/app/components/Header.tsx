@@ -51,6 +51,9 @@ export function Header() {
 
           <nav className="flex items-center gap-3 sm:gap-5">
             <Link href="/" className="text-sm font-medium text-slate-100 hover:text-white transition">
+              Главная
+            </Link>
+            <Link href="/catalog" className="text-sm font-medium text-slate-100 hover:text-white transition">
               Каталог
             </Link>
             <Link href="/how-to-order" className="text-sm font-medium text-slate-100 hover:text-white transition">
@@ -84,11 +87,11 @@ export function Header() {
             )}
             <Link
               href="/cart"
-              className="flex items-center gap-1.5 rounded-full bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-rose-400 transition"
+              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/25 hover:bg-amber-300 transition"
             >
               Корзина
               {totalItems > 0 && (
-                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-rose-200">
+                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-amber-400">
                   {totalItems}
                 </span>
               )}

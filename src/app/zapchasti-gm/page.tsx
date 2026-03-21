@@ -17,10 +17,11 @@ export default function GmPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Каталог", item: siteUrl + "/" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
       {
         "@type": "ListItem",
-        position: 2,
+        position: 3,
         name: "Запчасти GM",
         item: siteUrl + "/zapchasti-gm",
       },
@@ -68,7 +69,7 @@ export default function GmPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <h1 className="text-2xl font-bold text-rose-900">
+      <h1 className="text-2xl font-bold text-amber-900">
         Запчасти GM (Opel, Chevrolet) в Екатеринбурге
       </h1>
       <p className="text-slate-600">
@@ -76,7 +77,7 @@ export default function GmPage() {
         Работаем с Opel и Chevrolet. Быстро ответим, уточним наличие и сроки.
       </p>
 
-      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">Ключевые направления</h2>
         <div className="flex flex-wrap gap-3">
           <Link
@@ -100,16 +101,16 @@ export default function GmPage() {
           {items.map((p) => (
             <article
               key={p.id}
-              className="rounded-xl bg-white shadow-md border border-rose-100 p-4 flex flex-col gap-2"
+              className="rounded-xl bg-white shadow-md border border-amber-100 p-4 flex flex-col gap-2"
             >
               <h3 className="font-semibold text-sm line-clamp-2">{p.name}</h3>
               <p className="text-xs text-slate-500">{p.car}</p>
-              <p className="text-sm font-bold text-rose-600">
+              <p className="text-sm font-bold text-amber-600">
                 {p.price.toLocaleString("ru-RU")} ₽
               </p>
               <Link
                 href={`/product/${p.id}`}
-                className="mt-auto inline-flex justify-center rounded-lg bg-rose-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-rose-700 transition shadow-sm"
+                className="mt-auto inline-flex justify-center rounded-lg bg-amber-600 px-3 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
               >
                 Подробнее
               </Link>
@@ -118,7 +119,7 @@ export default function GmPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-3">
+      <section className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-3">
         <h2 className="text-lg font-semibold text-slate-800">Закажите консультацию</h2>
         <p className="text-sm text-slate-600">
           Если нужной позиции нет в каталоге или вы сомневаетесь в совместимости, напишите менеджеру.
@@ -127,7 +128,7 @@ export default function GmPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
             href="/contacts"
-            className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+            className="inline-flex justify-center rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 transition shadow-sm"
           >
             Связаться с менеджером
           </Link>

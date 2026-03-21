@@ -8,7 +8,7 @@ export function ProductClient({ product }: { product: Product }) {
 
   return (
     <div className="space-y-4 rounded-lg bg-white p-4 shadow-sm border border-slate-200 h-fit">
-      <p className="text-lg font-bold text-rose-600">
+      <p className="text-lg font-bold text-amber-600">
         {product.price.toLocaleString("ru-RU")} ₽
       </p>
       <p className="text-xs text-slate-500">
@@ -16,7 +16,7 @@ export function ProductClient({ product }: { product: Product }) {
       </p>
       <button
         onClick={() => addToCart(product)}
-        className="w-full rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-rose-700 transition shadow-sm"
+        className="w-full rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
       >
         В корзину
       </button>

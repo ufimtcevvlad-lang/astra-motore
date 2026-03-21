@@ -62,23 +62,23 @@ export default function ContactsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointLd) }}
       />
-      <h1 className="text-2xl font-bold text-rose-900">Контакты</h1>
-      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-rose-700">Astra Motors</span> — ответим и подберём запчасти.</p>
+      <h1 className="text-2xl font-bold text-amber-900">Контакты</h1>
+      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">Astra Motors</span> — ответим и подберём запчасти.</p>
 
-      <div className="rounded-xl border border-rose-100 bg-white p-6 shadow-sm space-y-4">
+      <div className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-4">
         <div>
           <p className="text-sm font-medium text-slate-500">Телефон</p>
           <p className="text-lg">
             <a
               href="tel:+79022540111"
-              className="text-rose-600 font-medium hover:text-rose-700 hover:underline"
+              className="text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
               +7 (902) 254-01-11
             </a>
             <br />
             <a
               href="tel:+73432061535"
-              className="text-rose-600 font-medium hover:text-rose-700 hover:underline"
+              className="text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
               +7 (343) 206-15-35
             </a>
@@ -105,7 +105,7 @@ export default function ContactsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <a
           href="tel:+79022540111"
-          className="inline-flex justify-center rounded-lg bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-rose-700 transition shadow-sm"
+          className="inline-flex justify-center rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 transition shadow-sm"
         >
           Позвонить
         </a>
