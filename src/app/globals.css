@@ -21,12 +21,3 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
-
-/* Логотип PNG: чуть теплее к янтарно-золотой палитре сайта */
-.logo-brand-tint {
-  filter: sepia(12%) saturate(1.2) hue-rotate(355deg) brightness(1.03);
-}
-
-.logo-brand-glow {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--astra-accent) 28%, transparent));
-}

@@ -4,9 +4,9 @@
 
 ```bash
 cd /path/to/autoparts-shop
-git add public/logo-astra-motors.png src/app/components/Header.tsx src/app/globals.css DEPLOY.md
+git add src/app/components/BrandLogo.tsx src/app/components/Header.tsx src/app/globals.css DEPLOY.md
 git status
-git commit -m "feat: логотип Astra Motors в шапке (палитра сайта)"
+git commit -m "feat: векторный логотип Astra Motors в шапке"
 git push origin main
 ```
 

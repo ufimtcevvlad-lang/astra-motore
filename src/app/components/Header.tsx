@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { BrandLogo } from "./BrandLogo";
 import { CatalogHubStrip } from "./catalog/CatalogHubStrip";
 import { useCart } from "./CartContext";
 
@@ -44,18 +44,10 @@ export function Header() {
         <div className="flex flex-wrap items-center justify-between gap-3 py-4">
           <Link
             href="/"
-            className="group flex min-w-0 flex-shrink-0 items-center gap-2 sm:gap-3"
+            className="group flex min-w-0 flex-shrink-0 items-center rounded-lg py-1 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A]"
+            aria-label="Astra Motors — на главную"
           >
-            <span className="relative block h-10 w-[min(100%,11rem)] sm:h-12 sm:w-[13.5rem]">
-              <Image
-                src="/logo-astra-motors.png"
-                alt="Astra Motors — автозапчасти GM"
-                fill
-                className="object-contain object-left logo-brand-tint logo-brand-glow"
-                sizes="(max-width: 640px) 176px, 216px"
-                priority
-              />
-            </span>
+            <BrandLogo />
           </Link>
 
           <nav className="flex items-center gap-3 sm:gap-5">
