@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CatalogHubStrip } from "./catalog/CatalogHubStrip";
@@ -41,12 +42,19 @@ export function Header() {
     <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
       <div className="mx-auto max-w-5xl px-4">
         <div className="flex flex-wrap items-center justify-between gap-3 py-4">
-          <Link href="/" className="group flex items-baseline gap-2">
-            <span className="text-xl font-bold tracking-tight text-white drop-shadow-sm">
-              Astra Motors
-            </span>
-            <span className="text-[11px] font-medium text-slate-300 hidden sm:inline">
-              Запчасти GM (Opel, Chevrolet)
+          <Link
+            href="/"
+            className="group flex min-w-0 flex-shrink-0 items-center gap-2 sm:gap-3"
+          >
+            <span className="relative block h-10 w-[min(100%,11rem)] sm:h-12 sm:w-[13.5rem]">
+              <Image
+                src="/logo-astra-motors.png"
+                alt="Astra Motors — автозапчасти GM"
+                fill
+                className="object-contain object-left logo-brand-tint logo-brand-glow"
+                sizes="(max-width: 640px) 176px, 216px"
+                priority
+              />
             </span>
           </Link>
 
