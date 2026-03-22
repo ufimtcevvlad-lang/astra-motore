@@ -102,6 +102,7 @@ npm run indexnow:send
 
 - Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и цена из файла; расчёт витринной цены — в коде (`src/app/lib/price.ts`, не выводится на сайте).
 - Каталог на отдельной странице: `/catalog` (`src/app/catalog/page.tsx` + `ProductCatalog`). Главная — лендинг с превью позиций.
+- **Поиск в шапке:** подсказки с горизонтальной прокруткой карточек (`HeaderSearchAutocomplete`), API `GET /api/catalog/search?q=…&limit=…`; общая логика совпадений — `src/app/lib/catalog-search.ts` (та же, что фильтр в каталоге).
 - Единый вид: `components/catalog/` — `CatalogProductCard`, `CatalogProductGrid`, `CatalogChrome` (крошки + H1), `CatalogSectionHeading`; марки в шапке — через меню **Каталог** (Витрина, Opel, Chevrolet, GM).
 - Разделы: `src/app/data/catalog-sections.ts` — группы `CATALOG_GROUPS` и подразделы `CATALOG_SECTIONS`; у товара поле `category` совпадает с `title` раздела.
 - Сверка с Excel на своей машине: положите файл на рабочий стол как `топ 100 продаж опель.xlsx` и выполните `npm run opel:excel-preview` (или `node scripts/opel-excel-to-ts.mjs "/путь/к/файлу.xlsx" 10`).

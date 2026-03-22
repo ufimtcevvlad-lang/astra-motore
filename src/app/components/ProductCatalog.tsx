@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
+import { productMatchesTextQuery } from "../lib/catalog-search";
 import { products, type Product } from "../data/products";
 import {
   CATALOG_GROUPS,
@@ -51,13 +52,7 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
           if (sec && p.category !== sec.title) return false;
         }
         if (!queryNorm) return true;
-        return (
-          p.name.toLowerCase().includes(queryNorm) ||
-          p.brand.toLowerCase().includes(queryNorm) ||
-          p.car.toLowerCase().includes(queryNorm) ||
-          p.sku.toLowerCase().includes(queryNorm) ||
-          p.category.toLowerCase().includes(queryNorm)
-        );
+        return productMatchesTextQuery(p, queryNorm);
       })
       .sort(sortProductsById);
   }, [queryNorm, activeSlug, brandFilter]);

@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
+import {
+  HeaderSearchAutocomplete,
+  HeaderSearchAutocompleteFallback,
+} from "./search/HeaderSearchAutocomplete";
 import { useCart } from "./CartContext";
 
 type MeResponse = {
@@ -24,70 +27,6 @@ const dropPanel =
 
 const dropItem =
   "block px-4 py-2 text-sm text-slate-200 transition hover:bg-amber-400/10 hover:text-amber-200";
-
-function HeaderSearchFormInner() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const qFromUrl = pathname === "/catalog" ? (searchParams.get("q") ?? "") : "";
-
-  return (
-    <form
-      action="/catalog"
-      method="get"
-      className="flex w-full min-w-0 flex-1 items-stretch gap-2 lg:max-w-none"
-      role="search"
-    >
-      <label htmlFor="header-catalog-q" className="sr-only">
-        Поиск по номеру или названию детали
-      </label>
-      <input
-        id="header-catalog-q"
-        key={qFromUrl}
-        name="q"
-        type="search"
-        defaultValue={qFromUrl}
-        placeholder="Введите номер или название детали"
-        autoComplete="off"
-        className="min-w-0 flex-1 rounded-xl border border-slate-600/80 bg-slate-900/50 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/25"
-      />
-      <button
-        type="submit"
-        className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
-      >
-        Поиск
-      </button>
-    </form>
-  );
-}
-
-function HeaderSearchFormFallback() {
-  return (
-    <form
-      action="/catalog"
-      method="get"
-      className="flex w-full min-w-0 flex-1 items-stretch gap-2 lg:max-w-none"
-      role="search"
-    >
-      <label htmlFor="header-catalog-q-fb" className="sr-only">
-        Поиск по номеру или названию детали
-      </label>
-      <input
-        id="header-catalog-q-fb"
-        name="q"
-        type="search"
-        placeholder="Введите номер или название детали"
-        autoComplete="off"
-        className="min-w-0 flex-1 rounded-xl border border-slate-600/80 bg-slate-900/50 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/25"
-      />
-      <button
-        type="submit"
-        className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
-      >
-        Поиск
-      </button>
-    </form>
-  );
-}
 
 export function Header() {
   const { items } = useCart();
@@ -124,8 +63,8 @@ export function Header() {
             <BrandLogo />
           </Link>
 
-          <Suspense fallback={<HeaderSearchFormFallback />}>
-            <HeaderSearchFormInner />
+          <Suspense fallback={<HeaderSearchAutocompleteFallback />}>
+            <HeaderSearchAutocomplete />
           </Suspense>
 
           <div className="flex shrink-0 items-center justify-end gap-2 lg:pl-2">
