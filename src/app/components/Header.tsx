@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useId, useState, type ReactNode } from "react";
 import { BrandLogo } from "./BrandLogo";
 import {
   HeaderSearchAutocomplete,
@@ -22,11 +22,60 @@ type MeResponse = {
 const navLink =
   "whitespace-nowrap rounded-lg px-1.5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white sm:px-2.5";
 
-const dropPanel =
-  "absolute left-1/2 top-full z-50 mt-1 min-w-[240px] -translate-x-1/2 rounded-xl border border-slate-700/90 bg-[#0a1018] py-2 shadow-2xl shadow-black/40";
+const dropBox =
+  "min-w-[240px] rounded-xl border border-slate-700/90 bg-[#0a1018] py-2 shadow-2xl shadow-black/40";
 
 const dropItem =
   "block px-4 py-2 text-sm text-slate-200 transition hover:bg-amber-400/10 hover:text-amber-200";
+
+function NavHoverDropdown({
+  label,
+  menuId,
+  children,
+}: {
+  label: string;
+  menuId: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const reactId = useId();
+  const menuDomId = `${menuId}-${reactId.replace(/:/g, "")}`;
+
+  return (
+    <div
+      className="relative flex min-w-0 flex-1 flex-col items-center justify-center"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        className={`${navLink} flex w-full cursor-pointer items-center justify-center text-center`}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-controls={menuDomId}
+        id={`${menuDomId}-trigger`}
+      >
+        {label}{" "}
+        <span className="text-slate-500" aria-hidden>
+          ▾
+        </span>
+      </button>
+      {/* pt-1 — «мостик» в зоне hover, чтобы курсор не выходил из блока между кнопкой и панелью */}
+      <div
+        id={menuDomId}
+        role="menu"
+        aria-labelledby={`${menuDomId}-trigger`}
+        className={`absolute left-1/2 top-full z-50 flex min-w-[240px] -translate-x-1/2 flex-col items-stretch pt-1 transition-opacity duration-150 ease-out ${
+          open
+            ? "visible opacity-100"
+            : "invisible pointer-events-none opacity-0"
+        }`}
+      >
+        <div className={dropBox}>{children}</div>
+      </div>
+    </div>
+  );
+}
 
 export function Header() {
   const { items } = useCart();
@@ -114,61 +163,41 @@ export function Header() {
             Главная
           </Link>
 
-          <details className="group relative flex min-w-0 flex-1 flex-col items-center">
-            <summary
-              className={`${navLink} flex cursor-pointer list-none items-center justify-center text-center [&::-webkit-details-marker]:hidden`}
-            >
-              Каталог{" "}
-              <span className="text-slate-500" aria-hidden>
-                ▾
-              </span>
-            </summary>
-            <div className={dropPanel}>
-              <Link href="/catalog" className={dropItem}>
-                Витрина
-              </Link>
-              <Link href="/zapchasti-opel" className={dropItem}>
-                Opel
-              </Link>
-              <Link href="/zapchasti-chevrolet" className={dropItem}>
-                Chevrolet
-              </Link>
-              <Link href="/zapchasti-gm" className={dropItem}>
-                GM
-              </Link>
-            </div>
-          </details>
+          <NavHoverDropdown label="Каталог" menuId="nav-catalog">
+            <Link href="/catalog" className={dropItem} role="menuitem">
+              Витрина
+            </Link>
+            <Link href="/zapchasti-opel" className={dropItem} role="menuitem">
+              Opel
+            </Link>
+            <Link href="/zapchasti-chevrolet" className={dropItem} role="menuitem">
+              Chevrolet
+            </Link>
+            <Link href="/zapchasti-gm" className={dropItem} role="menuitem">
+              GM
+            </Link>
+          </NavHoverDropdown>
 
-          <details className="group relative flex min-w-0 flex-1 flex-col items-center">
-            <summary
-              className={`${navLink} flex cursor-pointer list-none items-center justify-center text-center [&::-webkit-details-marker]:hidden`}
-            >
-              Клиентам{" "}
-              <span className="text-slate-500" aria-hidden>
-                ▾
-              </span>
-            </summary>
-            <div className={dropPanel}>
-              <Link href="/about" className={dropItem}>
-                О компании
-              </Link>
-              <Link href="/how-to-order" className={dropItem}>
-                Как сделать заказ
-              </Link>
-              <Link href="/privacy" className={dropItem}>
-                Обработка персональных данных
-              </Link>
-              <Link href="/supply-agreement" className={dropItem}>
-                Договор поставки
-              </Link>
-              <Link href="/warranty" className={dropItem}>
-                Положение о гарантии
-              </Link>
-              <Link href="/returns" className={dropItem}>
-                Возврат
-              </Link>
-            </div>
-          </details>
+          <NavHoverDropdown label="Клиентам" menuId="nav-clients">
+            <Link href="/about" className={dropItem} role="menuitem">
+              О компании
+            </Link>
+            <Link href="/how-to-order" className={dropItem} role="menuitem">
+              Как сделать заказ
+            </Link>
+            <Link href="/privacy" className={dropItem} role="menuitem">
+              Обработка персональных данных
+            </Link>
+            <Link href="/supply-agreement" className={dropItem} role="menuitem">
+              Договор поставки
+            </Link>
+            <Link href="/warranty" className={dropItem} role="menuitem">
+              Положение о гарантии
+            </Link>
+            <Link href="/returns" className={dropItem} role="menuitem">
+              Возврат
+            </Link>
+          </NavHoverDropdown>
 
           <Link
             href="/dostavka-zapchastey-ekaterinburg"
