@@ -3,11 +3,39 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { highlightQuery } from "../../lib/highlight-query";
 import { ProductImage } from "../ProductImage";
 import type { SearchResultItem } from "../../lib/catalog-search";
 
 const DEBOUNCE_MS = 300;
 const MIN_CHARS = 2;
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M16.5 16.5 21 21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 export function HeaderSearchAutocomplete() {
   const router = useRouter();
@@ -81,7 +109,16 @@ export function HeaderSearchAutocomplete() {
     router.push(q ? `/catalog?q=${encodeURIComponent(q)}` : "/catalog");
   };
 
+  const clearInput = () => {
+    setValue("");
+    setResults([]);
+    setOpen(false);
+    setLoading(false);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+  };
+
   const showSuggestions = open && value.trim().length >= MIN_CHARS;
+  const qHighlight = value.trim();
 
   return (
     <div ref={wrapRef} className="relative w-full min-w-0 flex-1 lg:max-w-none">
@@ -93,36 +130,53 @@ export function HeaderSearchAutocomplete() {
         <label htmlFor="header-catalog-q" className="sr-only">
           Поиск по номеру или названию детали
         </label>
-        <input
-          id="header-catalog-q"
-          type="search"
-          value={value}
-          onChange={(e) => {
-            const v = e.target.value;
-            setValue(v);
-            setOpen(true);
-            fetchSuggestions(v);
-          }}
-          onFocus={() => {
-            setOpen(true);
-            fetchSuggestions(value);
-          }}
-          placeholder="Введите номер или название детали"
-          autoComplete="off"
-          aria-autocomplete="list"
-          className="min-w-0 flex-1 rounded-xl border border-slate-600/80 bg-slate-900/50 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/25"
-        />
+        <div className="relative flex min-w-0 flex-1 items-center rounded-xl border border-slate-600/80 bg-slate-900/50 transition focus-within:border-amber-400/70 focus-within:ring-2 focus-within:ring-amber-400/25">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <SearchIcon className="h-[18px] w-[18px]" />
+          </span>
+          <input
+            id="header-catalog-q"
+            type="text"
+            value={value}
+            onChange={(e) => {
+              const v = e.target.value;
+              setValue(v);
+              setOpen(true);
+              fetchSuggestions(v);
+            }}
+            onFocus={() => {
+              setOpen(true);
+              fetchSuggestions(value);
+            }}
+            placeholder="Введите номер или название детали"
+            autoComplete="off"
+            aria-autocomplete="list"
+            className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-9 text-sm text-slate-100 placeholder:text-slate-500 outline-none ring-0"
+          />
+          {value ? (
+            <button
+              type="button"
+              onClick={clearInput}
+              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+              aria-label="Очистить поле"
+            >
+              <span className="text-lg leading-none" aria-hidden>
+                ×
+              </span>
+            </button>
+          ) : null}
+        </div>
         <button
           type="submit"
           className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
         >
-          Поиск
+          Найти
         </button>
       </form>
 
       {showSuggestions && (
         <div
-          className="absolute left-0 right-0 top-full z-[100] mt-2 max-h-[min(70vh,420px)] overflow-hidden rounded-xl border border-slate-700/90 bg-[#0a1018] shadow-2xl shadow-black/50"
+          className="absolute left-0 right-0 top-full z-[100] mt-2 flex max-h-[min(65vh,400px)] flex-col overflow-hidden rounded-xl border border-slate-700/90 bg-[#0a1018] shadow-2xl shadow-black/50"
           role="listbox"
           aria-label="Подсказки по каталогу"
         >
@@ -130,44 +184,47 @@ export function HeaderSearchAutocomplete() {
             <div className="px-4 py-6 text-center text-sm text-slate-400">Ищем…</div>
           ) : results.length === 0 ? (
             <div className="px-4 py-6 text-center text-sm text-slate-400">
-              Ничего не найдено. Нажмите «Поиск» для полного каталога.
+              Ничего не найдено. Нажмите «Найти» для перехода в каталог.
             </div>
           ) : (
             <>
-              <div className="border-b border-slate-800/80 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                Подсказки — прокрутите вправо
+              <div className="shrink-0 border-b border-slate-800/80 px-3 py-2 text-xs font-medium text-slate-500">
+                Товары
               </div>
-              <div className="flex snap-x gap-3 overflow-x-auto overscroll-x-contain px-3 py-3 [scrollbar-width:thin]">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
                 {results.map((p) => (
                   <Link
                     key={p.id}
                     href={`/product/${p.id}`}
                     role="option"
                     onClick={() => setOpen(false)}
-                    className="group flex w-[9.5rem] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-slate-700/80 bg-slate-900/60 transition hover:border-amber-500/50 hover:bg-slate-900"
+                    className="flex items-center gap-3 border-b border-slate-800/60 px-3 py-2.5 transition last:border-b-0 hover:bg-slate-800/40"
                   >
-                    <div className="relative aspect-[4/3] w-full bg-slate-800/80">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-800/90 ring-1 ring-slate-700/80">
                       <ProductImage
                         src={p.image}
                         alt={p.name}
                         fill
-                        className="object-cover transition group-hover:opacity-95"
-                        sizes="152px"
+                        className="object-cover"
+                        sizes="56px"
                       />
                     </div>
-                    <div className="flex flex-1 flex-col gap-1 p-2">
-                      <p className="line-clamp-2 text-[11px] font-medium leading-snug text-slate-100">
-                        {p.name}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] leading-snug text-slate-200">
+                        {highlightQuery(p.sku, qHighlight)}
+                        <span className="text-slate-500"> · </span>
+                        {highlightQuery(p.brand, qHighlight)}
+                        <span className="text-slate-500"> · </span>
+                        {highlightQuery(p.name, qHighlight)}
                       </p>
-                      <p className="text-[10px] text-slate-500">Арт. {p.sku}</p>
-                      <p className="mt-auto text-sm font-semibold tabular-nums text-amber-400">
+                      <p className="mt-1 text-xs font-semibold tabular-nums text-amber-400/95">
                         {p.price.toLocaleString("ru-RU")} ₽
                       </p>
                     </div>
                   </Link>
                 ))}
               </div>
-              <div className="border-t border-slate-800/80 px-3 py-2">
+              <div className="shrink-0 border-t border-slate-800/80 px-3 py-2">
                 <Link
                   href={`/catalog?q=${encodeURIComponent(value.trim())}`}
                   onClick={() => setOpen(false)}
@@ -195,19 +252,24 @@ export function HeaderSearchAutocompleteFallback() {
       <label htmlFor="header-catalog-q-fb" className="sr-only">
         Поиск по номеру или названию детали
       </label>
-      <input
-        id="header-catalog-q-fb"
-        name="q"
-        type="search"
-        placeholder="Введите номер или название детали"
-        autoComplete="off"
-        className="min-w-0 flex-1 rounded-xl border border-slate-600/80 bg-slate-900/50 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/25"
-      />
+      <div className="relative flex min-w-0 flex-1 items-center rounded-xl border border-slate-600/80 bg-slate-900/50">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+          <SearchIcon className="h-[18px] w-[18px]" />
+        </span>
+        <input
+          id="header-catalog-q-fb"
+          name="q"
+          type="search"
+          placeholder="Введите номер или название детали"
+          autoComplete="off"
+          className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none ring-0"
+        />
+      </div>
       <button
         type="submit"
         className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
       >
-        Поиск
+        Найти
       </button>
     </form>
   );
