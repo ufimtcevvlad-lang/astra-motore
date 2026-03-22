@@ -21,3 +21,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
+
+/* PNG-знак в шапке: чуть теплее к янтарной палитре */
+.logo-png-site-tint {
+  filter: brightness(1.06) sepia(0.14) saturate(1.12) hue-rotate(352deg);
+}
