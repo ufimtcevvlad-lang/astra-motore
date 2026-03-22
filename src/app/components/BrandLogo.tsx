@@ -1,32 +1,21 @@
 "use client";
 
-import Image from "next/image";
+import { AstraMarkSvg } from "./AstraMarkSvg";
 
 /**
- * Логотип: знак из варианта 1 (шестерня + AM), без надписей с PNG —
- * нижняя часть картинки обрезается, текст справа — из стиля сайта.
+ * Логотип в шапке: чёткий векторный знак (шестерня + AM) в палитре сайта
+ * + текстовый блок. Без PNG — без артефактов сжатия на Retina.
  */
-const MARK_SRC = "/brand/logo-options/logo-option-01-classic-gear.png";
-
 export function BrandLogo() {
   return (
     <div className="flex min-w-0 items-center gap-3.5 sm:gap-5">
-      {/* Только круглый знак: zoom + object-position, чтобы убрать ASTRA MOTORS с PNG */}
       <div
-        className="relative h-[3.35rem] w-[3.35rem] shrink-0 overflow-hidden rounded-full shadow-[0_0_20px_rgba(251,191,36,0.22)] ring-1 ring-amber-400/35 transition-shadow duration-300 group-hover:shadow-[0_0_26px_rgba(251,191,36,0.35)] group-hover:ring-amber-300/50 sm:h-[3.75rem] sm:w-[3.75rem]"
+        className="relative h-[3.5rem] w-[3.5rem] shrink-0 drop-shadow-[0_0_22px_rgba(251,191,36,0.28)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_28px_rgba(251,191,36,0.42)] sm:h-16 sm:w-16"
         aria-hidden
       >
-        <Image
-          src={MARK_SRC}
-          alt=""
-          fill
-          priority
-          sizes="(max-width: 640px) 54px, 60px"
-          className="object-cover object-[50%_14%] scale-[2.15] logo-png-site-tint sm:object-[50%_12%] sm:scale-[2.05]"
-        />
+        <AstraMarkSvg className="h-full w-full" />
       </div>
 
-      {/* Словесная часть сайта (не с PNG) */}
       <div className="min-w-0 select-none">
         <p className="font-medium uppercase leading-none tracking-[0.2em] text-white sm:tracking-[0.24em]">
           <span className="block text-[0.95rem] sm:text-lg lg:text-xl">
