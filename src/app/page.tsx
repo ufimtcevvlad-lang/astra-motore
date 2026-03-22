@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HomeFeatured } from "./components/HomeFeatured";
-import { products } from "./data/products";
-import { sortProductsById } from "./data/catalog-sections";
+import { HOME_FEATURED_PRODUCTS } from "./data/products";
 
 export const metadata: Metadata = {
   title: "Главная",
@@ -12,8 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const featured = [...products].sort(sortProductsById).slice(0, 3);
-
   return (
     <div className="space-y-14">
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#05070A] via-[#0f172a] to-[#020617] p-6 sm:p-10 text-white shadow-2xl">
@@ -122,7 +119,7 @@ export default function HomePage() {
         ))}
       </section>
 
-      <HomeFeatured items={featured} />
+      <HomeFeatured items={HOME_FEATURED_PRODUCTS} />
 
       <section className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 sm:p-8 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900">Куда зайти дальше</h2>

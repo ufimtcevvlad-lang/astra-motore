@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-
-const siteUrl = "https://astramotors.shop";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Доставка запчастей в Екатеринбурге — Astra Motors",
@@ -12,7 +11,7 @@ export const metadata: Metadata = {
     title: "Доставка запчастей в Екатеринбурге",
     description:
       "Доставка, оригинал и аналоги. Екатеринбург.",
-    url: `${siteUrl}/dostavka-zapchastey-ekaterinburg`,
+    url: `${SITE_URL}/dostavka-zapchastey-ekaterinburg`,
     type: "article",
   },
 };
@@ -22,13 +21,13 @@ export default function DeliveryPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL + "/" },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: SITE_URL + "/catalog" },
       {
         "@type": "ListItem",
         position: 3,
         name: "Доставка",
-        item: siteUrl + "/dostavka-zapchastey-ekaterinburg",
+        item: SITE_URL + "/dostavka-zapchastey-ekaterinburg",
       },
     ],
   };

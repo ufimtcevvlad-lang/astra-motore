@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import Link from "next/link";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { products, type Product } from "../data/products";
@@ -11,7 +11,7 @@ import {
   sortProductsById,
 } from "../data/catalog-sections";
 
-function Chip({
+const Chip = memo(function Chip({
   active,
   children,
   onClick,
@@ -33,7 +33,7 @@ function Chip({
       {children}
     </button>
   );
-}
+});
 
 type BrandFilter = "all" | "opel" | "chevrolet";
 

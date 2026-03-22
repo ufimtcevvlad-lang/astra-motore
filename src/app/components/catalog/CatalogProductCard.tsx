@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { memo } from "react";
 import { ProductImage } from "../ProductImage";
 import type { Product } from "../../data/products";
 
 /** Единая карточка товара: витрина, каталог, посадочные страницы */
-export function CatalogProductCard({ p }: { p: Product }) {
+export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: Product }) {
   return (
     <article className="rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
       <Link href={`/product/${p.id}`} className="block aspect-[4/3] relative bg-slate-100 overflow-hidden">
@@ -40,4 +41,4 @@ export function CatalogProductCard({ p }: { p: Product }) {
       </div>
     </article>
   );
-}
+});

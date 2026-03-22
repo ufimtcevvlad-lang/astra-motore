@@ -5,7 +5,7 @@ import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
 import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
 import { products } from "../data/products";
 
-const siteUrl = "https://astramotors.shop";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Запчасти Opel в Екатеринбурге — купить оригинал и аналоги",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Запчасти Opel в Екатеринбурге — Astra Motors",
     description:
       "Оригинал и аналоги запчастей Opel. Екатеринбург.",
-    url: `${siteUrl}/zapchasti-opel`,
+    url: `${SITE_URL}/zapchasti-opel`,
     type: "article",
   },
 };
@@ -27,13 +27,13 @@ export default function OpelPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL + "/" },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: SITE_URL + "/catalog" },
       {
         "@type": "ListItem",
         position: 3,
         name: "Запчасти Opel",
-        item: siteUrl + "/zapchasti-opel",
+        item: SITE_URL + "/zapchasti-opel",
       },
     ],
   };

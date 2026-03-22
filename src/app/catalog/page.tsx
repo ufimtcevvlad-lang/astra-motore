@@ -2,8 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { ProductCatalog } from "../components/ProductCatalog";
-
-const siteUrl = "https://astramotors.shop";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Каталог запчастей",
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Каталог запчастей — Astra Motors",
     description: "Opel и Chevrolet: фильтры, свечи, расходники и другое. Екатеринбург.",
-    url: `${siteUrl}/catalog`,
+    url: `${SITE_URL}/catalog`,
     type: "website",
   },
 };
@@ -23,8 +22,8 @@ export default function CatalogPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
     ],
   };
 

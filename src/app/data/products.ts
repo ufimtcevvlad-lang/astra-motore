@@ -2,6 +2,7 @@
 // Аналоги: только id из ЭТОГО же массива (связи из вашей выгрузки Excel), без интернета.
 
 import { roundRetailRubles } from "../lib/price";
+import { sortProductsById } from "./catalog-sections";
 
 export type Product = {
   id: string;
@@ -345,3 +346,6 @@ export const products: Product[] = OPEL_PILOT_RAW.map((r) => ({
   description: r.description,
   analogIds: r.analogIds,
 }));
+
+/** Три позиции для главной — считается один раз при загрузке модуля, без сортировки на каждый запрос */
+export const HOME_FEATURED_PRODUCTS = [...products].sort(sortProductsById).slice(0, 3);

@@ -4,10 +4,9 @@ import { CartProvider } from "./components/CartContext";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
-import { YandexMetrika } from "./components/YandexMetrika";
+import { MetrikaDeferred } from "./components/MetrikaDeferred";
+import { SITE_URL } from "./lib/site";
 import "./globals.css";
-
-const siteUrl = "https://astramotors.shop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +19,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
+  },
   title: {
     default: "Astra Motors — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге",
     template: "%s — Astra Motors",
@@ -42,7 +45,7 @@ export const metadata: Metadata = {
     title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
     description:
       "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "Astra Motors",
     type: "website",
   },
@@ -66,7 +69,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "AutoPartsStore",
     name: "Astra Motors",
-    url: siteUrl,
+    url: SITE_URL,
     telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
     areaServed: "Екатеринбург",
     address: {
@@ -95,7 +98,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Astra Motors",
-    url: siteUrl,
+    url: SITE_URL,
   };
 
   return (
@@ -103,8 +106,6 @@ export default function RootLayout({
       <head>
         {/* Яндекс.Вебмастер: подтверждение прав */}
         <meta name="yandex-verification" content="62d469a9a0693298" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="shortcut icon" href="/favicon.svg" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <script
@@ -116,7 +117,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
         />
 
-        <YandexMetrika />
+        <MetrikaDeferred />
 
         <CartProvider>
           <Header />

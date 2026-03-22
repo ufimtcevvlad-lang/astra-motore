@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Как заказать",
@@ -9,14 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default function HowToOrderPage() {
-  const siteUrl = "https://astramotors.shop";
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Главная", item: siteUrl + "/" },
-      { "@type": "ListItem", position: 2, name: "Каталог", item: siteUrl + "/catalog" },
-      { "@type": "ListItem", position: 3, name: "Как заказать", item: siteUrl + "/how-to-order" },
+      { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
+      { "@type": "ListItem", position: 3, name: "Как заказать", item: `${SITE_URL}/how-to-order` },
     ],
   };
 

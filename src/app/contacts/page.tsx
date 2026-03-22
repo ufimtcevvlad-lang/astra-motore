@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Контакты",
@@ -9,14 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default function ContactsPage() {
-  const siteUrl = "https://astramotors.shop";
   const contactPointLd = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     mainEntity: {
       "@type": "Organization",
       name: "Astra Motors",
-      url: siteUrl,
+      url: SITE_URL,
       telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
       contactPoint: [
         {

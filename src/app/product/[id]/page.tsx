@@ -7,8 +7,7 @@ import { products } from "../../data/products";
 import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
-
-const siteUrl = "https://astramotors.shop";
+import { SITE_URL } from "../../lib/site";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -48,9 +47,9 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `${siteUrl}${url}`,
+      url: `${SITE_URL}${url}`,
       type: "article",
-      images: product.image ? [{ url: `${siteUrl}${product.image}` }] : undefined,
+      images: product.image ? [{ url: `${SITE_URL}${product.image}` }] : undefined,
     },
   };
 }
@@ -74,19 +73,19 @@ export default function ProductPage({
         "@type": "ListItem",
         position: 1,
         name: "Главная",
-        item: siteUrl + "/",
+        item: SITE_URL + "/",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Каталог",
-        item: siteUrl + "/catalog",
+        item: SITE_URL + "/catalog",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: product.name,
-        item: siteUrl + `/product/${product.id}`,
+        item: SITE_URL + `/product/${product.id}`,
       },
     ],
   };
@@ -98,14 +97,14 @@ export default function ProductPage({
     description: product.description,
     sku: product.sku,
     brand: { "@type": "Brand", name: product.brand },
-    image: product.image ? [siteUrl + product.image] : undefined,
+    image: product.image ? [SITE_URL + product.image] : undefined,
     offers: {
       "@type": "Offer",
       priceCurrency: "RUB",
       price: product.price,
       availability:
         product.inStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      url: siteUrl + `/product/${product.id}`,
+      url: SITE_URL + `/product/${product.id}`,
     },
   };
 

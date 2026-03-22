@@ -132,3 +132,23 @@ cd /var/www/astra-motors
 pm2 start "npm run -s bot:telegram" --name astra-telegram-bot
 pm2 save
 ```
+
+## Производительность и структура
+
+- **`src/app/lib/site.ts`** — единый `SITE_URL` для SEO, canonical и JSON-LD (без дублирования строк).
+- **Корзина** (`CartContext`) — стабильные колбэки `useCallback` + `useMemo` для значения контекста, меньше лишних перерисовок.
+- **Каталог** — `CatalogProductCard` и чипы фильтра обёрнуты в `memo`.
+- **Главная** — блок «Популярные позиции» использует предвычисленный `HOME_FEATURED_PRODUCTS` в `data/products.ts` (сортировка один раз при загрузке модуля).
+- **Яндекс.Метрика** — отложенная загрузка через `MetrikaDeferred` (`dynamic(..., { ssr: false })`); логи в консоль только в `development`.
+- **`next.config.ts`** — `poweredByHeader: false`, настройки `images` (AVIF/WebP, размеры).
+- **Иконки** — заданы в `metadata.icons` в `layout.tsx` (без дублирующих `<link>` в `<head>`).
+
+## Производительность и структура
+
+- **`src/app/lib/site.ts`** — единый `SITE_URL` для SEO, canonical и JSON-LD (без дублирования строк).
+- **Корзина** (`CartContext`) — стабильные колбэки `useCallback` + `useMemo` для значения контекста, меньше лишних перерисовок.
+- **Каталог** — `CatalogProductCard` и чипы фильтра обёрнуты в `memo`.
+- **Главная** — блок «Популярные позиции» использует предвычисленный `HOME_FEATURED_PRODUCTS` в `data/products.ts` (сортировка один раз при загрузке модуля).
+- **Яндекс.Метрика** — отложенная загрузка через `MetrikaDeferred` (`dynamic(..., { ssr: false })`); логи в консоль только в `development`.
+- **`next.config.ts`** — `poweredByHeader: false`, настройки `images` (AVIF/WebP, размеры).
+- **Иконки** — заданы в `metadata.icons` в `layout.tsx` (без дублирующих `<link>` в `<head>`).

@@ -5,19 +5,25 @@ import { useEffect } from "react";
 /** ID счётчика из metrika.yandex.ru → Настройки → Код счётчика */
 const COUNTER_ID = 107737371;
 
+const isDev = process.env.NODE_ENV === "development";
+
+function log(...args: unknown[]) {
+  if (isDev) console.info("[metrika]", ...args);
+}
+
 export function YandexMetrika() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const w = window as Window & { ym?: (...args: unknown[]) => void };
 
-    console.info("[metrika] component mounted");
+    log("component mounted");
 
     const existing = document.querySelector<HTMLScriptElement>(
       'script[src="https://mc.yandex.ru/metrika/tag.js"]'
     );
     if (existing) {
-      console.info("[metrika] tag.js already present in DOM");
+      log("tag.js already present in DOM");
     }
 
     (function (
@@ -39,7 +45,7 @@ export function YandexMetrika() {
       const k = e.createElement(t) as HTMLScriptElement;
       k.async = true;
       k.src = r;
-      k.onload = () => console.info("[metrika] tag.js loaded");
+      k.onload = () => log("tag.js loaded");
       k.onerror = () =>
         console.error(
           "[metrika] tag.js failed to load (blocked / network / policy)",
@@ -53,7 +59,7 @@ export function YandexMetrika() {
 
     const tryInit = () => {
       if (typeof w.ym === "function") {
-        console.info("[metrika] ym() is available, calling init()");
+        log("ym() is available, calling init()");
         w.ym(COUNTER_ID, "init", {
           clickmap: true,
           trackLinks: true,
@@ -69,14 +75,17 @@ export function YandexMetrika() {
       const t = setInterval(() => {
         if (tryInit()) clearInterval(t);
       }, 100);
-      setTimeout(() => clearInterval(t), 10000);
+      const timeout = setTimeout(() => clearInterval(t), 10000);
+      return () => {
+        clearInterval(t);
+        clearTimeout(timeout);
+      };
     }
   }, []);
 
   return (
     <noscript>
       <div>
-        {/* next/image в <noscript> не подходит — счётчик без JS */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://mc.yandex.ru/watch/${COUNTER_ID}`}
