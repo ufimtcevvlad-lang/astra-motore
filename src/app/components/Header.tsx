@@ -66,6 +66,17 @@ export function Header() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
+            <Link
+              href="/cart"
+              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/25 hover:bg-amber-300 transition"
+            >
+              Корзина
+              {totalItems > 0 && (
+                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-amber-400">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
             {user ? (
               <Link
                 href="/account"
@@ -86,17 +97,6 @@ export function Header() {
                 </Link>
               </>
             )}
-            <Link
-              href="/cart"
-              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/25 hover:bg-amber-300 transition"
-            >
-              Корзина
-              {totalItems > 0 && (
-                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-amber-400">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
           </div>
         </div>
 

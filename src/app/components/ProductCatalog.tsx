@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
+import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
 import { products, type Product } from "../data/products";
 import {
   CATALOG_GROUPS,
@@ -89,8 +90,39 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
         </div>
       ) : null}
 
-      {/* Один блок: поиск + марка + раздел — без лишних пояснений */}
+      {/* Блок фильтров: марка → поиск → «к группам» (на моб.) → раздел (как на схеме сверху вниз) */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Марка</span>
+          <div
+            className="inline-flex w-full max-w-md rounded-xl border border-slate-200 bg-slate-50 p-1"
+            role="group"
+            aria-label="Фильтр по марке"
+          >
+            {(
+              [
+                { id: "all" as const, label: "Все" },
+                { id: "opel" as const, label: "Opel" },
+                { id: "chevrolet" as const, label: "Chevrolet" },
+              ] as const
+            ).map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={brandFilter === id}
+                onClick={() => setBrandFilter(id)}
+                className={`flex-1 rounded-lg px-3 py-2.5 text-sm font-medium transition sm:px-4 ${
+                  brandFilter === id
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <label className="sr-only" htmlFor="catalog-search">
           Поиск по каталогу
         </label>
@@ -100,59 +132,33 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Название, артикул или модель авто…"
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/30"
+          className="mt-4 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/30"
         />
 
-        <div className="mt-4 flex flex-col gap-4 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-            <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Марка</span>
-            <div
-              className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1"
-              role="group"
-              aria-label="Фильтр по марке"
-            >
-              {(
-                [
-                  { id: "all" as const, label: "Все" },
-                  { id: "opel" as const, label: "Opel" },
-                  { id: "chevrolet" as const, label: "Chevrolet" },
-                ] as const
-              ).map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={brandFilter === id}
-                  onClick={() => setBrandFilter(id)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-                    brandFilter === id
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+        <CatalogGroupNav
+          products={products}
+          brandFilter={brandFilter}
+          visible={groupedMode}
+          variant="inline"
+        />
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 sm:min-w-[min(100%,16rem)]">
-            <label htmlFor="catalog-section" className="text-xs font-medium uppercase tracking-wide text-slate-500">
-              Раздел
-            </label>
-            <select
-              id="catalog-section"
-              value={activeSlug}
-              onChange={(e) => setActiveSlug(e.target.value as typeof activeSlug)}
-              className="w-full cursor-pointer rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 sm:min-w-[14rem]"
-            >
-              <option value="all">Все разделы сразу</option>
-              {CATALOG_SECTIONS.map((s) => (
-                <option key={s.slug} value={s.slug}>
-                  {s.title}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:gap-3">
+          <label htmlFor="catalog-section" className="text-xs font-medium uppercase tracking-wide text-slate-500 shrink-0">
+            Раздел
+          </label>
+          <select
+            id="catalog-section"
+            value={activeSlug}
+            onChange={(e) => setActiveSlug(e.target.value as typeof activeSlug)}
+            className="w-full min-w-0 cursor-pointer rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 sm:max-w-md"
+          >
+            <option value="all">Все разделы сразу</option>
+            {CATALOG_SECTIONS.map((s) => (
+              <option key={s.slug} value={s.slug}>
+                {s.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         {hasActiveFilters ? (
@@ -183,49 +189,57 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
           </p>
 
           {groupedMode ? (
-            <div className="space-y-10">
-              {CATALOG_GROUPS.map((group) => {
-                const sections = sectionsInGroup(group.slug);
-                const hasAny = sections.some((sec) =>
-                  products.some((p) => p.category === sec.title && productMatchesBrand(p, brandFilter))
-                );
-                if (!hasAny) return null;
+            <div className="lg:flex lg:items-start lg:gap-8">
+              <CatalogGroupNav
+                products={products}
+                brandFilter={brandFilter}
+                visible={groupedMode}
+                variant="sidebar"
+              />
+              <div className="min-w-0 flex-1 space-y-10">
+                {CATALOG_GROUPS.map((group) => {
+                  const sections = sectionsInGroup(group.slug);
+                  const hasAny = sections.some((sec) =>
+                    products.some((p) => p.category === sec.title && productMatchesBrand(p, brandFilter))
+                  );
+                  if (!hasAny) return null;
 
-                return (
-                  <div
-                    key={group.slug}
-                    id={`catalog-group-${group.slug}`}
-                    className="scroll-mt-24 space-y-8"
-                  >
-                    <h2 className="border-b border-amber-200/80 pb-2 text-xl font-semibold text-slate-900">
-                      {group.title}
-                    </h2>
+                  return (
+                    <div
+                      key={group.slug}
+                      id={`catalog-group-${group.slug}`}
+                      className="scroll-mt-28 space-y-8"
+                    >
+                      <h2 className="border-b border-amber-200/80 pb-2 text-xl font-semibold text-slate-900">
+                        {group.title}
+                      </h2>
 
-                    {sections.map((section) => {
-                      const items = products
-                        .filter(
-                          (p) => p.category === section.title && productMatchesBrand(p, brandFilter)
-                        )
-                        .sort(sortProductsById);
-                      if (items.length === 0) return null;
-                      return (
-                        <div
-                          key={section.slug}
-                          id={`catalog-${section.slug}`}
-                          className="scroll-mt-24 space-y-4"
-                        >
-                          <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
-                          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {items.map((p) => (
-                              <CatalogProductCard key={p.id} p={p} />
-                            ))}
+                      {sections.map((section) => {
+                        const items = products
+                          .filter(
+                            (p) => p.category === section.title && productMatchesBrand(p, brandFilter)
+                          )
+                          .sort(sortProductsById);
+                        if (items.length === 0) return null;
+                        return (
+                          <div
+                            key={section.slug}
+                            id={`catalog-${section.slug}`}
+                            className="scroll-mt-28 space-y-4"
+                          >
+                            <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
+                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                              {items.map((p) => (
+                                <CatalogProductCard key={p.id} p={p} />
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
