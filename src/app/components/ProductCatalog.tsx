@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
 import { products, type Product } from "../data/products";
@@ -25,10 +26,18 @@ type ProductCatalogProps = {
   hideHubIntro?: boolean;
 };
 
-export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
+function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [activeSlug, setActiveSlug] = useState<string | "all">("all");
   const [brandFilter, setBrandFilter] = useState<BrandFilter>("all");
+
+  // Синхронизация поля поиска с ?q= при переходе из шапки или по ссылке
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация с URL (внешняя система)
+    setQuery(searchParams.get("q") ?? "");
+  }, [searchParams]);
 
   const queryNorm = query.trim().toLowerCase();
   const groupedMode = activeSlug === "all" && !queryNorm;
@@ -60,6 +69,7 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
     setQuery("");
     setActiveSlug("all");
     setBrandFilter("all");
+    router.replace("/catalog");
   };
 
   return (
@@ -251,5 +261,25 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
         </>
       )}
     </section>
+  );
+}
+
+export function ProductCatalog(props: ProductCatalogProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-4">
+          <div className="h-48 animate-pulse rounded-2xl bg-slate-100" />
+          <div className="h-6 w-40 animate-pulse rounded bg-slate-100" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-72 animate-pulse rounded-xl bg-slate-100" />
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <ProductCatalogInner {...props} />
+    </Suspense>
   );
 }
