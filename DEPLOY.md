@@ -1,46 +1,37 @@
-# Деплой Astra Motors
+# Деплой Astra Motors — команды одним списком
 
-## 1. Залить изменения в GitHub (локально)
-
-```bash
-cd /path/to/autoparts-shop
-git add src/app/components/BrandLogo.tsx src/app/components/Header.tsx src/app/globals.css DEPLOY.md
-git status
-git commit -m "feat: векторный логотип Astra Motors в шапке"
-git push origin main
-```
-
-Если проект на **Vercel** и привязан к репозиторию — после `push` сборка запустится сама. Проверь дашборд Vercel и домен.
+Подставь свой путь к проекту на Mac и IP/папку на сервере при необходимости.
 
 ---
 
-## 2. Обновить сайт на VPS (Timeweb / свой сервер)
-
-Подключись по SSH и выполни в папке проекта (путь как в `TIMEWEB-ИНСТРУКЦИЯ.md`):
+### На Mac (коммит и отправка в GitHub)
 
 ```bash
-ssh root@ВАШ_IP
+cd ~/Documents/autoparts-shop
+git status
+git add -A
+git commit -m "deploy: обновление сайта"
+git push origin main
 ```
 
+---
+
+### На сервере (обновление уже установленного сайта)
+
 ```bash
+ssh root@5.42.117.221
 cd /var/www/astra-motors
 git pull origin main
 npm install
 npm run build
 pm2 restart astra-motors
+pm2 save
+curl -sI http://127.0.0.1:3000 | head -10
+pm2 logs astra-motors --lines 25
 ```
-
-Проверка:
-
-```bash
-curl -sI http://localhost:3000 | head -5
-pm2 logs astra-motors --lines 30
-```
-
-Полная установка с нуля (Node, PM2, nginx, clone) — в файле **`TIMEWEB-ИНСТРУКЦИЯ.md`**.
 
 ---
 
-## 3. Переменные окружения на сервере
-
-Не забудь `.env.local` в `/var/www/astra-motors/` (см. `.env.example` и README).
+- После `push` на **Vercel** (если проект привязан к репо) сборка идёт автоматически.
+- Полная установка с нуля (Node, PM2, nginx): **`TIMEWEB-ИНСТРУКЦИЯ.md`**.
+- Переменные окружения на сервере: **`/var/www/astra-motors/.env.local`** (см. `.env.example`).
