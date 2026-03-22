@@ -28,15 +28,18 @@ export function AstraMarkSvg({ className }: Props) {
       aria-hidden
     >
       <defs>
+        {/* Как у Tailwind bg-amber-400 / кнопки «Найти»: #fbbf24, светлее — amber-300, тень — amber-500 */}
         <linearGradient id={gFill} x1="18" y1="10" x2="82" y2="90" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#fffef5" />
-          <stop offset="0.3" stopColor="#fef08a" />
-          <stop offset="0.55" stopColor="#fbbf24" />
-          <stop offset="1" stopColor="#b45309" />
+          <stop stopColor="#fffbeb" />
+          <stop offset="0.22" stopColor="#fde047" />
+          <stop offset="0.5" stopColor="#fbbf24" />
+          <stop offset="0.78" stopColor="#fbbf24" />
+          <stop offset="1" stopColor="#d97706" />
         </linearGradient>
         <linearGradient id={gStroke} x1="50" y1="6" x2="50" y2="94" gradientUnits="userSpaceOnUse">
           <stop stopColor="#fde047" />
-          <stop offset="1" stopColor="#92400e" />
+          <stop offset="0.45" stopColor="#fbbf24" />
+          <stop offset="1" stopColor="#b45309" />
         </linearGradient>
       </defs>
 
