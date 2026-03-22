@@ -9,11 +9,12 @@ import { AstraMarkSvg } from "./AstraMarkSvg";
 export function BrandLogo() {
   return (
     <div className="flex min-w-0 items-center gap-3.5 sm:gap-5">
+      {/* Квадрат 1:1 — знак не растягивается, только масштабируется пропорционально */}
       <div
-        className="relative h-[3.5rem] w-[3.5rem] shrink-0 drop-shadow-[0_0_22px_rgba(251,191,36,0.28)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_28px_rgba(251,191,36,0.42)] sm:h-16 sm:w-16"
+        className="flex aspect-square h-14 w-14 shrink-0 items-center justify-center sm:h-16 sm:w-16 drop-shadow-[0_0_22px_rgba(251,191,36,0.28)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_28px_rgba(251,191,36,0.42)]"
         aria-hidden
       >
-        <AstraMarkSvg className="h-full w-full" />
+        <AstraMarkSvg className="block h-full w-full max-h-full max-w-full" />
       </div>
 
       <div className="min-w-0 select-none">
