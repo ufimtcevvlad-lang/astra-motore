@@ -18,22 +18,20 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </Link>
-      <div className="p-4 flex flex-col gap-2 flex-1 border-t border-slate-100">
-        <h2 className="font-semibold text-sm text-slate-900 line-clamp-2">{p.name}</h2>
-        <p className="text-xs text-amber-800/90 font-medium">{p.category}</p>
-        <p className="text-xs text-slate-500">
-          {p.brand} • {p.car}
-        </p>
-        <p className="text-sm font-bold text-amber-700">
+      <div className="flex flex-1 flex-col gap-2 border-t border-slate-100 p-4">
+        <span className="inline-flex w-fit rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-900">
+          {p.category}
+        </span>
+        <h2 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{p.name}</h2>
+        <p className="text-lg font-bold text-amber-700 tabular-nums">
           {p.price.toLocaleString("ru-RU")} ₽
         </p>
-        <p className="text-xs text-slate-500">
-          Артикул: {p.sku} • В наличии: {p.inStock}
-        </p>
-        <div className="mt-auto pt-2">
+        <p className="line-clamp-1 text-xs text-slate-500">{p.car}</p>
+        <p className="text-xs text-slate-400">Арт. {p.sku}</p>
+        <div className="mt-auto pt-1">
           <Link
             href={`/product/${p.id}`}
-            className="inline-flex w-full justify-center rounded-lg bg-amber-400 px-3 py-2.5 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition shadow-sm"
+            className="inline-flex w-full justify-center rounded-lg bg-amber-400 px-3 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300"
           >
             Подробнее
           </Link>

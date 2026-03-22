@@ -28,7 +28,7 @@ export default function CatalogPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
@@ -42,12 +42,11 @@ export default function CatalogPage() {
         title="Каталог запчастей"
         description={
           <>
-            Путь: <strong className="text-slate-800">Главная → Каталоги (шапка) → Витрина</strong>. Здесь поиск, фильтр по
-            марке и рубрики по типу детали. Нужна позиция не из списка —{" "}
-            <Link href="/contacts" className="text-amber-800 font-medium hover:underline">
-              напишите менеджеру
+            Ищите по названию или артикулу. Не нашли нужное —{" "}
+            <Link href="/contacts" className="font-medium text-amber-800 underline-offset-2 hover:underline">
+              напишите нам
             </Link>
-            .
+            , подберём.
           </>
         }
       />

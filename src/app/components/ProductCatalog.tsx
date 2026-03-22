@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { products, type Product } from "../data/products";
@@ -10,30 +10,6 @@ import {
   sectionsInGroup,
   sortProductsById,
 } from "../data/catalog-sections";
-
-const Chip = memo(function Chip({
-  active,
-  children,
-  onClick,
-}: {
-  active: boolean;
-  children: React.ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
-        active
-          ? "border-amber-600 bg-amber-600 text-white shadow-sm"
-          : "border-amber-200 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50"
-      }`}
-    >
-      {children}
-    </button>
-  );
-});
 
 type BrandFilter = "all" | "opel" | "chevrolet";
 
@@ -45,7 +21,6 @@ function productMatchesBrand(p: Product, brand: BrandFilter): boolean {
 }
 
 type ProductCatalogProps = {
-  /** Скрыть дублирующий блок ссылок на марки (полоска «Каталоги» уже в шапке) */
   hideHubIntro?: boolean;
 };
 
@@ -71,12 +46,14 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
           p.brand.toLowerCase().includes(queryNorm) ||
           p.car.toLowerCase().includes(queryNorm) ||
           p.sku.toLowerCase().includes(queryNorm) ||
-          p.category.toLowerCase().includes(queryNorm) ||
-          p.country.toLowerCase().includes(queryNorm)
+          p.category.toLowerCase().includes(queryNorm)
         );
       })
       .sort(sortProductsById);
   }, [queryNorm, activeSlug, brandFilter]);
+
+  const hasActiveFilters =
+    queryNorm.length > 0 || activeSlug !== "all" || brandFilter !== "all";
 
   const clearFilters = () => {
     setQuery("");
@@ -85,135 +62,132 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
       {!hideHubIntro ? (
-        <div className="rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-3 text-sm">
+        <div className="rounded-xl border border-amber-100 bg-amber-50/50 px-4 py-3 text-sm">
           <p className="font-medium text-slate-800">Каталоги по марке</p>
-          <p className="mt-1 text-xs text-slate-600">
-            Отдельные страницы с текстом и примерами — дублируют путь в шапке «Каталоги».
-          </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Link
               href="/zapchasti-opel"
-              className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
+              className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-900 hover:border-amber-400"
             >
-              Каталог Opel
+              Opel
             </Link>
             <Link
               href="/zapchasti-chevrolet"
-              className="inline-flex rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:border-amber-400 hover:bg-amber-50"
+              className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-900 hover:border-amber-400"
             >
-              Каталог Chevrolet
+              Chevrolet
             </Link>
             <Link
               href="/zapchasti-gm"
-              className="inline-flex rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-300"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 hover:border-slate-300"
             >
-              Все запчасти GM
+              Все GM
             </Link>
           </div>
         </div>
       ) : null}
 
-      <div className="space-y-2">
-        <p className="text-xs font-medium text-slate-600">Фильтр по марке в каталоге</p>
-        <div className="flex flex-wrap gap-2">
-          <Chip active={brandFilter === "all"} onClick={() => setBrandFilter("all")}>
-            Все марки
-          </Chip>
-          <Chip active={brandFilter === "opel"} onClick={() => setBrandFilter("opel")}>
-            Opel
-          </Chip>
-          <Chip active={brandFilter === "chevrolet"} onClick={() => setBrandFilter("chevrolet")}>
-            Chevrolet
-          </Chip>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <label htmlFor="search" className="text-sm font-medium text-slate-700">
-          Поиск по названию, бренду, авто, артикулу или разделу
+      {/* Один блок: поиск + марка + раздел — без лишних пояснений */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <label className="sr-only" htmlFor="catalog-search">
+          Поиск по каталогу
         </label>
         <input
-          id="search"
+          id="catalog-search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Например: фильтр, Cruze, Hengst, артикул…"
-          className="w-full rounded-lg border border-amber-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+          placeholder="Название, артикул или модель авто…"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/30"
         />
-      </div>
 
-      {/* Витрина: мелкие рубрики по типу детали */}
-      <div className="space-y-2">
-        <p className="text-xs font-medium text-slate-600">Витрина — по типу детали</p>
-        <div className="flex flex-wrap gap-2">
-          <Chip active={activeSlug === "all"} onClick={() => setActiveSlug("all")}>
-            Все разделы
-          </Chip>
-          {CATALOG_SECTIONS.map((s) => (
-            <Chip
-              key={s.slug}
-              active={activeSlug === s.slug}
-              onClick={() => setActiveSlug(s.slug)}
+        <div className="mt-4 flex flex-col gap-4 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Марка</span>
+            <div
+              className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1"
+              role="group"
+              aria-label="Фильтр по марке"
             >
-              {s.title}
-            </Chip>
-          ))}
+              {(
+                [
+                  { id: "all" as const, label: "Все" },
+                  { id: "opel" as const, label: "Opel" },
+                  { id: "chevrolet" as const, label: "Chevrolet" },
+                ] as const
+              ).map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={brandFilter === id}
+                  onClick={() => setBrandFilter(id)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                    brandFilter === id
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 sm:min-w-[min(100%,16rem)]">
+            <label htmlFor="catalog-section" className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              Раздел
+            </label>
+            <select
+              id="catalog-section"
+              value={activeSlug}
+              onChange={(e) => setActiveSlug(e.target.value as typeof activeSlug)}
+              className="w-full cursor-pointer rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 sm:min-w-[14rem]"
+            >
+              <option value="all">Все разделы сразу</option>
+              {CATALOG_SECTIONS.map((s) => (
+                <option key={s.slug} value={s.slug}>
+                  {s.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <p className="text-xs text-slate-500">
-          В режиме «Все разделы» товары сгруппированы по блокам (ТО, двигатель, охлаждение…). Один раздел — только его позиции. Поиск и марка работают вместе.
-        </p>
-      </div>
 
-      {groupedMode ? (
-        <nav
-          aria-label="Быстрый переход по группам каталога"
-          className="flex flex-wrap gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-2 text-xs"
-        >
-          <span className="font-medium text-slate-600 self-center">К группам:</span>
-          {CATALOG_GROUPS.map((g) => (
-            <a
-              key={g.slug}
-              href={`#catalog-group-${g.slug}`}
-              className="rounded-full bg-white border border-slate-200 px-2.5 py-1 text-slate-700 hover:border-amber-300 hover:text-amber-800"
+        {hasActiveFilters ? (
+          <div className="mt-4 flex justify-end border-t border-slate-100 pt-4">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-sm font-medium text-amber-800 underline-offset-2 hover:underline"
             >
-              {g.title}
-            </a>
-          ))}
-        </nav>
-      ) : null}
+              Сбросить фильтры
+            </button>
+          </div>
+        ) : null}
+      </div>
 
       {filtered.length === 0 ? (
-        <p className="rounded-lg border border-slate-200 bg-white p-6 text-center text-slate-600">
-          По вашему запросу ничего не найдено.{" "}
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-amber-600 hover:underline font-medium"
-          >
-            Сбросить фильтры
+        <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-8 text-center text-slate-600">
+          Ничего не нашли. Попробуйте другой запрос или{" "}
+          <button type="button" onClick={clearFilters} className="font-medium text-amber-800 underline">
+            сбросьте фильтры
           </button>
           .
         </p>
       ) : (
         <>
-          <p className="text-xs text-slate-500">
-            Показано: {filtered.length}{" "}
-            {filtered.length === 1 ? "товар" : filtered.length < 5 ? "товара" : "товаров"}
-            {groupedMode ? " по группам и разделам" : ""}
+          <p className="text-sm text-slate-500">
+            Показано: <span className="font-semibold text-slate-800">{filtered.length}</span>
           </p>
 
           {groupedMode ? (
-            <div className="space-y-12">
+            <div className="space-y-10">
               {CATALOG_GROUPS.map((group) => {
                 const sections = sectionsInGroup(group.slug);
                 const hasAny = sections.some((sec) =>
-                  products.some(
-                    (p) =>
-                      p.category === sec.title &&
-                      productMatchesBrand(p, brandFilter)
-                  )
+                  products.some((p) => p.category === sec.title && productMatchesBrand(p, brandFilter))
                 );
                 if (!hasAny) return null;
 
@@ -221,19 +195,16 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
                   <div
                     key={group.slug}
                     id={`catalog-group-${group.slug}`}
-                    className="scroll-mt-28 space-y-8"
+                    className="scroll-mt-24 space-y-8"
                   >
-                    <div className="border-b border-amber-200/80 pb-3">
-                      <h2 className="text-xl font-semibold text-slate-900">{group.title}</h2>
-                      <p className="text-xs text-slate-500 mt-1">{group.hint}</p>
-                    </div>
+                    <h2 className="border-b border-amber-200/80 pb-2 text-xl font-semibold text-slate-900">
+                      {group.title}
+                    </h2>
 
                     {sections.map((section) => {
                       const items = products
                         .filter(
-                          (p) =>
-                            p.category === section.title &&
-                            productMatchesBrand(p, brandFilter)
+                          (p) => p.category === section.title && productMatchesBrand(p, brandFilter)
                         )
                         .sort(sortProductsById);
                       if (items.length === 0) return null;
@@ -241,12 +212,9 @@ export function ProductCatalog({ hideHubIntro = false }: ProductCatalogProps) {
                         <div
                           key={section.slug}
                           id={`catalog-${section.slug}`}
-                          className="scroll-mt-28 space-y-4"
+                          className="scroll-mt-24 space-y-4"
                         >
-                          <div className="border-b border-slate-200/90 pb-2">
-                            <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
-                            <p className="text-xs text-slate-500 mt-0.5">{section.hint}</p>
-                          </div>
+                          <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
                           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {items.map((p) => (
                               <CatalogProductCard key={p.id} p={p} />
