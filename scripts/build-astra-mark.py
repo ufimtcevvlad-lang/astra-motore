@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 Собирает public/brand/astra-mark.png из полного макета (шестерня + AM, без текста «ASTRA MOTORS»).
-Источник по умолчанию: public/brand/logo-options/logo-option-01-classic-gear.png
+Цвета как у Tailwind amber-400 (#fbbf24) и кнопок «Найти».
 
-Запуск: python3 scripts/build-astra-mark.py
+Запуск: python3 scripts/build-astra-mark.py [путь-к-исходнику.png]
 Требуется: pip install Pillow
 """
 
@@ -12,25 +12,56 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC_DEFAULT = ROOT / "public/brand/logo-options/logo-option-01-classic-gear.png"
 OUT = ROOT / "public/brand/astra-mark.png"
 
+# Tailwind-стиль (как bg-amber-400 / кнопки)
+AMBER_300 = (253, 224, 71)  # #fcd34d
+AMBER_400 = (251, 191, 36)  # #fbbf24
+AMBER_500 = (245, 158, 11)  # #f59e0b
+AMBER_600 = (217, 119, 6)  # #d97706
+RED_500 = (239, 68, 68)  # #ef4444
+
+
+def _lerp(a: float, b: float, t: float) -> float:
+    return a + (b - a) * t
+
+
+def _lerp_rgb(
+    c1: tuple[int, int, int], c2: tuple[int, int, int], t: float
+) -> tuple[int, int, int]:
+    return (
+        int(_lerp(c1[0], c2[0], t)),
+        int(_lerp(c1[1], c2[1], t)),
+        int(_lerp(c1[2], c2[2], t)),
+    )
+
 
 def tint(r: int, g: int, b: int, a: int) -> tuple[int, int, int, int]:
     if a < 20:
         return (0, 0, 0, 0)
-    if r + g + b < 45:
+    if r + g + b < 42:
         return (0, 0, 0, 0)
-    if r > 170 and g < 120 and b < 120 and r > g + 40:
-        return (239, 68, 68, a)
-    t = (r + g + b) / 765
-    ar = int(253 * 0.65 + 251 * 0.35 * t)
-    ag = int(224 * 0.65 + 191 * 0.35 * t)
-    ab = int(71 * 0.65 + 36 * 0.35 * t)
-    return (min(255, ar), min(255, ag), min(255, ab), a)
+    # красный ромб на «M»
+    if r > 180 and g < 115 and b < 115 and r > g + 35:
+        return (*RED_500, a)
+
+    lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+    # светлые участки → ближе к amber-300/400, тени → amber-500/600
+    if lum > 0.78:
+        t = (lum - 0.78) / 0.22
+        rgb = _lerp_rgb(AMBER_400, AMBER_300, min(1.0, max(0.0, t)))
+    elif lum > 0.42:
+        t = (lum - 0.42) / 0.36
+        rgb = _lerp_rgb(AMBER_500, AMBER_400, min(1.0, max(0.0, t)))
+    else:
+        t = lum / 0.42 if lum > 0 else 0
+        rgb = _lerp_rgb(AMBER_600, AMBER_500, min(1.0, max(0.0, t)))
+
+    return (*rgb, a)
 
 
 def main() -> None:
@@ -55,7 +86,7 @@ def main() -> None:
                 maxy = max(maxy, y)
 
     cx, cy = (minx + maxx) // 2, (miny + maxy) // 2
-    side = max(maxx - minx, maxy - miny) + 36
+    side = max(maxx - minx, maxy - miny) + 56  # запас, чтобы не резало круг
     left = max(0, cx - side // 2)
     top = max(0, cy - side // 2)
     if left + side > upper.width:
@@ -71,8 +102,11 @@ def main() -> None:
             r, g, b, a = sp[x, y]
             sp[x, y] = tint(r, g, b, a)
 
-    out_sz = 1024
+    out_sz = 2048
     out_img = sq.resize((out_sz, out_sz), Image.Resampling.LANCZOS)
+    # Лёгкая резкость после масштаба (мягко, без ореолов)
+    out_img = out_img.filter(ImageFilter.UnsharpMask(radius=1.2, percent=110, threshold=2))
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     out_img.save(OUT, "PNG", optimize=True)
     print(f"OK → {OUT} ({out_sz}×{out_sz})")

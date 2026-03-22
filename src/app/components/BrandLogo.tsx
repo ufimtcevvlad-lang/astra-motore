@@ -1,9 +1,10 @@
 "use client";
 
-import { AstraMarkSvg } from "./AstraMarkSvg";
+import Image from "next/image";
 
 /**
- * Логотип шапки: векторный знак (чёткий на любом DPI, цвета как у кнопок amber-400) + типографика.
+ * Логотип шапки: растровый знак (PNG @2×) + типографика.
+ * Цвета подбираются скриптом `scripts/build-astra-mark.py` под `amber-400` (#fbbf24).
  */
 export function BrandLogo() {
   return (
@@ -12,9 +13,16 @@ export function BrandLogo() {
         className="relative flex shrink-0 items-center justify-center overflow-visible py-0.5 drop-shadow-[0_0_24px_rgba(251,191,36,0.3)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_32px_rgba(251,191,36,0.45)]"
         aria-hidden
       >
-        {/* Квадрат как у кнопочного жёлтого ряда; внутренний отступ, чтобы обводка/круг не касались края */}
-        <div className="flex h-[4.25rem] w-[4.25rem] items-center justify-center sm:h-20 sm:w-20 md:h-[5.5rem] md:w-[5.5rem]">
-          <AstraMarkSvg className="block h-[88%] w-[88%] max-h-full max-w-full" />
+        <div className="relative h-[4.25rem] w-[4.25rem] overflow-visible sm:h-20 sm:w-20 md:h-[5.5rem] md:w-[5.5rem]">
+          <Image
+            src="/brand/astra-mark.png"
+            alt=""
+            fill
+            priority
+            quality={100}
+            sizes="(max-width: 768px) 4.25rem, (max-width: 1024px) 5rem, 5.5rem"
+            className="object-contain object-center p-[16%]"
+          />
         </div>
       </div>
 
