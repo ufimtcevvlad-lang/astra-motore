@@ -102,7 +102,7 @@ npm run indexnow:send
 
 - Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и цена из файла; расчёт витринной цены — в коде (`src/app/lib/price.ts`, не выводится на сайте).
 - Каталог на отдельной странице: `/catalog` (`src/app/catalog/page.tsx` + `ProductCatalog`). Главная — лендинг с превью позиций.
-- Единый вид: `components/catalog/` — `CatalogProductCard`, `CatalogProductGrid`, `CatalogChrome` (крошки + H1), `CatalogSectionHeading`; в шапке полоса **Каталоги** (`CatalogHubStrip`): Витрина → Opel → Chevrolet → GM.
+- Единый вид: `components/catalog/` — `CatalogProductCard`, `CatalogProductGrid`, `CatalogChrome` (крошки + H1), `CatalogSectionHeading`; марки в шапке — через меню **Каталог** (Витрина, Opel, Chevrolet, GM).
 - Разделы: `src/app/data/catalog-sections.ts` — группы `CATALOG_GROUPS` и подразделы `CATALOG_SECTIONS`; у товара поле `category` совпадает с `title` раздела.
 - Сверка с Excel на своей машине: положите файл на рабочий стол как `топ 100 продаж опель.xlsx` и выполните `npm run opel:excel-preview` (или `node scripts/opel-excel-to-ts.mjs "/путь/к/файлу.xlsx" 10`).
 - Фото пилота: `public/images/catalog/` (источники — Wikimedia Commons, см. `public/images/catalog/ATTRIBUTION.md`). Повторная загрузка: `npm run catalog:images`. Это **тип детали**, не гарантия 1:1 с вашим артикулом; для точного вида по OEM — свои фото.

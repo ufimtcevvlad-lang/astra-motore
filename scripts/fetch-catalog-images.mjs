@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
+ * @deprecated Используйте `npm run catalog:images` → `download-catalog-images-curated.mjs`
+ * (отдельный файл на каждую позицию opel-1 … opel-20).
  * Скачивает фото пилотного каталога с Wikimedia Commons (нужен корректный User-Agent).
- * Запуск из корня репозитория: node scripts/fetch-catalog-images.mjs
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";

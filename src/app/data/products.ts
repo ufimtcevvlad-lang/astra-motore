@@ -77,7 +77,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Chevrolet Cruze, Opel (F16D4, F18D4)",
-    image: "/images/catalog/opel-3456-rings.jpg",
+    image: "/images/catalog/opel-3.jpg",
     description:
       "Уплотнительное кольцо впускного канала теплообменника масла. При замене маслоохладителя или течи с сопряжения рекомендуется ставить новое кольцо для герметичности системы смазки.",
     analogIds: ["opel-5", "opel-6"],
@@ -107,7 +107,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/catalog/opel-3456-rings.jpg",
+    image: "/images/catalog/opel-5.jpg",
     description:
       "Кольцо уплотнения на патрубке маслоохладителя. Мелкая деталь, от которой зависит герметичность контуры охлаждения масла — при снятии трубки заменяйте обязательно.",
     analogIds: ["opel-3", "opel-6"],
@@ -122,7 +122,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/catalog/opel-3456-rings.jpg",
+    image: "/images/catalog/opel-6.jpg",
     description:
       "Альтернативный номер уплотнительного кольца для линий маслоохладителя на тех же моторах A14XER/A16XER. Уточняйте по схеме узла при заказе — взаимозаменяемость с другими позициями из вашего файла указана в блоке аналогов.",
     analogIds: ["opel-3", "opel-5"],
@@ -137,7 +137,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Turbo и атмосферные Ecotec",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-7.jpg",
     description:
       "Уплотнение выпускного канала маслоохладителя для ряда турбо и атмосферных двигателей Ecotec. При течи масла в зоне теплообменника меняется в комплекте с разбором узла.",
   },
@@ -151,7 +151,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Z16XEL, Z18XER",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-8.jpg",
     description:
       "Кольцо на выпуск из маслоохладителя для Z16XEL и Z18XER. После демонтажа деталь не рекомендуется ставить повторно из‑за потери упругости.",
   },
@@ -195,7 +195,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Z18XER, Z16LET / LEL / LER",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-11.jpg",
     description:
       "Прокладка между корпусом масляного фильтра и блоком для ряда моторов Ecotec. При течи масла в зоне фильтра меняется вместе с очисткой посадочных поверхностей.",
     analogIds: ["opel-12"],
@@ -210,7 +210,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Ecotec (LET, LER, XEP и др.)",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-12.jpg",
     description:
       "Альтернативный номер прокладки корпуса масляного фильтра под другие варианты компоновки Ecotec. Перед заказом сверяйте с заводским каталогом и снятой деталью.",
     analogIds: ["opel-11"],
@@ -225,7 +225,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Astra H/J, Zafira B (Ecotec)",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-13.jpg",
     description:
       "Прокладка узла масляного фильтра в зоне теплообменника с охлаждением масла. Рекомендуется менять при снятии корпуса или при течи в этом сопряжении.",
     analogIds: ["opel-11", "opel-12"],
@@ -240,7 +240,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Автосвет и электрика",
     car: "Универсальная W5W (T10), уточняйте по авто",
-    image: "/images/wipers.jpg",
+    image: "/images/catalog/opel-14.jpg",
     description:
       "Галогеновая лампа Bosch W5W 5 Вт для подсветки номерного знака и других цоколей W2.1x9.5d. Соответствуйте мощность и тип цоколя штатной лампе.",
   },
@@ -254,7 +254,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "США / ЕС",
     category: "Подвеска",
     car: "Opel Astra H с IDS+",
-    image: "/images/brake-pads.jpg",
+    image: "/images/catalog/opel-15.jpg",
     description:
       "Передняя тяга / стойка стабилизатора Delphi для Astra H с системой IDS+. Влияет на крен и сцепление с дорогой; люфт и стуки при проезде неровностей — повод проверить наконечники и втулки стабилизатора.",
   },
@@ -268,7 +268,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet Ecotec (см. наименование)",
-    image: "/images/catalog/opel-78-rings.jpg",
+    image: "/images/catalog/opel-16.jpg",
     description:
       "Прокладка клапанной крышки Elring для ряда бензиновых Ecotec. Меняется при течи масла сверху двигателя или при снятии крышки для регулировки клапанов.",
   },
@@ -282,7 +282,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Opel Astra H/J, Corsa D и др.",
-    image: "/images/catalog/opel-2.jpg",
+    image: "/images/catalog/opel-17.jpg",
     description:
       "Датчик температуры ОЖ с Г-образным патрубком для системы охлаждения. Неисправность даёт ошибки по температуре, работу вентилятора и показания на панели.",
     analogIds: ["opel-18"],
@@ -297,7 +297,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Chevrolet Cruze, Opel Astra J, Insignia и др.",
-    image: "/images/radiator.jpg",
+    image: "/images/catalog/opel-18.jpg",
     description:
       "Крышка расширительного бачка системы охлаждения. Поддерживает рабочее давление в контуре; трещины и износ уплотнения приводят к потере ОЖ и перегреву.",
     analogIds: ["opel-17"],
@@ -312,7 +312,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Chevrolet Cruze 1.8 F18D4",
-    image: "/images/catalog/opel-3456-rings.jpg",
+    image: "/images/catalog/opel-19.jpg",
     description:
       "Передний сальник распределительного вала для двигателя F18D4. При течи масла со стороны ГРМ меняется при снятии привода или цепи по регламенту.",
   },
@@ -326,7 +326,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Двигатель",
     car: "Chevrolet Cruze 1.8 F18D4",
-    image: "/images/catalog/opel-3456-rings.jpg",
+    image: "/images/catalog/opel-20.jpg",
     description:
       "Маслосъёмный колпачок клапана для F18D4. Износ колпачков даёт дым из выхлопа на холостом ходу и повышенный расход масла — замена комплектом по головке.",
   },

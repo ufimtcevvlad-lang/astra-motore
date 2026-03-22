@@ -18,12 +18,15 @@ export function BrandLogo() {
       </div>
 
       <div className="min-w-0 select-none">
-        <p className="font-semibold uppercase leading-[1.05] tracking-[0.16em] text-white sm:tracking-[0.2em]">
-          <span className="block text-lg sm:text-xl md:text-2xl">
-            ASTRA <span className="text-amber-400">MOTORS</span>
-          </span>
-        </p>
-        <div className="mt-2.5 h-px w-14 bg-amber-400/45 sm:w-16 md:w-20" aria-hidden />
+        {/* Линия на всю ширину надписи ASTRA MOTORS */}
+        <div className="inline-block w-fit max-w-full">
+          <p className="font-semibold uppercase leading-[1.05] tracking-[0.16em] text-white sm:tracking-[0.2em]">
+            <span className="block whitespace-nowrap text-lg sm:text-xl md:text-2xl">
+              ASTRA <span className="text-amber-400">MOTORS</span>
+            </span>
+          </p>
+          <div className="mt-2.5 h-px w-full bg-amber-400/55" aria-hidden />
+        </div>
         <p className="mt-2.5 max-w-[18rem] text-[11px] font-medium uppercase leading-relaxed tracking-[0.14em] text-slate-400 sm:max-w-none sm:text-xs md:text-[0.8125rem] md:tracking-[0.16em]">
           Автозапчасти GM
           <span className="text-slate-500"> · </span>

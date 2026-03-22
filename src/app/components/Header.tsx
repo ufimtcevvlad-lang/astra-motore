@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
-import { CatalogHubStrip } from "./catalog/CatalogHubStrip";
 import { useCart } from "./CartContext";
 
 type MeResponse = {
@@ -245,8 +244,6 @@ export function Header() {
             VIN запрос
           </Link>
         </nav>
-
-        <CatalogHubStrip />
       </div>
     </header>
   );
