@@ -106,7 +106,7 @@ export function Header() {
         <div className="flex flex-col gap-3 py-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between lg:py-4">
           <Link
             href="/"
-            className="group flex min-w-0 flex-shrink-0 items-center rounded-lg py-1 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A]"
+            className="group flex min-w-0 flex-shrink-0 items-center overflow-visible rounded-lg py-1 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A]"
             aria-label="Astra Motors — на главную"
           >
             <BrandLogo />
