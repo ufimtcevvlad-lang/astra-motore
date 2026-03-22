@@ -5,7 +5,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t-2 border-amber-500/40 bg-gradient-to-b from-neutral-950 via-slate-950 to-black text-slate-100">
-      <div className="mx-auto max-w-5xl px-4 py-6">
+      <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-medium">
             © {year} <span className="text-white font-semibold">Astra Motors</span>

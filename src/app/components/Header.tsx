@@ -18,10 +18,10 @@ type MeResponse = {
 };
 
 const navLink =
-  "whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white";
+  "whitespace-nowrap rounded-lg px-1.5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white sm:px-2.5";
 
 const dropPanel =
-  "absolute left-0 top-full z-50 mt-1 min-w-[240px] rounded-xl border border-slate-700/90 bg-[#0a1018] py-2 shadow-2xl shadow-black/40";
+  "absolute left-1/2 top-full z-50 mt-1 min-w-[240px] -translate-x-1/2 rounded-xl border border-slate-700/90 bg-[#0a1018] py-2 shadow-2xl shadow-black/40";
 
 const dropItem =
   "block px-4 py-2 text-sm text-slate-200 transition hover:bg-amber-400/10 hover:text-amber-200";
@@ -35,7 +35,7 @@ function HeaderSearchFormInner() {
     <form
       action="/catalog"
       method="get"
-      className="flex w-full min-w-0 flex-1 items-stretch gap-2 sm:max-w-xl lg:max-w-2xl"
+      className="flex w-full min-w-0 flex-1 items-stretch gap-2 lg:max-w-none"
       role="search"
     >
       <label htmlFor="header-catalog-q" className="sr-only">
@@ -66,7 +66,7 @@ function HeaderSearchFormFallback() {
     <form
       action="/catalog"
       method="get"
-      className="flex w-full min-w-0 flex-1 items-stretch gap-2 sm:max-w-xl lg:max-w-2xl"
+      className="flex w-full min-w-0 flex-1 items-stretch gap-2 lg:max-w-none"
       role="search"
     >
       <label htmlFor="header-catalog-q-fb" className="sr-only">
@@ -114,7 +114,7 @@ export function Header() {
 
   return (
     <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
         {/* Верхняя строка: логотип | поиск | корзина | вход */}
         <div className="flex flex-col gap-3 py-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between lg:py-4">
           <Link
@@ -167,18 +167,18 @@ export function Header() {
           </div>
         </div>
 
-        {/* Основное меню — как на схеме */}
+        {/* Основное меню — на всю ширину контейнера */}
         <nav
-          className="flex flex-wrap items-center gap-x-1 gap-y-1 border-t border-slate-800/90 py-2.5"
+          className="flex w-full flex-wrap items-stretch border-t border-slate-800/90 py-2 sm:flex-nowrap"
           aria-label="Основное меню"
         >
-          <Link href="/" className={navLink}>
+          <Link href="/" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
             Главная
           </Link>
 
-          <details className="relative group">
+          <details className="group relative flex min-w-0 flex-1 flex-col items-center">
             <summary
-              className={`${navLink} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+              className={`${navLink} flex cursor-pointer list-none items-center justify-center text-center [&::-webkit-details-marker]:hidden`}
             >
               Каталог{" "}
               <span className="text-slate-500" aria-hidden>
@@ -201,9 +201,9 @@ export function Header() {
             </div>
           </details>
 
-          <details className="relative group">
+          <details className="group relative flex min-w-0 flex-1 flex-col items-center">
             <summary
-              className={`${navLink} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+              className={`${navLink} flex cursor-pointer list-none items-center justify-center text-center [&::-webkit-details-marker]:hidden`}
             >
               Клиентам{" "}
               <span className="text-slate-500" aria-hidden>
@@ -232,13 +232,16 @@ export function Header() {
             </div>
           </details>
 
-          <Link href="/dostavka-zapchastey-ekaterinburg" className={navLink}>
+          <Link
+            href="/dostavka-zapchastey-ekaterinburg"
+            className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center leading-snug`}
+          >
             Оплата и доставка
           </Link>
-          <Link href="/contacts" className={navLink}>
+          <Link href="/contacts" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
             Контакты
           </Link>
-          <Link href="/vin-request" className={navLink}>
+          <Link href="/vin-request" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
             VIN запрос
           </Link>
         </nav>
