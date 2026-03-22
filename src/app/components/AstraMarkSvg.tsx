@@ -1,14 +1,27 @@
+"use client";
+
+import { useId } from "react";
+
 /**
- * Векторный знак Astra Motors: кольцо, шестерня (12 зубцов), AM, янтарный акцент.
- * Соответствует варианту 1, но в чётком качестве и цветах сайта.
+ * Знак как на референсе «вариант 1»:
+ * — одна цельная шестерня (12 зубьев), не «лучи»;
+ * — тонкое внешнее кольцо;
+ * — AM жирные, со светлой заливкой и тёмной обводкой (читаемость на шестерне);
+ * — ромб у верхнего правого угла буквы M;
+ * цвета — янтарно-золотая палитра сайта.
  */
-const TEETH = Array.from({ length: 12 }, (_, i) => i * 30);
+const GEAR_PATH =
+  "M26.62,11.91 L32,4.4 L37.38,11.91 L45.8,8.1 L46.71,17.29 L55.9,18.2 L52.09,26.62 L59.6,32 L52.09,37.38 L55.9,45.8 L46.71,46.71 L45.8,55.9 L37.38,52.09 L32,59.6 L26.62,52.09 L18.2,55.9 L17.29,46.71 L8.1,45.8 L11.91,37.38 L4.4,32 L11.91,26.62 L8.1,18.2 L17.29,17.29 L18.2,8.1 L26.62,11.91 Z";
 
 type Props = {
   className?: string;
 };
 
 export function AstraMarkSvg({ className }: Props) {
+  const id = useId().replace(/:/g, "");
+  const gFill = `amFill-${id}`;
+  const gStroke = `amStroke-${id}`;
+
   return (
     <svg
       viewBox="0 0 64 64"
@@ -19,79 +32,46 @@ export function AstraMarkSvg({ className }: Props) {
       aria-hidden
     >
       <defs>
-        <linearGradient
-          id="astraMarkGold"
-          x1="6"
-          y1="4"
-          x2="58"
-          y2="60"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#fffbeb" />
-          <stop offset="0.28" stopColor="#fde047" />
-          <stop offset="0.55" stopColor="#fbbf24" />
-          <stop offset="1" stopColor="#b45309" />
+        <linearGradient id={gFill} x1="14" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#fffef0" />
+          <stop offset="0.35" stopColor="#fef08a" />
+          <stop offset="0.65" stopColor="#fbbf24" />
+          <stop offset="1" stopColor="#d97706" />
         </linearGradient>
-        <linearGradient id="astraMarkGoldDim" x1="32" y1="12" x2="32" y2="52" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#fef3c7" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#d97706" stopOpacity="0.9" />
+        <linearGradient id={gStroke} x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#facc15" />
+          <stop offset="1" stopColor="#b45309" />
         </linearGradient>
       </defs>
 
-      {/* Внешнее кольцо */}
-      <circle cx="32" cy="32" r="30.5" stroke="url(#astraMarkGold)" strokeWidth="1.35" opacity={0.95} />
+      {/* Сначала шестерня (как на макете — сплошной силуэт) */}
+      <path d={GEAR_PATH} fill={`url(#${gFill})`} stroke={`url(#${gStroke})`} strokeWidth={0.45} strokeLinejoin="round" />
 
-      {/* Зубцы шестерни */}
-      <g transform="translate(32 32)" fill="url(#astraMarkGold)">
-        {TEETH.map((deg) => (
-          <rect
-            key={deg}
-            x="-1.85"
-            y="-30.5"
-            width="3.7"
-            height="7.2"
-            rx="1.1"
-            transform={`rotate(${deg})`}
-          />
-        ))}
+      {/* Внешнее тонкое кольцо — как у референса */}
+      <circle cx={32} cy={32} r={30.35} fill="none" stroke={`url(#${gStroke})`} strokeWidth={1.15} opacity={0.95} />
+
+      {/* AM: сначала тёмная «обводка», поверх — золотой штрих (как белый+чёрный на референсе) */}
+      <g strokeLinecap="round" strokeLinejoin="round" fill="none">
+        {/* Буква A */}
+        <path d="M24 46 L32 19 L40 46" stroke="#020617" strokeWidth={5.2} />
+        <path d="M24 46 L32 19 L40 46" stroke={`url(#${gFill})`} strokeWidth={3.05} />
+        <path d="M27.2 34.2 H36.8" stroke="#020617" strokeWidth={5} />
+        <path d="M27.2 34.2 H36.8" stroke={`url(#${gFill})`} strokeWidth={2.95} />
+
+        {/* Буква M */}
+        <path d="M42.2 46 V25.5 L38 31.2 L32 25.5 V46" stroke="#020617" strokeWidth={5.2} />
+        <path d="M42.2 46 V25.5 L38 31.2 L32 25.5 V46" stroke={`url(#${gFill})`} strokeWidth={3.05} />
       </g>
 
-      {/* Внутренний обод «втулки» */}
-      <circle cx="32" cy="32" r="22.5" stroke="url(#astraMarkGoldDim)" strokeWidth="0.9" opacity={0.45} />
-      <circle cx="32" cy="32" r="19.5" stroke="url(#astraMarkGold)" strokeWidth="1.5" />
-
-      {/* Монограмма AM */}
-      <g
-        stroke="url(#astraMarkGold)"
-        strokeWidth="2.75"
-        strokeLinecap="round"
+      {/* Ромб у верхней правой части M (как на референсе), красный акцент */}
+      <path
+        d="M43.8 22.6 L46.35 25.15 L43.8 27.7 L41.25 25.15 Z"
+        fill="#ef4444"
+        stroke="#7f1d1d"
+        strokeWidth={0.35}
         strokeLinejoin="round"
-      >
-        <path d="M24 46 L32 18 L40 46" />
-        <path d="M27.5 34 H36.5" />
-        <path d="M44 46 V26 L38 32 L32 26 V46" />
-      </g>
-
-      {/* Акцент — ромб (как на референсе, цвет ближе к amber-500 сайта) */}
-      <rect
-        x="31"
-        y="30.5"
-        width="2.6"
-        height="7.2"
-        rx="1.3"
-        fill="#f59e0b"
-        transform="rotate(45 32 34)"
       />
-      <rect
-        x="31.35"
-        y="31.2"
-        width="1.3"
-        height="3"
-        rx="0.65"
-        fill="#fde68a"
-        opacity={0.55}
-        transform="rotate(45 32 34)"
-      />
+      <path d="M43.8 23.55 L45.25 25.1 L43.8 26.65 L42.35 25.1 Z" fill="#fca5a5" opacity={0.45} />
     </svg>
   );
 }
