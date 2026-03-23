@@ -235,7 +235,7 @@ export function Header() {
             <input
               type="search"
               name="q"
-              placeholder="VIN, название или артикул"
+              placeholder="Введите номер или название детали"
               autoComplete="off"
               className="h-10 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 px-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
             />
@@ -263,6 +263,7 @@ export function Header() {
           </Link>
         </div>
       </div>
+
     </header>
   );
 }
