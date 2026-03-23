@@ -213,6 +213,31 @@ export function Header() {
           </Link>
         </nav>
       </div>
+
+      {/* Мобильная нижняя панель быстрого доступа при прокрутке */}
+      <div className="fixed inset-x-0 bottom-3 z-[120] px-3 sm:hidden">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 rounded-2xl border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
+          <Link
+            href="/catalog"
+            className="flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-2 text-xs font-medium text-slate-100 transition hover:border-amber-400/70"
+          >
+            Поиск
+          </Link>
+          <Link
+            href="/catalog"
+            className="flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-2 text-xs font-medium text-slate-100 transition hover:border-amber-400/70"
+          >
+            Каталог
+          </Link>
+          <Link
+            href="/cart"
+            className="flex min-h-10 flex-1 items-center justify-center gap-1 rounded-xl bg-amber-400 px-2 text-xs font-semibold text-slate-950 transition hover:bg-amber-300"
+          >
+            Корзина
+            {totalItems > 0 ? <span className="rounded-full bg-slate-900 px-1.5 py-0.5 text-[10px] text-amber-300">{totalItems}</span> : null}
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
