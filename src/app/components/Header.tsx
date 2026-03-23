@@ -81,6 +81,7 @@ export function Header() {
   const { items } = useCart();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const [user, setUser] = useState<MeResponse["user"]>(null);
+  const [showDesktopQuickBar, setShowDesktopQuickBar] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -97,6 +98,15 @@ export function Header() {
     return () => {
       mounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    function onScroll() {
+      setShowDesktopQuickBar(window.scrollY > 140);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -214,27 +224,42 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Нижняя панель быстрого доступа на desktop */}
-      <div className="fixed inset-x-0 bottom-3 z-[120] hidden px-3 sm:block">
-        <div className="mx-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
+      {/* Desktop: компактная панель сверху при скролле */}
+      <div
+        className={`pointer-events-none fixed inset-x-0 top-2 z-[120] hidden px-3 transition-all duration-200 sm:block ${
+          showDesktopQuickBar ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
+        }`}
+      >
+        <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center gap-2 rounded-2xl border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
+          <form action="/catalog" method="get" className="min-w-0 flex flex-1 items-center">
+            <input
+              type="search"
+              name="q"
+              placeholder="VIN, название или артикул"
+              autoComplete="off"
+              className="h-10 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 px-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
+            />
+          </form>
           <Link
             href="/catalog"
-            className="flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-2 text-xs font-medium text-slate-100 transition hover:border-amber-400/70"
-          >
-            Поиск
-          </Link>
-          <Link
-            href="/catalog"
-            className="flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-2 text-xs font-medium text-slate-100 transition hover:border-amber-400/70"
+            className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
           >
             Каталог
           </Link>
           <Link
             href="/cart"
-            className="flex min-h-10 flex-1 items-center justify-center gap-1 rounded-xl bg-amber-400 px-2 text-xs font-semibold text-slate-950 transition hover:bg-amber-300"
+            className="inline-flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl bg-amber-400 px-4 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
           >
             Корзина
-            {totalItems > 0 ? <span className="rounded-full bg-slate-900 px-1.5 py-0.5 text-[10px] text-amber-300">{totalItems}</span> : null}
+            {totalItems > 0 ? (
+              <span className="rounded-full bg-slate-900 px-1.5 py-0.5 text-[10px] text-amber-300">{totalItems}</span>
+            ) : null}
+          </Link>
+          <Link
+            href={user ? "/account" : "/auth/login"}
+            className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
+          >
+            {user ? "Профиль" : "Войти"}
           </Link>
         </div>
       </div>
