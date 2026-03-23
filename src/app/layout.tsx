@@ -126,7 +126,7 @@ export default function RootLayout({
 
         <CartProvider>
           <Header />
-          <main className="mx-auto min-h-[60vh] max-w-7xl px-4 pb-24 pt-6 sm:pb-6">
+          <main className="mx-auto min-h-[60vh] max-w-7xl px-4 pb-6 pt-6 sm:pb-24">
             {maintenanceMode ? <MaintenanceNotice message={maintenanceMessage} /> : null}
             {children}
           </main>
