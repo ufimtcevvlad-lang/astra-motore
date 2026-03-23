@@ -59,8 +59,8 @@ export function AccountPanel() {
 
   const fullName = (user?.fullName ?? "").trim();
   const nameParts = fullName.split(/\s+/).filter(Boolean);
-  const firstName = nameParts[0] ?? "";
-  const lastName = nameParts.slice(1).join(" ");
+  const lastName = nameParts[0] ?? "";
+  const firstName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
   const shellClass = isDark ? "rounded-2xl bg-slate-950/70 p-1" : "";
   const panelClass = isDark
     ? "border-slate-700 bg-slate-900 text-slate-100 shadow-black/30"
