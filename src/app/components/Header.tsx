@@ -20,7 +20,7 @@ type MeResponse = {
 };
 
 const navLink =
-  "whitespace-nowrap rounded-lg px-1.5 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white sm:px-2.5";
+  "whitespace-nowrap rounded-lg px-2 py-2 text-xs font-medium text-slate-200 transition hover:bg-white/5 hover:text-white sm:px-2.5 sm:text-sm";
 
 const dropBox =
   "min-w-[240px] rounded-xl border border-slate-700/90 bg-[#0a1018] py-2 shadow-2xl shadow-black/40";
@@ -43,7 +43,7 @@ function NavHoverDropdown({
 
   return (
     <div
-      className="relative flex min-w-0 flex-1 flex-col items-center justify-center"
+      className="relative flex min-w-0 flex-none flex-col items-center justify-center sm:flex-1"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
@@ -116,10 +116,10 @@ export function Header() {
             <HeaderSearchAutocomplete />
           </Suspense>
 
-          <div className="flex shrink-0 items-center justify-end gap-2 lg:pl-2">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 lg:flex-nowrap lg:pl-2">
             <Link
               href="/cart"
-              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-2 text-sm font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2.5"
+              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2.5 sm:text-sm"
             >
               Корзина
               {totalItems > 0 && (
@@ -131,21 +131,21 @@ export function Header() {
             {user ? (
               <Link
                 href="/account"
-                className="rounded-lg border border-slate-500 px-3 py-2 text-sm font-medium text-slate-100 transition hover:border-slate-300 hover:text-white"
+                className="rounded-lg border border-slate-500 px-2.5 py-2 text-xs font-medium text-slate-100 transition hover:border-slate-300 hover:text-white sm:px-3 sm:text-sm"
               >
-                ЛК
+                Профиль
               </Link>
             ) : (
               <div className="flex overflow-hidden rounded-lg border border-slate-500/90 divide-x divide-slate-600/90">
                 <Link
                   href="/auth/login"
-                  className="px-2.5 py-2 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:px-3 sm:text-sm"
+                  className="px-2 py-2 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:px-3 sm:text-sm"
                 >
                   Войти
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-2.5 py-2 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:px-3 sm:text-sm"
+                  className="px-2 py-2 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:px-3 sm:text-sm"
                 >
                   Регистрация
                 </Link>
@@ -156,10 +156,10 @@ export function Header() {
 
         {/* Основное меню — на всю ширину контейнера */}
         <nav
-          className="flex w-full flex-wrap items-stretch border-t border-slate-800/90 py-2 sm:flex-nowrap"
+          className="flex w-full items-stretch gap-1 overflow-x-auto border-t border-slate-800/90 py-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-nowrap sm:gap-0 sm:overflow-visible"
           aria-label="Основное меню"
         >
-          <Link href="/" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
+          <Link href="/" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
             Главная
           </Link>
 
@@ -201,14 +201,14 @@ export function Header() {
 
           <Link
             href="/dostavka-zapchastey-ekaterinburg"
-            className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center leading-snug`}
+            className={`${navLink} flex min-w-max flex-none items-center justify-center text-center leading-snug sm:min-w-0 sm:flex-1`}
           >
             Оплата и доставка
           </Link>
-          <Link href="/contacts" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
+          <Link href="/contacts" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
             Контакты
           </Link>
-          <Link href="/vin-request" className={`${navLink} flex min-w-0 flex-1 items-center justify-center text-center`}>
+          <Link href="/vin-request" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
             VIN запрос
           </Link>
         </nav>

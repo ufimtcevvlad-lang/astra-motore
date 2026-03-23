@@ -122,11 +122,7 @@ export function HeaderSearchAutocomplete() {
 
   return (
     <div ref={wrapRef} className="relative w-full min-w-0 flex-1 lg:max-w-none">
-      <form
-        onSubmit={onSubmit}
-        className="flex w-full min-w-0 items-stretch gap-2"
-        role="search"
-      >
+      <form onSubmit={onSubmit} className="flex w-full min-w-0 items-stretch gap-1.5 sm:gap-2" role="search">
         <label htmlFor="header-catalog-q" className="sr-only">
           Поиск по номеру или названию детали
         </label>
@@ -151,7 +147,7 @@ export function HeaderSearchAutocomplete() {
             placeholder="Введите номер или название детали"
             autoComplete="off"
             aria-autocomplete="list"
-            className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-9 text-sm text-slate-100 placeholder:text-slate-500 outline-none ring-0"
+            className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-9 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
           />
           {value ? (
             <button
@@ -168,7 +164,7 @@ export function HeaderSearchAutocomplete() {
         </div>
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
+            className="shrink-0 rounded-xl bg-amber-400 px-3 py-2.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
         >
           Найти
         </button>
@@ -243,12 +239,7 @@ export function HeaderSearchAutocomplete() {
 
 export function HeaderSearchAutocompleteFallback() {
   return (
-    <form
-      action="/catalog"
-      method="get"
-      className="flex w-full min-w-0 flex-1 items-stretch gap-2 lg:max-w-none"
-      role="search"
-    >
+    <form action="/catalog" method="get" className="flex w-full min-w-0 flex-1 items-stretch gap-1.5 sm:gap-2 lg:max-w-none" role="search">
       <label htmlFor="header-catalog-q-fb" className="sr-only">
         Поиск по номеру или названию детали
       </label>
@@ -262,12 +253,12 @@ export function HeaderSearchAutocompleteFallback() {
           type="search"
           placeholder="Введите номер или название детали"
           autoComplete="off"
-          className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none ring-0"
+          className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-3 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
         />
       </div>
       <button
         type="submit"
-        className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
+        className="shrink-0 rounded-xl bg-amber-400 px-3 py-2.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
       >
         Найти
       </button>

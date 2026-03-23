@@ -104,6 +104,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('am-profile-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`,
+          }}
+        />
         {/* Яндекс.Вебмастер: подтверждение прав */}
         <meta name="yandex-verification" content="62d469a9a0693298" />
       </head>
