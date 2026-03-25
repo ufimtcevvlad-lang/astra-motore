@@ -2,6 +2,19 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SITE_URL } from "../lib/site";
 
+/** Адрес для карты (как на странице) */
+const ADDRESS_LINE = "г. Екатеринбург, ул. Готвальда, д. 9";
+/** Центр и метка на Яндекс.Картах: долгота, широта (район ул. Готвальда, 9) */
+const MAP_LON = 60.5675;
+const MAP_LAT = 56.8503;
+const MAP_ZOOM = 17;
+
+const YANDEX_MAP_EMBED_SRC = `https://yandex.ru/map-widget/v1/?ll=${MAP_LON}%2C${MAP_LAT}&z=${MAP_ZOOM}&pt=${MAP_LON}%2C${MAP_LAT}%2Cpm2rdm&l=map`;
+
+const YANDEX_MAP_OPEN_HREF = `https://yandex.ru/maps/?text=${encodeURIComponent(
+  "Екатеринбург, ул. Готвальда, 9"
+)}`;
+
 export const metadata: Metadata = {
   title: "Контакты",
   description:
@@ -38,6 +51,11 @@ export default function ContactsPage() {
         "@type": "PostalAddress",
         addressLocality: "Екатеринбург",
         streetAddress: "ул. Готвальда, 9",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: MAP_LAT,
+        longitude: MAP_LON,
       },
       openingHoursSpecification: [
         {
@@ -86,8 +104,16 @@ export default function ContactsPage() {
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Адрес</p>
-          <p className="text-slate-800">
-            г. Екатеринбург, ул. Готвальда, д. 9
+          <p className="text-slate-800">{ADDRESS_LINE}</p>
+          <p className="mt-2">
+            <a
+              href={YANDEX_MAP_OPEN_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
+            >
+              Открыть на Яндекс.Картах
+            </a>
           </p>
         </div>
         <div>
@@ -100,6 +126,23 @@ export default function ContactsPage() {
         <p className="text-sm text-slate-600 pt-2">
           Оставьте заявку на сайте или позвоните — подберём запчасти и уточним наличие.
         </p>
+      </div>
+
+      <div className="rounded-xl border border-amber-100 bg-white p-4 shadow-sm sm:p-6">
+        <h2 className="text-lg font-semibold text-amber-900">Как нас найти</h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Точку на карте можно уточнить по ссылке «Открыть на Яндекс.Картах» выше.
+        </p>
+        <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+          <iframe
+            title="Astra Motors на Яндекс.Картах"
+            src={YANDEX_MAP_EMBED_SRC}
+            className="aspect-[16/10] min-h-[220px] w-full border-0 sm:min-h-[280px] sm:aspect-[16/9]"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
