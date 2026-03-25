@@ -231,21 +231,58 @@ export function Header() {
         }`}
       >
         <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center gap-2 rounded-2xl border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
-          <form action="/catalog" method="get" className="min-w-0 flex flex-1 items-center">
-            <input
-              type="search"
-              name="q"
-              placeholder="Введите номер или название детали"
-              autoComplete="off"
-              className="h-10 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 px-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
-            />
-          </form>
           <Link
             href="/catalog"
             className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
           >
             Каталог
           </Link>
+
+          <form
+            action="/catalog"
+            method="get"
+            className="min-w-0 flex flex-1 items-center gap-2"
+          >
+            <div className="relative min-w-0 flex-1">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden
+                >
+                  <path
+                    d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M16.5 16.5 21 21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+              <input
+                type="search"
+                name="q"
+                placeholder="Введите номер или название детали"
+                autoComplete="off"
+                className="min-w-0 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 py-2.5 pl-10 pr-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
+            >
+              Найти
+            </button>
+          </form>
           <Link
             href="/cart"
             className="inline-flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl bg-amber-400 px-4 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
