@@ -226,14 +226,14 @@ export function Header() {
 
       {/* Desktop: компактная панель сверху при скролле */}
       <div
-        className={`pointer-events-none fixed inset-x-0 top-0 z-[120] hidden px-0 transition-all duration-200 sm:block ${
+        className={`pointer-events-none fixed inset-x-0 top-0 z-[120] hidden bg-[#0a1018]/95 px-4 py-3 shadow-2xl shadow-black/40 backdrop-blur transition-all duration-200 sm:block ${
           showDesktopQuickBar ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
         }`}
       >
-        <div className="pointer-events-auto flex w-full items-center gap-2 rounded-none border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
+        <div className="pointer-events-auto mx-auto flex w-full max-w-6xl items-center gap-3">
           <Link
             href="/catalog"
-            className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
+            className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-5 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
           >
             Каталог
           </Link>
@@ -241,7 +241,7 @@ export function Header() {
           <form
             action="/catalog"
             method="get"
-            className="min-w-0 flex flex-1 items-center gap-2"
+            className="min-w-0 flex flex-1 items-center"
           >
             <div className="relative min-w-0 flex-1">
               <input
@@ -249,14 +249,14 @@ export function Header() {
                 name="q"
                 placeholder="Введите номер или название детали"
                 autoComplete="off"
-                className="min-w-0 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 py-2.5 pr-11 pl-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
+                className="min-w-0 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 py-3 pr-12 pl-4 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
               />
 
               {/* Лупа внутри поля справа (как на референсе) */}
               <button
                 type="submit"
                 aria-label="Найти"
-                className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+                className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
               >
                 <svg
                   width="18"
@@ -284,7 +284,7 @@ export function Header() {
           </form>
           <Link
             href="/cart"
-            className="inline-flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl bg-amber-400 px-4 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-1 rounded-xl bg-amber-400 px-5 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
           >
             Корзина
             {totalItems > 0 ? (
@@ -293,7 +293,7 @@ export function Header() {
           </Link>
           <Link
             href={user ? "/account" : "/auth/login"}
-            className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
+            className="inline-flex h-12 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-5 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
           >
             {user ? "Профиль" : "Войти"}
           </Link>
