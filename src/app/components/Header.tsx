@@ -226,11 +226,11 @@ export function Header() {
 
       {/* Desktop: компактная панель сверху при скролле */}
       <div
-        className={`pointer-events-none fixed inset-x-0 top-2 z-[120] hidden px-3 transition-all duration-200 sm:block ${
+        className={`pointer-events-none fixed inset-x-0 top-0 z-[120] hidden px-0 transition-all duration-200 sm:block ${
           showDesktopQuickBar ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
         }`}
       >
-        <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center gap-2 rounded-2xl border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
+        <div className="pointer-events-auto flex w-full items-center gap-2 rounded-none border border-slate-700/90 bg-[#0a1018]/95 p-2 shadow-2xl shadow-black/50 backdrop-blur">
           <Link
             href="/catalog"
             className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl border border-slate-600/80 bg-slate-900/70 px-4 text-sm font-medium text-slate-100 transition hover:border-amber-400/70"
@@ -244,7 +244,20 @@ export function Header() {
             className="min-w-0 flex flex-1 items-center gap-2"
           >
             <div className="relative min-w-0 flex-1">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+              <input
+                type="search"
+                name="q"
+                placeholder="Введите номер или название детали"
+                autoComplete="off"
+                className="min-w-0 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 py-2.5 pr-11 pl-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
+              />
+
+              {/* Лупа внутри поля справа (как на референсе) */}
+              <button
+                type="submit"
+                aria-label="Найти"
+                className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+              >
                 <svg
                   width="18"
                   height="18"
@@ -266,22 +279,8 @@ export function Header() {
                     strokeLinecap="round"
                   />
                 </svg>
-              </span>
-              <input
-                type="search"
-                name="q"
-                placeholder="Введите номер или название детали"
-                autoComplete="off"
-                className="min-w-0 w-full rounded-xl border border-slate-600/80 bg-slate-900/70 py-2.5 pl-10 pr-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-amber-400/70"
-              />
+              </button>
             </div>
-
-            <button
-              type="submit"
-              className="shrink-0 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300"
-            >
-              Найти
-            </button>
           </form>
           <Link
             href="/cart"
