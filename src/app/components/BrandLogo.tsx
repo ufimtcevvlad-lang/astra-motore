@@ -10,7 +10,7 @@ export function BrandLogo() {
   return (
     <div className="flex min-w-0 items-center gap-2.5 sm:gap-5 md:gap-6">
       <div
-        className="relative flex shrink-0 items-center justify-center overflow-visible py-0.5 drop-shadow-[0_0_24px_rgba(251,191,36,0.3)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_32px_rgba(251,191,36,0.45)]"
+        className="relative flex shrink-0 items-center justify-center overflow-visible -translate-y-0.5 drop-shadow-[0_0_24px_rgba(251,191,36,0.3)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_32px_rgba(251,191,36,0.45)]"
         aria-hidden
       >
         {/* Внешний квадрат чуть больше; знак внутри ~72% — запас по краям, без «среза» снизу */}
