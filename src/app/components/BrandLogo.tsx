@@ -103,17 +103,17 @@ export function BrandLogo() {
   }, []);
 
   return (
-    <div className="flex min-w-0 items-center gap-3 sm:gap-4 md:gap-5">
+    <div className="flex min-w-0 items-center gap-2.5 sm:gap-5 md:gap-6">
       <div
         ref={signWrapRef}
         className="relative flex shrink-0 items-center justify-center overflow-visible transition-[filter] duration-300"
         aria-hidden
       >
         {/* Внешний квадрат + внутренний inset: filter на родителе часто «съедает» края; свечение — на <img> */}
-        <div className="relative flex h-[5rem] w-[5rem] shrink-0 items-center justify-center overflow-visible sm:h-[6.25rem] sm:w-[6.25rem] md:h-[7.5rem] md:w-[7.5rem]">
+        <div className="relative flex h-[4.25rem] w-[4.25rem] shrink-0 items-center justify-center overflow-visible sm:h-[5.5rem] sm:w-[5.5rem] md:h-[6.5rem] md:w-[6.5rem]">
           <div
             ref={squareRef}
-            className="relative flex h-[88%] w-[88%] min-h-0 min-w-0 items-center justify-center overflow-visible"
+            className="relative flex h-[96%] w-[96%] min-h-0 min-w-0 items-center justify-center overflow-visible"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- избегаем overflow:hidden wrapper у next/image; LCP здесь приемлем */}
             <img
