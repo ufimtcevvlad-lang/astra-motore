@@ -110,10 +110,10 @@ export function BrandLogo() {
         aria-hidden
       >
         {/* Внешний квадрат + внутренний inset: filter на родителе часто «съедает» края; свечение — на <img> */}
-        <div className="relative flex h-[4.25rem] w-[4.25rem] shrink-0 items-center justify-center overflow-visible sm:h-[5.5rem] sm:w-[5.5rem] md:h-[6.5rem] md:w-[6.5rem]">
+        <div className="relative flex h-[3.375rem] w-[3.375rem] shrink-0 items-center justify-center overflow-visible sm:h-[4.375rem] sm:w-[4.375rem] md:h-[5.25rem] md:w-[5.25rem]">
           <div
             ref={squareRef}
-            className="relative flex h-[96%] w-[96%] min-h-0 min-w-0 items-center justify-center overflow-visible"
+            className="relative flex h-full w-full min-h-0 min-w-0 items-center justify-center overflow-visible"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- избегаем overflow:hidden wrapper у next/image; LCP здесь приемлем */}
             <img
@@ -122,7 +122,7 @@ export function BrandLogo() {
               draggable={false}
               loading="eager"
               decoding="async"
-              className="max-h-full max-w-full object-contain object-center transition-[filter] duration-300 group-hover:brightness-105"
+              className="max-h-full max-w-full origin-center scale-150 object-contain object-center transition-[filter] duration-300 group-hover:brightness-105"
               style={{
                 filter:
                   "drop-shadow(0 0 18px rgba(251,191,36,0.32)) drop-shadow(0 0 2px rgba(251,191,36,0.2))",
