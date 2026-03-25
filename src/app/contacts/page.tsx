@@ -4,16 +4,21 @@ import { SITE_URL } from "../lib/site";
 
 /** Адрес для карты (как на странице) */
 const ADDRESS_LINE = "г. Екатеринбург, ул. Готвальда, д. 9";
-/** Центр и метка на Яндекс.Картах: долгота, широта (район ул. Готвальда, 9) */
+
+/** Карточка организации в Яндексе (как у вас в личном кабинете / профиле) */
+const YANDEX_ORG_PROFILE =
+  "https://yandex.ru/profile/1299977455?lang=ru";
+
+/** Страница той же организации на Яндекс.Картах (удобно с телефона для маршрута) */
+const YANDEX_MAPS_ORG_PAGE =
+  "https://yandex.ru/maps/org/gm_drive/1299977455/";
+
+/** Встраиваемая карта по ID организации */
+const YANDEX_MAP_EMBED_SRC = `https://yandex.ru/map-widget/v1/?oid=1299977455&lang=ru`;
+
+/** Для schema.org GeoCoordinates (ориентир по адресу) */
 const MAP_LON = 60.5675;
 const MAP_LAT = 56.8503;
-const MAP_ZOOM = 17;
-
-const YANDEX_MAP_EMBED_SRC = `https://yandex.ru/map-widget/v1/?ll=${MAP_LON}%2C${MAP_LAT}&z=${MAP_ZOOM}&pt=${MAP_LON}%2C${MAP_LAT}%2Cpm2rdm&l=map`;
-
-const YANDEX_MAP_OPEN_HREF = `https://yandex.ru/maps/?text=${encodeURIComponent(
-  "Екатеринбург, ул. Готвальда, 9"
-)}`;
 
 export const metadata: Metadata = {
   title: "Контакты",
@@ -30,6 +35,7 @@ export default function ContactsPage() {
       "@type": "Organization",
       name: "Astra Motors",
       url: SITE_URL,
+      sameAs: [YANDEX_ORG_PROFILE, YANDEX_MAPS_ORG_PAGE],
       telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
       contactPoint: [
         {
@@ -105,14 +111,22 @@ export default function ContactsPage() {
         <div>
           <p className="text-sm font-medium text-slate-500">Адрес</p>
           <p className="text-slate-800">{ADDRESS_LINE}</p>
-          <p className="mt-2">
+          <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <a
-              href={YANDEX_MAP_OPEN_HREF}
+              href={YANDEX_ORG_PROFILE}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
             >
-              Открыть на Яндекс.Картах
+              Карточка на Яндекс.Картах
+            </a>
+            <a
+              href={YANDEX_MAPS_ORG_PAGE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
+            >
+              Маршрут и отзывы
             </a>
           </p>
         </div>
@@ -131,7 +145,7 @@ export default function ContactsPage() {
       <div className="rounded-xl border border-amber-100 bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-lg font-semibold text-amber-900">Как нас найти</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Точку на карте можно уточнить по ссылке «Открыть на Яндекс.Картах» выше.
+          Ниже — карта вашей организации на Яндексе; подробности и маршрут — по ссылкам над картой.
         </p>
         <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           <iframe
