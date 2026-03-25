@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 /**
@@ -113,15 +112,14 @@ export function BrandLogo() {
         {/* Внешний квадрат чуть больше; знак внутри ~72% — запас по краям, без «среза» снизу */}
         <div className="relative flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-visible sm:h-[5.25rem] sm:w-[5.25rem] md:h-[6rem] md:w-[6rem]">
           <div ref={squareRef} className="relative h-[72%] w-[72%] min-h-0 min-w-0">
-            <Image
+            <img
               src="/brand/astra-mark.png"
               alt=""
-              fill
-              priority
-              quality={100}
-              sizes="(max-width: 768px) 2.75rem, (max-width: 1024px) 3.75rem, 4.25rem"
-              className="object-contain object-center"
-              onLoadingComplete={(img) => {
+              draggable={false}
+              className="h-full w-full object-contain object-center"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+
                 // Sample transparency at top/bottom bands to see whether PNG has internal clipping.
                 const canvas = document.createElement("canvas");
                 canvas.width = 128;
@@ -134,7 +132,8 @@ export function BrandLogo() {
                 if (ctx) {
                   ctx.clearRect(0, 0, canvas.width, canvas.height);
                   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                  const data =
+                    ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
                   const w = canvas.width;
                   const h = canvas.height;
@@ -163,31 +162,37 @@ export function BrandLogo() {
                 }
 
                 // #region agent log
-                fetch("http://127.0.0.1:7653/ingest/caf9f3ed-65b2-482a-808c-53e4b2430d1b", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "X-Debug-Session-Id": "1f73bd",
-                  },
-                  body: JSON.stringify({
-                    sessionId: "1f73bd",
-                    id: `log_${Date.now()}_${Math.random().toString(16).slice(2)}`,
-                    runId: "pre-fix",
-                    hypothesisId: "H2_png_internal_clipping_or_asset_old_variant",
-                    location:
-                      "src/app/components/BrandLogo.tsx:onLoadingComplete(png edge alpha probe)",
-                    message: "Inspect loaded logo image + transparency at edges",
-                    data: {
-                      codeVersion: BRAND_LOGO_CODE_VERSION,
-                      currentSrc: img.currentSrc,
-                      naturalWidth: img.naturalWidth,
-                      naturalHeight: img.naturalHeight,
-                      alphaTop,
-                      alphaBottom,
+                fetch(
+                  "http://127.0.0.1:7653/ingest/caf9f3ed-65b2-482a-808c-53e4b2430d1b",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "X-Debug-Session-Id": "1f73bd",
                     },
-                    timestamp: Date.now(),
-                  }),
-                }).catch(() => {});
+                    body: JSON.stringify({
+                      sessionId: "1f73bd",
+                      id: `log_${Date.now()}_${Math.random()
+                        .toString(16)
+                        .slice(2)}`,
+                      runId: "pre-fix",
+                      hypothesisId:
+                        "H2_png_internal_clipping_or_asset_old_variant",
+                      location:
+                        "src/app/components/BrandLogo.tsx:onLoad(png edge alpha probe)",
+                      message: "Inspect loaded logo image + transparency at edges",
+                      data: {
+                        codeVersion: BRAND_LOGO_CODE_VERSION,
+                        currentSrc: img.currentSrc,
+                        naturalWidth: img.naturalWidth,
+                        naturalHeight: img.naturalHeight,
+                        alphaTop,
+                        alphaBottom,
+                      },
+                      timestamp: Date.now(),
+                    }),
+                  }
+                ).catch(() => {});
                 // #endregion
               }}
             />
