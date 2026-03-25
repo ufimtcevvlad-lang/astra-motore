@@ -11,7 +11,7 @@ export function BrandLogo() {
   const squareRef = useRef<HTMLDivElement | null>(null);
 
   // Debug marker to verify the server served the latest code.
-  const BRAND_LOGO_CODE_VERSION = "clip-debug-v1";
+  const BRAND_LOGO_CODE_VERSION = "clip-debug-v2";
 
   useEffect(() => {
     const wrap = signWrapRef.current;
@@ -74,7 +74,7 @@ export function BrandLogo() {
         body: JSON.stringify({
           sessionId: "1f73bd",
           id: `log_${Date.now()}_${Math.random().toString(16).slice(2)}`,
-          runId: "pre-fix",
+          runId: "post-fix-1",
           hypothesisId: "H1_layout_clipping_bounds_or_overflow",
           location:
             "src/app/components/BrandLogo.tsx:useEffect(layout+overflow probes)",
@@ -103,20 +103,30 @@ export function BrandLogo() {
   }, []);
 
   return (
-    <div className="flex min-w-0 items-center gap-2.5 sm:gap-5 md:gap-6">
+    <div className="flex min-w-0 items-center gap-3 sm:gap-4 md:gap-5">
       <div
         ref={signWrapRef}
-        className="relative flex shrink-0 items-center justify-center overflow-visible -translate-y-0.5 drop-shadow-[0_0_24px_rgba(251,191,36,0.3)] transition-[filter] duration-300 group-hover:drop-shadow-[0_0_32px_rgba(251,191,36,0.45)]"
+        className="relative flex shrink-0 items-center justify-center overflow-visible transition-[filter] duration-300"
         aria-hidden
       >
-        {/* Внешний квадрат чуть больше; знак внутри ~72% — запас по краям, без «среза» снизу */}
-        <div className="relative flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-visible sm:h-[5.25rem] sm:w-[5.25rem] md:h-[6rem] md:w-[6rem]">
-          <div ref={squareRef} className="relative h-[72%] w-[72%] min-h-0 min-w-0">
+        {/* Внешний квадрат + внутренний inset: filter на родителе часто «съедает» края; свечение — на <img> */}
+        <div className="relative flex h-[5rem] w-[5rem] shrink-0 items-center justify-center overflow-visible sm:h-[6.25rem] sm:w-[6.25rem] md:h-[7.5rem] md:w-[7.5rem]">
+          <div
+            ref={squareRef}
+            className="relative flex h-[88%] w-[88%] min-h-0 min-w-0 items-center justify-center overflow-visible"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- избегаем overflow:hidden wrapper у next/image; LCP здесь приемлем */}
             <img
               src="/brand/astra-mark.png"
               alt=""
               draggable={false}
-              className="h-full w-full object-contain object-center"
+              loading="eager"
+              decoding="async"
+              className="max-h-full max-w-full object-contain object-center transition-[filter] duration-300 group-hover:brightness-105"
+              style={{
+                filter:
+                  "drop-shadow(0 0 18px rgba(251,191,36,0.32)) drop-shadow(0 0 2px rgba(251,191,36,0.2))",
+              }}
               onLoad={(e) => {
                 const img = e.currentTarget;
 
@@ -175,7 +185,7 @@ export function BrandLogo() {
                       id: `log_${Date.now()}_${Math.random()
                         .toString(16)
                         .slice(2)}`,
-                      runId: "pre-fix",
+                      runId: "post-fix-1",
                       hypothesisId:
                         "H2_png_internal_clipping_or_asset_old_variant",
                       location:
