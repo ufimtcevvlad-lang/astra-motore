@@ -23,7 +23,7 @@ export type Product = {
   analogIds?: string[];
 };
 
-/** Пилот: строки 1–20 из «топ 100 продаж опель.xlsx» (название, артикул, кол-во, цена продажи). */
+/** Данные из «топ 100 продаж опель.xlsx» (название, артикул, кол-во, цена продажи), строки 1–30. */
 const OPEL_PILOT_RAW: Array<{
   id: string;
   name: string;
@@ -51,7 +51,7 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-1.jpg",
     description:
       "Свеча зажигания Bosch Super Plus для бензиновых двигателей GM Ecotec с резьбой M14. Обеспечивает устойчивое воспламенение и ресурс в городском цикле. Подходит для замены по регламенту ТО.",
-    analogIds: ["opel-10"],
+    analogIds: ["opel-10", "opel-23"],
   },
   {
     id: "opel-2",
@@ -95,7 +95,7 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-4.jpg",
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
-    analogIds: ["opel-9"],
+    analogIds: ["opel-9", "opel-30"],
   },
   {
     id: "opel-5",
@@ -168,7 +168,7 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-9.jpg",
     description:
       "Другая заводская спецификация масляного фильтра Hengst для тех же семейств Ecotec, что и E611HD442. Перед заказом сверяйте номер с установленным фильтром или заводским каталогом.",
-    analogIds: ["opel-4"],
+    analogIds: ["opel-4", "opel-30"],
   },
   {
     id: "opel-10",
@@ -183,7 +183,7 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-10.jpg",
     description:
       "Оригинальная свеча зажигания GM для ряда бензиновых Ecotec. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
-    analogIds: ["opel-1"],
+    analogIds: ["opel-1", "opel-23"],
   },
   {
     id: "opel-11",
@@ -329,6 +329,149 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-20.jpg",
     description:
       "Маслосъёмный колпачок клапана для F18D4. Износ колпачков даёт дым из выхлопа на холостом ходу и повышенный расход масла — замена комплектом по головке.",
+  },
+  {
+    id: "opel-21",
+    name: "Фильтр воздушный SIBTEK Astra-J, Cruze A14XEL/XER, A16XER",
+    sku: "AF01109",
+    qty: 172,
+    priceRaw: 522.91,
+    brand: "Sibtek",
+    country: "Китай / ЕС",
+    category: "Воздушные фильтры",
+    car: "Opel Astra J, Chevrolet Cruze (A14XEL, A14XER, A16XER)",
+    image: "/images/catalog/opel-4.jpg",
+    description:
+      "Воздушный фильтр для бензиновых турбо и атмосферных моторов семейства Ecotec на Astra J и Cruze. Меняется по регламенту ТО или при загрязнении — засор снижает отклик педали и расход топлива.",
+  },
+  {
+    id: "opel-22",
+    name: "Колпачёк маслосъёмный ELRING Z10XEP, A12XER, Z12XEP, Z14XEP, Z18XE",
+    sku: "476691",
+    qty: 168,
+    priceRaw: 127.74,
+    brand: "Elring",
+    country: "Германия",
+    category: "Двигатель",
+    car: "Opel / Chevrolet (Z10XEP, A12XER, Z12XEP, Z14XEP, Z18XE)",
+    image: "/images/catalog/opel-20.jpg",
+    description:
+      "Маслосъёмный колпачок Elring для ряда бензиновых двигателей. Рекомендуется менять комплектом при капремонте головки или при признаках прогара масла в камеру сгорания.",
+  },
+  {
+    id: "opel-23",
+    name: "Свеча зажигания BOSCH Astra J A14NEL/NET/VAG AUK/CAJA",
+    sku: "0242240707",
+    qty: 167,
+    priceRaw: 1358.62,
+    brand: "Bosch",
+    country: "Германия",
+    category: "Свечи и зажигание",
+    car: "Opel Astra J A14NEL/NET; уточняйте по двигателю",
+    image: "/images/catalog/opel-1.jpg",
+    description:
+      "Свеча зажигания Bosch для указанных модификаций моторов. Перед заказом сверяйте калильное число и резьбу со штатной свечой или каталогом.",
+    analogIds: ["opel-1", "opel-10"],
+  },
+  {
+    id: "opel-24",
+    name: "Пистон подкрылка (12mm) IMS Corsa C, Vectra C, Meriva A, Zafira",
+    sku: "23002100C",
+    qty: 164,
+    priceRaw: 15,
+    brand: "IMS",
+    country: "ЕС",
+    category: "Кузов и крепёж",
+    car: "Opel Corsa C, Vectra C, Meriva A, Zafira",
+    image: "/images/catalog/opel-14.jpg",
+    description:
+      "Пластиковая клипса (пистон) крепления подкрылка и облицовок, 12 mm. При снятии подкрылка часто ломается — имеет смысл иметь запас при ремонте.",
+  },
+  {
+    id: "opel-25",
+    name: "Фильтр салонный SIBTEK Aveo T300/Astra-J/Cruze/Cobalt/Insignia/Mokka",
+    sku: "AC0454",
+    qty: 144,
+    priceRaw: 492.14,
+    brand: "Sibtek",
+    country: "Китай / ЕС",
+    category: "Салонные фильтры",
+    car: "Chevrolet Aveo T300, Cruze, Cobalt; Opel Astra J, Insignia, Mokka",
+    image: "/images/catalog/opel-4.jpg",
+    description:
+      "Салонный фильтр для перечисленных моделей. Рекомендуется менять 1–2 раза в год или при запахе и слабом потоке воздуха отопителя.",
+  },
+  {
+    id: "opel-26",
+    name: "Уплотнительное кольцо трубки маслоохладителя A14NEL",
+    sku: "55568540",
+    qty: 140,
+    priceRaw: 1025.76,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки, сальники и кольца",
+    car: "Opel / Chevrolet 1.4 A14NEL",
+    image: "/images/catalog/opel-3.jpg",
+    description:
+      "Уплотнительное кольцо линии маслоохладителя для двигателя A14NEL. При демонтаже патрубка заменяйте кольцо — повторная установка старого часто даёт подсос и потерю масла.",
+    analogIds: ["opel-3", "opel-5"],
+  },
+  {
+    id: "opel-27",
+    name: "Кольцо уплотнительное болта клапанной крышки Cruze F16D3",
+    sku: "25185121",
+    qty: 135,
+    priceRaw: 104.56,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Прокладки, сальники и кольца",
+    car: "Chevrolet Cruze 1.6 F16D3",
+    image: "/images/catalog/opel-5.jpg",
+    description:
+      "Кольцо уплотнения болта крепления клапанной крышки для F16D3. Мелкая деталь при ТО крышки — ставьте новые кольца на все болты для герметичности.",
+  },
+  {
+    id: "opel-28",
+    name: "Крышка клапанная ГБЦ F16D4, F18D4",
+    sku: "96889998",
+    qty: 132,
+    priceRaw: 16950.19,
+    brand: "GM OE",
+    country: "Европейский склад GM",
+    category: "Двигатель",
+    car: "Chevrolet Cruze F16D4, F18D4",
+    image: "/images/catalog/opel-16.jpg",
+    description:
+      "Клапанная крышка в сборе / узел ГБЦ для Cruze с двигателями F16D4 и F18D4. Замена при трещинах, деформации или неконтролируемой течи масла сверху мотора — работы согласуйте с сервисом.",
+  },
+  {
+    id: "opel-29",
+    name: "Ремень ГРМ, к-кт SKF Astra/Vectra/Meriva/Zafira 1.6/1.8 (XEP, XER) 02-",
+    sku: "VKMA05260",
+    qty: 132,
+    priceRaw: 9971.38,
+    brand: "SKF",
+    country: "Швеция / ЕС",
+    category: "Двигатель",
+    car: "Opel Astra, Vectra, Meriva, Zafira 1.6 / 1.8 (XEP, XER)",
+    image: "/images/catalog/opel-15.jpg",
+    description:
+      "Комплект ремня ГРМ SKF для указанных моторов и годов выпуска. Меняется по регламенту или при шуме и люфте роликов; состав комплекта сверяйте с каталогом по VIN.",
+  },
+  {
+    id: "opel-30",
+    name: "Фильтр масляный FILTRON Astra H/J A16XER, Z16XER, A18XER, Z18XER, A14XEL/XER/NEL",
+    sku: "OE6486",
+    qty: 130,
+    priceRaw: 634.35,
+    brand: "Filtron",
+    country: "Польша",
+    category: "Масляные фильтры",
+    car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
+    image: "/images/catalog/opel-4.jpg",
+    description:
+      "Масляный фильтр Filtron для бензиновых Ecotec с тем же применением, что у аналогов Hengst в каталоге. Перед заказом сверяйте номер с установленным фильтром.",
+    analogIds: ["opel-4", "opel-9"],
   },
 ];
 

@@ -36,6 +36,11 @@ export const CATALOG_GROUPS = [
     title: "Свет и электрика",
     hint: "Лампы, электрооборудование",
   },
+  {
+    slug: "kuzov",
+    title: "Кузов и крепёж",
+    hint: "Клипсы, расходники по кузову",
+  },
 ] as const;
 
 export type CatalogGroupSlug = (typeof CATALOG_GROUPS)[number]["slug"];
@@ -51,6 +56,18 @@ export const CATALOG_SECTIONS = [
     slug: "filtry",
     title: "Масляные фильтры",
     hint: "Hengst и другие для ТО",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
+  },
+  {
+    slug: "filtry-vozdushnye",
+    title: "Воздушные фильтры",
+    hint: "Воздушная очистка для Ecotec и др.",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
+  },
+  {
+    slug: "filtry-salon",
+    title: "Салонные фильтры",
+    hint: "Фильтры салона",
     groupSlug: "to-rashod" satisfies CatalogGroupSlug,
   },
   {
@@ -82,6 +99,12 @@ export const CATALOG_SECTIONS = [
     title: "Автосвет и электрика",
     hint: "Лампы и расходники",
     groupSlug: "elektrika" satisfies CatalogGroupSlug,
+  },
+  {
+    slug: "kuzov-krepez",
+    title: "Кузов и крепёж",
+    hint: "Клипсы подкрылков и мелочи",
+    groupSlug: "kuzov" satisfies CatalogGroupSlug,
   },
 ] as const;
 
