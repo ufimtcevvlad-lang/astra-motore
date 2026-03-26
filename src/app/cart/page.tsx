@@ -243,8 +243,16 @@ export default function CartPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24 lg:pb-0">
       <h1 className="text-2xl font-semibold">Корзина</h1>
+      <div className="flex flex-wrap gap-2">
+        <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
+          Проверка заказа менеджером
+        </span>
+        <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800">
+          Подбор аналогов при необходимости
+        </span>
+      </div>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
           <Widget title="Товары в корзине">
@@ -264,6 +272,22 @@ export default function CartPage() {
                     />
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold ${
+                          item.product.inStock > 20
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                            : "border-amber-200 bg-amber-50 text-amber-800"
+                        }`}
+                      >
+                        {item.product.inStock > 20 ? "В наличии" : "Мало"}
+                      </span>
+                      {/(gm|oe|ориг)/i.test(item.product.brand) ? (
+                        <span className="inline-flex rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-900">
+                          Оригинал
+                        </span>
+                      ) : null}
+                    </div>
                     <p className="line-clamp-2 text-sm font-semibold text-slate-900 sm:text-base">{item.product.name}</p>
                     <p className="text-xs text-slate-500">
                       Арт. {item.product.sku} · {item.product.brand}
@@ -353,7 +377,7 @@ export default function CartPage() {
           </Widget>
 
           <Widget title="Оформление заказа">
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">1. Способ получения</h3>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -460,14 +484,14 @@ export default function CartPage() {
                       type="text"
                       value={deliveryCity}
                       onChange={(e) => setDeliveryCity(e.target.value)}
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       placeholder="Город доставки, например Екатеринбург"
                     />
                     <button
                       type="button"
                       onClick={calculateCdekDelivery}
                       disabled={deliveryQuoteLoading}
-                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     >
                       {deliveryQuoteLoading ? "Расчет..." : "Рассчитать"}
                     </button>
@@ -477,7 +501,7 @@ export default function CartPage() {
                       type="button"
                       onClick={loadCdekPickupPoints}
                       disabled={pickupPointsCdekLoading}
-                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     >
                       {pickupPointsCdekLoading ? "Загрузка ПВЗ..." : "Найти ПВЗ СДЭК"}
                     </button>
@@ -574,7 +598,7 @@ export default function CartPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   placeholder="Как к вам обращаться"
                 />
               </div>
@@ -589,7 +613,7 @@ export default function CartPage() {
                   value={phone}
                   onChange={(e) => setPhone(formatRuPhoneInput(e.target.value))}
                   onBlur={() => setPhoneTouched(true)}
-                  className={`w-full rounded-md border px-3 py-2 text-sm ${
+                  className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                     phoneTouched && !phoneValid
                       ? "border-red-500 bg-red-50 text-red-900"
                       : "border-slate-300"
@@ -609,7 +633,7 @@ export default function CartPage() {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   rows={3}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   placeholder="Марка и модель авто, удобное время для звонка..."
                 />
               </div>
@@ -649,10 +673,13 @@ export default function CartPage() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm"
+                  className="hidden lg:inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
                   {sending ? "Отправка…" : "Подтвердить заказ"}
                 </button>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                <p className="inline-flex items-center gap-2"><span className="text-amber-600">✓</span>Данные заказа и контакты не передаются третьим лицам.</p>
               </div>
             </form>
           </Widget>
@@ -704,6 +731,24 @@ export default function CartPage() {
             </div>
           </Widget>
         </aside>
+      </div>
+      <div className="fixed inset-x-0 bottom-0 z-[60] p-3 lg:hidden">
+        <div className="rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">К оплате</p>
+              <p className="text-lg font-bold text-amber-700">{totalWithDelivery.toLocaleString("ru-RU")} ₽</p>
+            </div>
+            <button
+              type="submit"
+              form="checkout-form"
+              disabled={sending}
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-amber-600 px-5 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35"
+            >
+              {sending ? "Отправка…" : "Подтвердить заказ"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

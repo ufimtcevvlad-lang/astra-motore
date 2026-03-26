@@ -78,11 +78,15 @@ export function AccountPanel() {
     ? "border-slate-700 bg-slate-900 text-slate-100 shadow-black/30"
     : "border-slate-200 bg-white text-slate-900";
   const mutedClass = isDark ? "text-slate-400" : "text-slate-500";
-  const tabIdleClass = isDark ? "text-slate-300 hover:bg-slate-800" : "text-slate-700 hover:bg-slate-50";
-  const tabActiveClass = isDark ? "bg-slate-800 font-semibold text-white" : "bg-slate-100 font-semibold text-slate-900";
+  const tabIdleClass = isDark
+    ? "text-slate-300 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+    : "text-slate-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
+  const tabActiveClass = isDark
+    ? "bg-slate-800 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+    : "bg-slate-100 font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
   const inputClass = isDark
-    ? "w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-slate-100"
-    : "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900";
+    ? "w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+    : "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
   const orders = [
     {
       id: "717290",

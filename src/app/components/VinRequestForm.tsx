@@ -154,7 +154,7 @@ export function VinRequestForm() {
             id="vinName"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             placeholder="Ваше имя"
             type="text"
             required
@@ -173,7 +173,7 @@ export function VinRequestForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
-              className={`w-full rounded-md border px-3 py-2 text-sm bg-white ${
+              className={`w-full rounded-md border px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 emailTouched && !emailValid ? "border-red-500 bg-red-50 text-red-900" : "border-slate-300"
               }`}
               placeholder="name@mail.ru"
@@ -203,7 +203,7 @@ export function VinRequestForm() {
               value={vin}
               onChange={(e) => setVin(e.target.value)}
               onBlur={() => setVinTouched(true)}
-              className={`w-full rounded-md border px-3 py-2 text-sm bg-white ${
+              className={`w-full rounded-md border px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 vinTouched && normalizeVin(vin).length !== 17
                   ? "border-red-500 bg-red-50 text-red-900"
                   : "border-slate-300"
@@ -257,7 +257,7 @@ export function VinRequestForm() {
                 list="vinBrandSuggestions"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: Opel"
                 required
                 type="text"
@@ -276,7 +276,7 @@ export function VinRequestForm() {
                 list="vinModelSuggestions"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: Astra H"
                 type="text"
               />
@@ -304,7 +304,7 @@ export function VinRequestForm() {
                 list="vinEngineSuggestions"
                 value={engine}
                 onChange={(e) => setEngine(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: 1.6 (X16XER)"
                 type="text"
               />
@@ -325,7 +325,7 @@ export function VinRequestForm() {
                 list="vinTransmissionSuggestions"
                 value={transmission}
                 onChange={(e) => setTransmission(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: АКПП 6"
                 type="text"
               />
@@ -350,7 +350,7 @@ export function VinRequestForm() {
                 list="vinYearSuggestions"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: 2008"
                 type="text"
               />
@@ -373,7 +373,7 @@ export function VinRequestForm() {
                 list="vinBodySuggestions"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 placeholder="Например: Хэтчбек 5 дв."
                 type="text"
               />
@@ -398,7 +398,7 @@ export function VinRequestForm() {
             id="vinRequest"
             value={neededParts}
             onChange={(e) => setNeededParts(e.target.value)}
-            className="w-full min-h-[120px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+            className="w-full min-h-[120px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             placeholder="Укажите, что нужно подобрать (например: тормозные колодки передние по VIN)"
             required
           />
@@ -416,7 +416,7 @@ export function VinRequestForm() {
               id="vinComment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full min-h-[110px] rounded-md border border-slate-300 px-3 py-2 pb-9 text-sm bg-white"
+              className="w-full min-h-[110px] rounded-md border border-slate-300 px-3 py-2 pb-9 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
             />
 
@@ -472,7 +472,7 @@ export function VinRequestForm() {
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
           {sending ? "Отправляем..." : "Отправить запрос"}
         </button>

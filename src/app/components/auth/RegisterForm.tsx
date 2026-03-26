@@ -87,7 +87,7 @@ export function RegisterForm() {
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             placeholder="Иванов Иван Иванович"
           />
         </div>
@@ -101,7 +101,7 @@ export function RegisterForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             placeholder="name@mail.ru"
           />
         </div>
@@ -116,7 +116,7 @@ export function RegisterForm() {
             value={phone}
             onChange={(e) => setPhone(formatRuPhoneInput(e.target.value))}
             onBlur={() => setPhoneTouched(true)}
-            className={`w-full rounded-md border px-3 py-2 text-sm ${
+            className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
               phoneTouched && !phoneValid
                 ? "border-red-500 bg-red-50 text-red-900"
                 : "border-slate-300"
@@ -137,7 +137,7 @@ export function RegisterForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             placeholder="Не менее 8 символов"
           />
         </div>
@@ -172,7 +172,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
           {sending ? "Создаем аккаунт..." : "Зарегистрироваться"}
         </button>

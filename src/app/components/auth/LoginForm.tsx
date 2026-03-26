@@ -80,7 +80,7 @@ export function LoginForm() {
               setLogin("+7");
               setPhoneTouched(false);
             }}
-            className={`rounded px-3 py-2 text-sm font-medium ${
+            className={`rounded px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
               loginMode === "phone"
                 ? "bg-slate-900 text-white"
                 : "text-slate-700 hover:bg-slate-100"
@@ -95,7 +95,7 @@ export function LoginForm() {
               setLogin("");
               setPhoneTouched(false);
             }}
-            className={`rounded px-3 py-2 text-sm font-medium ${
+            className={`rounded px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
               loginMode === "email"
                 ? "bg-slate-900 text-white"
                 : "text-slate-700 hover:bg-slate-100"
@@ -124,7 +124,7 @@ export function LoginForm() {
               if (loginMode === "phone") setPhoneTouched(true);
             }}
             placeholder={loginMode === "phone" ? "+7 (___) ___-__-__" : "name@mail.ru"}
-            className={`w-full rounded-md border px-3 py-2 text-sm ${
+            className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
               loginMode === "phone" && phoneTouched && !phoneValid
                 ? "border-red-500 bg-red-50 text-red-900"
                 : "border-slate-300"
@@ -145,7 +145,7 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Введите пароль"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           />
         </div>
         <label className="flex items-center gap-2 text-sm text-slate-700">
@@ -177,7 +177,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
           {sending ? "Входим..." : "Войти"}
         </button>
