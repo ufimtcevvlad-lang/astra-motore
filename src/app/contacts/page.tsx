@@ -115,14 +115,6 @@ export default function ContactsPage() {
           <p className="text-slate-800">{ADDRESS_LINE}</p>
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <a
-              href={YANDEX_ORG_PROFILE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
-            >
-              Карточка на Яндекс.Картах
-            </a>
-            <a
               href={YANDEX_MAPS_ORG_PAGE}
               target="_blank"
               rel="noopener noreferrer"
