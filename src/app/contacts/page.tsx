@@ -14,13 +14,12 @@ const YANDEX_MAPS_ORG_PAGE =
   "https://yandex.ru/maps/org/gm_drive/1299977455/";
 
 /**
- * Виджет карты: явно центр и метка в Екатеринбурге (ул. Готвальда).
- * Параметр `oid` в iframe иногда открывал другой регион (например Тюмень).
+ * Виджет карты: используем тот же org URL, что и в рабочей ссылке.
+ * Так точка всегда совпадает с карточкой компании.
  */
+const YANDEX_MAP_EMBED_SRC = "https://yandex.ru/map-widget/v1/org/gm_drive/1299977455";
 const MAP_LON = 60.568755;
 const MAP_LAT = 56.850673;
-const MAP_ZOOM = 17;
-const YANDEX_MAP_EMBED_SRC = `https://yandex.ru/map-widget/v1/?ll=${MAP_LON}%2C${MAP_LAT}&z=${MAP_ZOOM}&pt=${MAP_LON}%2C${MAP_LAT}%2Cpm2rdm&l=map&lang=ru`;
 
 export const metadata: Metadata = {
   title: "Контакты",
