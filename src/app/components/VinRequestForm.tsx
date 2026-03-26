@@ -110,7 +110,7 @@ export function VinRequestForm() {
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-      <h2 className="text-sm font-semibold text-slate-800">Обратная связь</h2>
+      <h2 className="text-base font-semibold text-slate-800 sm:text-lg">Обратная связь</h2>
 
       {sent ? (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -170,7 +170,7 @@ export function VinRequestForm() {
         </div>
 
         <div className="space-y-4">
-          <div className="text-sm font-semibold text-slate-800">Данные об автомобиле</div>
+          <div className="text-base font-semibold text-slate-800 sm:text-lg">Данные об автомобиле</div>
           <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
 
           <div>
@@ -411,7 +411,7 @@ export function VinRequestForm() {
             />
             <label
               htmlFor="vinPhoto"
-              className="absolute bottom-2 left-3 cursor-pointer text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
+              className="absolute bottom-2 left-3 cursor-pointer text-sm font-semibold text-amber-700 transition-colors hover:text-amber-800 hover:underline"
             >
               Прикрепить фото
             </label>
