@@ -103,7 +103,7 @@ export function VinRequestForm() {
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-      <h2 className="text-2xl font-bold text-slate-900">Обратная связь</h2>
+      <h2 className="text-sm font-semibold text-slate-800">Обратная связь</h2>
 
       {sent ? (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -271,7 +271,10 @@ export function VinRequestForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinComment">
+          <label
+            className="block text-sm font-medium text-slate-700 mb-1"
+            htmlFor="vinComment"
+          >
             Комментарий (необязательно)
           </label>
           <textarea
@@ -282,21 +285,19 @@ export function VinRequestForm() {
             placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
           />
 
-          <div className="mt-3">
-            <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinPhoto">
-              Фото (необязательно)
-            </label>
-            <input
-              id="vinPhoto"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
-              className="w-full text-sm text-slate-700"
-            />
-            {photo ? (
-              <p className="mt-1 text-xs text-slate-500">Выбрано: {photo.name}</p>
-            ) : null}
-          </div>
+          <input
+            id="vinPhoto"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            className="hidden"
+          />
+          <label
+            htmlFor="vinPhoto"
+            className="mt-3 inline-flex cursor-pointer text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
+          >
+            Прикрепить фото
+          </label>
         </div>
 
         <button
