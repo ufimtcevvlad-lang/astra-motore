@@ -195,7 +195,28 @@ export function VinRequestForm() {
               autoComplete="off"
               required
             />
-            <p className="mt-1 text-xs text-slate-500">Поле не должно быть пустым</p>
+            <div className="mt-1 flex items-center gap-3">
+              <p className="text-xs text-slate-500">Поле не должно быть пустым</p>
+              <div className="group relative">
+                <button
+                  type="button"
+                  className="text-xs font-medium text-amber-700 underline decoration-dotted underline-offset-2 hover:text-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 rounded"
+                >
+                  Где взять VIN код?
+                </button>
+                <div className="pointer-events-none absolute left-0 top-full z-20 mt-2 hidden w-[300px] rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-xl group-hover:block group-focus-within:block">
+                  <p className="font-semibold text-slate-900">Где смотреть VIN:</p>
+                  <ul className="mt-1 space-y-1">
+                    <li>• В СТС: строка «Идентификационный номер (VIN)».</li>
+                    <li>• В ПТС: раздел с основными данными автомобиля.</li>
+                    <li>• На кузове: под лобовым стеклом или на стойке двери.</li>
+                  </ul>
+                  <p className="mt-2 text-[11px] text-slate-500">
+                    VIN состоит из 17 символов (латинские буквы и цифры).
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -216,7 +237,6 @@ export function VinRequestForm() {
               <datalist id="vinBrandSuggestions">
                 <option value="Opel" />
                 <option value="Chevrolet" />
-                <option value="GM" />
               </datalist>
             </div>
             <div>
