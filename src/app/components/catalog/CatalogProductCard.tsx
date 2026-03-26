@@ -27,7 +27,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
           {p.price.toLocaleString("ru-RU")} ₽
         </p>
         <p className="line-clamp-1 text-xs text-slate-500">{p.car}</p>
-        <p className="text-xs text-slate-400">Арт. {p.sku}</p>
+        <p className="text-xs text-slate-600">Арт. {p.sku}</p>
         <div className="mt-auto pt-1">
           <Link
             href={`/product/${p.id}`}

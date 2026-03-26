@@ -96,14 +96,14 @@ export default function ContactsPage() {
           <p className="text-lg">
             <a
               href="tel:+79022540111"
-              className="text-amber-600 font-medium hover:text-amber-700 hover:underline"
+              className="inline-flex min-h-11 items-center rounded px-1 py-1 text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
               +7 (902) 254-01-11
             </a>
             <br />
             <a
               href="tel:+73432061535"
-              className="text-amber-600 font-medium hover:text-amber-700 hover:underline"
+              className="inline-flex min-h-11 items-center rounded px-1 py-1 text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
               +7 (343) 206-15-35
             </a>

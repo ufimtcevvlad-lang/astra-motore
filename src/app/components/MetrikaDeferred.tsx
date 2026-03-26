@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { COOKIE_CONSENT_EVENT, COOKIE_CONSENT_KEY } from "./CookieConsentBanner";
 
 /** Метрика грузится отдельным чанком после гидрации — не блокирует первый экран. */
@@ -24,24 +24,22 @@ function hasAnalyticsConsent(): boolean {
 }
 
 export function MetrikaDeferred() {
-  const [enabled, setEnabled] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return hasAnalyticsConsent();
-  });
-
-  useEffect(() => {
-    const onConsentChanged = () => setEnabled(hasAnalyticsConsent());
-    const onStorage = (event: StorageEvent) => {
-      if (event.key === COOKIE_CONSENT_KEY) setEnabled(hasAnalyticsConsent());
-    };
-
-    window.addEventListener(COOKIE_CONSENT_EVENT, onConsentChanged);
-    window.addEventListener("storage", onStorage);
-    return () => {
-      window.removeEventListener(COOKIE_CONSENT_EVENT, onConsentChanged);
-      window.removeEventListener("storage", onStorage);
-    };
-  }, []);
+  const enabled = useSyncExternalStore(
+    (onStoreChange) => {
+      const onStorage = (event: StorageEvent) => {
+        if (event.key === COOKIE_CONSENT_KEY) onStoreChange();
+      };
+      const onCustom = () => onStoreChange();
+      window.addEventListener("storage", onStorage);
+      window.addEventListener(COOKIE_CONSENT_EVENT, onCustom);
+      return () => {
+        window.removeEventListener("storage", onStorage);
+        window.removeEventListener(COOKIE_CONSENT_EVENT, onCustom);
+      };
+    },
+    () => hasAnalyticsConsent(),
+    () => false
+  );
 
   return enabled ? <YandexMetrika /> : null;
 }

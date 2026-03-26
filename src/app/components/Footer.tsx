@@ -24,14 +24,14 @@ export function Footer() {
             <div className="text-sm font-semibold text-slate-400 transition">
               <a
                 href="tel:+79022540111"
-                className="hover:text-amber-400 transition"
+                className="inline-flex min-h-11 items-center rounded px-1 py-1 hover:text-amber-400 transition"
               >
                 +7 (902) 254-01-11
               </a>
               <br />
               <a
                 href="tel:+73432061535"
-                className="hover:text-amber-400 transition"
+                className="inline-flex min-h-11 items-center rounded px-1 py-1 hover:text-amber-400 transition"
               >
                 +7 (343) 206-15-35
               </a>

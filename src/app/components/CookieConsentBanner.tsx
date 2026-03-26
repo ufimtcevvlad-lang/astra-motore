@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 export const COOKIE_CONSENT_KEY = "am-cookie-consent";
 export const COOKIE_CONSENT_EVENT = "am-cookie-consent-changed";
 
-type CookieConsent = {
+export type CookieConsent = {
   necessary: true;
   analytics: boolean;
   marketing: boolean;
 };
 
-function readConsent(): CookieConsent | null {
+export function readConsent(): CookieConsent | null {
   try {
     const value = localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!value) return null;
@@ -38,28 +38,37 @@ function saveConsent(consent: CookieConsent): void {
 }
 
 export function CookieConsentBanner() {
-  const [show, setShow] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return readConsent() === null;
-  });
+  const consent = useSyncExternalStore(
+    (onStoreChange) => {
+      const onStorage = (event: StorageEvent) => {
+        if (event.key === COOKIE_CONSENT_KEY) onStoreChange();
+      };
+      const onCustom = () => onStoreChange();
+      window.addEventListener("storage", onStorage);
+      window.addEventListener(COOKIE_CONSENT_EVENT, onCustom);
+      return () => {
+        window.removeEventListener("storage", onStorage);
+        window.removeEventListener(COOKIE_CONSENT_EVENT, onCustom);
+      };
+    },
+    () => readConsent(),
+    () => null
+  );
+  const show = consent === null;
   const [configureOpen, setConfigureOpen] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
-
   if (!show) return null;
 
   const acceptNecessary = () => {
     saveConsent({ necessary: true, analytics: false, marketing: false });
-    setShow(false);
   };
 
   const acceptAll = () => {
     saveConsent({ necessary: true, analytics: true, marketing: true });
-    setShow(false);
   };
   const saveCustom = () => {
     saveConsent({ necessary: true, analytics, marketing });
-    setShow(false);
   };
 
   return (
@@ -92,7 +101,7 @@ export function CookieConsentBanner() {
           <button
             type="button"
             onClick={acceptAll}
-            className="rounded-md bg-amber-600 px-3 py-2 text-sm font-medium text-white hover:bg-amber-700"
+            className="rounded-md bg-amber-700 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-800"
           >
             Принять все
           </button>
