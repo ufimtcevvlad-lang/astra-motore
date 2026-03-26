@@ -12,8 +12,10 @@ export function VinRequestForm() {
   const [vin, setVin] = useState("");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
-  const [modification, setModification] = useState("");
+  const [engine, setEngine] = useState("");
+  const [transmission, setTransmission] = useState("");
   const [year, setYear] = useState("");
+  const [body, setBody] = useState("");
 
   const [neededParts, setNeededParts] = useState("");
   const [comment, setComment] = useState("");
@@ -65,8 +67,10 @@ export function VinRequestForm() {
       fd.append("vin", vinNorm);
       fd.append("brand", brand.trim());
       fd.append("model", model.trim());
-      fd.append("modification", modification.trim());
+      fd.append("engine", engine.trim());
+      fd.append("transmission", transmission.trim());
       fd.append("year", year.trim());
+      fd.append("body", body.trim());
       fd.append("request", neededParts.trim());
       fd.append("comment", comment.trim());
       if (photo) {
@@ -89,8 +93,10 @@ export function VinRequestForm() {
       setVin("");
       setBrand("");
       setModel("");
-      setModification("");
+      setEngine("");
+      setTransmission("");
       setYear("");
+      setBody("");
       setNeededParts("");
       setComment("");
       setPhoto(null);
@@ -199,6 +205,7 @@ export function VinRequestForm() {
               </label>
               <input
                 id="vinBrand"
+                list="vinBrandSuggestions"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
@@ -206,6 +213,11 @@ export function VinRequestForm() {
                 required
                 type="text"
               />
+              <datalist id="vinBrandSuggestions">
+                <option value="Opel" />
+                <option value="Chevrolet" />
+                <option value="GM" />
+              </datalist>
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinModel">
@@ -213,12 +225,21 @@ export function VinRequestForm() {
               </label>
               <input
                 id="vinModel"
+                list="vinModelSuggestions"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
                 placeholder="Например: Astra H"
                 type="text"
               />
+              <datalist id="vinModelSuggestions">
+                <option value="Astra H" />
+                <option value="Astra J" />
+                <option value="Cruze" />
+                <option value="Aveo" />
+                <option value="Corsa D" />
+                <option value="Mokka" />
+              </datalist>
             </div>
           </div>
 
@@ -226,31 +247,96 @@ export function VinRequestForm() {
             <div>
               <label
                 className="block text-sm font-medium text-slate-700 mb-1"
-                htmlFor="vinModification"
+                htmlFor="vinEngine"
               >
-                Модификация
+                Мотор
               </label>
               <input
-                id="vinModification"
-                value={modification}
-                onChange={(e) => setModification(e.target.value)}
+                id="vinEngine"
+                list="vinEngineSuggestions"
+                value={engine}
+                onChange={(e) => setEngine(e.target.value)}
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
                 placeholder="Например: 1.6 (X16XER)"
                 type="text"
               />
+              <datalist id="vinEngineSuggestions">
+                <option value="1.4 Turbo (A14NET)" />
+                <option value="1.6 (X16XER)" />
+                <option value="1.8 (Z18XER)" />
+                <option value="2.0 (X20XEV)" />
+                <option value="1.7 CDTI" />
+              </datalist>
             </div>
             <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinTransmission">
+                Коробка
+              </label>
+              <input
+                id="vinTransmission"
+                list="vinTransmissionSuggestions"
+                value={transmission}
+                onChange={(e) => setTransmission(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: АКПП 6"
+                type="text"
+              />
+              <datalist id="vinTransmissionSuggestions">
+                <option value="МКПП 5" />
+                <option value="МКПП 6" />
+                <option value="АКПП 4" />
+                <option value="АКПП 6" />
+                <option value="Робот" />
+                <option value="CVT" />
+              </datalist>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
               <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinYear">
-                Год
+                Год выпуска
               </label>
               <input
                 id="vinYear"
+                list="vinYearSuggestions"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
                 placeholder="Например: 2008"
                 type="text"
               />
+              <datalist id="vinYearSuggestions">
+                <option value="2005" />
+                <option value="2008" />
+                <option value="2010" />
+                <option value="2012" />
+                <option value="2015" />
+                <option value="2018" />
+                <option value="2020" />
+              </datalist>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinBody">
+                Кузов
+              </label>
+              <input
+                id="vinBody"
+                list="vinBodySuggestions"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: Хэтчбек 5 дв."
+                type="text"
+              />
+              <datalist id="vinBodySuggestions">
+                <option value="Седан" />
+                <option value="Хэтчбек 3 дв." />
+                <option value="Хэтчбек 5 дв." />
+                <option value="Универсал" />
+                <option value="Кроссовер" />
+                <option value="Минивэн" />
+              </datalist>
             </div>
           </div>
           </div>

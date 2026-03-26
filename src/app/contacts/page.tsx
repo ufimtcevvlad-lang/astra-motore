@@ -128,7 +128,7 @@ export default function ContactsPage() {
               rel="noopener noreferrer"
               className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
             >
-              Маршрут и отзывы
+              Простроить маршрут
             </a>
           </p>
         </div>

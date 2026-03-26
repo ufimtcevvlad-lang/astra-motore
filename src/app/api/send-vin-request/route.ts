@@ -8,8 +8,10 @@ type Body = {
   vin: string;
   brand: string;
   model: string;
-  modification: string;
+  engine: string;
+  transmission: string;
   year: string;
+  carBody: string;
   request: string;
   comment?: string;
 };
@@ -46,7 +48,7 @@ export async function POST(request: Request) {
 
   const contentType = request.headers.get("content-type") || "";
 
-  let body: Body;
+  let requestBody: Body;
   let photoFile: File | null = null;
   let photoMeta: { fileName?: string; size?: number } | undefined = undefined;
 
@@ -64,20 +66,36 @@ export async function POST(request: Request) {
       photoMeta = { fileName: photoFile.name, size: photoFile.size };
     }
 
-    body = {
+    requestBody = {
       name: getStr("name"),
       email: getStr("email"),
       vin: getStr("vin"),
       brand: getStr("brand"),
       model: getStr("model"),
-      modification: getStr("modification"),
+      engine: getStr("engine"),
+      transmission: getStr("transmission"),
       year: getStr("year"),
+      carBody: getStr("body"),
       request: getStr("request"),
       comment: getStr("comment") || undefined,
     };
   } else {
     try {
-      body = await request.json();
+      const json = (await request.json()) as Partial<Body> & { body?: string };
+      requestBody = {
+        name: String(json.name || ""),
+        email: String(json.email || ""),
+        vin: String(json.vin || ""),
+        brand: String(json.brand || ""),
+        model: String(json.model || ""),
+        engine: String(json.engine || ""),
+        transmission: String(json.transmission || ""),
+        year: String(json.year || ""),
+        // backward compatible: accept old key "body" from clients
+        carBody: String(json.carBody || json.body || ""),
+        request: String(json.request || ""),
+        comment: typeof json.comment === "string" ? json.comment : undefined,
+      };
     } catch {
       return NextResponse.json(
         { error: "Неверный формат данных" },
@@ -87,8 +105,19 @@ export async function POST(request: Request) {
     // no photo
   }
 
-  const { name, email, vin, brand, model, modification, year, request: requestText, comment } =
-    body;
+  const {
+    name,
+    email,
+    vin,
+    brand,
+    model,
+    engine,
+    transmission,
+    year,
+    carBody,
+    request: requestText,
+    comment,
+  } = requestBody;
 
   const vinNorm = String(vin || "")
     .toUpperCase()
@@ -113,14 +142,16 @@ export async function POST(request: Request) {
   }
 
   const payload: Body = {
-    ...body,
+    ...requestBody,
     name: name.trim(),
     email: emailNorm,
     vin: vinNorm,
     brand: brand.trim(),
     model: String(model || "").trim(),
-    modification: String(modification || "").trim(),
+    engine: String(engine || "").trim(),
+    transmission: String(transmission || "").trim(),
     year: String(year || "").trim(),
+    carBody: String(carBody || "").trim(),
     request: requestText.trim(),
     comment: comment?.trim() || undefined,
   };
@@ -151,8 +182,10 @@ export async function POST(request: Request) {
       [
         payload.brand,
         payload.model || null,
-        payload.modification || null,
+        payload.engine || null,
+        payload.transmission || null,
         payload.year || null,
+        payload.carBody || null,
       ]
         .filter(Boolean)
         .join(" / "),
