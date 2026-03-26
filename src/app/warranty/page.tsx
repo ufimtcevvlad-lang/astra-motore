@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { LEGAL_EFFECTIVE_DATE, LEGAL_VERSIONS } from "../lib/legal-docs";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -28,6 +29,9 @@ export default function WarrantyPage() {
       />
       <CatalogChrome crumbs={[{ label: "Главная", href: "/" }, { label: "Гарантия" }]} title="Гарантия" />
       <SimpleDoc title="Положение о гарантии">
+        <p className="text-sm text-slate-500">
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.warrantyPolicy}.
+        </p>
         <p>
           Настоящее Положение определяет условия гарантии на товары, приобретенные в интернет-магазине Astra Motors,
           и порядок рассмотрения гарантийных обращений.

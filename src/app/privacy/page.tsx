@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { LEGAL_EFFECTIVE_DATE, LEGAL_VERSIONS } from "../lib/legal-docs";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -36,6 +37,9 @@ export default function PrivacyPage() {
         title="Обработка персональных данных"
       />
       <SimpleDoc title="Политика обработки персональных данных">
+        <p className="text-sm text-slate-500">
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.privacyPolicy}.
+        </p>
         <p>
           Настоящая Политика определяет порядок обработки персональных данных пользователей сайта Astra Motors и
           разработана в соответствии с требованиями законодательства Российской Федерации, включая Федеральный закон № 152-ФЗ

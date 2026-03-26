@@ -14,6 +14,7 @@ export function LoginForm() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [consentPersonalData, setConsentPersonalData] = useState(false);
   const phoneValid = loginMode === "phone" ? isValidRuPhone(login) : true;
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -28,13 +29,18 @@ export function LoginForm() {
         return;
       }
     }
+    if (!consentPersonalData) {
+      setError("Необходимо согласие на обработку персональных данных");
+      setSending(false);
+      return;
+    }
     try {
       const payloadLogin =
         loginMode === "phone" ? normalizeRuPhone(login) : login.trim();
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login: payloadLogin, password, rememberMe }),
+        body: JSON.stringify({ login: payloadLogin, password, rememberMe, consentPersonalData }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -143,6 +149,22 @@ export function LoginForm() {
             className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
           />
           Запомнить меня
+        </label>
+        <label className="flex items-start gap-2 text-sm text-slate-700">
+          <input
+            type="checkbox"
+            checked={consentPersonalData}
+            onChange={(e) => setConsentPersonalData(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+            required
+          />
+          <span>
+            Я согласен(а) на обработку персональных данных и ознакомлен(а) с{" "}
+            <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+              политикой обработки персональных данных
+            </Link>
+            .
+          </span>
         </label>
         <button
           type="submit"

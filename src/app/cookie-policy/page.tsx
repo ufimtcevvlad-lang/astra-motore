@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { LEGAL_EFFECTIVE_DATE, LEGAL_VERSIONS } from "../lib/legal-docs";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -30,6 +31,9 @@ export default function CookiePolicyPage() {
         title="Политика cookies"
       />
       <SimpleDoc title="Политика использования файлов cookies">
+        <p className="text-sm text-slate-500">
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.cookiePolicy}.
+        </p>
         <p>
           Настоящая Политика описывает, как сайт Astra Motors использует файлы cookies и аналогичные технологии.
         </p>

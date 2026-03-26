@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../../lib/phone";
@@ -13,6 +14,7 @@ export function SmsLoginForm() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [consentPersonalData, setConsentPersonalData] = useState(false);
   const phoneValid = isValidRuPhone(phone);
 
   const requestCode = async () => {
@@ -25,11 +27,16 @@ export function SmsLoginForm() {
       setSending(false);
       return;
     }
+    if (!consentPersonalData) {
+      setError("Необходимо согласие на обработку персональных данных");
+      setSending(false);
+      return;
+    }
     try {
       const res = await fetch("/api/auth/sms/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: normalizeRuPhone(phone) }),
+        body: JSON.stringify({ phone: normalizeRuPhone(phone), consentPersonalData }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -116,6 +123,22 @@ export function SmsLoginForm() {
         >
           {sending ? "Отправляем..." : "Получить код"}
         </button>
+        <label className="flex items-start gap-2 text-sm text-slate-700">
+          <input
+            type="checkbox"
+            checked={consentPersonalData}
+            onChange={(e) => setConsentPersonalData(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-slate-300"
+            required
+          />
+          <span>
+            Я согласен(а) на обработку персональных данных и ознакомлен(а) с{" "}
+            <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+              политикой обработки персональных данных
+            </Link>
+            .
+          </span>
+        </label>
       </div>
 
       {codeRequested && (

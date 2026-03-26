@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { appendConsentLog } from "../../lib/consent-log";
 
 type Body = {
   name: string;
@@ -151,6 +152,25 @@ export async function POST(request: Request) {
       },
       { status: 400 }
     );
+  }
+
+  try {
+    await appendConsentLog({
+      event: "vin_request_submit",
+      consentPersonalData: true,
+      consentMarketing: Boolean(consentMarketing),
+      ip:
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request.headers.get("user-agent") || undefined,
+      subject: {
+        fullName: name,
+        email: emailNorm,
+      },
+    });
+  } catch {
+    // ignore consent log errors
   }
 
   const payload: Body = {

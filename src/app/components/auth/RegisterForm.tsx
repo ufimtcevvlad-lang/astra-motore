@@ -14,6 +14,8 @@ export function RegisterForm() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [consentPersonalData, setConsentPersonalData] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
   const phoneValid = isValidRuPhone(phone);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -26,11 +28,23 @@ export function RegisterForm() {
       setSending(false);
       return;
     }
+    if (!consentPersonalData) {
+      setError("Необходимо согласие на обработку персональных данных");
+      setSending(false);
+      return;
+    }
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, phone: normalizeRuPhone(phone), password }),
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone: normalizeRuPhone(phone),
+          password,
+          consentPersonalData,
+          consentMarketing,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -118,6 +132,33 @@ export function RegisterForm() {
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             placeholder="Не менее 8 символов"
           />
+        </div>
+        <div className="space-y-2 rounded-md border border-slate-200 bg-slate-50 p-3">
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={consentPersonalData}
+              onChange={(e) => setConsentPersonalData(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300"
+              required
+            />
+            <span>
+              Я согласен(а) на обработку персональных данных и ознакомлен(а) с{" "}
+              <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+                политикой обработки персональных данных
+              </Link>
+              .
+            </span>
+          </label>
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={consentMarketing}
+              onChange={(e) => setConsentMarketing(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300"
+            />
+            <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
+          </label>
         </div>
         <button
           type="submit"

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { appendConsentLog } from "../../lib/consent-log";
 
 type OrderItem = {
   name: string;
@@ -69,6 +70,25 @@ export async function POST(request: Request) {
       { error: "Не заполнены имя, телефон, корзина или согласие на обработку персональных данных" },
       { status: 400 }
     );
+  }
+
+  try {
+    await appendConsentLog({
+      event: "order_submit",
+      consentPersonalData: true,
+      consentMarketing: Boolean(consentMarketing),
+      ip:
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request.headers.get("user-agent") || undefined,
+      subject: {
+        fullName: name,
+        phone,
+      },
+    });
+  } catch {
+    // ignore consent log errors
   }
 
   // Сохраняем заказ в append-only лог на сервере (для меню бота: «Заказы»)

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { LEGAL_EFFECTIVE_DATE, LEGAL_VERSIONS } from "../lib/legal-docs";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -31,6 +32,9 @@ export default function SupplyAgreementPage() {
         title="Публичная оферта"
       />
       <SimpleDoc title="Публичная оферта о продаже товаров дистанционным способом">
+        <p className="text-sm text-slate-500">
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.publicOffer}.
+        </p>
         <p>
           Настоящий документ является предложением Индивидуального предпринимателя Невьянцева Антона Александровича
           (далее — Продавец) заключить договор розничной купли-продажи автозапчастей дистанционным способом на

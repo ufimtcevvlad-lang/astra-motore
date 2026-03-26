@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { createSmsCodeForPhone } from "../../../../lib/auth";
+import { appendConsentLog } from "../../../../lib/consent-log";
 
 type Body = {
   phone: string;
   debug?: boolean;
+  consentPersonalData?: boolean;
 };
 
 async function getClientIp(request: Request): Promise<string | undefined> {
@@ -63,6 +65,26 @@ export async function POST(request: Request) {
   }
 
   const debug = Boolean(body.debug);
+  if (!body.consentPersonalData) {
+    return NextResponse.json(
+      { error: "Необходимо согласие на обработку персональных данных" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    await appendConsentLog({
+      event: "auth_login_sms_request",
+      consentPersonalData: true,
+      ip: await getClientIp(request),
+      userAgent: request.headers.get("user-agent") || undefined,
+      subject: {
+        phone: body.phone,
+      },
+    });
+  } catch {
+    // ignore consent log errors
+  }
   const result = await createSmsCodeForPhone(String(body.phone || ""));
   if (!result.ok) {
     return NextResponse.json({ error: result.reason }, { status: 400 });

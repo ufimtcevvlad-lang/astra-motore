@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { LEGAL_EFFECTIVE_DATE, LEGAL_VERSIONS } from "../lib/legal-docs";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -36,6 +37,9 @@ export default function ConsentPersonalDataPage() {
         title="Согласие на обработку персональных данных"
       />
       <SimpleDoc title="Согласие субъекта на обработку персональных данных">
+        <p className="text-sm text-slate-500">
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.consentPersonalData}.
+        </p>
         <p>
           Настоящим, оставляя данные на сайте Astra Motors, я свободно, своей волей и в своем интересе даю согласие
           Индивидуальному предпринимателю Невьянцеву Антону Александровичу на обработку моих персональных данных на
@@ -61,6 +65,19 @@ export default function ConsentPersonalDataPage() {
             Контакты
           </Link>
           .
+        </p>
+        <h2 className="text-lg font-semibold text-slate-900">Порядок отзыва согласия</h2>
+        <p>
+          Для отзыва согласия направьте обращение с темой «Отзыв согласия на обработку персональных данных» через
+          страницу{" "}
+          <Link href="/contacts" className="font-medium text-amber-800 underline-offset-2 hover:underline">
+            Контакты
+          </Link>
+          . В обращении укажите ФИО, номер телефона и описание запроса для корректной идентификации.
+        </p>
+        <p>
+          Срок рассмотрения обращения составляет до 30 календарных дней с даты получения запроса, если иной срок не
+          установлен законодательством Российской Федерации.
         </p>
       </SimpleDoc>
     </div>

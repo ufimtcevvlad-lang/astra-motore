@@ -5,11 +5,13 @@ import {
   SESSION_COOKIE,
   verifyPassword,
 } from "../../../lib/auth";
+import { appendConsentLog } from "../../../lib/consent-log";
 
 type Body = {
   login: string;
   password: string;
   rememberMe?: boolean;
+  consentPersonalData?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -22,8 +24,28 @@ export async function POST(request: Request) {
 
   const login = String(body.login || "").trim();
   const password = String(body.password || "");
-  if (!login || !password) {
-    return NextResponse.json({ error: "Введите email/телефон и пароль" }, { status: 400 });
+  if (!login || !password || !body.consentPersonalData) {
+    return NextResponse.json(
+      { error: "Введите адрес электронной почты или телефон, пароль и подтвердите согласие на обработку персональных данных" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    await appendConsentLog({
+      event: "auth_login_password",
+      consentPersonalData: true,
+      ip:
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        undefined,
+      userAgent: request.headers.get("user-agent") || undefined,
+      subject: {
+        login,
+      },
+    });
+  } catch {
+    // ignore consent log errors
   }
 
   const user = await findUserByLogin(login);
