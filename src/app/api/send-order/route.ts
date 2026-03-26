@@ -15,6 +15,8 @@ type Body = {
   comment: string;
   items: OrderItem[];
   total: number;
+  consentPersonalData: boolean;
+  consentMarketing?: boolean;
 };
 
 type PersistedOrder = Body & {
@@ -55,9 +57,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Неверный формат данных" }, { status: 400 });
   }
 
-  const { name, phone, comment, items, total } = body;
-  if (!name?.trim() || !phone?.trim() || !Array.isArray(items) || typeof total !== "number") {
-    return NextResponse.json({ error: "Не заполнены имя, телефон или корзина" }, { status: 400 });
+  const { name, phone, comment, items, total, consentPersonalData, consentMarketing } = body;
+  if (
+    !name?.trim() ||
+    !phone?.trim() ||
+    !Array.isArray(items) ||
+    typeof total !== "number" ||
+    !consentPersonalData
+  ) {
+    return NextResponse.json(
+      { error: "Не заполнены имя, телефон, корзина или согласие ПДн" },
+      { status: 400 }
+    );
   }
 
   // Сохраняем заказ в append-only лог на сервере (для меню бота: «Заказы»)
@@ -69,6 +80,8 @@ export async function POST(request: Request) {
       comment: comment?.trim() || "",
       items,
       total,
+      consentPersonalData: Boolean(consentPersonalData),
+      consentMarketing: Boolean(consentMarketing),
       userAgent: request.headers.get("user-agent") || undefined,
       ip:
         request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||

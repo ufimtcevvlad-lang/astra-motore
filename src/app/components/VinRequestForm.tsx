@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 function normalizeVin(value: string) {
@@ -32,6 +33,8 @@ export function VinRequestForm() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [consentPersonalData, setConsentPersonalData] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,6 +62,10 @@ export function VinRequestForm() {
       setError("Заполните марку и необходимые вам запчасти");
       return;
     }
+    if (!consentPersonalData) {
+      setError("Нужно согласие на обработку персональных данных");
+      return;
+    }
 
     setSending(true);
     try {
@@ -74,6 +81,8 @@ export function VinRequestForm() {
       fd.append("body", body.trim());
       fd.append("request", neededParts.trim());
       fd.append("comment", comment.trim());
+      fd.append("consentPersonalData", String(consentPersonalData));
+      fd.append("consentMarketing", String(consentMarketing));
       if (photo) {
         fd.append("photo", photo);
       }
@@ -101,6 +110,8 @@ export function VinRequestForm() {
       setNeededParts("");
       setComment("");
       setPhoto(null);
+      setConsentPersonalData(false);
+      setConsentMarketing(false);
     } catch {
       setError("Ошибка сети. Попробуйте ещё раз.");
     } finally {
@@ -416,6 +427,38 @@ export function VinRequestForm() {
               Прикрепить фото
             </label>
           </div>
+        </div>
+
+        <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={consentPersonalData}
+              onChange={(e) => setConsentPersonalData(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300"
+              required
+            />
+            <span>
+              Я согласен(а) на{" "}
+              <Link href="/consent-personal-data" className="text-amber-700 underline hover:text-amber-800">
+                обработку персональных данных
+              </Link>{" "}
+              и ознакомлен(а) с{" "}
+              <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+                Политикой ПДн
+              </Link>
+              .
+            </span>
+          </label>
+          <label className="flex items-start gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={consentMarketing}
+              onChange={(e) => setConsentMarketing(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300"
+            />
+            <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
+          </label>
         </div>
 
         <button

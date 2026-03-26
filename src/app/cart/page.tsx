@@ -15,6 +15,8 @@ export default function CartPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [consentPersonalData, setConsentPersonalData] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
   const phoneValid = isValidRuPhone(phone);
 
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
@@ -25,6 +27,10 @@ export default function CartPage() {
     setPhoneTouched(true);
     if (!phoneValid) {
       setError("Введите корректный номер телефона");
+      return;
+    }
+    if (!consentPersonalData) {
+      setError("Нужно согласие на обработку персональных данных");
       return;
     }
     setSending(true);
@@ -43,6 +49,8 @@ export default function CartPage() {
             sum: i.product.price * i.quantity,
           })),
           total,
+          consentPersonalData,
+          consentMarketing,
         }),
       });
       const data = await res.json();
@@ -55,6 +63,8 @@ export default function CartPage() {
       setName("");
       setPhone("");
       setComment("");
+      setConsentPersonalData(false);
+      setConsentMarketing(false);
     } catch {
       setError("Ошибка сети. Проверьте интернет и попробуйте снова.");
     } finally {
@@ -203,6 +213,37 @@ export default function CartPage() {
               className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
               placeholder="Марка и модель авто, удобное время для звонка..."
             />
+          </div>
+          <div className="space-y-2 rounded-md border border-slate-200 bg-slate-50 p-3">
+            <label className="flex items-start gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={consentPersonalData}
+                onChange={(e) => setConsentPersonalData(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300"
+                required
+              />
+              <span>
+                Я согласен(а) на{" "}
+                <Link href="/consent-personal-data" className="text-amber-700 underline hover:text-amber-800">
+                  обработку персональных данных
+                </Link>{" "}
+                и ознакомлен(а) с{" "}
+                <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+                  Политикой ПДн
+                </Link>
+                .
+              </span>
+            </label>
+            <label className="flex items-start gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={consentMarketing}
+                onChange={(e) => setConsentMarketing(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300"
+              />
+              <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
+            </label>
           </div>
           <div className="flex gap-2">
             <button

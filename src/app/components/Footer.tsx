@@ -42,7 +42,21 @@ export function Footer() {
           <p>Индивидуальный предприниматель Невьянцев Антон Александрович</p>
           <p>ИНН 667472249310</p>
           <p>ОГРНИП 321665800117840</p>
-          <p>Адрес: Свердловская обл., г. Екатеринбург, ул. Крестинского, д. 27, кв. 269</p>
+          <p>Юридический адрес: Свердловская обл., г. Екатеринбург, ул. Крестинского, д. 27, кв. 269</p>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+            <Link href="/privacy" className="hover:text-amber-400 transition">
+              Политика ПДн
+            </Link>
+            <Link href="/consent-personal-data" className="hover:text-amber-400 transition">
+              Согласие ПДн
+            </Link>
+            <Link href="/supply-agreement" className="hover:text-amber-400 transition">
+              Публичная оферта
+            </Link>
+            <Link href="/cookie-policy" className="hover:text-amber-400 transition">
+              Cookies
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

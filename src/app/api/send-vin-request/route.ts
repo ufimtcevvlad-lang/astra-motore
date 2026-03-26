@@ -13,6 +13,8 @@ type Body = {
   year: string;
   carBody: string;
   request: string;
+  consentPersonalData: boolean;
+  consentMarketing?: boolean;
   comment?: string;
 };
 
@@ -77,6 +79,8 @@ export async function POST(request: Request) {
       year: getStr("year"),
       carBody: getStr("body"),
       request: getStr("request"),
+      consentPersonalData: getStr("consentPersonalData") === "true",
+      consentMarketing: getStr("consentMarketing") === "true",
       comment: getStr("comment") || undefined,
     };
   } else {
@@ -94,6 +98,8 @@ export async function POST(request: Request) {
         // backward compatible: accept old key "body" from clients
         carBody: String(json.carBody || json.body || ""),
         request: String(json.request || ""),
+        consentPersonalData: Boolean(json.consentPersonalData),
+        consentMarketing: Boolean(json.consentMarketing),
         comment: typeof json.comment === "string" ? json.comment : undefined,
       };
     } catch {
@@ -116,6 +122,8 @@ export async function POST(request: Request) {
     year,
     carBody,
     request: requestText,
+    consentPersonalData,
+    consentMarketing,
     comment,
   } = requestBody;
 
@@ -133,10 +141,11 @@ export async function POST(request: Request) {
     !vinNorm ||
     vinNorm.length !== 17 ||
     !brand?.trim() ||
-    !requestText?.trim()
+    !requestText?.trim() ||
+    !consentPersonalData
   ) {
     return NextResponse.json(
-      { error: "Не заполнены имя, email, VIN (17 символов), марка или запрос" },
+      { error: "Не заполнены имя, email, VIN (17 символов), марка, запрос или согласие ПДн" },
       { status: 400 }
     );
   }
@@ -153,6 +162,8 @@ export async function POST(request: Request) {
     year: String(year || "").trim(),
     carBody: String(carBody || "").trim(),
     request: requestText.trim(),
+    consentPersonalData: Boolean(consentPersonalData),
+    consentMarketing: Boolean(consentMarketing),
     comment: comment?.trim() || undefined,
   };
 
