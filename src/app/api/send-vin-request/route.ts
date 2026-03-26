@@ -21,7 +21,9 @@ function escapeTelegram(text: string): string {
     .replace(/>/g, "&gt;");
 }
 
-async function persistVinRequest(entry: Body & { createdAt: string; ip?: string }) {
+async function persistVinRequest(
+  entry: Body & { createdAt: string; ip?: string; photoName?: string; photoSize?: number }
+) {
   const dir = path.join(process.cwd(), "data");
   const file = path.join(dir, "vin-requests.ndjson");
   await fs.mkdir(dir, { recursive: true });
@@ -42,11 +44,47 @@ export async function POST(request: Request) {
     );
   }
 
+  const contentType = request.headers.get("content-type") || "";
+
   let body: Body;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Неверный формат данных" }, { status: 400 });
+  let photoFile: File | null = null;
+  let photoMeta: { fileName?: string; size?: number } | undefined = undefined;
+
+  if (contentType.includes("multipart/form-data")) {
+    const form = await request.formData();
+    const getStr = (k: string) => {
+      const v = form.get(k);
+      if (typeof v !== "string") return "";
+      return v;
+    };
+
+    const photoEntry = form.get("photo");
+    if (photoEntry && typeof photoEntry !== "string") {
+      photoFile = photoEntry as File;
+      photoMeta = { fileName: photoFile.name, size: photoFile.size };
+    }
+
+    body = {
+      name: getStr("name"),
+      email: getStr("email"),
+      vin: getStr("vin"),
+      brand: getStr("brand"),
+      model: getStr("model"),
+      modification: getStr("modification"),
+      year: getStr("year"),
+      request: getStr("request"),
+      comment: getStr("comment") || undefined,
+    };
+  } else {
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Неверный формат данных" },
+        { status: 400 }
+      );
+    }
+    // no photo
   }
 
   const { name, email, vin, brand, model, modification, year, request: requestText, comment } =
@@ -96,6 +134,8 @@ export async function POST(request: Request) {
         request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         request.headers.get("x-real-ip") ||
         undefined,
+      photoName: photoMeta?.fileName,
+      photoSize: photoMeta?.size,
     });
   } catch {
     // ignore
@@ -127,23 +167,47 @@ export async function POST(request: Request) {
   const text = lines.join("\n");
 
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      }),
-    });
+    if (photoFile) {
+      const tgForm = new FormData();
+      tgForm.append("chat_id", String(chatId));
+      tgForm.append("caption", text);
+      tgForm.append("parse_mode", "HTML");
+      tgForm.append("disable_web_page_preview", "true");
 
-    const data = await res.json();
-    if (!data.ok) {
-      return NextResponse.json(
-        { error: data.description || "Ошибка Telegram" },
-        { status: 502 }
-      );
+      // photoFile is a File-like object; append directly
+      tgForm.append("photo", photoFile, photoFile.name || "photo");
+
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+        method: "POST",
+        body: tgForm,
+      });
+
+      const data = await res.json();
+      if (!data.ok) {
+        return NextResponse.json(
+          { error: data.description || "Ошибка Telegram" },
+          { status: 502 }
+        );
+      }
+    } else {
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+        }),
+      });
+
+      const data = await res.json();
+      if (!data.ok) {
+        return NextResponse.json(
+          { error: data.description || "Ошибка Telegram" },
+          { status: 502 }
+        );
+      }
     }
 
     return NextResponse.json({ ok: true });

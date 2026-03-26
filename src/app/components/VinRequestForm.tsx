@@ -17,6 +17,7 @@ export function VinRequestForm() {
 
   const [neededParts, setNeededParts] = useState("");
   const [comment, setComment] = useState("");
+  const [photo, setPhoto] = useState<File | null>(null);
 
   const [emailTouched, setEmailTouched] = useState(false);
   const emailValid =
@@ -58,20 +59,23 @@ export function VinRequestForm() {
 
     setSending(true);
     try {
+      const fd = new FormData();
+      fd.append("name", name.trim());
+      fd.append("email", email.trim());
+      fd.append("vin", vinNorm);
+      fd.append("brand", brand.trim());
+      fd.append("model", model.trim());
+      fd.append("modification", modification.trim());
+      fd.append("year", year.trim());
+      fd.append("request", neededParts.trim());
+      fd.append("comment", comment.trim());
+      if (photo) {
+        fd.append("photo", photo);
+      }
+
       const res = await fetch("/api/send-vin-request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim(),
-          vin: vinNorm,
-          brand: brand.trim(),
-          model: model.trim(),
-          modification: modification.trim(),
-          year: year.trim(),
-          request: neededParts.trim(),
-          comment: comment.trim(),
-        }),
+        body: fd,
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -89,6 +93,7 @@ export function VinRequestForm() {
       setYear("");
       setNeededParts("");
       setComment("");
+      setPhoto(null);
     } catch {
       setError("Ошибка сети. Попробуйте ещё раз.");
     } finally {
@@ -276,6 +281,22 @@ export function VinRequestForm() {
             className="w-full min-h-[90px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
             placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
           />
+
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinPhoto">
+              Фото (необязательно)
+            </label>
+            <input
+              id="vinPhoto"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+              className="w-full text-sm text-slate-700"
+            />
+            {photo ? (
+              <p className="mt-1 text-xs text-slate-500">Выбрано: {photo.name}</p>
+            ) : null}
+          </div>
         </div>
 
         <button
