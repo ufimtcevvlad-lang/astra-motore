@@ -4,9 +4,12 @@ import path from "node:path";
 
 type Body = {
   name: string;
-  phone: string;
+  email: string;
   vin: string;
-  car: string;
+  brand: string;
+  model: string;
+  modification: string;
+  year: string;
   request: string;
   comment?: string;
 };
@@ -46,15 +49,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Неверный формат данных" }, { status: 400 });
   }
 
-  const { name, phone, vin, car, request: requestText, comment } = body;
+  const { name, email, vin, brand, model, modification, year, request: requestText, comment } =
+    body;
 
   const vinNorm = String(vin || "")
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, "");
 
-  if (!name?.trim() || !phone?.trim() || !vinNorm || vinNorm.length !== 17 || !car?.trim() || !requestText?.trim()) {
+  const emailNorm = String(email || "").trim();
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNorm);
+
+  if (
+    !name?.trim() ||
+    !emailNorm ||
+    !emailValid ||
+    !vinNorm ||
+    vinNorm.length !== 17 ||
+    !brand?.trim() ||
+    !requestText?.trim()
+  ) {
     return NextResponse.json(
-      { error: "Не заполнены имя, телефон, VIN (17 знаков), авто или запрос" },
+      { error: "Не заполнены имя, email, VIN (17 символов), марка или запрос" },
       { status: 400 }
     );
   }
@@ -62,9 +77,12 @@ export async function POST(request: Request) {
   const payload: Body = {
     ...body,
     name: name.trim(),
-    phone: phone.trim(),
+    email: emailNorm,
     vin: vinNorm,
-    car: car.trim(),
+    brand: brand.trim(),
+    model: String(model || "").trim(),
+    modification: String(modification || "").trim(),
+    year: String(year || "").trim(),
     request: requestText.trim(),
     comment: comment?.trim() || undefined,
   };
@@ -87,9 +105,17 @@ export async function POST(request: Request) {
     "🧾 <b>Новый VIN-запрос — Astra Motors</b>",
     "",
     "👤 <b>Имя:</b> " + escapeTelegram(payload.name),
-    "📞 <b>Телефон:</b> " + escapeTelegram(payload.phone),
+    "📧 <b>Email:</b> " + escapeTelegram(payload.email),
     "🆔 <b>VIN:</b> " + escapeTelegram(payload.vin),
-    "🚗 <b>Авто:</b> " + escapeTelegram(payload.car),
+    "🚗 <b>Авто:</b> " +
+      [
+        payload.brand,
+        payload.model || null,
+        payload.modification || null,
+        payload.year || null,
+      ]
+        .filter(Boolean)
+        .join(" / "),
     "",
     "🧩 <b>Что нужно:</b> " + escapeTelegram(payload.request),
   ];

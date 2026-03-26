@@ -1,11 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import {
-  formatRuPhoneInput,
-  isValidRuPhone,
-  normalizeRuPhone,
-} from "../lib/phone";
 
 function normalizeVin(value: string) {
   return value.toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -13,14 +8,22 @@ function normalizeVin(value: string) {
 
 export function VinRequestForm() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [vin, setVin] = useState("");
-  const [car, setCar] = useState("");
-  const [request, setRequest] = useState("");
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [modification, setModification] = useState("");
+  const [year, setYear] = useState("");
+
+  const [neededParts, setNeededParts] = useState("");
   const [comment, setComment] = useState("");
 
-  const [phoneTouched, setPhoneTouched] = useState(false);
-  const phoneValid = isValidRuPhone(phone);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const emailValid =
+    email.trim().length > 0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
+  const [vinTouched, setVinTouched] = useState(false);
 
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -29,19 +32,27 @@ export function VinRequestForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setPhoneTouched(true);
 
     const vinNorm = normalizeVin(vin);
-    if (!isValidRuPhone(phone)) {
-      setError("Введите корректный номер телефона");
+    if (!name.trim() || !email.trim()) {
+      setError("Заполните имя и email");
+      return;
+    }
+    if (!emailValid) {
+      setError("Введите корректный email");
+      return;
+    }
+    if (vinTouched && vinNorm.length !== 17) {
+      setError("VIN должен быть 17 символов (буквы/цифры)");
       return;
     }
     if (vinNorm.length !== 17) {
       setError("VIN должен быть 17 символов (буквы/цифры)");
       return;
     }
-    if (!name.trim() || !car.trim() || !request.trim()) {
-      setError("Заполните имя, авто и что нужно подобрать");
+
+    if (!brand.trim() || !neededParts.trim()) {
+      setError("Заполните марку и необходимые вам запчасти");
       return;
     }
 
@@ -52,10 +63,13 @@ export function VinRequestForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
-          phone: normalizeRuPhone(phone),
+          email: email.trim(),
           vin: vinNorm,
-          car: car.trim(),
-          request: request.trim(),
+          brand: brand.trim(),
+          model: model.trim(),
+          modification: modification.trim(),
+          year: year.trim(),
+          request: neededParts.trim(),
           comment: comment.trim(),
         }),
       });
@@ -67,10 +81,13 @@ export function VinRequestForm() {
 
       setSent(true);
       setName("");
-      setPhone("");
+      setEmail("");
       setVin("");
-      setCar("");
-      setRequest("");
+      setBrand("");
+      setModel("");
+      setModification("");
+      setYear("");
+      setNeededParts("");
       setComment("");
     } catch {
       setError("Ошибка сети. Попробуйте ещё раз.");
@@ -80,8 +97,8 @@ export function VinRequestForm() {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-      <h2 className="text-lg font-semibold">Оставить VIN-запрос</h2>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+      <h2 className="text-2xl font-bold text-slate-900">Запрос по VIN коду</h2>
 
       {sent ? (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -93,92 +110,157 @@ export function VinRequestForm() {
         </div>
       ) : null}
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinName">
-            Имя *
-          </label>
+      <form onSubmit={onSubmit} className="space-y-6">
+        <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="text-sm font-semibold text-slate-800">Обратная связь</div>
+
+          <div>
+            <label
+              className="block text-sm font-medium text-slate-700 mb-1"
+              htmlFor="vinName"
+            >
+              Ваше имя <span className="text-red-500">*</span>
+            </label>
           <input
             id="vinName"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Как к вам обращаться"
-            required
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+            placeholder="Ваше имя"
             type="text"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinPhone">
-            Телефон *
-          </label>
-          <input
-            id="vinPhone"
-            value={phone}
-            onChange={(e) => setPhone(formatRuPhoneInput(e.target.value))}
-            onBlur={() => setPhoneTouched(true)}
-            className={`w-full rounded-md border px-3 py-2 text-sm ${
-              phoneTouched && !phoneValid ? "border-red-500 bg-red-50 text-red-900" : "border-slate-300"
-            }`}
-            placeholder="+7 (902) 254-01-11"
             required
-            type="tel"
           />
-          {phoneTouched && !phoneValid ? (
-            <p className="mt-1 text-xs text-red-700">
-              Введите номер в формате +7 (9XX) XXX-XX-XX
-            </p>
-          ) : null}
+          </div>
+
+          <div>
+            <label
+              className="block text-sm font-medium text-slate-700 mb-1"
+              htmlFor="vinEmail"
+            >
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="vinEmail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setEmailTouched(true)}
+              className={`w-full rounded-md border px-3 py-2 text-sm bg-white ${
+                emailTouched && !emailValid ? "border-red-500 bg-red-50 text-red-900" : "border-slate-300"
+              }`}
+              placeholder="name@mail.ru"
+              type="email"
+              required
+              autoComplete="email"
+            />
+            {emailTouched && !emailValid ? (
+              <p className="mt-1 text-xs text-red-700">Введите корректный email</p>
+            ) : null}
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinCode">
-            VIN (17 символов) *
-          </label>
-          <input
-            id="vinCode"
-            value={vin}
-            onChange={(e) => setVin(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Например: W0L0ZBF68D1012345"
-            required
-            type="text"
-            inputMode="text"
-            autoComplete="off"
-          />
+        <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="text-sm font-semibold text-slate-800">Данные об автомобиле</div>
+
+          <div>
+            <label
+              className="block text-sm font-medium text-slate-700 mb-1"
+              htmlFor="vinCode"
+            >
+              VIN <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="vinCode"
+              value={vin}
+              onChange={(e) => setVin(e.target.value)}
+              onBlur={() => setVinTouched(true)}
+              className={`w-full rounded-md border px-3 py-2 text-sm bg-white ${
+                vinTouched && normalizeVin(vin).length !== 17
+                  ? "border-red-500 bg-red-50 text-red-900"
+                  : "border-slate-300"
+              }`}
+              placeholder="Введите VIN код"
+              type="text"
+              inputMode="text"
+              autoComplete="off"
+              required
+            />
+            <p className="mt-1 text-xs text-slate-500">Поле не должно быть пустым</p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinBrand">
+                Марка <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="vinBrand"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: Opel"
+                required
+                type="text"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinModel">
+                Модель
+              </label>
+              <input
+                id="vinModel"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: Astra H"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label
+                className="block text-sm font-medium text-slate-700 mb-1"
+                htmlFor="vinModification"
+              >
+                Модификация
+              </label>
+              <input
+                id="vinModification"
+                value={modification}
+                onChange={(e) => setModification(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: 1.6 (X16XER)"
+                type="text"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinYear">
+                Год
+              </label>
+              <input
+                id="vinYear"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+                placeholder="Например: 2008"
+                type="text"
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="vinCar">
-            Авто (марка/модель/год) *
-          </label>
-          <input
-            id="vinCar"
-            value={car}
-            onChange={(e) => setCar(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Opel Astra H, 2008"
-            required
-            type="text"
-          />
-        </div>
-
-        <div>
-          <label
-            className="block text-sm font-medium text-slate-700 mb-1"
-            htmlFor="vinRequest"
-          >
-            Что нужно подобрать *
-          </label>
-          <input
+        <div className="space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="text-sm font-semibold text-slate-800">
+            Необходимые вам запчасти <span className="text-red-500">*</span>
+          </div>
+          <textarea
             id="vinRequest"
-            value={request}
-            onChange={(e) => setRequest(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Например: тормозные колодки передние / по артикулу…"
+            value={neededParts}
+            onChange={(e) => setNeededParts(e.target.value)}
+            className="w-full min-h-[120px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
+            placeholder="Укажите, что нужно подобрать (например: тормозные колодки передние по VIN)"
             required
-            type="text"
           />
         </div>
 
@@ -190,7 +272,7 @@ export function VinRequestForm() {
             id="vinComment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full min-h-[90px] rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="w-full min-h-[90px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
             placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
           />
         </div>
