@@ -20,6 +20,12 @@ export function AccountPanel() {
   const [user, setUser] = useState<MeResponse["user"]>(null);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"profile" | "orders" | "podbory">("profile");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("am-profile-theme") === "dark";
@@ -37,6 +43,12 @@ export function AccountPanel() {
       .then((data: MeResponse) => {
         if (!active) return;
         setUser(data.user);
+        const fullName = (data.user?.fullName ?? "").trim();
+        const nameParts = fullName.split(/\s+/).filter(Boolean);
+        setLastName(nameParts[0] ?? "");
+        setFirstName(nameParts.length > 1 ? nameParts.slice(1).join(" ") : "");
+        setEmail(data.user?.email ?? "");
+        setPhone(data.user?.phone ?? "");
       })
       .catch(() => {
         if (!active) return;
@@ -59,8 +71,8 @@ export function AccountPanel() {
 
   const fullName = (user?.fullName ?? "").trim();
   const nameParts = fullName.split(/\s+/).filter(Boolean);
-  const lastName = nameParts[0] ?? "";
-  const firstName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+  const fallbackLastName = nameParts[0] ?? "";
+  const fallbackFirstName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
   const shellClass = isDark ? "rounded-2xl bg-slate-950/70 p-1" : "";
   const panelClass = isDark
     ? "border-slate-700 bg-slate-900 text-slate-100 shadow-black/30"
@@ -71,6 +83,35 @@ export function AccountPanel() {
   const inputClass = isDark
     ? "w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-slate-100"
     : "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900";
+
+  const handleSaveProfile = async () => {
+    setSaveMessage("");
+    setError("");
+    setSaving(true);
+    try {
+      const res = await fetch("/api/auth/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: firstName.trim() || fallbackFirstName,
+          lastName: lastName.trim() || fallbackLastName,
+          email: email.trim(),
+          phone: phone.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Не удалось сохранить профиль");
+        return;
+      }
+      setUser(data.user);
+      setSaveMessage("Изменения сохранены");
+    } catch {
+      setError("Ошибка сети при сохранении профиля");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -181,7 +222,7 @@ export function AccountPanel() {
                 <input
                   type="text"
                   value={firstName}
-                  readOnly
+                  onChange={(e) => setFirstName(e.target.value)}
                   className={inputClass}
                 />
               </label>
@@ -190,7 +231,7 @@ export function AccountPanel() {
                 <input
                   type="text"
                   value={lastName}
-                  readOnly
+                  onChange={(e) => setLastName(e.target.value)}
                   className={inputClass}
                 />
               </label>
@@ -198,8 +239,8 @@ export function AccountPanel() {
                 <span className={`mb-1 block ${isDark ? "text-slate-300" : "text-slate-600"}`}>Телефон</span>
                 <input
                   type="text"
-                  value={user.phone}
-                  readOnly
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className={inputClass}
                 />
               </label>
@@ -207,21 +248,29 @@ export function AccountPanel() {
                 <span className={`mb-1 block ${isDark ? "text-slate-300" : "text-slate-600"}`}>Электронная почта</span>
                 <input
                   type="text"
-                  value={user.email}
-                  readOnly
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className={inputClass}
                 />
               </label>
             </div>
+            {(error || saveMessage) && (
+              <p className={`mt-4 text-sm ${error ? "text-red-700" : isDark ? "text-emerald-300" : "text-emerald-700"}`}>
+                {error || saveMessage}
+              </p>
+            )}
 
             <button
               type="button"
-              disabled
-              className={`mt-6 inline-flex cursor-not-allowed rounded-full px-6 py-2.5 text-sm font-semibold ${
-                isDark ? "bg-slate-700 text-slate-400" : "bg-slate-200 text-slate-500"
+              onClick={handleSaveProfile}
+              disabled={saving}
+              className={`mt-6 inline-flex rounded-full px-6 py-2.5 text-sm font-semibold ${
+                isDark
+                  ? "bg-amber-500 text-slate-950 hover:bg-amber-400 disabled:bg-slate-700 disabled:text-slate-400"
+                  : "bg-amber-600 text-white hover:bg-amber-700 disabled:bg-slate-200 disabled:text-slate-500"
               }`}
             >
-              Сохранить
+              {saving ? "Сохраняем..." : "Сохранить"}
             </button>
           </>
         )}

@@ -117,6 +117,54 @@ export async function findUserById(userId: string): Promise<UserRecord | null> {
   return users.find((u) => u.id === userId) || null;
 }
 
+export async function updateUserProfile(
+  userId: string,
+  input: { fullName: string; email: string; phone: string }
+): Promise<
+  | { ok: true; user: Omit<UserRecord, "passwordSalt" | "passwordHash"> }
+  | { ok: false; reason: string }
+> {
+  const fullName = input.fullName.trim();
+  const email = normalizeEmail(input.email);
+  const phone = normalizePhone(input.phone);
+
+  if (!fullName || !email || !phone) {
+    return { ok: false, reason: "Заполните имя, email и телефон" };
+  }
+  if (!email.includes("@")) {
+    return { ok: false, reason: "Введите корректный email" };
+  }
+
+  const users = await readUsers();
+  const currentUser = users.find((u) => u.id === userId);
+  if (!currentUser) {
+    return { ok: false, reason: "Пользователь не найден" };
+  }
+
+  if (users.some((u) => u.id !== userId && normalizeEmail(u.email) === email)) {
+    return { ok: false, reason: "Пользователь с таким email уже существует" };
+  }
+  if (users.some((u) => u.id !== userId && normalizePhone(u.phone) === phone)) {
+    return { ok: false, reason: "Пользователь с таким телефоном уже существует" };
+  }
+
+  const updatedUsers = users.map((u) =>
+    u.id === userId ? { ...u, fullName, email, phone } : u
+  );
+  await rewriteNdjson(USERS_FILE, updatedUsers);
+
+  return {
+    ok: true,
+    user: {
+      id: currentUser.id,
+      fullName,
+      email,
+      phone,
+      createdAt: currentUser.createdAt,
+    },
+  };
+}
+
 export async function registerUser(input: {
   fullName: string;
   email: string;

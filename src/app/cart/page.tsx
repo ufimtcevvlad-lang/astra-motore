@@ -30,13 +30,12 @@ function Widget({
 }
 
 export default function CartPage() {
-  const { items, addToCart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
+  const { items, addToCart, removeFromCart, clearCart, setItemQuantity, increaseQuantity, decreaseQuantity } = useCart();
   const [sent, setSent] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "courier">("pickup");
   const [paymentMethod, setPaymentMethod] = useState<"sbp" | "card" | "cash">("sbp");
   const pickupPoints = [
     { id: "p1", name: "Astra Motors, ул. Готвальда, 9", note: "Пн–Пт 10:00–20:00, Сб–Вс 10:00–18:00" },
-    { id: "p2", name: "Astra Motors, ул. Крестинского, 27", note: "Выдача по согласованию с менеджером" },
   ] as const;
   const [pickupPointId, setPickupPointId] = useState<(typeof pickupPoints)[number]["id"]>(pickupPoints[0].id);
   const [name, setName] = useState("");
@@ -279,9 +278,24 @@ export default function CartPage() {
                         >
                           −
                         </button>
-                        <span className="inline-flex min-w-10 items-center justify-center text-sm font-medium text-slate-900">
-                          {item.quantity}
-                        </span>
+                        <input
+                          type="number"
+                          min={1}
+                          step={1}
+                          inputMode="numeric"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const nextValue = Number.parseInt(e.target.value, 10);
+                            if (Number.isNaN(nextValue)) return;
+                            setItemQuantity(item.product.id, Math.max(1, nextValue));
+                          }}
+                          onBlur={(e) => {
+                            const nextValue = Number.parseInt(e.target.value, 10);
+                            setItemQuantity(item.product.id, Number.isNaN(nextValue) ? 1 : Math.max(1, nextValue));
+                          }}
+                          className="h-11 w-14 border-x border-slate-200 bg-white px-1 text-center text-sm font-medium text-slate-900 [appearance:textfield] focus:outline-none focus:ring-2 focus:ring-amber-200 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          aria-label="Количество товара"
+                        />
                         <button
                           type="button"
                           onClick={() => increaseQuantity(item.product.id)}
@@ -312,10 +326,19 @@ export default function CartPage() {
           </Widget>
 
           <Widget title="Рекомендуем добавить" subtle>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
               {recommendations.map((p) => (
                 <article key={p.id} className="rounded-xl border border-slate-200 bg-white p-3">
-                  <p className="line-clamp-2 text-sm font-medium text-slate-800">{p.name}</p>
+                  <div className="relative mb-2 aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <p className="line-clamp-2 min-h-10 text-sm font-medium text-slate-800">{p.name}</p>
                   <p className="mt-1 text-sm font-semibold text-amber-700">{p.price.toLocaleString("ru-RU")} ₽</p>
                   <button
                     type="button"
@@ -629,7 +652,7 @@ export default function CartPage() {
           </Widget>
         </div>
 
-        <aside className="lg:sticky lg:top-24">
+        <aside>
           <Widget title="Итого">
             <div className="space-y-2 text-sm text-slate-600">
               <div className="flex items-center justify-between">

@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -26,9 +27,35 @@ type CartContextValue = {
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
+const CART_STORAGE_KEY = "am_cart_items_v1";
+
+function readCartFromStorage(): CartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
+      const product = (item as { product?: unknown }).product;
+      const quantity = (item as { quantity?: unknown }).quantity;
+      if (!product || typeof product !== "object") return [];
+      const qtyNumber = Number(quantity);
+      if (!Number.isFinite(qtyNumber) || qtyNumber <= 0) return [];
+      return [{ product: product as Product, quantity: Math.floor(qtyNumber) }];
+    });
+  } catch {
+    return [];
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => readCartFromStorage());
+
+  useEffect(() => {
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   const addToCart = useCallback((product: Product) => {
     setItems((prev) => {
