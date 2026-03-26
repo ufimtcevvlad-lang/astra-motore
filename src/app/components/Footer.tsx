@@ -45,10 +45,10 @@ export function Footer() {
           <p>Юридический адрес: Свердловская обл., г. Екатеринбург, ул. Крестинского, д. 27, кв. 269</p>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <Link href="/privacy" className="hover:text-amber-400 transition">
-              Политика ПДн
+              Политика обработки персональных данных
             </Link>
             <Link href="/consent-personal-data" className="hover:text-amber-400 transition">
-              Согласие ПДн
+              Согласие на обработку персональных данных
             </Link>
             <Link href="/supply-agreement" className="hover:text-amber-400 transition">
               Публичная оферта

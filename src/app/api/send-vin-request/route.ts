@@ -145,7 +145,10 @@ export async function POST(request: Request) {
     !consentPersonalData
   ) {
     return NextResponse.json(
-      { error: "Не заполнены имя, email, VIN (17 символов), марка, запрос или согласие ПДн" },
+      {
+        error:
+          "Не заполнены имя, адрес электронной почты, идентификационный номер автомобиля, марка, запрос или согласие на обработку персональных данных",
+      },
       { status: 400 }
     );
   }

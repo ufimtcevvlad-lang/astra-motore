@@ -63,7 +63,7 @@ export function VinRequestForm() {
       return;
     }
     if (!consentPersonalData) {
-      setError("Нужно согласие на обработку персональных данных");
+      setError("Необходимо согласие на обработку персональных данных");
       return;
     }
 
@@ -445,7 +445,7 @@ export function VinRequestForm() {
               </Link>{" "}
               и ознакомлен(а) с{" "}
               <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
-                Политикой ПДн
+                Политикой обработки персональных данных
               </Link>
               .
             </span>

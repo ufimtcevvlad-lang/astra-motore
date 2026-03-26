@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     !consentPersonalData
   ) {
     return NextResponse.json(
-      { error: "Не заполнены имя, телефон, корзина или согласие ПДн" },
+      { error: "Не заполнены имя, телефон, корзина или согласие на обработку персональных данных" },
       { status: 400 }
     );
   }
