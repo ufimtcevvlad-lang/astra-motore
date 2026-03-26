@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Логотип шапки: лёгкий SVG-знак + типографика.
+ * Логотип шапки: растровый знак + типографика.
  */
 export function BrandLogo() {
   return (
@@ -14,7 +14,7 @@ export function BrandLogo() {
           <div className="relative flex h-full w-full min-h-0 min-w-0 items-center justify-center overflow-visible">
             {/* eslint-disable-next-line @next/next/no-img-element -- сохраним точный рендер без wrapper-ограничений */}
             <img
-              src="/brand/astra-approved-mark.svg"
+              src="/brand/astra-mark.png"
               alt=""
               draggable={false}
               loading="eager"
