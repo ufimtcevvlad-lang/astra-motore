@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { SimpleDoc } from "../components/legal/SimpleDoc";
+import { VinRequestForm } from "../components/VinRequestForm";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -45,6 +46,8 @@ export default function VinRequestPage() {
           </Link>
         </p>
       </SimpleDoc>
+
+      <VinRequestForm />
     </div>
   );
 }
