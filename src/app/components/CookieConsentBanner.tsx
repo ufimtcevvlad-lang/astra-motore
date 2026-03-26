@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 
 export const COOKIE_CONSENT_KEY = "am-cookie-consent";
 export const COOKIE_CONSENT_EVENT = "am-cookie-consent-changed";
@@ -12,13 +12,26 @@ export type CookieConsent = {
   marketing: boolean;
 };
 
-export function readConsent(): CookieConsent | null {
+function normalizeConsentRaw(value: string | null): string | null {
+  if (value === "all") return JSON.stringify({ necessary: true, analytics: true, marketing: true });
+  if (value === "necessary") return JSON.stringify({ necessary: true, analytics: false, marketing: false });
+  return value;
+}
+
+function readConsentRaw(): string | null {
   try {
     const value = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!value) return null;
-    if (value === "all") return { necessary: true, analytics: true, marketing: true };
-    if (value === "necessary") return { necessary: true, analytics: false, marketing: false };
-    const parsed = JSON.parse(value) as CookieConsent;
+    return normalizeConsentRaw(value);
+  } catch {
+    return null;
+  }
+}
+
+export function readConsent(): CookieConsent | null {
+  try {
+    const raw = readConsentRaw();
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CookieConsent;
     if (typeof parsed?.analytics === "boolean" && typeof parsed?.marketing === "boolean") {
       return { necessary: true, analytics: parsed.analytics, marketing: parsed.marketing };
     }
@@ -38,7 +51,7 @@ function saveConsent(consent: CookieConsent): void {
 }
 
 export function CookieConsentBanner() {
-  const consent = useSyncExternalStore(
+  const consentRaw = useSyncExternalStore(
     (onStoreChange) => {
       const onStorage = (event: StorageEvent) => {
         if (event.key === COOKIE_CONSENT_KEY) onStoreChange();
@@ -51,9 +64,17 @@ export function CookieConsentBanner() {
         window.removeEventListener(COOKIE_CONSENT_EVENT, onCustom);
       };
     },
-    () => readConsent(),
+    () => readConsentRaw(),
     () => null
   );
+  const consent = useMemo(() => {
+    if (!consentRaw) return null;
+    try {
+      return JSON.parse(consentRaw) as CookieConsent;
+    } catch {
+      return null;
+    }
+  }, [consentRaw]);
   const show = consent === null;
   const [configureOpen, setConfigureOpen] = useState(false);
   const [analytics, setAnalytics] = useState(false);
