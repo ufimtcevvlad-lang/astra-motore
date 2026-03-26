@@ -98,7 +98,7 @@ export function VinRequestForm() {
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-      <h2 className="text-2xl font-bold text-slate-900">Запрос по VIN коду</h2>
+      <h2 className="text-2xl font-bold text-slate-900">Обратная связь</h2>
 
       {sent ? (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
@@ -112,7 +112,6 @@ export function VinRequestForm() {
 
       <form onSubmit={onSubmit} className="space-y-6">
         <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <div className="text-sm font-semibold text-slate-800">Обратная связь</div>
 
           <div>
             <label
@@ -158,8 +157,9 @@ export function VinRequestForm() {
           </div>
         </div>
 
-        <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="space-y-4">
           <div className="text-sm font-semibold text-slate-800">Данные об автомобиле</div>
+          <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
 
           <div>
             <label
@@ -247,6 +247,7 @@ export function VinRequestForm() {
                 type="text"
               />
             </div>
+          </div>
           </div>
         </div>
 
