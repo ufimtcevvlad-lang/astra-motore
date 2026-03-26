@@ -103,12 +103,6 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
             >
               Chevrolet
             </Link>
-            <Link
-              href="/zapchasti-gm"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 hover:border-slate-300"
-            >
-              Все GM
-            </Link>
           </div>
         </div>
       ) : null}

@@ -7,7 +7,6 @@ const HUB_LINKS = [
   { href: "/catalog", label: "Витрина", match: (p: string) => p === "/catalog" || p.startsWith("/product/") },
   { href: "/zapchasti-opel", label: "Opel", match: (p: string) => p === "/zapchasti-opel" },
   { href: "/zapchasti-chevrolet", label: "Chevrolet", match: (p: string) => p === "/zapchasti-chevrolet" },
-  { href: "/zapchasti-gm", label: "GM", match: (p: string) => p === "/zapchasti-gm" },
 ] as const;
 
 /**

@@ -183,9 +183,6 @@ export function Header() {
             <Link href="/zapchasti-chevrolet" className={dropItem} role="menuitem">
               Chevrolet
             </Link>
-            <Link href="/zapchasti-gm" className={dropItem} role="menuitem">
-              GM
-            </Link>
           </NavHoverDropdown>
 
           <NavHoverDropdown label="Клиентам" menuId="nav-clients">
