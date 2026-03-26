@@ -10,10 +10,14 @@ import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../lib/pho
 
 export default function CartPage() {
   const { items, addToCart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
-  const [showForm, setShowForm] = useState(false);
   const [sent, setSent] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "courier">("pickup");
   const [paymentMethod, setPaymentMethod] = useState<"sbp" | "card" | "cash">("sbp");
+  const pickupPoints = [
+    { id: "p1", name: "Astra Motors, ул. Готвальда, 9", note: "Пн–Пт 10:00–20:00, Сб–Вс 10:00–18:00" },
+    { id: "p2", name: "Astra Motors, ул. Крестинского, 27", note: "Выдача по согласованию с менеджером" },
+  ] as const;
+  const [pickupPointId, setPickupPointId] = useState<(typeof pickupPoints)[number]["id"]>(pickupPoints[0].id);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
@@ -214,12 +218,13 @@ export default function CartPage() {
             </div>
           </div>
 
-          {showForm && (
-            <form
-              onSubmit={handleSubmit}
-              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
-            >
-              <h2 className="text-lg font-semibold">Оформление заказа</h2>
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5"
+          >
+            <h2 className="text-lg font-semibold">Оформление заказа</h2>
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold text-slate-900">1. Способ получения</h3>
               <div className="grid gap-2 sm:grid-cols-2">
                 <label className="rounded-lg border border-slate-200 p-3 text-sm">
                   <input
@@ -242,6 +247,41 @@ export default function CartPage() {
                   Доставка
                 </label>
               </div>
+            </div>
+
+            {deliveryMethod === "pickup" ? (
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold text-slate-900">2. Пункт выдачи</h3>
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                  <div className="space-y-2">
+                    {pickupPoints.map((point) => (
+                      <label key={point.id} className="block rounded-lg border border-slate-200 p-3 text-sm">
+                        <input
+                          type="radio"
+                          name="pickupPoint"
+                          checked={pickupPointId === point.id}
+                          onChange={() => setPickupPointId(point.id)}
+                          className="mr-2"
+                        />
+                        <span className="font-medium text-slate-800">{point.name}</span>
+                        <span className="mt-1 block text-xs text-slate-500">{point.note}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="overflow-hidden rounded-lg border border-slate-200">
+                    <iframe
+                      title="Пункты выдачи Astra Motors"
+                      src="https://yandex.ru/map-widget/v1/org/gm_drive/1299977455"
+                      className="h-64 w-full border-0"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold text-slate-900">3. Оплата</h3>
               <div className="grid gap-2 sm:grid-cols-3">
                 <label className="rounded-lg border border-slate-200 p-3 text-sm">
                   <input
@@ -274,8 +314,9 @@ export default function CartPage() {
                   При получении
                 </label>
               </div>
+            </div>
 
-          <h2 className="text-lg font-semibold">Ваши данные для связи</h2>
+            <h3 className="text-base font-semibold text-slate-900">4. Получатель</h3>
           {error && (
             <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
               {error}
@@ -364,22 +405,14 @@ export default function CartPage() {
           <TurnstileField onTokenChange={setTurnstileToken} />
           <div className="flex gap-2">
             <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-            >
-              Отмена
-            </button>
-            <button
               type="submit"
               disabled={sending}
-              className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm"
+              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm"
             >
-              {sending ? "Отправка…" : "Отправить заказ"}
+              {sending ? "Отправка…" : "Подтвердить заказ"}
             </button>
           </div>
-            </form>
-          )}
+          </form>
         </div>
 
         <aside className="lg:sticky lg:top-24">
@@ -406,13 +439,11 @@ export default function CartPage() {
               </p>
             </div>
             <div className="mt-4 space-y-2">
-              <button
-                type="button"
-                onClick={() => setShowForm(true)}
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700"
-              >
-                Перейти к оформлению
-              </button>
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                {deliveryMethod === "pickup"
+                  ? `Самовывоз: ${pickupPoints.find((p) => p.id === pickupPointId)?.name ?? "не выбран"}`
+                  : "Доставка курьером: уточняется менеджером"}
+              </div>
               <button
                 type="button"
                 onClick={clearCart}
