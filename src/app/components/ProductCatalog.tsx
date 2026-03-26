@@ -15,6 +15,7 @@ import {
 } from "../data/catalog-sections";
 
 type BrandFilter = "all" | "opel" | "chevrolet";
+type CatalogSectionSlug = (typeof CATALOG_SECTIONS)[number]["slug"];
 
 function productMatchesBrand(p: Product, brand: BrandFilter): boolean {
   if (brand === "all") return true;
@@ -31,7 +32,7 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [activeSlug, setActiveSlug] = useState<string | "all">("all");
+  const [activeSlug, setActiveSlug] = useState<CatalogSectionSlug | "all">("all");
   const [brandFilter, setBrandFilter] = useState<BrandFilter>("all");
 
   // Синхронизация поля поиска с ?q= при переходе из шапки или по ссылке
@@ -42,20 +43,37 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
 
   const queryNorm = query.trim().toLowerCase();
   const groupedMode = activeSlug === "all" && !queryNorm;
+  const sectionBySlug = useMemo(
+    () => new Map(CATALOG_SECTIONS.map((section) => [section.slug, section] as const)),
+    []
+  );
+
+  const brandFilteredSortedProducts = useMemo(
+    () => products.filter((p) => productMatchesBrand(p, brandFilter)).sort(sortProductsById),
+    [brandFilter]
+  );
+
+  const itemsBySectionTitle = useMemo(() => {
+    const bySection = new Map<string, Product[]>();
+    for (const p of brandFilteredSortedProducts) {
+      const list = bySection.get(p.category);
+      if (list) list.push(p);
+      else bySection.set(p.category, [p]);
+    }
+    return bySection;
+  }, [brandFilteredSortedProducts]);
 
   const filtered = useMemo(() => {
-    return products
+    const activeSectionTitle =
+      activeSlug === "all" ? null : (sectionBySlug.get(activeSlug)?.title ?? null);
+
+    return brandFilteredSortedProducts
       .filter((p) => {
-        if (!productMatchesBrand(p, brandFilter)) return false;
-        if (activeSlug !== "all") {
-          const sec = CATALOG_SECTIONS.find((s) => s.slug === activeSlug);
-          if (sec && p.category !== sec.title) return false;
-        }
+        if (activeSectionTitle && p.category !== activeSectionTitle) return false;
         if (!queryNorm) return true;
         return productMatchesTextQuery(p, queryNorm);
-      })
-      .sort(sortProductsById);
-  }, [queryNorm, activeSlug, brandFilter]);
+      });
+  }, [queryNorm, activeSlug, brandFilteredSortedProducts, sectionBySlug]);
 
   const hasActiveFilters =
     queryNorm.length > 0 || activeSlug !== "all" || brandFilter !== "all";
@@ -154,7 +172,9 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
           <select
             id="catalog-section"
             value={activeSlug}
-            onChange={(e) => setActiveSlug(e.target.value as typeof activeSlug)}
+            onChange={(e) =>
+              setActiveSlug(e.target.value === "all" ? "all" : (e.target.value as CatalogSectionSlug))
+            }
             className="w-full min-w-0 cursor-pointer rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 sm:max-w-md"
           >
             <option value="all">Все разделы сразу</option>
@@ -204,9 +224,7 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
               <div className="min-w-0 flex-1 space-y-10">
                 {CATALOG_GROUPS.map((group) => {
                   const sections = sectionsInGroup(group.slug);
-                  const hasAny = sections.some((sec) =>
-                    products.some((p) => p.category === sec.title && productMatchesBrand(p, brandFilter))
-                  );
+                  const hasAny = sections.some((sec) => (itemsBySectionTitle.get(sec.title)?.length ?? 0) > 0);
                   if (!hasAny) return null;
 
                   return (
@@ -220,11 +238,7 @@ function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
                       </h2>
 
                       {sections.map((section) => {
-                        const items = products
-                          .filter(
-                            (p) => p.category === section.title && productMatchesBrand(p, brandFilter)
-                          )
-                          .sort(sortProductsById);
+                        const items = itemsBySectionTitle.get(section.title) ?? [];
                         if (items.length === 0) return null;
                         return (
                           <div

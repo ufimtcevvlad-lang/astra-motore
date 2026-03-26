@@ -29,17 +29,44 @@ export function productMatchesTextQuery(p: Product, queryNorm: string): boolean 
   );
 }
 
-function relevanceScore(p: Product, q: string): number {
-  const sku = p.sku.toLowerCase();
-  const name = p.name.toLowerCase();
+type IndexedProduct = {
+  product: Product;
+  skuNorm: string;
+  nameNorm: string;
+  brandNorm: string;
+  carNorm: string;
+  categoryNorm: string;
+};
+
+const indexedProducts: IndexedProduct[] = products.map((product) => ({
+  product,
+  skuNorm: product.sku.toLowerCase(),
+  nameNorm: product.name.toLowerCase(),
+  brandNorm: product.brand.toLowerCase(),
+  carNorm: product.car.toLowerCase(),
+  categoryNorm: product.category.toLowerCase(),
+}));
+
+function indexedProductMatchesTextQuery(p: IndexedProduct, queryNorm: string): boolean {
+  if (!queryNorm) return true;
+  return (
+    p.nameNorm.includes(queryNorm) ||
+    p.brandNorm.includes(queryNorm) ||
+    p.carNorm.includes(queryNorm) ||
+    p.skuNorm.includes(queryNorm) ||
+    p.categoryNorm.includes(queryNorm)
+  );
+}
+
+function relevanceScore(p: IndexedProduct, q: string): number {
   let s = 0;
-  if (sku === q) s += 1000;
-  else if (sku.startsWith(q)) s += 500;
-  else if (sku.includes(q)) s += 400;
-  if (name.includes(q)) s += 120;
-  if (p.brand.toLowerCase().includes(q)) s += 40;
-  if (p.car.toLowerCase().includes(q)) s += 30;
-  if (p.category.toLowerCase().includes(q)) s += 20;
+  if (p.skuNorm === q) s += 1000;
+  else if (p.skuNorm.startsWith(q)) s += 500;
+  else if (p.skuNorm.includes(q)) s += 400;
+  if (p.nameNorm.includes(q)) s += 120;
+  if (p.brandNorm.includes(q)) s += 40;
+  if (p.carNorm.includes(q)) s += 30;
+  if (p.categoryNorm.includes(q)) s += 20;
   return s;
 }
 
@@ -63,13 +90,13 @@ export function searchCatalogProducts(query: string, limit: number): SearchResul
   const q = normalizeCatalogQuery(query);
   if (!q || q.length < 1) return [];
 
-  const candidates = products.filter((p) => productMatchesTextQuery(p, q));
+  const candidates = indexedProducts.filter((p) => indexedProductMatchesTextQuery(p, q));
   return candidates
     .map((p) => ({ p, score: relevanceScore(p, q) }))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      return sortProductsById(a.p, b.p);
+      return sortProductsById(a.p.product, b.p.product);
     })
     .slice(0, Math.max(1, Math.min(limit, 24)))
-    .map(({ p }) => toSearchResultItem(p));
+    .map(({ p }) => toSearchResultItem(p.product));
 }

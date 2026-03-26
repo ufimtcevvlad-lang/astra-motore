@@ -49,6 +49,8 @@ export function HeaderSearchAutocomplete() {
   const [results, setResults] = useState<SearchResultItem[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const requestSeqRef = useRef(0);
 
   useEffect(() => {
     setValue(qFromCatalog);
@@ -58,24 +60,35 @@ export function HeaderSearchAutocomplete() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const trimmed = q.trim();
     if (trimmed.length < MIN_CHARS) {
+      abortRef.current?.abort();
       setLoading(false);
       setResults([]);
       return;
     }
     setLoading(true);
     debounceRef.current = setTimeout(async () => {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const requestSeq = ++requestSeqRef.current;
       try {
         const res = await fetch(
           `/api/catalog/search?q=${encodeURIComponent(trimmed)}&limit=10`,
-          { cache: "no-store" }
+          { cache: "no-store", signal: controller.signal }
         );
         if (!res.ok) throw new Error(String(res.status));
         const data = (await res.json()) as { results: SearchResultItem[] };
-        setResults(data.results ?? []);
-      } catch {
-        setResults([]);
+        if (requestSeq === requestSeqRef.current) {
+          setResults(data.results ?? []);
+        }
+      } catch (error) {
+        if ((error as Error).name !== "AbortError" && requestSeq === requestSeqRef.current) {
+          setResults([]);
+        }
       } finally {
-        setLoading(false);
+        if (requestSeq === requestSeqRef.current) {
+          setLoading(false);
+        }
       }
     }, DEBOUNCE_MS);
   }, []);
@@ -83,6 +96,7 @@ export function HeaderSearchAutocomplete() {
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
     };
   }, []);
 
@@ -115,6 +129,7 @@ export function HeaderSearchAutocomplete() {
     setOpen(false);
     setLoading(false);
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
   };
 
   const showSuggestions = open && value.trim().length >= MIN_CHARS;
