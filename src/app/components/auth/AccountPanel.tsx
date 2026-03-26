@@ -83,6 +83,44 @@ export function AccountPanel() {
   const inputClass = isDark
     ? "w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-slate-100"
     : "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900";
+  const orders = [
+    {
+      id: "717290",
+      dateLabel: "27 мар 2026",
+      deliveryLabel: "Сегодня с 09:00 до 20:00",
+      address: "Екатеринбург, ул. Готвальда, 9",
+      status: "Готов к получению",
+      canPay: true,
+      total: 6830,
+      deliveryCost: 0,
+      items: [
+        {
+          sku: "LYNXauto E13C",
+          name: "Аккумулятор L2L 62 Ah 520 A прямой 242x174x189",
+          price: 6830,
+          qty: 1,
+        },
+      ],
+    },
+    {
+      id: "717000",
+      dateLabel: "26 мар 2026",
+      deliveryLabel: "Завтра с 09:00 до 20:00",
+      address: "Екатеринбург, ул. Готвальда, 9",
+      status: "Отменён",
+      canPay: false,
+      total: 200,
+      deliveryCost: 0,
+      items: [
+        {
+          sku: "LYNXauto SP-116",
+          name: "Свеча зажигания 6BCR Nickel LADA 16кл. LARGUS",
+          price: 200,
+          qty: 1,
+        },
+      ],
+    },
+  ] as const;
 
   const handleSaveProfile = async () => {
     setSaveMessage("");
@@ -278,9 +316,70 @@ export function AccountPanel() {
         {activeTab === "orders" && (
           <>
             <h2 className="text-2xl font-bold">Мои заказы</h2>
-            <p className={`mt-4 text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-              Вы пока не оформили ни одного заказа.
-            </p>
+            <div className="mt-4 space-y-4">
+              {orders.map((order) => (
+                <article
+                  key={order.id}
+                  className={`rounded-xl border ${isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-200 bg-slate-50/60"}`}
+                >
+                  <div
+                    className={`flex flex-wrap items-center justify-between gap-3 rounded-t-xl border-b px-4 py-3 ${
+                      isDark ? "border-slate-700 bg-slate-800/70" : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <p className="text-base font-semibold">
+                        Заказ № {order.id} от {order.dateLabel}
+                      </p>
+                      <p className={`mt-0.5 text-xs ${mutedClass}`}>
+                        {order.deliveryLabel} • {order.address}
+                      </p>
+                    </div>
+                    <div className="ml-auto flex items-center gap-2">
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                          order.status === "Готов к получению"
+                            ? isDark
+                              ? "bg-emerald-900/60 text-emerald-300"
+                              : "bg-emerald-100 text-emerald-700"
+                            : isDark
+                              ? "bg-slate-700 text-slate-300"
+                              : "bg-slate-200 text-slate-600"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                      {order.canPay ? (
+                        <button
+                          type="button"
+                          className="inline-flex h-9 items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700"
+                        >
+                          Оплатить
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <ul className="divide-y divide-slate-200/70 px-4 dark:divide-slate-700/70">
+                    {order.items.map((item) => (
+                      <li key={`${order.id}-${item.sku}`} className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-3 py-3 text-sm">
+                        <div className="min-w-0">
+                          <p className={`text-xs ${mutedClass}`}>{item.sku}</p>
+                          <p className="line-clamp-2">{item.name}</p>
+                        </div>
+                        <p className="whitespace-nowrap font-medium">{item.price.toLocaleString("ru-RU")} ₽</p>
+                        <p className={`whitespace-nowrap ${mutedClass}`}>{item.qty} шт</p>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className={`flex items-center justify-end gap-4 border-t px-4 py-3 text-sm ${isDark ? "border-slate-700" : "border-slate-200"}`}>
+                    <p className={mutedClass}>Доставка {order.deliveryCost.toLocaleString("ru-RU")} ₽</p>
+                    <p className="font-semibold">Итого {order.total.toLocaleString("ru-RU")} ₽</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </>
         )}
 

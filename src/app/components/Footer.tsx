@@ -9,18 +9,6 @@ export function Footer() {
             © 2013-2026 <span className="text-white font-semibold">Astra Motors</span>
           </p>
           <nav className="flex flex-wrap gap-4">
-            <Link href="/" className="text-sm text-slate-400 hover:text-amber-400 transition">
-              Главная
-            </Link>
-            <Link href="/catalog" className="text-sm text-slate-400 hover:text-amber-400 transition">
-              Каталог
-            </Link>
-            <Link href="/how-to-order" className="text-sm text-slate-400 hover:text-amber-400 transition">
-              Как заказать
-            </Link>
-            <Link href="/contacts" className="text-sm text-slate-400 hover:text-amber-400 transition">
-              Контакты
-            </Link>
             <div className="text-sm font-semibold text-slate-400 transition">
               <a
                 href="tel:+79022540111"
@@ -43,7 +31,7 @@ export function Footer() {
           <p>ИНН 667472249310</p>
           <p>ОГРНИП 321665800117840</p>
           <p>Юридический адрес: Свердловская обл., г. Екатеринбург, ул. Крестинского, д. 27, кв. 269</p>
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1">
             <Link href="/privacy" className="hover:text-amber-400 transition">
               Политика обработки персональных данных
             </Link>

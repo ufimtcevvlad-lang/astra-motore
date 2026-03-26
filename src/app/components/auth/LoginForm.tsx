@@ -153,7 +153,7 @@ export function LoginForm() {
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+            className="h-4 w-4 rounded border-slate-300 accent-amber-500"
           />
           Запомнить меня
         </label>
@@ -162,7 +162,7 @@ export function LoginForm() {
             type="checkbox"
             checked={consentPersonalData}
             onChange={(e) => setConsentPersonalData(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-amber-500"
             required
           />
           <span>

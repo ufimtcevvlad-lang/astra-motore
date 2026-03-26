@@ -135,7 +135,7 @@ export function SmsLoginForm() {
             type="checkbox"
             checked={consentPersonalData}
             onChange={(e) => setConsentPersonalData(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-slate-300"
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-amber-500"
             required
           />
           <span>

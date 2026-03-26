@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useId, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { BrandLogo } from "./BrandLogo";
 import {
   HeaderSearchAutocomplete,
@@ -80,8 +81,11 @@ function NavHoverDropdown({
 export function Header() {
   const { items } = useCart();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+  const cartTotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const [user, setUser] = useState<MeResponse["user"]>(null);
   const [showDesktopQuickBar, setShowDesktopQuickBar] = useState(false);
+  const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
+  const cartPreviewRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -109,6 +113,22 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    function onDocumentClick(event: MouseEvent) {
+      if (!cartPreviewRef.current) return;
+      if (cartPreviewRef.current.contains(event.target as Node)) return;
+      setIsCartPreviewOpen(false);
+    }
+
+    if (isCartPreviewOpen) {
+      document.addEventListener("mousedown", onDocumentClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", onDocumentClick);
+    };
+  }, [isCartPreviewOpen]);
+
   return (
     <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
@@ -127,17 +147,80 @@ export function Header() {
           </Suspense>
 
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 lg:flex-nowrap lg:pl-2">
-            <Link
-              href="/cart"
-              className="flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2.5 sm:text-sm"
-            >
-              Корзина
-              {totalItems > 0 && (
-                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-amber-400">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
+            <div className="relative" ref={cartPreviewRef}>
+              <button
+                type="button"
+                onClick={() => setIsCartPreviewOpen((v) => !v)}
+                aria-expanded={isCartPreviewOpen}
+                aria-haspopup="dialog"
+                className="flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2.5 sm:text-sm"
+              >
+                Корзина
+                {totalItems > 0 && (
+                  <span className="rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-amber-400">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+              {isCartPreviewOpen ? (
+                <div className="absolute right-0 top-[calc(100%+8px)] z-[140] w-[340px] max-w-[calc(100vw-2rem)] rounded-xl border border-slate-700/90 bg-[#0a1018] p-3 shadow-2xl shadow-black/50">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-sm font-semibold text-white">Товары в корзине</p>
+                    <button
+                      type="button"
+                      onClick={() => setIsCartPreviewOpen(false)}
+                      className="rounded p-1 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                      aria-label="Закрыть предпросмотр корзины"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  {items.length === 0 ? (
+                    <p className="py-4 text-sm text-slate-400">Корзина пуста.</p>
+                  ) : (
+                    <>
+                      <ul className="max-h-64 space-y-2 overflow-auto pr-1">
+                        {items.map((item) => (
+                          <li key={item.product.id} className="flex gap-2 rounded-lg border border-slate-700 bg-slate-900/50 p-2">
+                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-slate-700 bg-slate-800">
+                              <Image src={item.product.image} alt={item.product.name} fill sizes="48px" className="object-cover" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="line-clamp-2 text-xs text-slate-100">{item.product.name}</p>
+                              <p className="mt-1 text-xs text-slate-400">
+                                {item.quantity} шт. × {item.product.price.toLocaleString("ru-RU")} ₽
+                              </p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mt-3 border-t border-slate-700 pt-3">
+                        <p className="flex items-center justify-between text-sm font-semibold text-white">
+                          <span>Всего:</span>
+                          <span>{cartTotal.toLocaleString("ru-RU")} ₽</span>
+                        </p>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <Link
+                            href="/cart"
+                            onClick={() => setIsCartPreviewOpen(false)}
+                            className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500 text-sm font-medium text-slate-100 transition hover:bg-white/5"
+                          >
+                            Корзина
+                          </Link>
+                          <Link
+                            href="/cart"
+                            onClick={() => setIsCartPreviewOpen(false)}
+                            className="inline-flex h-10 items-center justify-center rounded-lg bg-amber-400 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
+                          >
+                            Оформить заказ
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : null}
+            </div>
             {user ? (
               <Link
                 href="/account"

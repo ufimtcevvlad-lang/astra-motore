@@ -132,7 +132,7 @@ export function CookieConsentBanner() {
             <div className="grid gap-2 sm:grid-cols-3">
               <label className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white p-2 text-sm">
                 <span>Необходимые</span>
-                <input type="checkbox" checked disabled className="h-4 w-4 rounded border-slate-300" />
+                <input type="checkbox" checked disabled className="h-4 w-4 rounded border-slate-300 accent-amber-500" />
               </label>
               <label className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white p-2 text-sm">
                 <span>Аналитика</span>
@@ -140,7 +140,7 @@ export function CookieConsentBanner() {
                   type="checkbox"
                   checked={analytics}
                   onChange={(e) => setAnalytics(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300"
+                  className="h-4 w-4 rounded border-slate-300 accent-amber-500"
                 />
               </label>
               <label className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white p-2 text-sm">
@@ -149,7 +149,7 @@ export function CookieConsentBanner() {
                   type="checkbox"
                   checked={marketing}
                   onChange={(e) => setMarketing(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300"
+                  className="h-4 w-4 rounded border-slate-300 accent-amber-500"
                 />
               </label>
             </div>

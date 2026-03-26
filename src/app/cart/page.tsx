@@ -378,7 +378,9 @@ export default function CartPage() {
                     <span
                       aria-hidden
                       className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                        deliveryMethod === "pickup" ? "bg-red-500 text-white" : "bg-slate-200 text-transparent"
+                        deliveryMethod === "pickup"
+                          ? "bg-amber-500 text-white ring-2 ring-amber-200"
+                          : "bg-slate-200 text-transparent"
                       }`}
                     >
                       ✓
@@ -407,10 +409,14 @@ export default function CartPage() {
                     </div>
                     <span
                       aria-hidden
-                      className={`mt-0.5 inline-flex h-7 w-7 shrink-0 rounded-full ${
-                        deliveryMethod === "courier" ? "bg-red-500" : "bg-slate-200"
+                      className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                        deliveryMethod === "courier"
+                          ? "bg-amber-500 text-white ring-2 ring-amber-200"
+                          : "bg-slate-200 text-transparent"
                       }`}
-                    />
+                    >
+                      ✓
+                    </span>
                   </label>
                 </div>
               </div>
@@ -427,7 +433,7 @@ export default function CartPage() {
                             name="pickupPoint"
                             checked={pickupPointId === point.id}
                             onChange={() => setPickupPointId(point.id)}
-                            className="mr-2"
+                            className="mr-2 accent-amber-500"
                           />
                           <span className="font-medium text-slate-800">{point.name}</span>
                           <span className="mt-1 block text-xs text-slate-500">{point.note}</span>
@@ -495,7 +501,7 @@ export default function CartPage() {
                             name="cdekPickupPoint"
                             checked={selectedCdekPointCode === point.code}
                             onChange={() => setSelectedCdekPointCode(point.code)}
-                            className="mr-2"
+                            className="mr-2 accent-amber-500"
                           />
                           <span className="font-medium text-slate-800">{point.name}</span>
                           <span className="mt-1 block text-xs text-slate-600">{point.address || point.city}</span>
@@ -525,7 +531,7 @@ export default function CartPage() {
                       name="payment"
                       checked={paymentMethod === "sbp"}
                       onChange={() => setPaymentMethod("sbp")}
-                      className="mr-2"
+                      className="mr-2 accent-amber-500"
                     />
                     СБП
                   </label>
@@ -535,7 +541,7 @@ export default function CartPage() {
                       name="payment"
                       checked={paymentMethod === "card"}
                       onChange={() => setPaymentMethod("card")}
-                      className="mr-2"
+                      className="mr-2 accent-amber-500"
                     />
                     Карта
                   </label>
@@ -545,7 +551,7 @@ export default function CartPage() {
                       name="payment"
                       checked={paymentMethod === "cash"}
                       onChange={() => setPaymentMethod("cash")}
-                      className="mr-2"
+                      className="mr-2 accent-amber-500"
                     />
                     При получении
                   </label>
@@ -613,7 +619,7 @@ export default function CartPage() {
                     type="checkbox"
                     checked={consentPersonalData}
                     onChange={(e) => setConsentPersonalData(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-slate-300"
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-amber-500"
                     required
                   />
                   <span>
@@ -633,7 +639,7 @@ export default function CartPage() {
                     type="checkbox"
                     checked={consentMarketing}
                     onChange={(e) => setConsentMarketing(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-slate-300"
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-amber-500"
                   />
                   <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
                 </label>
