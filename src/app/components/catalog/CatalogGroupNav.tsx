@@ -43,9 +43,9 @@ export function CatalogGroupNav({
   if (groupsWithItems.length === 0) return null;
 
   const chipClass =
-    "shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 hover:border-amber-300 hover:bg-amber-50/80 transition";
+    "shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 hover:border-amber-300 hover:bg-amber-50/80 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
   const linkClass =
-    "block rounded-lg border border-transparent px-3 py-2 text-left text-sm font-medium text-slate-700 transition hover:border-slate-200 hover:bg-slate-50";
+    "block rounded-lg border border-transparent px-3 py-2 text-left text-sm font-medium text-slate-700 transition hover:border-slate-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
   if (variant === "inline") {
     return (

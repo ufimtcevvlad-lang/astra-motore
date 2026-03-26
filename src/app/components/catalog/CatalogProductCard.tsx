@@ -10,6 +10,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
   const isOriginal = /gm|oe|ориг/i.test(p.brand);
   const isHit = Number.parseInt(String(p.id).replace(/\D/g, ""), 10) % 5 === 0;
   const inStockLabel = p.inStock > 20 ? "В наличии" : "Мало";
+  const showHit = isHit && !isOriginal;
 
   return (
     <article className="rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
@@ -30,7 +31,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
               Оригинал
             </span>
           ) : null}
-          {isHit ? (
+          {showHit ? (
             <span className="inline-flex rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-[10px] font-semibold text-slate-700">
               Хит
             </span>

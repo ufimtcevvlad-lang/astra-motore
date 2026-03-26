@@ -28,7 +28,7 @@ export function CatalogHubStrip() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-full px-3 py-1 text-[11px] sm:text-xs font-medium transition border ${
+                className={`rounded-full px-3 py-1 text-[11px] sm:text-xs font-medium transition border focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030712] ${
                   active
                     ? "border-amber-400 bg-amber-400/15 text-amber-300"
                     : "border-slate-700 text-slate-400 hover:border-amber-500/50 hover:text-amber-200"

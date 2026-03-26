@@ -732,7 +732,7 @@ export default function CartPage() {
           </Widget>
         </aside>
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-[60] p-3 lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-[60] p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden">
         <div className="rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
