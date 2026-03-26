@@ -1,14 +1,12 @@
 import Link from "next/link";
 
 export function Footer() {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="mt-auto border-t-2 border-amber-500/40 bg-gradient-to-b from-neutral-950 via-slate-950 to-black text-slate-100">
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-medium">
-            © {year} <span className="text-white font-semibold">Astra Motors</span>
+            © 2013-2026 <span className="text-white font-semibold">Astra Motors</span>
           </p>
           <nav className="flex flex-wrap gap-4">
             <Link href="/" className="text-sm text-slate-400 hover:text-amber-400 transition">
