@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 function normalizeVin(value: string) {
@@ -211,6 +212,15 @@ export function VinRequestForm() {
                     <li>• В ПТС: раздел с основными данными автомобиля.</li>
                     <li>• На кузове: под лобовым стеклом или на стойке двери.</li>
                   </ul>
+                  <div className="mt-2 overflow-hidden rounded-md border border-slate-200 bg-slate-100">
+                    <Image
+                      src="/images/vin-sts-highlight.png"
+                      alt="Пример в СТС: выделенная строка VIN"
+                      width={236}
+                      height={180}
+                      className="h-auto w-full"
+                    />
+                  </div>
                   <p className="mt-2 text-[11px] text-slate-500">
                     VIN состоит из 17 символов (латинские буквы и цифры).
                   </p>
