@@ -277,27 +277,29 @@ export function VinRequestForm() {
           >
             Комментарий (необязательно)
           </label>
-          <textarea
-            id="vinComment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="w-full min-h-[90px] rounded-md border border-slate-300 px-3 py-2 text-sm bg-white"
-            placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
-          />
+          <div className="relative">
+            <textarea
+              id="vinComment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full min-h-[110px] rounded-md border border-slate-300 px-3 py-2 pb-9 text-sm bg-white"
+              placeholder="Можно указать старый артикул, фото/схему (если отправляете отдельно)…"
+            />
 
-          <input
-            id="vinPhoto"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
-            className="hidden"
-          />
-          <label
-            htmlFor="vinPhoto"
-            className="mt-2 block cursor-pointer text-left text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
-          >
-            Прикрепить фото
-          </label>
+            <input
+              id="vinPhoto"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+              className="hidden"
+            />
+            <label
+              htmlFor="vinPhoto"
+              className="absolute bottom-2 left-3 cursor-pointer text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
+            >
+              Прикрепить фото
+            </label>
+          </div>
         </div>
 
         <button
