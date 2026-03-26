@@ -141,10 +141,14 @@ export async function updateUserProfile(
     return { ok: false, reason: "Пользователь не найден" };
   }
 
-  if (users.some((u) => u.id !== userId && normalizeEmail(u.email) === email)) {
+  const currentEmail = normalizeEmail(currentUser.email);
+  const currentPhone = normalizePhone(currentUser.phone);
+
+  // Проверяем уникальность только если поле реально изменилось.
+  if (email !== currentEmail && users.some((u) => u.id !== userId && normalizeEmail(u.email) === email)) {
     return { ok: false, reason: "Пользователь с таким email уже существует" };
   }
-  if (users.some((u) => u.id !== userId && normalizePhone(u.phone) === phone)) {
+  if (phone !== currentPhone && users.some((u) => u.id !== userId && normalizePhone(u.phone) === phone)) {
     return { ok: false, reason: "Пользователь с таким телефоном уже существует" };
   }
 

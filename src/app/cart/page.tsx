@@ -652,7 +652,7 @@ export default function CartPage() {
           </Widget>
         </div>
 
-        <aside>
+        <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-1">
           <Widget title="Итого">
             <div className="space-y-2 text-sm text-slate-600">
               <div className="flex items-center justify-between">
