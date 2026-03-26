@@ -8,6 +8,27 @@ import { TurnstileField } from "../components/security/TurnstileField";
 import { products } from "../data/products";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../lib/phone";
 
+function Widget({
+  title,
+  children,
+  subtle = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  subtle?: boolean;
+}) {
+  return (
+    <section
+      className={`rounded-2xl border p-5 shadow-sm ${
+        subtle ? "border-slate-200 bg-slate-50/60" : "border-slate-200 bg-white"
+      }`}
+    >
+      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
 export default function CartPage() {
   const { items, addToCart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
   const [sent, setSent] = useState(false);
@@ -140,285 +161,285 @@ export default function CartPage() {
       <h1 className="text-2xl font-semibold">Корзина</h1>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
-          {items.map((item) => (
-            <article
-              key={item.product.id}
-              className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-4 sm:p-4"
-            >
-              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                <Image
-                  src={item.product.image}
-                  alt={item.product.name}
-                  width={80}
-                  height={80}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="min-w-0 flex-1 space-y-2">
-                <p className="line-clamp-2 text-sm font-semibold text-slate-900 sm:text-base">{item.product.name}</p>
-                <p className="text-xs text-slate-500">
-                  Арт. {item.product.sku} · {item.product.brand}
-                </p>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="inline-flex items-center rounded-lg border border-slate-200">
-                    <button
-                      type="button"
-                      onClick={() => decreaseQuantity(item.product.id)}
-                      className="inline-flex h-11 w-11 items-center justify-center text-lg text-slate-700 hover:bg-slate-50"
-                      aria-label="Уменьшить количество"
-                    >
-                      −
-                    </button>
-                    <span className="inline-flex min-w-10 items-center justify-center text-sm font-medium text-slate-900">
-                      {item.quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => increaseQuantity(item.product.id)}
-                      className="inline-flex h-11 w-11 items-center justify-center text-lg text-slate-700 hover:bg-slate-50"
-                      aria-label="Увеличить количество"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-slate-500">{item.product.price.toLocaleString("ru-RU")} ₽ / шт.</p>
-                    <p className="text-base font-semibold text-amber-700">
-                      {(item.product.price * item.quantity).toLocaleString("ru-RU")} ₽
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeFromCart(item.product.id)}
-                  className="text-xs font-medium text-red-700 hover:underline"
+          <Widget title="Товары в корзине">
+            <div className="space-y-3">
+              {items.map((item) => (
+                <article
+                  key={item.product.id}
+                  className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-4 sm:p-4"
                 >
-                  Удалить
-                </button>
-              </div>
-            </article>
-          ))}
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                    <Image
+                      src={item.product.image}
+                      alt={item.product.name}
+                      width={80}
+                      height={80}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <p className="line-clamp-2 text-sm font-semibold text-slate-900 sm:text-base">{item.product.name}</p>
+                    <p className="text-xs text-slate-500">
+                      Арт. {item.product.sku} · {item.product.brand}
+                    </p>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="inline-flex items-center rounded-lg border border-slate-200">
+                        <button
+                          type="button"
+                          onClick={() => decreaseQuantity(item.product.id)}
+                          className="inline-flex h-11 w-11 items-center justify-center text-lg text-slate-700 hover:bg-slate-50"
+                          aria-label="Уменьшить количество"
+                        >
+                          −
+                        </button>
+                        <span className="inline-flex min-w-10 items-center justify-center text-sm font-medium text-slate-900">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => increaseQuantity(item.product.id)}
+                          className="inline-flex h-11 w-11 items-center justify-center text-lg text-slate-700 hover:bg-slate-50"
+                          aria-label="Увеличить количество"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500">{item.product.price.toLocaleString("ru-RU")} ₽ / шт.</p>
+                        <p className="text-base font-semibold text-amber-700">
+                          {(item.product.price * item.quantity).toLocaleString("ru-RU")} ₽
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="text-xs font-medium text-red-700 hover:underline"
+                    >
+                      Удалить
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </Widget>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-lg font-semibold">Рекомендуем добавить</h2>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <Widget title="Рекомендуем добавить" subtle>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {recommendations.map((p) => (
-                <article key={p.id} className="rounded-lg border border-slate-200 p-3">
+                <article key={p.id} className="rounded-xl border border-slate-200 bg-white p-3">
                   <p className="line-clamp-2 text-sm font-medium text-slate-800">{p.name}</p>
                   <p className="mt-1 text-sm font-semibold text-amber-700">{p.price.toLocaleString("ru-RU")} ₽</p>
                   <button
                     type="button"
                     onClick={() => addToCart(p)}
-                    className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-md border border-amber-300 bg-amber-50 text-sm font-medium text-amber-800 hover:bg-amber-100"
+                    className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg border border-amber-300 bg-amber-50 text-sm font-medium text-amber-800 hover:bg-amber-100"
                   >
                     Добавить
                   </button>
                 </article>
               ))}
             </div>
-          </div>
+          </Widget>
 
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5"
-          >
-            <h2 className="text-lg font-semibold">Оформление заказа</h2>
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold text-slate-900">1. Способ получения</h3>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <label className="rounded-lg border border-slate-200 p-3 text-sm">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    checked={deliveryMethod === "pickup"}
-                    onChange={() => setDeliveryMethod("pickup")}
-                    className="mr-2"
-                  />
-                  Самовывоз
-                </label>
-                <label className="rounded-lg border border-slate-200 p-3 text-sm">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    checked={deliveryMethod === "courier"}
-                    onChange={() => setDeliveryMethod("courier")}
-                    className="mr-2"
-                  />
-                  Доставка
-                </label>
-              </div>
-            </div>
-
-            {deliveryMethod === "pickup" ? (
+          <Widget title="Оформление заказа">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-slate-900">2. Пункт выдачи</h3>
-                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                  <div className="space-y-2">
-                    {pickupPoints.map((point) => (
-                      <label key={point.id} className="block rounded-lg border border-slate-200 p-3 text-sm">
-                        <input
-                          type="radio"
-                          name="pickupPoint"
-                          checked={pickupPointId === point.id}
-                          onChange={() => setPickupPointId(point.id)}
-                          className="mr-2"
-                        />
-                        <span className="font-medium text-slate-800">{point.name}</span>
-                        <span className="mt-1 block text-xs text-slate-500">{point.note}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <div className="overflow-hidden rounded-lg border border-slate-200">
-                    <iframe
-                      title="Пункты выдачи Astra Motors"
-                      src="https://yandex.ru/map-widget/v1/org/gm_drive/1299977455"
-                      className="h-64 w-full border-0"
-                      loading="lazy"
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">1. Способ получения</h3>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <label className={`rounded-xl border p-3 text-sm transition ${deliveryMethod === "pickup" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMethod === "pickup"}
+                      onChange={() => setDeliveryMethod("pickup")}
+                      className="mr-2"
                     />
-                  </div>
+                    Самовывоз
+                  </label>
+                  <label className={`rounded-xl border p-3 text-sm transition ${deliveryMethod === "courier" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMethod === "courier"}
+                      onChange={() => setDeliveryMethod("courier")}
+                      className="mr-2"
+                    />
+                    Доставка
+                  </label>
                 </div>
               </div>
-            ) : null}
 
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold text-slate-900">3. Оплата</h3>
-              <div className="grid gap-2 sm:grid-cols-3">
-                <label className="rounded-lg border border-slate-200 p-3 text-sm">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === "sbp"}
-                    onChange={() => setPaymentMethod("sbp")}
-                    className="mr-2"
-                  />
-                  СБП
+              {deliveryMethod === "pickup" ? (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">2. Пункт выдачи</h3>
+                  <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                    <div className="space-y-2">
+                      {pickupPoints.map((point) => (
+                        <label key={point.id} className={`block rounded-xl border p-3 text-sm transition ${pickupPointId === point.id ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                          <input
+                            type="radio"
+                            name="pickupPoint"
+                            checked={pickupPointId === point.id}
+                            onChange={() => setPickupPointId(point.id)}
+                            className="mr-2"
+                          />
+                          <span className="font-medium text-slate-800">{point.name}</span>
+                          <span className="mt-1 block text-xs text-slate-500">{point.note}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="overflow-hidden rounded-xl border border-slate-200">
+                      <iframe
+                        title="Пункты выдачи Astra Motors"
+                        src="https://yandex.ru/map-widget/v1/org/gm_drive/1299977455"
+                        className="h-64 w-full border-0"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">3. Оплата</h3>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  <label className={`rounded-xl border p-3 text-sm transition ${paymentMethod === "sbp" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === "sbp"}
+                      onChange={() => setPaymentMethod("sbp")}
+                      className="mr-2"
+                    />
+                    СБП
+                  </label>
+                  <label className={`rounded-xl border p-3 text-sm transition ${paymentMethod === "card" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === "card"}
+                      onChange={() => setPaymentMethod("card")}
+                      className="mr-2"
+                    />
+                    Карта
+                  </label>
+                  <label className={`rounded-xl border p-3 text-sm transition ${paymentMethod === "cash" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === "cash"}
+                      onChange={() => setPaymentMethod("cash")}
+                      className="mr-2"
+                    />
+                    При получении
+                  </label>
+                </div>
+              </div>
+
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">4. Получатель</h3>
+              {error && (
+                <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {error}
+                </p>
+              )}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+                  Имя *
                 </label>
-                <label className="rounded-lg border border-slate-200 p-3 text-sm">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod("card")}
-                    className="mr-2"
-                  />
-                  Карта
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  placeholder="Как к вам обращаться"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
+                  Телефон *
                 </label>
-                <label className="rounded-lg border border-slate-200 p-3 text-sm">
+                <input
+                  id="phone"
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(formatRuPhoneInput(e.target.value))}
+                  onBlur={() => setPhoneTouched(true)}
+                  className={`w-full rounded-md border px-3 py-2 text-sm ${
+                    phoneTouched && !phoneValid
+                      ? "border-red-500 bg-red-50 text-red-900"
+                      : "border-slate-300"
+                  }`}
+                  placeholder="+7 (902) 254-01-11"
+                />
+                {phoneTouched && !phoneValid && (
+                  <p className="mt-1 text-xs text-red-700">Введите номер в формате +7 (9XX) XXX-XX-XX</p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="comment" className="block text-sm font-medium text-slate-700 mb-1">
+                  Комментарий к заказу
+                </label>
+                <textarea
+                  id="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  rows={3}
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  placeholder="Марка и модель авто, удобное время для звонка..."
+                />
+              </div>
+              <div className="space-y-2 rounded-md border border-slate-200 bg-slate-50 p-3">
+                <label className="flex items-start gap-2 text-sm text-slate-700">
                   <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === "cash"}
-                    onChange={() => setPaymentMethod("cash")}
-                    className="mr-2"
+                    type="checkbox"
+                    checked={consentPersonalData}
+                    onChange={(e) => setConsentPersonalData(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300"
+                    required
                   />
-                  При получении
+                  <span>
+                    Я согласен(а) на{" "}
+                    <Link href="/consent-personal-data" className="text-amber-700 underline hover:text-amber-800">
+                      обработку персональных данных
+                    </Link>{" "}
+                    и ознакомлен(а) с{" "}
+                    <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
+                      Политикой обработки персональных данных
+                    </Link>
+                    .
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={consentMarketing}
+                    onChange={(e) => setConsentMarketing(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300"
+                  />
+                  <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
                 </label>
               </div>
-            </div>
-
-            <h3 className="text-base font-semibold text-slate-900">4. Получатель</h3>
-          {error && (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-              Имя *
-            </label>
-            <input
-              id="name"
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              placeholder="Как к вам обращаться"
-            />
-          </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-              Телефон *
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              required
-              value={phone}
-              onChange={(e) => setPhone(formatRuPhoneInput(e.target.value))}
-              onBlur={() => setPhoneTouched(true)}
-              className={`w-full rounded-md border px-3 py-2 text-sm ${
-                phoneTouched && !phoneValid
-                  ? "border-red-500 bg-red-50 text-red-900"
-                  : "border-slate-300"
-              }`}
-              placeholder="+7 (902) 254-01-11"
-            />
-            {phoneTouched && !phoneValid && (
-              <p className="mt-1 text-xs text-red-700">Введите номер в формате +7 (9XX) XXX-XX-XX</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="comment" className="block text-sm font-medium text-slate-700 mb-1">
-              Комментарий к заказу
-            </label>
-            <textarea
-              id="comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              rows={3}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              placeholder="Марка и модель авто, удобное время для звонка..."
-            />
-          </div>
-          <div className="space-y-2 rounded-md border border-slate-200 bg-slate-50 p-3">
-            <label className="flex items-start gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                checked={consentPersonalData}
-                onChange={(e) => setConsentPersonalData(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-slate-300"
-                required
-              />
-              <span>
-                Я согласен(а) на{" "}
-                <Link href="/consent-personal-data" className="text-amber-700 underline hover:text-amber-800">
-                  обработку персональных данных
-                </Link>{" "}
-                и ознакомлен(а) с{" "}
-                <Link href="/privacy" className="text-amber-700 underline hover:text-amber-800">
-                  Политикой обработки персональных данных
-                </Link>
-                .
-              </span>
-            </label>
-            <label className="flex items-start gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                checked={consentMarketing}
-                onChange={(e) => setConsentMarketing(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-slate-300"
-              />
-              <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
-            </label>
-          </div>
-          <TurnstileField onTokenChange={setTurnstileToken} />
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={sending}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm"
-            >
-              {sending ? "Отправка…" : "Подтвердить заказ"}
-            </button>
-          </div>
-          </form>
+              <TurnstileField onTokenChange={setTurnstileToken} />
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50 shadow-sm"
+                >
+                  {sending ? "Отправка…" : "Подтвердить заказ"}
+                </button>
+              </div>
+            </form>
+          </Widget>
         </div>
 
         <aside className="lg:sticky lg:top-24">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">Итого</h2>
-            <div className="mt-4 space-y-2 text-sm text-slate-600">
+          <Widget title="Итого">
+            <div className="space-y-2 text-sm text-slate-600">
               <div className="flex items-center justify-between">
                 <span>Товаров</span>
                 <span>{totalItems}</span>
@@ -452,7 +473,7 @@ export default function CartPage() {
                 Очистить корзину
               </button>
             </div>
-          </div>
+          </Widget>
         </aside>
       </div>
     </div>
