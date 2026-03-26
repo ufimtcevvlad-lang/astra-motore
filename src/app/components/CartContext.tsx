@@ -19,6 +19,9 @@ type CartContextValue = {
   items: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
+  setItemQuantity: (productId: string, quantity: number) => void;
+  increaseQuantity: (productId: string) => void;
+  decreaseQuantity: (productId: string) => void;
   clearCart: () => void;
 };
 
@@ -43,6 +46,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((i) => i.product.id !== productId));
   }, []);
 
+  const setItemQuantity = useCallback((productId: string, quantity: number) => {
+    setItems((prev) =>
+      prev.flatMap((i) => {
+        if (i.product.id !== productId) return [i];
+        if (quantity <= 0) return [];
+        return [{ ...i, quantity }];
+      })
+    );
+  }, []);
+
+  const increaseQuantity = useCallback((productId: string) => {
+    setItems((prev) =>
+      prev.map((i) =>
+        i.product.id === productId ? { ...i, quantity: i.quantity + 1 } : i
+      )
+    );
+  }, []);
+
+  const decreaseQuantity = useCallback((productId: string) => {
+    setItems((prev) =>
+      prev.flatMap((i) => {
+        if (i.product.id !== productId) return [i];
+        if (i.quantity <= 1) return [];
+        return [{ ...i, quantity: i.quantity - 1 }];
+      })
+    );
+  }, []);
+
   const clearCart = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(
@@ -50,9 +81,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items,
       addToCart,
       removeFromCart,
+      setItemQuantity,
+      increaseQuantity,
+      decreaseQuantity,
       clearCart,
     }),
-    [items, addToCart, removeFromCart, clearCart]
+    [items, addToCart, removeFromCart, setItemQuantity, increaseQuantity, decreaseQuantity, clearCart]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
