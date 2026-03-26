@@ -294,7 +294,7 @@ export function VinRequestForm() {
           />
           <label
             htmlFor="vinPhoto"
-            className="mt-3 inline-flex cursor-pointer text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
+            className="mt-2 block cursor-pointer text-left text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600 hover:underline"
           >
             Прикрепить фото
           </label>
