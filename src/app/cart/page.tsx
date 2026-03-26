@@ -246,26 +246,61 @@ export default function CartPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">1. Способ получения</h3>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <label className={`rounded-xl border p-3 text-sm transition ${deliveryMethod === "pickup" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label
+                    className={`relative flex cursor-pointer items-start justify-between rounded-2xl border p-4 transition ${
+                      deliveryMethod === "pickup"
+                        ? "border-slate-900 bg-white shadow-sm"
+                        : "border-slate-200 bg-slate-50/60 hover:border-slate-300"
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="delivery"
                       checked={deliveryMethod === "pickup"}
                       onChange={() => setDeliveryMethod("pickup")}
-                      className="mr-2"
+                      className="sr-only"
                     />
-                    Самовывоз
+                    <div className="pr-4">
+                      <p className="text-base font-semibold text-slate-900">Самовывоз</p>
+                      <p className="mt-1 text-sm text-slate-600">Сегодня, от 0 ₽</p>
+                    </div>
+                    <span
+                      aria-hidden
+                      className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                        deliveryMethod === "pickup" ? "bg-red-500 text-white" : "bg-slate-200 text-transparent"
+                      }`}
+                    >
+                      ✓
+                    </span>
                   </label>
-                  <label className={`rounded-xl border p-3 text-sm transition ${deliveryMethod === "courier" ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"}`}>
+
+                  <label
+                    className={`relative flex cursor-pointer items-start justify-between rounded-2xl border p-4 transition ${
+                      deliveryMethod === "courier"
+                        ? "border-slate-900 bg-white shadow-sm"
+                        : "border-slate-200 bg-slate-50/60 hover:border-slate-300"
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="delivery"
                       checked={deliveryMethod === "courier"}
                       onChange={() => setDeliveryMethod("courier")}
-                      className="mr-2"
+                      className="sr-only"
                     />
-                    Доставка
+                    <div className="pr-4">
+                      <p className="text-base font-semibold text-slate-900">Экспресс-доставка</p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        От 30 мин., <span className="font-medium text-emerald-600">бесплатно</span>
+                      </p>
+                    </div>
+                    <span
+                      aria-hidden
+                      className={`mt-0.5 inline-flex h-7 w-7 shrink-0 rounded-full ${
+                        deliveryMethod === "courier" ? "bg-red-500" : "bg-slate-200"
+                      }`}
+                    />
                   </label>
                 </div>
               </div>
