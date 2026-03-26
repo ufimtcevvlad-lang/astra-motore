@@ -21,6 +21,23 @@ type Body = {
   consentPersonalData: boolean;
   consentMarketing?: boolean;
   turnstileToken?: string;
+  deliveryMethod?: "pickup" | "courier";
+  deliveryCity?: string;
+  deliveryQuote?: {
+    tariffCode?: number;
+    tariffName?: string;
+    deliverySum?: number;
+    periodMin?: number | null;
+    periodMax?: number | null;
+  } | null;
+  cdekPickupPoint?: {
+    code?: string;
+    name?: string;
+    city?: string;
+    address?: string;
+    workTime?: string;
+  } | null;
+  paymentMethod?: "sbp" | "card" | "cash";
 };
 
 type PersistedOrder = Body & {
@@ -74,7 +91,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Неверный формат данных" }, { status: 400 });
   }
 
-  const { name, phone, comment, items, total, consentPersonalData, consentMarketing } = body;
+  const {
+    name,
+    phone,
+    comment,
+    items,
+    total,
+    consentPersonalData,
+    consentMarketing,
+    deliveryMethod,
+    deliveryCity,
+    deliveryQuote,
+    cdekPickupPoint,
+    paymentMethod,
+  } = body;
   const ip = getClientIp(request);
   const humanOk = await verifyTurnstileToken(body.turnstileToken, ip);
   if (!humanOk) {
@@ -120,6 +150,11 @@ export async function POST(request: Request) {
       total,
       consentPersonalData: Boolean(consentPersonalData),
       consentMarketing: Boolean(consentMarketing),
+      deliveryMethod,
+      deliveryCity: deliveryCity?.trim() || "",
+      deliveryQuote: deliveryQuote ?? null,
+      cdekPickupPoint: cdekPickupPoint ?? null,
+      paymentMethod,
       userAgent: request.headers.get("user-agent") || undefined,
       ip,
     });
@@ -136,6 +171,28 @@ export async function POST(request: Request) {
 
   if (comment?.trim()) {
     lines.push("💬 <b>Комментарий:</b> " + escapeTelegram(comment.trim()));
+  }
+
+  if (deliveryMethod === "pickup") {
+    lines.push("🚚 <b>Получение:</b> Самовывоз");
+  } else if (deliveryMethod === "courier") {
+    const city = deliveryCity?.trim() ? `, ${escapeTelegram(deliveryCity.trim())}` : "";
+    const sum =
+      typeof deliveryQuote?.deliverySum === "number"
+        ? `, ${deliveryQuote.deliverySum.toLocaleString("ru-RU")} ₽`
+        : "";
+    const tariff = deliveryQuote?.tariffName ? ` (${escapeTelegram(deliveryQuote.tariffName)})` : "";
+    lines.push(`🚚 <b>Доставка:</b> СДЭК${city}${sum}${tariff}`);
+    if (cdekPickupPoint?.address || cdekPickupPoint?.name) {
+      const pointLine = [cdekPickupPoint.name, cdekPickupPoint.address].filter(Boolean).join(", ");
+      lines.push("📍 <b>ПВЗ:</b> " + escapeTelegram(pointLine));
+    }
+  }
+
+  if (paymentMethod) {
+    const paymentLabel =
+      paymentMethod === "sbp" ? "СБП" : paymentMethod === "card" ? "Карта" : "При получении";
+    lines.push("💳 <b>Оплата:</b> " + paymentLabel);
   }
 
   lines.push("", "📦 <b>Товары:</b>");

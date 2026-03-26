@@ -48,6 +48,20 @@ export default function CartPage() {
   const [consentPersonalData, setConsentPersonalData] = useState(false);
   const [consentMarketing, setConsentMarketing] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [deliveryCity, setDeliveryCity] = useState("");
+  const [deliveryQuoteLoading, setDeliveryQuoteLoading] = useState(false);
+  const [deliveryQuote, setDeliveryQuote] = useState<{
+    tariffCode: number;
+    tariffName: string;
+    deliverySum: number;
+    periodMin: number | null;
+    periodMax: number | null;
+  } | null>(null);
+  const [pickupPointsCdekLoading, setPickupPointsCdekLoading] = useState(false);
+  const [pickupPointsCdek, setPickupPointsCdek] = useState<
+    Array<{ code: string; name: string; city: string; address: string; workTime: string }>
+  >([]);
+  const [selectedCdekPointCode, setSelectedCdekPointCode] = useState("");
   const phoneValid = isValidRuPhone(phone);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -65,6 +79,73 @@ export default function CartPage() {
       })
       .slice(0, 6);
   }, [items]);
+  const deliveryCost = deliveryMethod === "pickup" ? 0 : deliveryQuote?.deliverySum ?? 0;
+  const totalWithDelivery = total + deliveryCost;
+
+  const calculateCdekDelivery = async () => {
+    if (!deliveryCity.trim()) {
+      setError("Укажите город доставки для расчета СДЭК");
+      return;
+    }
+
+    setError("");
+    setDeliveryQuoteLoading(true);
+    try {
+      const response = await fetch("/api/cdek/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: deliveryCity.trim(),
+          itemsCount: totalItems,
+          declaredValue: total,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setDeliveryQuote(null);
+        setError(data.error || "Не удалось рассчитать доставку СДЭК");
+        return;
+      }
+      setDeliveryQuote(data.best);
+    } catch {
+      setDeliveryQuote(null);
+      setError("Ошибка сети при расчете доставки");
+    } finally {
+      setDeliveryQuoteLoading(false);
+    }
+  };
+
+  const loadCdekPickupPoints = async () => {
+    if (!deliveryCity.trim()) {
+      setError("Укажите город для поиска ПВЗ СДЭК");
+      return;
+    }
+
+    setError("");
+    setPickupPointsCdekLoading(true);
+    try {
+      const response = await fetch("/api/cdek/pickup-points", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ city: deliveryCity.trim() }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setPickupPointsCdek([]);
+        setSelectedCdekPointCode("");
+        setError(data.error || "Не удалось загрузить ПВЗ СДЭК");
+        return;
+      }
+      setPickupPointsCdek(data.points ?? []);
+      setSelectedCdekPointCode((data.points?.[0]?.code as string) ?? "");
+    } catch {
+      setPickupPointsCdek([]);
+      setSelectedCdekPointCode("");
+      setError("Ошибка сети при загрузке ПВЗ");
+    } finally {
+      setPickupPointsCdekLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,6 +183,12 @@ export default function CartPage() {
           consentMarketing,
           turnstileToken,
           deliveryMethod,
+          deliveryCity: deliveryCity.trim(),
+          deliveryQuote,
+          cdekPickupPoint:
+            selectedCdekPointCode && pickupPointsCdek.length > 0
+              ? pickupPointsCdek.find((p) => p.code === selectedCdekPointCode) ?? null
+              : null,
           paymentMethod,
         }),
       });
@@ -336,6 +423,76 @@ export default function CartPage() {
                 </div>
               ) : null}
 
+              {deliveryMethod === "courier" ? (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">2. Доставка СДЭК</h3>
+                  <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_220px]">
+                    <input
+                      type="text"
+                      value={deliveryCity}
+                      onChange={(e) => setDeliveryCity(e.target.value)}
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                      placeholder="Город доставки, например Екатеринбург"
+                    />
+                    <button
+                      type="button"
+                      onClick={calculateCdekDelivery}
+                      disabled={deliveryQuoteLoading}
+                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                    >
+                      {deliveryQuoteLoading ? "Расчет..." : "Рассчитать"}
+                    </button>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={loadCdekPickupPoints}
+                      disabled={pickupPointsCdekLoading}
+                      className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                    >
+                      {pickupPointsCdekLoading ? "Загрузка ПВЗ..." : "Найти ПВЗ СДЭК"}
+                    </button>
+                    {selectedCdekPointCode ? (
+                      <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                        Выбран ПВЗ: {pickupPointsCdek.find((p) => p.code === selectedCdekPointCode)?.address || selectedCdekPointCode}
+                      </div>
+                    ) : null}
+                  </div>
+                  {pickupPointsCdek.length > 0 ? (
+                    <div className="max-h-64 space-y-2 overflow-auto rounded-xl border border-slate-200 p-2">
+                      {pickupPointsCdek.map((point) => (
+                        <label
+                          key={point.code}
+                          className={`block rounded-lg border p-3 text-sm transition ${
+                            selectedCdekPointCode === point.code ? "border-amber-400 bg-amber-50" : "border-slate-200 bg-white"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="cdekPickupPoint"
+                            checked={selectedCdekPointCode === point.code}
+                            onChange={() => setSelectedCdekPointCode(point.code)}
+                            className="mr-2"
+                          />
+                          <span className="font-medium text-slate-800">{point.name}</span>
+                          <span className="mt-1 block text-xs text-slate-600">{point.address || point.city}</span>
+                          {point.workTime ? <span className="mt-1 block text-xs text-slate-500">{point.workTime}</span> : null}
+                        </label>
+                      ))}
+                    </div>
+                  ) : null}
+                  {deliveryQuote ? (
+                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+                      СДЭК: {deliveryQuote.deliverySum.toLocaleString("ru-RU")} ₽
+                      {deliveryQuote.periodMin && deliveryQuote.periodMax
+                        ? `, ${deliveryQuote.periodMin}-${deliveryQuote.periodMax} дн.`
+                        : ""}
+                      {` (${deliveryQuote.tariffName})`}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">3. Оплата</h3>
                 <div className="grid gap-2 sm:grid-cols-3">
@@ -485,20 +642,28 @@ export default function CartPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span>Доставка</span>
-                <span>{deliveryMethod === "pickup" ? "0 ₽" : "Уточним"}</span>
+                <span>
+                  {deliveryMethod === "pickup"
+                    ? "0 ₽"
+                    : deliveryQuote
+                      ? `${deliveryQuote.deliverySum.toLocaleString("ru-RU")} ₽`
+                      : "Уточним"}
+                </span>
               </div>
             </div>
             <div className="mt-4 border-t border-slate-100 pt-4">
               <p className="flex items-center justify-between text-lg font-semibold">
                 <span>К оплате</span>
-                <span className="text-amber-700">{total.toLocaleString("ru-RU")} ₽</span>
+                <span className="text-amber-700">{totalWithDelivery.toLocaleString("ru-RU")} ₽</span>
               </p>
             </div>
             <div className="mt-4 space-y-2">
               <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
                 {deliveryMethod === "pickup"
                   ? `Самовывоз: ${pickupPoints.find((p) => p.id === pickupPointId)?.name ?? "не выбран"}`
-                  : "Доставка курьером: уточняется менеджером"}
+                  : `СДЭК: ${
+                      pickupPointsCdek.find((p) => p.code === selectedCdekPointCode)?.address || deliveryCity.trim() || "город не указан"
+                    }${deliveryQuote ? `, ${deliveryQuote.deliverySum.toLocaleString("ru-RU")} ₽` : ", ожидает расчета"}`}
               </div>
               <button
                 type="button"
