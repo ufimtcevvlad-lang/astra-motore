@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../../lib/phone";
+import { TurnstileField } from "../security/TurnstileField";
 
 export function LoginForm() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [consentPersonalData, setConsentPersonalData] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const phoneValid = loginMode === "phone" ? isValidRuPhone(login) : true;
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -34,13 +36,18 @@ export function LoginForm() {
       setSending(false);
       return;
     }
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Подтвердите проверку безопасности");
+      setSending(false);
+      return;
+    }
     try {
       const payloadLogin =
         loginMode === "phone" ? normalizeRuPhone(login) : login.trim();
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login: payloadLogin, password, rememberMe, consentPersonalData }),
+        body: JSON.stringify({ login: payloadLogin, password, rememberMe, consentPersonalData, turnstileToken }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -166,6 +173,7 @@ export function LoginForm() {
             .
           </span>
         </label>
+        <TurnstileField onTokenChange={setTurnstileToken} />
         <button
           type="submit"
           disabled={sending}

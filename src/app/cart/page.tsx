@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "../components/CartContext";
+import { TurnstileField } from "../components/security/TurnstileField";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../lib/phone";
 
 export default function CartPage() {
@@ -17,6 +18,7 @@ export default function CartPage() {
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [consentPersonalData, setConsentPersonalData] = useState(false);
   const [consentMarketing, setConsentMarketing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const phoneValid = isValidRuPhone(phone);
 
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
@@ -31,6 +33,10 @@ export default function CartPage() {
     }
     if (!consentPersonalData) {
       setError("Необходимо согласие на обработку персональных данных");
+      return;
+    }
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Подтвердите проверку безопасности");
       return;
     }
     setSending(true);
@@ -51,6 +57,7 @@ export default function CartPage() {
           total,
           consentPersonalData,
           consentMarketing,
+          turnstileToken,
         }),
       });
       const data = await res.json();
@@ -245,6 +252,7 @@ export default function CartPage() {
               <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
             </label>
           </div>
+          <TurnstileField onTokenChange={setTurnstileToken} />
           <div className="flex gap-2">
             <button
               type="button"

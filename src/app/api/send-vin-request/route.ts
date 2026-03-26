@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { appendConsentLog } from "../../lib/consent-log";
+import { checkRateLimit, getClientIp } from "../../lib/rate-limit";
+import { verifyTurnstileToken } from "../../lib/turnstile";
 
 type Body = {
   name: string;
@@ -17,6 +19,7 @@ type Body = {
   consentPersonalData: boolean;
   consentMarketing?: boolean;
   comment?: string;
+  turnstileToken?: string;
 };
 
 function escapeTelegram(text: string): string {
@@ -36,6 +39,19 @@ async function persistVinRequest(
 }
 
 export async function POST(request: Request) {
+  const limit = checkRateLimit({
+    request,
+    key: "send_vin_request",
+    windowMs: 10 * 60_000,
+    max: 15,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много VIN-заявок. Повторите позже." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+    );
+  }
+
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -66,6 +82,19 @@ export async function POST(request: Request) {
     const photoEntry = form.get("photo");
     if (photoEntry && typeof photoEntry !== "string") {
       photoFile = photoEntry as File;
+      if (photoFile.size > 8 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: "Фото слишком большое. Максимальный размер: 8 МБ" },
+          { status: 400 }
+        );
+      }
+      const photoType = String(photoFile.type || "").toLowerCase();
+      if (photoType && !photoType.startsWith("image/")) {
+        return NextResponse.json(
+          { error: "Допустимы только файлы изображений" },
+          { status: 400 }
+        );
+      }
       photoMeta = { fileName: photoFile.name, size: photoFile.size };
     }
 
@@ -83,6 +112,7 @@ export async function POST(request: Request) {
       consentPersonalData: getStr("consentPersonalData") === "true",
       consentMarketing: getStr("consentMarketing") === "true",
       comment: getStr("comment") || undefined,
+      turnstileToken: getStr("turnstileToken") || undefined,
     };
   } else {
     try {
@@ -102,6 +132,7 @@ export async function POST(request: Request) {
         consentPersonalData: Boolean(json.consentPersonalData),
         consentMarketing: Boolean(json.consentMarketing),
         comment: typeof json.comment === "string" ? json.comment : undefined,
+        turnstileToken: typeof json.turnstileToken === "string" ? json.turnstileToken : undefined,
       };
     } catch {
       return NextResponse.json(
@@ -126,7 +157,13 @@ export async function POST(request: Request) {
     consentPersonalData,
     consentMarketing,
     comment,
+    turnstileToken,
   } = requestBody;
+  const ip = getClientIp(request);
+  const humanOk = await verifyTurnstileToken(turnstileToken, ip);
+  if (!humanOk) {
+    return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
+  }
 
   const vinNorm = String(vin || "")
     .toUpperCase()
@@ -159,10 +196,7 @@ export async function POST(request: Request) {
       event: "vin_request_submit",
       consentPersonalData: true,
       consentMarketing: Boolean(consentMarketing),
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
       userAgent: request.headers.get("user-agent") || undefined,
       subject: {
         fullName: name,
@@ -195,10 +229,7 @@ export async function POST(request: Request) {
     await persistVinRequest({
       ...payload,
       createdAt: new Date().toISOString(),
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
       photoName: photoMeta?.fileName,
       photoSize: photoMeta?.size,
     });

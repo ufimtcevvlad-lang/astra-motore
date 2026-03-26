@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../../lib/phone";
+import { TurnstileField } from "../security/TurnstileField";
 
 export function SmsLoginForm() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export function SmsLoginForm() {
   const [info, setInfo] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [consentPersonalData, setConsentPersonalData] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const phoneValid = isValidRuPhone(phone);
 
   const requestCode = async () => {
@@ -32,11 +34,16 @@ export function SmsLoginForm() {
       setSending(false);
       return;
     }
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Подтвердите проверку безопасности");
+      setSending(false);
+      return;
+    }
     try {
       const res = await fetch("/api/auth/sms/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: normalizeRuPhone(phone), consentPersonalData }),
+        body: JSON.stringify({ phone: normalizeRuPhone(phone), consentPersonalData, turnstileToken }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -139,6 +146,7 @@ export function SmsLoginForm() {
             .
           </span>
         </label>
+        <TurnstileField onTokenChange={setTurnstileToken} />
       </div>
 
       {codeRequested && (

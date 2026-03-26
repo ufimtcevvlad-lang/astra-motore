@@ -12,7 +12,12 @@ const YandexMetrika = dynamic(
 
 function hasAnalyticsConsent(): boolean {
   try {
-    return localStorage.getItem(COOKIE_CONSENT_KEY) === "all";
+    const raw = localStorage.getItem(COOKIE_CONSENT_KEY);
+    if (!raw) return false;
+    if (raw === "all") return true;
+    if (raw === "necessary") return false;
+    const parsed = JSON.parse(raw) as { analytics?: boolean };
+    return Boolean(parsed.analytics);
   } catch {
     return false;
   }
@@ -27,7 +32,7 @@ export function MetrikaDeferred() {
   useEffect(() => {
     const onConsentChanged = () => setEnabled(hasAnalyticsConsent());
     const onStorage = (event: StorageEvent) => {
-      if (event.key === COOKIE_CONSENT_KEY) setEnabled(event.newValue === "all");
+      if (event.key === COOKIE_CONSENT_KEY) setEnabled(hasAnalyticsConsent());
     };
 
     window.addEventListener(COOKIE_CONSENT_EVENT, onConsentChanged);

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSession, registerUser, SESSION_COOKIE } from "../../../lib/auth";
 import { appendConsentLog } from "../../../lib/consent-log";
+import { checkRateLimit, getClientIp } from "../../../lib/rate-limit";
+import { verifyTurnstileToken } from "../../../lib/turnstile";
 
 type Body = {
   fullName: string;
@@ -8,9 +10,23 @@ type Body = {
   phone: string;
   password: string;
   consentPersonalData?: boolean;
+  turnstileToken?: string;
 };
 
 export async function POST(request: Request) {
+  const limit = checkRateLimit({
+    request,
+    key: "auth_register",
+    windowMs: 60_000,
+    max: 8,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много попыток регистрации. Повторите позже." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+    );
+  }
+
   let body: Body;
   try {
     body = await request.json();
@@ -24,16 +40,18 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  const ip = getClientIp(request);
+  const humanOk = await verifyTurnstileToken(body.turnstileToken, ip);
+  if (!humanOk) {
+    return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
+  }
 
   try {
     await appendConsentLog({
       event: "auth_register",
       consentPersonalData: true,
       consentMarketing: Boolean((body as { consentMarketing?: boolean }).consentMarketing),
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
       userAgent: request.headers.get("user-agent") || undefined,
       subject: {
         email: body.email,

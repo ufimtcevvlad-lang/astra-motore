@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatRuPhoneInput, isValidRuPhone, normalizeRuPhone } from "../../lib/phone";
+import { TurnstileField } from "../security/TurnstileField";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export function RegisterForm() {
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [consentPersonalData, setConsentPersonalData] = useState(false);
   const [consentMarketing, setConsentMarketing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const phoneValid = isValidRuPhone(phone);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -33,6 +35,11 @@ export function RegisterForm() {
       setSending(false);
       return;
     }
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Подтвердите проверку безопасности");
+      setSending(false);
+      return;
+    }
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -44,6 +51,7 @@ export function RegisterForm() {
           password,
           consentPersonalData,
           consentMarketing,
+          turnstileToken,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -160,6 +168,7 @@ export function RegisterForm() {
             <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
           </label>
         </div>
+        <TurnstileField onTokenChange={setTurnstileToken} />
         <button
           type="submit"
           disabled={sending}

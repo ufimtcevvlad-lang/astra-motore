@@ -6,15 +6,31 @@ import {
   verifyPassword,
 } from "../../../lib/auth";
 import { appendConsentLog } from "../../../lib/consent-log";
+import { checkRateLimit, getClientIp } from "../../../lib/rate-limit";
+import { verifyTurnstileToken } from "../../../lib/turnstile";
 
 type Body = {
   login: string;
   password: string;
   rememberMe?: boolean;
   consentPersonalData?: boolean;
+  turnstileToken?: string;
 };
 
 export async function POST(request: Request) {
+  const limit = checkRateLimit({
+    request,
+    key: "auth_login",
+    windowMs: 60_000,
+    max: 12,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много попыток входа. Повторите позже." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+    );
+  }
+
   let body: Body;
   try {
     body = await request.json();
@@ -30,15 +46,17 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  const ip = getClientIp(request);
+  const humanOk = await verifyTurnstileToken(body.turnstileToken, ip);
+  if (!humanOk) {
+    return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
+  }
 
   try {
     await appendConsentLog({
       event: "auth_login_password",
       consentPersonalData: true,
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
       userAgent: request.headers.get("user-agent") || undefined,
       subject: {
         login,

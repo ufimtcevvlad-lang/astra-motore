@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { appendConsentLog } from "../../lib/consent-log";
+import { checkRateLimit, getClientIp } from "../../lib/rate-limit";
+import { verifyTurnstileToken } from "../../lib/turnstile";
 
 type OrderItem = {
   name: string;
@@ -18,6 +20,7 @@ type Body = {
   total: number;
   consentPersonalData: boolean;
   consentMarketing?: boolean;
+  turnstileToken?: string;
 };
 
 type PersistedOrder = Body & {
@@ -41,6 +44,19 @@ async function persistOrder(order: PersistedOrder) {
 }
 
 export async function POST(request: Request) {
+  const limit = checkRateLimit({
+    request,
+    key: "send_order",
+    windowMs: 10 * 60_000,
+    max: 20,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много заявок. Повторите позже." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+    );
+  }
+
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -59,6 +75,11 @@ export async function POST(request: Request) {
   }
 
   const { name, phone, comment, items, total, consentPersonalData, consentMarketing } = body;
+  const ip = getClientIp(request);
+  const humanOk = await verifyTurnstileToken(body.turnstileToken, ip);
+  if (!humanOk) {
+    return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
+  }
   if (
     !name?.trim() ||
     !phone?.trim() ||
@@ -77,10 +98,7 @@ export async function POST(request: Request) {
       event: "order_submit",
       consentPersonalData: true,
       consentMarketing: Boolean(consentMarketing),
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
       userAgent: request.headers.get("user-agent") || undefined,
       subject: {
         fullName: name,
@@ -103,10 +121,7 @@ export async function POST(request: Request) {
       consentPersonalData: Boolean(consentPersonalData),
       consentMarketing: Boolean(consentMarketing),
       userAgent: request.headers.get("user-agent") || undefined,
-      ip:
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        undefined,
+      ip,
     });
   } catch {
     // Не блокируем оформление заказа, даже если не удалось записать лог

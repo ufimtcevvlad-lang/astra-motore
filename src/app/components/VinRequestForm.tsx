@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { TurnstileField } from "./security/TurnstileField";
 
 function normalizeVin(value: string) {
   return value.toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -35,6 +36,7 @@ export function VinRequestForm() {
   const [error, setError] = useState("");
   const [consentPersonalData, setConsentPersonalData] = useState(false);
   const [consentMarketing, setConsentMarketing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -66,6 +68,10 @@ export function VinRequestForm() {
       setError("Необходимо согласие на обработку персональных данных");
       return;
     }
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Подтвердите проверку безопасности");
+      return;
+    }
 
     setSending(true);
     try {
@@ -83,6 +89,7 @@ export function VinRequestForm() {
       fd.append("comment", comment.trim());
       fd.append("consentPersonalData", String(consentPersonalData));
       fd.append("consentMarketing", String(consentMarketing));
+      fd.append("turnstileToken", turnstileToken);
       if (photo) {
         fd.append("photo", photo);
       }
@@ -460,6 +467,7 @@ export function VinRequestForm() {
             <span>Согласен(а) на получение информационных сообщений (необязательно).</span>
           </label>
         </div>
+        <TurnstileField onTokenChange={setTurnstileToken} />
 
         <button
           type="submit"

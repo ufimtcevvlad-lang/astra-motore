@@ -1,20 +1,15 @@
 import { NextResponse } from "next/server";
 import { createSmsCodeForPhone } from "../../../../lib/auth";
 import { appendConsentLog } from "../../../../lib/consent-log";
+import { checkRateLimit, getClientIp } from "../../../../lib/rate-limit";
+import { verifyTurnstileToken } from "../../../../lib/turnstile";
 
 type Body = {
   phone: string;
   debug?: boolean;
   consentPersonalData?: boolean;
+  turnstileToken?: string;
 };
-
-async function getClientIp(request: Request): Promise<string | undefined> {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    undefined
-  );
-}
 
 async function sendCodeViaSmsRu(
   phone: string,
@@ -27,7 +22,7 @@ async function sendCodeViaSmsRu(
   const sender = process.env.SMSRU_SENDER;
 
   const message = `Astra Motors. Код подтверждения: ${code}`;
-  const ip = await getClientIp(request);
+  const ip = getClientIp(request);
 
   const params = new URLSearchParams({
     api_id: apiId,
@@ -57,6 +52,19 @@ async function sendCodeViaSmsRu(
 }
 
 export async function POST(request: Request) {
+  const limit = checkRateLimit({
+    request,
+    key: "auth_sms_request",
+    windowMs: 10 * 60_000,
+    max: 5,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много запросов кода. Повторите позже." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSec) } }
+    );
+  }
+
   let body: Body;
   try {
     body = await request.json();
@@ -71,12 +79,17 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  const ip = getClientIp(request);
+  const humanOk = await verifyTurnstileToken(body.turnstileToken, ip);
+  if (!humanOk) {
+    return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
+  }
 
   try {
     await appendConsentLog({
       event: "auth_login_sms_request",
       consentPersonalData: true,
-      ip: await getClientIp(request),
+      ip,
       userAgent: request.headers.get("user-agent") || undefined,
       subject: {
         phone: body.phone,
