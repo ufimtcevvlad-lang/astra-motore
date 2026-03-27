@@ -245,14 +245,6 @@ export default function CartPage() {
   return (
     <div className="space-y-6 pb-24 lg:pb-0">
       <h1 className="text-2xl font-semibold">Корзина</h1>
-      <div className="flex flex-wrap gap-2">
-        <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
-          Проверка заказа менеджером
-        </span>
-        <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800">
-          Подбор аналогов при необходимости
-        </span>
-      </div>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
           <Widget title="Товары в корзине">
@@ -272,22 +264,6 @@ export default function CartPage() {
                     />
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold ${
-                          item.product.inStock > 20
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                            : "border-amber-200 bg-amber-50 text-amber-800"
-                        }`}
-                      >
-                        {item.product.inStock > 20 ? "В наличии" : "Мало"}
-                      </span>
-                      {/(gm|oe|ориг)/i.test(item.product.brand) ? (
-                        <span className="inline-flex rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-900">
-                          Оригинал
-                        </span>
-                      ) : null}
-                    </div>
                     <p className="line-clamp-2 text-sm font-semibold text-slate-900 sm:text-base">{item.product.name}</p>
                     <p className="text-xs text-slate-500">
                       Арт. {item.product.sku} · {item.product.brand}
@@ -677,9 +653,6 @@ export default function CartPage() {
                 >
                   {sending ? "Отправка…" : "Подтвердить заказ"}
                 </button>
-              </div>
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                <p className="inline-flex items-center gap-2"><span className="text-amber-600">✓</span>Данные заказа и контакты не передаются третьим лицам.</p>
               </div>
             </form>
           </Widget>

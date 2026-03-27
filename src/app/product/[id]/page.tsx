@@ -63,8 +63,6 @@ export default function ProductPage({
   const product = products.find((p) => String(p.id) === String(id));
   if (!product) return notFound();
 
-  const isOriginal = /gm|oe|ориг/i.test(product.brand);
-
   const cheaperAnalogs = getCheaperAnalogs(product, products);
 
   const breadcrumbLd = {
@@ -137,23 +135,9 @@ export default function ProductPage({
 
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
-              {product.category}
-            </p>
-            <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
-              В наличии
-            </span>
-            {isOriginal ? (
-              <span className="inline-flex rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-900">
-                Оригинал
-              </span>
-            ) : product.inStock > 25 ? (
-              <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800">
-                Быстрая отгрузка
-              </span>
-            ) : null}
-          </div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
+            {product.category}
+          </p>
           <div className="aspect-[4/3] relative rounded-lg bg-slate-100 overflow-hidden">
             <ProductImage
               src={product.image}
@@ -164,21 +148,6 @@ export default function ProductPage({
             />
           </div>
           <p className="text-sm text-slate-600">{product.description}</p>
-          <div className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50/80 p-3 text-xs text-slate-700 sm:grid-cols-3">
-            <p className="inline-flex items-center gap-2">
-              <span className="text-amber-600">✓</span>
-              Проверка по VIN
-            </p>
-            <p className="inline-flex items-center gap-2">
-              <span className="text-amber-600">✓</span>
-              Подтверждение перед отправкой
-            </p>
-            <p className="inline-flex items-center gap-2">
-              <span className="text-amber-600">✓</span>
-              Прозрачная гарантия
-            </p>
-          </div>
-
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
             <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
               Номер запчасти:{" "}

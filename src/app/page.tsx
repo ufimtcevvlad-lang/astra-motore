@@ -17,14 +17,6 @@ export default function HomePage() {
         <div className="absolute inset-0 opacity-[0.07] bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
         <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] items-center">
           <div className="space-y-5">
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-[11px] font-semibold text-emerald-300">
-                Проверено
-              </span>
-              <span className="inline-flex rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-[11px] font-semibold text-amber-200">
-                Оригинал и аналоги
-              </span>
-            </div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
               Екатеринбург • GM • Opel &amp; Chevrolet
             </p>
@@ -53,15 +45,15 @@ export default function HomePage() {
             </div>
             <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-300 pt-2">
               <li className="flex items-center gap-2">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-400/20 text-[11px] font-bold text-amber-300">✓</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
                 Доставка по городу
               </li>
               <li className="flex items-center gap-2">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-400/20 text-[11px] font-bold text-amber-300">✓</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
                 Корзина на сайте
               </li>
               <li className="flex items-center gap-2">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-400/20 text-[11px] font-bold text-amber-300">✓</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
                 Личный кабинет
               </li>
             </ul>
@@ -121,10 +113,7 @@ export default function HomePage() {
             key={x.t}
             className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-amber-400/50 transition"
           >
-            <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-800">
-              ✓ Быстрый ответ
-            </span>
-            <h2 className="mt-3 text-sm font-semibold text-slate-900">{x.t}</h2>
+            <h2 className="text-sm font-semibold text-slate-900">{x.t}</h2>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">{x.d}</p>
           </div>
         ))}
