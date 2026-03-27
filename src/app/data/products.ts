@@ -21,6 +21,12 @@ export type Product = {
   description: string;
   /** Ссылки на аналоги из того же каталога */
   analogIds?: string[];
+  /** Структурированные характеристики для карточки товара */
+  specs?: Array<{ label: string; value: string }>;
+  /** OEM/кросс-номера для проверки совместимости */
+  oemRefs?: string[];
+  /** Технические примечания по установке/эксплуатации */
+  technicalNotes?: string[];
 };
 
 /** Данные из «топ 100 продаж опель.xlsx» (название, артикул, кол-во, цена продажи), строки 1–30. */
@@ -37,6 +43,9 @@ const OPEL_PILOT_RAW: Array<{
   image: string;
   description: string;
   analogIds?: string[];
+  specs?: Array<{ label: string; value: string }>;
+  oemRefs?: string[];
+  technicalNotes?: string[];
 }> = [
   {
     id: "opel-1",
@@ -52,6 +61,20 @@ const OPEL_PILOT_RAW: Array<{
     description:
       "Свеча зажигания Bosch Super Plus для бензиновых двигателей GM Ecotec с резьбой M14. Обеспечивает устойчивое воспламенение и ресурс в городском цикле. Подходит для замены по регламенту ТО.",
     analogIds: ["opel-10", "opel-23"],
+    specs: [
+      { label: "Тип детали", value: "Свеча зажигания" },
+      { label: "Артикул производителя", value: "0242229699" },
+      { label: "Резьба", value: "M14" },
+      { label: "Назначение", value: "Бензиновые двигатели GM Ecotec" },
+      { label: "Бренд", value: "Bosch" },
+      { label: "Страна бренда", value: "Германия" },
+    ],
+    oemRefs: ["25193473"],
+    technicalNotes: [
+      "Рекомендуется замена комплектом по регламенту ТО.",
+      "Перед установкой проверьте применяемость по VIN/артикулу.",
+      "Момент затяжки и зазор электрода — по спецификации двигателя.",
+    ],
   },
   {
     id: "opel-2",
@@ -96,6 +119,20 @@ const OPEL_PILOT_RAW: Array<{
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
     analogIds: ["opel-9", "opel-30"],
+    specs: [
+      { label: "Тип детали", value: "Фильтр масляный" },
+      { label: "Артикул производителя", value: "E611HD442" },
+      { label: "Бренд", value: "Hengst" },
+      { label: "Страна бренда", value: "Германия" },
+      { label: "Назначение", value: "Бензиновые двигатели Ecotec" },
+      { label: "Конструктив", value: "С клапаном против слива" },
+    ],
+    oemRefs: ["E611HD122"],
+    technicalNotes: [
+      "Заменяйте одновременно с моторным маслом.",
+      "Перед заказом сверяйте артикул с установленной деталью.",
+      "После замены проверьте герметичность и давление масла.",
+    ],
   },
   {
     id: "opel-5",
@@ -488,6 +525,9 @@ export const products: Product[] = OPEL_PILOT_RAW.map((r) => ({
   image: r.image,
   description: r.description,
   analogIds: r.analogIds,
+  specs: r.specs,
+  oemRefs: r.oemRefs,
+  technicalNotes: r.technicalNotes,
 }));
 
 /** Три позиции для главной — считается один раз при загрузке модуля, без сортировки на каждый запрос */

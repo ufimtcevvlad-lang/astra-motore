@@ -163,6 +163,44 @@ export default function ProductPage({
               <span className="font-medium text-slate-800">Применяемость:</span> {product.car}
             </p>
           </div>
+
+          {product.specs && product.specs.length > 0 ? (
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-base font-semibold text-slate-900">Характеристики</h2>
+              <dl className="mt-3 divide-y divide-slate-100 text-sm">
+                {product.specs.map((item) => (
+                  <div key={`${item.label}-${item.value}`} className="grid grid-cols-1 gap-1 py-2 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-3">
+                    <dt className="text-slate-500">{item.label}</dt>
+                    <dd className="font-medium text-slate-800">{item.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
+
+          {product.oemRefs && product.oemRefs.length > 0 ? (
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-base font-semibold text-slate-900">OEM и кросс-номера</h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {product.oemRefs.map((ref) => (
+                  <span key={ref} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-mono text-slate-700">
+                    {ref}
+                  </span>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {product.technicalNotes && product.technicalNotes.length > 0 ? (
+            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+              <h2 className="text-base font-semibold text-slate-900">Технические данные и примечания</h2>
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-slate-700">
+                {product.technicalNotes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </div>
         <ProductClient product={product} />
       </div>
