@@ -2,8 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CatalogChrome } from "../../components/catalog/CatalogChrome";
-import { ProductImage } from "../../components/ProductImage";
-import { products } from "../../data/products";
+import { ProductImageGallery } from "../../components/ProductImageGallery";
+import { getProductImageUrls, products } from "../../data/products";
 import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
@@ -39,6 +39,8 @@ export async function generateMetadata({
   const title = `${product.name} — ${product.brand}`;
   const description = `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Страна: ${product.country}. Артикул: ${product.sku}.`;
   const url = `/product/${product.id}`;
+  const galleryUrls = getProductImageUrls(product);
+  const ogImages = galleryUrls.map((u) => ({ url: `${SITE_URL}${u}` }));
 
   return {
     title,
@@ -49,7 +51,7 @@ export async function generateMetadata({
       description,
       url: `${SITE_URL}${url}`,
       type: "article",
-      images: product.image ? [{ url: `${SITE_URL}${product.image}` }] : undefined,
+      images: ogImages.length > 0 ? ogImages : undefined,
     },
   };
 }
@@ -64,6 +66,7 @@ export default function ProductPage({
   if (!product) return notFound();
 
   const cheaperAnalogs = getCheaperAnalogs(product, products);
+  const imageUrls = getProductImageUrls(product);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -97,7 +100,7 @@ export default function ProductPage({
     description: product.description,
     sku: product.sku,
     brand: { "@type": "Brand", name: product.brand },
-    image: product.image ? [SITE_URL + product.image] : undefined,
+    image: imageUrls.length > 0 ? imageUrls.map((u) => SITE_URL + u) : undefined,
     offers: {
       "@type": "Offer",
       priceCurrency: "RUB",
@@ -138,15 +141,7 @@ export default function ProductPage({
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
             {product.category}
           </p>
-          <div className="aspect-[4/3] relative rounded-lg bg-slate-100 overflow-hidden">
-            <ProductImage
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
+          <ProductImageGallery alt={product.name} urls={imageUrls} />
           <p className="text-sm text-slate-600">{product.description}</p>
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
             <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
@@ -163,44 +158,6 @@ export default function ProductPage({
               <span className="font-medium text-slate-800">Применяемость:</span> {product.car}
             </p>
           </div>
-
-          {product.specs && product.specs.length > 0 ? (
-            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-base font-semibold text-slate-900">Характеристики</h2>
-              <dl className="mt-3 divide-y divide-slate-100 text-sm">
-                {product.specs.map((item) => (
-                  <div key={`${item.label}-${item.value}`} className="grid grid-cols-1 gap-1 py-2 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-3">
-                    <dt className="text-slate-500">{item.label}</dt>
-                    <dd className="font-medium text-slate-800">{item.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
-
-          {product.oemRefs && product.oemRefs.length > 0 ? (
-            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-base font-semibold text-slate-900">OEM и кросс-номера</h2>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {product.oemRefs.map((ref) => (
-                  <span key={ref} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-mono text-slate-700">
-                    {ref}
-                  </span>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {product.technicalNotes && product.technicalNotes.length > 0 ? (
-            <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-              <h2 className="text-base font-semibold text-slate-900">Технические данные и примечания</h2>
-              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-slate-700">
-                {product.technicalNotes.map((note) => (
-                  <li key={note}>{note}</li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
         </div>
         <ProductClient product={product} />
       </div>

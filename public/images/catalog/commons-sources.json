@@ -1,12 +1,5 @@
 [
   {
-    "id": "opel-1",
-    "file": "/images/catalog/opel-1.jpg",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Spark_plug_2.jpg/960px-Spark_plug_2.jpg",
-    "status": "ok",
-    "bytes": 227424
-  },
-  {
     "id": "opel-2",
     "file": "/images/catalog/opel-2.jpg",
     "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Injector.jpg/960px-Injector.jpg",

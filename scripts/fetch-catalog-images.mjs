@@ -15,7 +15,6 @@ const OUT = path.join(ROOT, "public", "images", "catalog");
 const UA = "AstraMotorsBot/1.0 (https://astramotors.shop; catalog image sync)";
 
 const FILES = [
-  ["opel-1.jpg", "https://upload.wikimedia.org/wikipedia/commons/7/7c/Spark_plug_2.jpg"],
   ["opel-2.jpg", "https://upload.wikimedia.org/wikipedia/commons/5/5c/Injector.jpg"],
   [
     "opel-3456-rings.jpg",

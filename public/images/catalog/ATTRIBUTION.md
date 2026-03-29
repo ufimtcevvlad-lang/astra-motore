@@ -12,7 +12,7 @@ npm run catalog:images
 
 | Файл | Источник (Commons) |
 |------|-------------------|
-| `opel-1.jpg` | [Spark plug 2.jpg](https://commons.wikimedia.org/wiki/File:Spark_plug_2.jpg) |
+| `opel-1/*.png` | Собственные фото товара (арт. 0242229699), не Commons |
 | `opel-2.jpg` | [Injector.jpg](https://commons.wikimedia.org/wiki/File:Injector.jpg) |
 | `opel-3.jpg` … `opel-6.jpg`, `opel-19.jpg`, `opel-20.jpg` | [O-rings (toric joints) with tongue.jpg](https://commons.wikimedia.org/wiki/File:O-rings_(toric_joints)_with_tongue.jpg) |
 | `opel-4.jpg` | [Bosch Oil Filter.JPG](https://commons.wikimedia.org/wiki/File:Bosch_Oil_Filter.JPG) |

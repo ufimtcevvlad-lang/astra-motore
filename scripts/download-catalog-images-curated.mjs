@@ -17,10 +17,6 @@ const UA = "AstraMotorsCatalog/1.0 (curated Wikimedia download; astramotors.shop
 /** Один URL → несколько id (одинаковое фото для похожих позиций витрины) */
 const GROUPS = [
   {
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Spark_plug_2.jpg/960px-Spark_plug_2.jpg",
-    ids: ["opel-1"],
-  },
-  {
     url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Injector.jpg/960px-Injector.jpg",
     ids: ["opel-2"],
   },
