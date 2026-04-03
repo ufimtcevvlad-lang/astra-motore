@@ -71,9 +71,36 @@ def extract_server_blocks(text: str) -> list[tuple[int, int, str]]:
     return blocks
 
 
+def extract_first_location_slash_block(server_block: str) -> str | None:
+    """Первый блок `location / { ... }` целиком (не regex)."""
+    m = re.search(r"\n\s*location\s*/\s*\{", server_block)
+    if not m:
+        return None
+    b = server_block.find("{", m.start())
+    depth = 0
+    k = b
+    while k < len(server_block):
+        if server_block[k] == "{":
+            depth += 1
+        elif server_block[k] == "}":
+            depth -= 1
+            if depth == 0:
+                return server_block[m.start() : k + 1]
+        k += 1
+    return None
+
+
 def has_proxy_to_next(block: str) -> bool:
-    """Есть ли уже прокси именно на Next на этом сервере."""
+    """Есть ли proxy_pass на Next где угодно в server {} (в т.ч. в named location)."""
     return bool(RE_PROXY_PASS_NEXT.search(block))
+
+
+def location_slash_proxies_next(block: str) -> bool:
+    """Есть ли в первом `location /` proxy_pass на 127.0.0.1:3000 или localhost:3000."""
+    seg = extract_first_location_slash_block(block)
+    if not seg:
+        return False
+    return bool(RE_PROXY_PASS_NEXT.search(seg))
 
 
 def needs_proxy(block: str) -> bool:
@@ -82,7 +109,7 @@ def needs_proxy(block: str) -> bool:
     low = block.lower()
     if "443" not in block and "ssl" not in low:
         return False
-    if has_proxy_to_next(block):
+    if location_slash_proxies_next(block):
         return False
     return True
 
@@ -146,8 +173,12 @@ def show_gmshop66(path: Path, text: str) -> None:
             continue
         has443 = "443" in block
         sslish = "ssl" in block.lower()
-        prox = has_proxy_to_next(block)
-        print(f"  server block #{idx}: listen 443-ish={has443 or sslish}, proxy->3000={prox}")
+        prox_slash = location_slash_proxies_next(block)
+        prox_any = has_proxy_to_next(block)
+        print(
+            f"  server block #{idx}: listen 443-ish={has443 or sslish}, "
+            f"proxy в location / ->3000={prox_slash}, proxy где-либо={prox_any}",
+        )
         print("  ---")
         for line in block.splitlines()[:25]:
             print(f"  {line}")
@@ -182,6 +213,26 @@ def inspect_merged_config() -> int:
         print("В объединённом конфиге нет строки «gmshop66». Проверьте server_name в файлах sites-enabled.")
         return 0
 
+    https_dup = [
+        (i, b)
+        for i, b in enumerate(blocks, 1)
+        if "gmshop66" in b.lower()
+        and re.search(r"^\s*listen\s+[^\n;]*\b443\b", b, re.MULTILINE)
+    ]
+    if len(https_dup) > 1:
+        print(
+            "ВНИМАНИЕ: в конфиге несколько server{} с listen 443 и упоминанием gmshop66. "
+            "При одинаковом server_name nginx выбирает первый подходящий блок — "
+            "проверьте порядок include и дубликаты.",
+        )
+        for i, b in https_dup:
+            print(
+                f"  HTTPS+gmshop66: server #{i}, "
+                f"proxy в location /={location_slash_proxies_next(b)}, "
+                f"proxy где-либо={has_proxy_to_next(b)}",
+            )
+        print()
+
     for idx, (_start, _end, block) in hits:
         sn = [
             ln
@@ -190,7 +241,8 @@ def inspect_merged_config() -> int:
         ]
         listen = [ln for ln in block.splitlines() if re.match(r"^\s*listen\b", ln)]
         default_srv = "default_server" in block
-        prox = has_proxy_to_next(block)
+        prox_slash = location_slash_proxies_next(block)
+        prox_any = has_proxy_to_next(block)
         apex_ok = False
         www_present = False
         for ln in sn:
@@ -213,13 +265,33 @@ def inspect_merged_config() -> int:
             print(ln)
         if default_srv:
             print("(в блоке есть default_server)")
-        print(f"proxy_pass -> :3000 (127.0.0.1|localhost): {prox}")
+        print(
+            f"proxy в первом location / -> :3000: {prox_slash} "
+            f"(proxy_pass где-либо в server: {prox_any})",
+        )
+        loc_slash = extract_first_location_slash_block(block)
+        if loc_slash:
+            print("--- первый location / (важно для GET /) ---")
+            for ln in loc_slash.splitlines()[:25]:
+                print(ln)
+            if loc_slash.count("\n") > 25:
+                print("...")
+            low_loc = loc_slash.lower()
+            if "try_files" in low_loc and not RE_PROXY_PASS_NEXT.search(loc_slash):
+                print(
+                    "ПРОБЛЕМА: в location / есть try_files, но нет proxy_pass на :3000 — "
+                    "запрос к / часто заканчивается =404 в nginx, даже если proxy есть в другом location.",
+                )
+            if re.search(r"location\s*=\s*/", block):
+                print("ПРОБЛЕМА: есть location = / — он сильнее обычного location / и может отдавать 404.")
+        else:
+            print("(нет явного location / — смотрите include и другие location)")
         if www_only:
             print(
                 "ВНИМАНИЕ: в server_name нет gmshop66.ru (только www?). "
                 "Запрос на https://gmshop66.ru/ может уйти в ДРУГОЙ server → 404.",
             )
-        if not prox:
+        if not prox_slash:
             print("--- фрагмент блока (ищите location / и proxy_pass) ---")
             for ln in block.splitlines()[:45]:
                 print(ln)
