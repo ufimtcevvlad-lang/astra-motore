@@ -24,6 +24,26 @@ if [[ ! -d .git ]]; then
 fi
 git fetch origin
 git pull origin main
+
+# ID Яндекс.Метрики (счётчик 108384071): дописываем в .env.local только если ключа ещё нет.
+METRIKA_ID="108384071"
+touch .env.local
+for key in NEXT_PUBLIC_YANDEX_METRIKA_ID YANDEX_METRIKA_COUNTER_ID; do
+  if ! grep -q "^${key}=" .env.local; then
+    echo "${key}=${METRIKA_ID}" >> .env.local
+    echo "→ Добавлено в .env.local: ${key}=${METRIKA_ID}"
+  fi
+done
+# Замена устаревшего счётчика на сервере (если был старый ID)
+if grep -qE '^NEXT_PUBLIC_YANDEX_METRIKA_ID=107737371' .env.local ||
+   grep -qE '^YANDEX_METRIKA_COUNTER_ID=107737371' .env.local; then
+  sed -i.bak-metrika \
+    -e 's/^NEXT_PUBLIC_YANDEX_METRIKA_ID=107737371/NEXT_PUBLIC_YANDEX_METRIKA_ID='"${METRIKA_ID}"'/' \
+    -e 's/^YANDEX_METRIKA_COUNTER_ID=107737371/YANDEX_METRIKA_COUNTER_ID='"${METRIKA_ID}"'/' \
+    .env.local
+  echo "→ Обновлён старый ID Метрики 107737371 → ${METRIKA_ID} в .env.local"
+fi
+
 if [[ -f package-lock.json ]]; then
   npm ci
 else
