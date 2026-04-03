@@ -866,10 +866,15 @@ const OPEL_PILOT_RAW: Array<{
     brand: "Sibtek",
     country: "Китай / ЕС",
     category: "Салонные фильтры",
-    car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    car: "Opel Astra G, Astra H, Zafira A/B и др. — уточняйте по VIN",
+    image: "/images/catalog/opel-56/01-packaging-label.png",
+    images: [
+      "/images/catalog/opel-56/01-packaging-label.png",
+      "/images/catalog/opel-56/02-overview.png",
+      "/images/catalog/opel-56/03-studio.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул AC0421C. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Угольный салонный фильтр SIBTEK (маркировка на упаковке AC21C, в выгрузке — AC0421C). Типичное применение: Opel Astra G/H, Zafira A/B; кроссы OEM вроде 6808607, 1718046, 13175554 (GM). Меняйте 1–2 раза в год или при запахе и слабом потоке воздуха. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-57",
