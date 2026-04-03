@@ -542,37 +542,44 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-32/01-box-mopar-25192230.png",
+    images: [
+      "/images/catalog/opel-32/01-box-mopar-25192230.png",
+      "/images/catalog/opel-32/02-housing-pierburg-gm25192230.png",
+      "/images/catalog/opel-32/03-housing-gm55575062.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 25192230-1. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Пластиковый корпус/коллектор термостата (в комплектации без самого термостата — сверяйте с каталогом). На детали встречаются номера GM **25192230** (в т.ч. поставка Pierburg) и **55575062**. Меняют при трещинах, подсосах ОЖ и некорректной работе системы охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-33",
-    name: "Прокладка маслонасоса Z18XER, Z16LET/LEL/LER/XEP/XE1/XE/XEL",
+    name: "Прокладка крышки / плиты GM 24405911 (COVR PLAT GASKET)",
     sku: "24405911",
     qty: 121,
     priceRaw: 2973.92,
-    brand: "—",
+    brand: "GM OE",
     country: "Уточняется",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-33/01-packaging.png",
+    images: ["/images/catalog/opel-33/01-packaging.png"],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 24405911. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Металлическая прокладка с резиновыми уплотнениями, GM **24405911** (на упаковке Mopar — COVR PLAT GASKET). Меняется при снятии узла и при течи; повторная установка старой прокладки нежелательна. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-34",
-    name: "Прокладка термостата Z16XER, Z18XER",
+    name: "Кольца уплотнения выхода ОЖ GM 55351449 (5 шт.)",
     sku: "55351449",
     qty: 118,
     priceRaw: 420.59,
-    brand: "—",
-    country: "Уточняется",
+    brand: "GM OE",
+    country: "Корея",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-34/01-packaging.png",
+    images: ["/images/catalog/opel-34/01-packaging.png"],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55351449. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Комплект из **5** резиновых колец (SEAL, WATER OUTLET) GM **55351449**. Меняются при замене патрубков/фланцев охлаждения или при течи в месте посадки. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-35",
@@ -584,9 +591,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-35/01-box.png",
+    images: ["/images/catalog/opel-35/01-box.png"],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 056900. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
   },
   {
     id: "opel-36",
@@ -687,9 +695,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-42/01-box-label.png",
+    images: [
+      "/images/catalog/opel-42/01-box-label.png",
+      "/images/catalog/opel-42/02-seal-face.png",
+      "/images/catalog/opel-42/03-seal-angle.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 702269. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На сальнике может быть маркировка размеров и внутренних кодов производителя. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-43",
@@ -729,9 +742,15 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-45/01-box.png",
+    images: [
+      "/images/catalog/opel-45/01-box.png",
+      "/images/catalog/opel-45/02-side-label.png",
+      "/images/catalog/opel-45/03-pulley-face.png",
+      "/images/catalog/opel-45/04-impeller.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 707152210. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Водяной насос Pierburg **7.07152.21.0** (в выгрузке — 707152210). На корпусе может быть дополнительная маркировка (например 24N153). Меняют при подшипниковом гуле, люфте, подтеках ОЖ и при плановом ТО по регламенту. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-46",
@@ -757,9 +776,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-47/01-assembly.png",
+    images: [
+      "/images/catalog/opel-47/01-assembly.png",
+      "/images/catalog/opel-47/02-assembly-alt.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 1338372. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Термостат в алюминиевом корпусе с электрическим разъёмом (картируемый/с подогревом). На клапане типична маркировка открытия **105 °C**. Артикул в выгрузке — 1338372. Меняют при перегреве, долгом прогреве, ошибках по температуре. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-48",
@@ -771,9 +794,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-48/01-box.png",
+    images: ["/images/catalog/opel-48/01-box.png"],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул TM41105. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Термостат MAHLE **BEHR TM 41 105** для Opel/Vauxhall (в выгрузке — TM41105). На коробке: референс 72362970, качество OE. Меняют при неисправности системы охлаждения по регламенту или диагностике. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-49",
@@ -1507,7 +1531,25 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/_pending.jpg",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 773410. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
-  }
+  },
+  {
+    id: "opel-100",
+    name: "Фильтр масляный FILTRON OP 575",
+    sku: "OP575",
+    qty: 75,
+    priceRaw: 485.0,
+    brand: "Filtron",
+    country: "Польша",
+    category: "Масляные фильтры",
+    car: "Honda/Acura и др. по OE 15400-RBA-F01 — уточняйте по VIN",
+    image: "/images/catalog/opel-100/01-box.png",
+    images: [
+      "/images/catalog/opel-100/01-box.png",
+      "/images/catalog/opel-100/02-filter.png",
+    ],
+    description:
+      "Масляный фильтр FILTRON **OP 575**. Кроссы на упаковке: OE **15400-RBA-F01**, MANN **W 610/3**, **W 610/6**, MAHLE **OC 495**, **OC 521**, PURFLUX **LS287**, **LS350**, FRAM **PH5317**. Перед заказом сверяйте номер с установленным фильтром и применение по VIN.",
+  },
 ];
 
 export const products: Product[] = OPEL_PILOT_RAW.map((r) => ({
