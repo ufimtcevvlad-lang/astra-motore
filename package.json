@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "metrika:daily": "node scripts/metrika-daily.mjs",
     "bot:telegram": "node scripts/telegram-bot.mjs",
     "logs:rotate": "node scripts/rotate-data-logs.mjs",
