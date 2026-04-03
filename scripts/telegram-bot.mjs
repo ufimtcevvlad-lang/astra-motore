@@ -14,7 +14,7 @@ loadDotEnvLocalFromCwd();
 const BOT_TOKEN = requireEnv("TELEGRAM_BOT_TOKEN");
 const ADMIN_CHAT_ID = Number(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID);
 const METRIKA_TOKEN = requireEnv("YANDEX_METRIKA_OAUTH_TOKEN");
-const COUNTER_ID = process.env.YANDEX_METRIKA_COUNTER_ID || "107737371";
+const COUNTER_ID = process.env.YANDEX_METRIKA_COUNTER_ID || "108384071";
 const TZ = process.env.REPORT_TIMEZONE || "Asia/Yekaterinburg";
 
 const ORDERS_FILE = path.join(process.cwd(), "data", "orders.ndjson");

@@ -47,7 +47,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `YANDEX_METRIKA_OAUTH_TOKEN`
-- `YANDEX_METRIKA_COUNTER_ID` (по умолчанию `107737371`)
+- `YANDEX_METRIKA_COUNTER_ID` (по умолчанию `108384071`)
 
 ### Получить OAuth-токен Яндекс.Метрики
 

@@ -33,7 +33,7 @@ async function main() {
   const token = requireEnv("TELEGRAM_BOT_TOKEN");
   const chatId = requireEnv("TELEGRAM_CHAT_ID");
   const oauthToken = requireEnv("YANDEX_METRIKA_OAUTH_TOKEN");
-  const counterId = process.env.YANDEX_METRIKA_COUNTER_ID || "107737371";
+  const counterId = process.env.YANDEX_METRIKA_COUNTER_ID || "108384071";
 
   const tz = process.env.REPORT_TIMEZONE || "Europe/Moscow";
   const date = process.env.REPORT_DATE || getYesterdayDateString(tz);
