@@ -292,7 +292,8 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet Ecotec (см. наименование)",
-    image: "/images/catalog/opel-16.jpg",
+    image: "/images/catalog/opel-16/01-packaging.png",
+    images: ["/images/catalog/opel-16/01-packaging.png"],
     description:
       "Прокладка клапанной крышки Elring для ряда бензиновых Ecotec. Меняется при течи масла сверху двигателя или при снятии крышки для регулировки клапанов.",
   },
@@ -368,9 +369,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Воздушные фильтры",
     car: "Opel Astra J, Chevrolet Cruze (A14XEL, A14XER, A16XER)",
-    image: "/images/catalog/opel-4.jpg",
+    image: "/images/catalog/opel-21/01-packaging-label.png",
+    images: [
+      "/images/catalog/opel-21/01-packaging-label.png",
+      "/images/catalog/opel-21/02-side-brand.png",
+      "/images/catalog/opel-21/03-top.png",
+    ],
     description:
-      "Воздушный фильтр для бензиновых турбо и атмосферных моторов семейства Ecotec на Astra J и Cruze. Меняется по регламенту ТО или при загрязнении — засор снижает отклик педали и расход топлива.",
+      "Воздушный фильтр SIBTEK (на упаковке — AF 109, в выгрузке — AF01109). Для бензиновых Ecotec на Astra J и Cruze; на этикетке также указаны Orlando, Opel/Vauxhall Astra J GTC, Zotye T600 и кроссы OEM/аналогов (MANN C 26106, BOSCH F 026 400 385 и др.). Меняется по регламенту ТО или при загрязнении. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-22",
@@ -431,9 +437,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Chevrolet Aveo T300, Cruze, Cobalt; Opel Astra J, Insignia, Mokka",
-    image: "/images/catalog/opel-4.jpg",
+    image: "/images/catalog/opel-25/01-packaging-label.png",
+    images: [
+      "/images/catalog/opel-25/01-packaging-label.png",
+      "/images/catalog/opel-25/02-side-airflow.png",
+      "/images/catalog/opel-25/03-pleats.png",
+    ],
     description:
-      "Салонный фильтр для перечисленных моделей. Рекомендуется менять 1–2 раза в год или при запахе и слабом потоке воздуха отопителя.",
+      "Салонный фильтр SIBTEK (на упаковке — AC 54, в выгрузке — AC0454). Типичное применение: Chevrolet Cruze, Orlando, Trax, Malibu, Spark, Tracker и др.; Opel Astra J, Insignia, Mokka, Meriva B, Zafira C и др.; на этикетке также кроссы вроде MANN CU 2442, FRAM CF10774, GM 13271190. Меняйте 1–2 раза в год или при запахе и слабом потоке воздуха. Установка по направлению потока (AIR FLOW на корпусе). Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-26",
@@ -1423,9 +1434,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "ЕС",
     category: "Подвеска",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-95/01-part.png",
+    images: [
+      "/images/catalog/opel-95/01-part.png",
+      "/images/catalog/opel-95/02-box.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул TC2279. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Стойка (тяга) стабилизатора Delphi Technologies TC2279 для линейки подвески и рулевого Chevrolet Cruze и Opel Astra J и сопоставимых моделей. Меняют при стуке в передней подвеске на неровностях, люфте шарниров или повреждённых пыльниках. Перед заказом сверяйте сторону (лево/право) и применение по VIN или каталогу.",
   },
   {
     id: "opel-96",
