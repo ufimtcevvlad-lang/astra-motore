@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Подбор запчастей Chevrolet в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-chevrolet" },
   openGraph: {
-    title: "Запчасти Chevrolet в Екатеринбурге — Astra Motors",
+    title: "Запчасти Chevrolet в Екатеринбурге — GM Shop 66",
     description:
       "Оригинал и аналоги запчастей Chevrolet. Екатеринбург.",
     url: `${SITE_URL}/zapchasti-chevrolet`,

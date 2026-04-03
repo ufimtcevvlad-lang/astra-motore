@@ -6,7 +6,7 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
 import { MetrikaDeferred } from "./components/MetrikaDeferred";
-import { SITE_URL } from "./lib/site";
+import { SITE_BRAND, SITE_URL } from "./lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,11 +26,11 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
   },
   title: {
-    default: "Astra Motors — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге",
-    template: "%s — Astra Motors",
+    default: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге`,
+    template: `%s — ${SITE_BRAND}`,
   },
   description:
-    "Магазин Astra Motors: автозапчасти GM — Opel и Chevrolet. Оригинал и качественные аналоги, доставка по Екатеринбургу.",
+    `Магазин ${SITE_BRAND}: автозапчасти GM — Opel и Chevrolet. Оригинал и качественные аналоги, доставка по Екатеринбургу.`,
   robots: {
     index: true,
     follow: true,
@@ -43,16 +43,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
+    title: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet)`,
     description:
       "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
     url: SITE_URL,
-    siteName: "Astra Motors",
+    siteName: SITE_BRAND,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Astra Motors — автозапчасти GM (Opel, Chevrolet)",
+    title: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet)`,
     description:
       "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
   },
@@ -69,7 +69,7 @@ export default function RootLayout({
   const organizationLd = {
     "@context": "https://schema.org",
     "@type": "AutoPartsStore",
-    name: "Astra Motors",
+    name: SITE_BRAND,
     url: SITE_URL,
     telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
     areaServed: "Екатеринбург",
@@ -98,7 +98,7 @@ export default function RootLayout({
   const websiteLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Astra Motors",
+    name: SITE_BRAND,
     url: SITE_URL,
   };
 

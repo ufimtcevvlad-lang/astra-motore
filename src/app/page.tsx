@@ -6,7 +6,7 @@ import { HOME_FEATURED_PRODUCTS } from "./data/products";
 export const metadata: Metadata = {
   title: "Главная",
   description:
-    "Astra Motors — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.",
+    "GM Shop 66 — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.",
   alternates: { canonical: "/" },
 };
 

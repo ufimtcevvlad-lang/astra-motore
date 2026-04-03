@@ -7,7 +7,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Гарантия",
-  description: "Положение о гарантии на запчасти Astra Motors.",
+  description: "Положение о гарантии на запчасти GM Shop 66.",
   alternates: { canonical: "/warranty" },
 };
 
@@ -33,7 +33,7 @@ export default function WarrantyPage() {
           Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.warrantyPolicy}.
         </p>
         <p>
-          Настоящее Положение определяет условия гарантии на товары, приобретенные в интернет-магазине Astra Motors,
+          Настоящее Положение определяет условия гарантии на товары, приобретенные в интернет-магазине GM Shop 66,
           и порядок рассмотрения гарантийных обращений.
         </p>
         <h2 className="text-lg font-semibold text-slate-900">1. Общие гарантийные условия</h2>

@@ -24,7 +24,7 @@ const MAP_LAT = 56.850673;
 export const metadata: Metadata = {
   title: "Контакты",
   description:
-    "Контакты Astra Motors: телефон, адрес и режим работы. Запчасти GM (Opel, Chevrolet), заказ и консультация.",
+    "Контакты GM Shop 66: телефон, адрес и режим работы. Запчасти GM (Opel, Chevrolet), заказ и консультация.",
   alternates: { canonical: "/contacts" },
 };
 
@@ -34,7 +34,7 @@ export default function ContactsPage() {
     "@type": "ContactPage",
     mainEntity: {
       "@type": "Organization",
-      name: "Astra Motors",
+      name: "GM Shop 66",
       url: SITE_URL,
       sameAs: [YANDEX_ORG_PROFILE, YANDEX_MAPS_ORG_PAGE],
       telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
@@ -88,7 +88,7 @@ export default function ContactsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointLd) }}
       />
       <h1 className="text-2xl font-bold text-amber-900">Контакты</h1>
-      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">Astra Motors</span> — ответим и подберём запчасти.</p>
+      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">GM Shop 66</span> — ответим и подберём запчасти.</p>
 
       <div className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-4">
         <div>
@@ -142,7 +142,7 @@ export default function ContactsPage() {
         </p>
         <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           <iframe
-            title="Astra Motors на Яндекс.Картах"
+            title="GM Shop 66 на Яндекс.Картах"
             src={YANDEX_MAP_EMBED_SRC}
             className="aspect-[16/10] min-h-[220px] w-full border-0 sm:min-h-[280px] sm:aspect-[16/9]"
             loading="lazy"

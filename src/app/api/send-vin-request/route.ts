@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { SITE_BRAND } from "../../lib/site";
 import { appendConsentLog } from "../../lib/consent-log";
 import { checkRateLimit, getClientIp } from "../../lib/rate-limit";
 import { verifyTurnstileToken } from "../../lib/turnstile";
@@ -238,7 +239,7 @@ export async function POST(request: Request) {
   }
 
   const lines: string[] = [
-    "🧾 <b>Новый VIN-запрос — Astra Motors</b>",
+    `🧾 <b>Новый VIN-запрос — ${SITE_BRAND}</b>`,
     "",
     "👤 <b>Имя:</b> " + escapeTelegram(payload.name),
     "📧 <b>Email:</b> " + escapeTelegram(payload.email),

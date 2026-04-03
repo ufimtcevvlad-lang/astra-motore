@@ -7,7 +7,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Возврат",
-  description: "Условия возврата запчастей Astra Motors.",
+  description: "Условия возврата запчастей GM Shop 66.",
   alternates: { canonical: "/returns" },
 };
 
@@ -34,7 +34,7 @@ export default function ReturnsPage() {
         </p>
         <p>
           Настоящее Положение регулирует порядок возврата, обмена, рассмотрения претензий и возврата денежных средств
-          по товарам, приобретенным дистанционным способом в интернет-магазине Astra Motors.
+          по товарам, приобретенным дистанционным способом в интернет-магазине GM Shop 66.
         </p>
 
         <h2 className="text-lg font-semibold text-slate-900">1. Общие условия</h2>

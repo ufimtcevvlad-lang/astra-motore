@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SITE_BRAND } from "../lib/site";
 
 export function Footer() {
   return (
@@ -6,7 +7,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-medium">
-            © 2013-2026 <span className="text-white font-semibold">Astra Motors</span>
+            © 2013-2026 <span className="text-white font-semibold">{SITE_BRAND}</span>
           </p>
           <nav className="flex flex-wrap gap-4">
             <div className="text-sm font-semibold text-slate-400 transition">

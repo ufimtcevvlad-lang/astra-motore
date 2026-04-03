@@ -7,7 +7,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Согласие на обработку персональных данных",
-  description: "Форма согласия на обработку персональных данных пользователей сайта Astra Motors.",
+  description: "Форма согласия на обработку персональных данных пользователей сайта GM Shop 66.",
   alternates: { canonical: "/consent-personal-data" },
 };
 
@@ -41,7 +41,7 @@ export default function ConsentPersonalDataPage() {
           Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.consentPersonalData}.
         </p>
         <p>
-          Настоящим, оставляя данные на сайте Astra Motors, я свободно, своей волей и в своем интересе даю согласие
+          Настоящим, оставляя данные на сайте GM Shop 66, я свободно, своей волей и в своем интересе даю согласие
           Индивидуальному предпринимателю Невьянцеву Антону Александровичу на обработку моих персональных данных на
           следующих условиях:
         </p>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { SITE_BRAND } from "../../lib/site";
 import { appendConsentLog } from "../../lib/consent-log";
 import { checkRateLimit, getClientIp } from "../../lib/rate-limit";
 import { verifyTurnstileToken } from "../../lib/turnstile";
@@ -163,7 +164,7 @@ export async function POST(request: Request) {
   }
 
   const lines: string[] = [
-    "🛒 <b>Новый заказ — Astra Motors</b>",
+    `🛒 <b>Новый заказ — ${SITE_BRAND}</b>`,
     "",
     "👤 <b>Имя:</b> " + escapeTelegram(name.trim()),
     "📞 <b>Телефон:</b> " + escapeTelegram(phone.trim()),

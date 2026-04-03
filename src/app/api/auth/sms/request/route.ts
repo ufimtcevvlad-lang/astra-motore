@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SITE_BRAND } from "../../../../lib/site";
 import { createSmsCodeForPhone } from "../../../../lib/auth";
 import { appendConsentLog } from "../../../../lib/consent-log";
 import { checkRateLimit, getClientIp } from "../../../../lib/rate-limit";
@@ -21,7 +22,7 @@ async function sendCodeViaSmsRu(
   if (!apiId) throw new Error("SMS.ru не настроен: задайте SMSRU_API_ID");
   const sender = process.env.SMSRU_SENDER;
 
-  const message = `Astra Motors. Код подтверждения: ${code}`;
+  const message = `${SITE_BRAND}. Код подтверждения: ${code}`;
   const ip = getClientIp(request);
 
   const params = new URLSearchParams({

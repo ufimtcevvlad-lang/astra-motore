@@ -7,10 +7,10 @@ import { SITE_URL } from "../lib/site";
 export const metadata: Metadata = {
   title: "Каталог запчастей",
   description:
-    "Каталог Astra Motors: автозапчасти GM — Opel и Chevrolet. Поиск по артикулу, группы и витрина по типу детали. Оригинал и аналоги.",
+    "Каталог GM Shop 66: автозапчасти GM — Opel и Chevrolet. Поиск по артикулу, группы и витрина по типу детали. Оригинал и аналоги.",
   alternates: { canonical: "/catalog" },
   openGraph: {
-    title: "Каталог запчастей — Astra Motors",
+    title: "Каталог запчастей — GM Shop 66",
     description: "Opel и Chevrolet: фильтры, свечи, расходники и другое. Екатеринбург.",
     url: `${SITE_URL}/catalog`,
     type: "website",

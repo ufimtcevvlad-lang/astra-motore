@@ -5,9 +5,9 @@ import { SimpleDoc } from "../components/legal/SimpleDoc";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
-  title: "О компании Astra Motors",
+  title: "О компании GM Shop 66",
   description:
-    "Astra Motors — магазин автозапчастей для Opel и Chevrolet в Екатеринбурге. Подбор по VIN, оригинальные детали и качественные аналоги, помощь с выбором и заказом.",
+    "GM Shop 66 — магазин автозапчастей для Opel и Chevrolet в Екатеринбурге. Подбор по VIN, оригинальные детали и качественные аналоги, помощь с выбором и заказом.",
   alternates: { canonical: "/about" },
 };
 
@@ -31,9 +31,9 @@ export default function AboutPage() {
         crumbs={[{ label: "Главная", href: "/" }, { label: "О компании" }]}
         title="О компании"
       />
-      <SimpleDoc title="Astra Motors">
+      <SimpleDoc title="GM Shop 66">
         <p>
-          <strong>Astra Motors</strong> — специализированный магазин автозапчастей для автомобилей Opel и Chevrolet в
+          <strong>GM Shop 66</strong> — специализированный магазин автозапчастей для автомобилей Opel и Chevrolet в
           Екатеринбурге. Мы помогаем быстро и точно подобрать детали для регулярного обслуживания и ремонта: от
           расходников до узлов ходовой части, двигателя, системы охлаждения, тормозной системы и электрики.
         </p>
@@ -42,7 +42,7 @@ export default function AboutPage() {
           используем данные производителя, артикулы, идентификационный номер автомобиля и технические параметры авто,
           чтобы снизить риск ошибки при покупке.
         </p>
-        <h2 className="text-lg font-semibold text-slate-900">Что вы получаете в Astra Motors</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Что вы получаете в GM Shop 66</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>подбор автозапчастей Opel и Chevrolet по идентификационному номеру автомобиля и артикулу;</li>
           <li>оригинальные детали и проверенные аналоги в разных ценовых сегментах;</li>

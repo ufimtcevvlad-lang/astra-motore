@@ -8,6 +8,7 @@ import {
   HeaderSearchAutocomplete,
   HeaderSearchAutocompleteFallback,
 } from "./search/HeaderSearchAutocomplete";
+import { SITE_BRAND } from "../lib/site";
 import { useCart } from "./CartContext";
 
 type MeResponse = {
@@ -137,7 +138,7 @@ export function Header() {
           <Link
             href="/"
             className="group flex min-w-0 flex-shrink-0 items-center overflow-visible rounded-lg py-1 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A]"
-            aria-label="Astra Motors — на главную"
+            aria-label={`${SITE_BRAND} — на главную`}
           >
             <BrandLogo />
           </Link>

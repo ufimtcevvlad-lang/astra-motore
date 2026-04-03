@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Подбор запчастей Opel в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-opel" },
   openGraph: {
-    title: "Запчасти Opel в Екатеринбурге — Astra Motors",
+    title: "Запчасти Opel в Екатеринбурге — GM Shop 66",
     description:
       "Оригинал и аналоги запчастей Opel. Екатеринбург.",
     url: `${SITE_URL}/zapchasti-opel`,

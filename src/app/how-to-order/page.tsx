@@ -5,7 +5,7 @@ import { SITE_URL } from "../lib/site";
 export const metadata: Metadata = {
   title: "Как заказать",
   description:
-    "Как заказать запчасти в Astra Motors: выбор товара, оформление корзины, подтверждение менеджером. Оригинал и аналоги.",
+    "Как заказать запчасти в GM Shop 66: выбор товара, оформление корзины, подтверждение менеджером. Оригинал и аналоги.",
   alternates: { canonical: "/how-to-order" },
 };
 
@@ -26,7 +26,7 @@ export default function HowToOrderPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <h1 className="text-2xl font-bold text-amber-900">Как заказать в Astra Motors</h1>
+      <h1 className="text-2xl font-bold text-amber-900">Как заказать в GM Shop 66</h1>
       <p className="text-slate-600">Несколько простых шагов — и заказ у вас.</p>
 
       <div className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-6">
