@@ -15,7 +15,8 @@ SSH_OPTS="${SSH_OPTS:--o BatchMode=yes -o ConnectTimeout=15}"
 echo "→ SSH: $SSH_HOST"
 echo "→ Каталог: $REMOTE_DIR"
 
-ssh $SSH_OPTS "$SSH_HOST" bash -s <<REMOTE
+# Одинарные кавычки у delimiter — иначе локальный bash подставит ${key}/${METRIKA_ID} до ssh (set -u → ошибка).
+ssh $SSH_OPTS "$SSH_HOST" env REMOTE_DIR="$REMOTE_DIR" bash -s <<'REMOTE'
 set -euo pipefail
 cd "$REMOTE_DIR"
 if [[ ! -d .git ]]; then
