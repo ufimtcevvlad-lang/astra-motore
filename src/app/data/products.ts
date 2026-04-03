@@ -591,12 +591,8 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-42/01-box-label.png",
-    images: [
-      "/images/catalog/opel-42/01-box-label.png",
-      "/images/catalog/opel-42/02-seal-face.png",
-      "/images/catalog/opel-42/03-seal-angle.png",
-    ],
+    image: "/images/catalog/opel-35/01-box.png",
+    images: ["/images/catalog/opel-35/01-box.png"],
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
   },
@@ -699,8 +695,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-35/01-box.png",
-    images: ["/images/catalog/opel-35/01-box.png"],
+    image: "/images/catalog/opel-42/01-box-label.png",
+    images: [
+      "/images/catalog/opel-42/01-box-label.png",
+      "/images/catalog/opel-42/02-seal-face.png",
+      "/images/catalog/opel-42/03-seal-angle.png",
+    ],
     description:
       "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На сальнике может быть маркировка размеров и внутренних кодов производителя. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
   },
@@ -776,8 +776,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-48/01-box.png",
-    images: ["/images/catalog/opel-48/01-box.png"],
+    image: "/images/catalog/_pending.jpg",
     description:
       "Термостат в алюминиевом корпусе с электрическим разъёмом (картируемый/с подогревом). На клапане типична маркировка открытия **105 °C**. Артикул в выгрузке — 1338372. Меняют при перегреве, долгом прогреве, ошибках по температуре. Перед заказом сверяйте применение по VIN или каталогу.",
   },
@@ -791,8 +790,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-47/01-assembly.png",
+    image: "/images/catalog/opel-48/01-box.png",
     images: [
+      "/images/catalog/opel-48/01-box.png",
       "/images/catalog/opel-47/01-assembly.png",
       "/images/catalog/opel-47/02-assembly-alt.png",
     ],
@@ -1468,10 +1468,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "ЕС",
     category: "Подвеска",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-95/01-part.png",
+    image: "/images/catalog/opel-95/02-box.png",
     images: [
-      "/images/catalog/opel-95/01-part.png",
       "/images/catalog/opel-95/02-box.png",
+      "/images/catalog/opel-95/01-part.png",
     ],
     description:
       "Стойка (тяга) стабилизатора Delphi Technologies TC2279 для линейки подвески и рулевого Chevrolet Cruze и Opel Astra J и сопоставимых моделей. Меняют при стуке в передней подвеске на неровностях, люфте шарниров или повреждённых пыльниках. Перед заказом сверяйте сторону (лево/право) и применение по VIN или каталогу.",
