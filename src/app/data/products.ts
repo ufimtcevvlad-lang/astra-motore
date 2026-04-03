@@ -591,8 +591,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-35/01-box.png",
-    images: ["/images/catalog/opel-35/01-box.png"],
+    image: "/images/catalog/_pending.jpg",
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
   },
@@ -695,8 +694,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-42/01-box-label.png",
+    image: "/images/catalog/opel-35/01-box.png",
     images: [
+      "/images/catalog/opel-35/01-box.png",
       "/images/catalog/opel-42/01-box-label.png",
       "/images/catalog/opel-42/02-seal-face.png",
       "/images/catalog/opel-42/03-seal-angle.png",
