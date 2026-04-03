@@ -56,6 +56,9 @@ export const metadata: Metadata = {
     description:
       "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
   },
+  verification: {
+    yandex: "d754ed4e8ec9f534",
+  },
 };
 
 export default function RootLayout({
@@ -110,8 +113,6 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('am-profile-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`,
           }}
         />
-        {/* Яндекс.Вебмастер: подтверждение прав */}
-        <meta name="yandex-verification" content="d754ed4e8ec9f534" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <script
