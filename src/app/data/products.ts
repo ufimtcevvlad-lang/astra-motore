@@ -18,7 +18,7 @@ export type Product = {
   price: number;
   inStock: number;
   image: string;
-  /** Дополнительные фото товара (обложка везде — `image`, обычно совпадает с первым элементом) */
+  /** Дополнительные фото товара (обложка везде — `image`, совпадает с первым кадром; порядок: сначала упаковка/коробка, затем деталь) */
   images?: string[];
   description: string;
   /** Ссылки на аналоги из того же каталога */
@@ -57,12 +57,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (моторы Ecotec)",
-    image: "/images/catalog/opel-1/01-spark.png",
+    image: "/images/catalog/opel-1/03-box.png",
     images: [
-      "/images/catalog/opel-1/01-spark.png",
-      "/images/catalog/opel-1/02-spark-alt.png",
       "/images/catalog/opel-1/03-box.png",
       "/images/catalog/opel-1/04-pack-back.png",
+      "/images/catalog/opel-1/01-spark.png",
+      "/images/catalog/opel-1/02-spark-alt.png",
     ],
     description:
       "Свеча зажигания Bosch для бензиновых двигателей GM Ecotec. Подходит для плановой замены по регламенту ТО, обеспечивает стабильный запуск и ровную работу двигателя. Геометрия резьбы и параметры затяжки соответствуют распространенным спецификациям для моторов Opel/Chevrolet этого семейства.",
@@ -107,7 +107,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Масляные фильтры",
     car: "Opel Astra H/J, Zafira B и др.",
-    image: "/images/catalog/opel-4.jpg",
+    image: "/images/catalog/opel-4/01-box.png",
+    images: [
+      "/images/catalog/opel-4/01-box.png",
+      "/images/catalog/opel-4/02-filter-with-gasket.png",
+      "/images/catalog/opel-4/03-filter.png",
+    ],
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
     analogIds: ["opel-9", "opel-30"],
