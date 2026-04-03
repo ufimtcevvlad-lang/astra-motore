@@ -61,7 +61,6 @@ const OPEL_PILOT_RAW: Array<{
     images: [
       "/images/catalog/opel-1/03-box.png",
       "/images/catalog/opel-1/04-pack-back.png",
-      "/images/catalog/opel-1/05-sku-0242229699.png",
       "/images/catalog/opel-1/01-spark.png",
       "/images/catalog/opel-1/02-spark-alt.png",
     ],
@@ -393,11 +392,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи и зажигание",
     car: "Opel Astra J A14NEL/NET; уточняйте по двигателю",
-    image: "/images/catalog/opel-23/01-box.png",
+    image: "/images/catalog/opel-23/01-box-brand.png",
     images: [
-      "/images/catalog/opel-23/01-box.png",
-      "/images/catalog/opel-23/02-box-retail.png",
+      "/images/catalog/opel-23/01-box-brand.png",
+      "/images/catalog/opel-23/02-box-article.png",
       "/images/catalog/opel-23/03-spark.png",
+      "/images/catalog/opel-23/04-spark-alt.png",
     ],
     description:
       "Свеча зажигания Bosch для указанных модификаций моторов. Перед заказом сверяйте калильное число и резьбу со штатной свечой или каталогом.",
