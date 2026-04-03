@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 """
 Добавляет в HTTPS-блок(и) Nginx для gmshop66.ru прокси на Next.js (127.0.0.1:3000),
-если в блоке ещё нет proxy_pass (типичная причина 404 после certbot).
+если в блоке нет proxy_pass на 127.0.0.1:3000 (типичная причина 404 после certbot).
 
 Запуск на VPS от root:
   python3 scripts/fix-nginx-gmshop66-proxy.py /etc/nginx/sites-available/astramotors
-  nginx -t && systemctl reload nginx
+  # несколько файлов:
+  python3 scripts/fix-nginx-gmshop66-proxy.py /etc/nginx/sites-available/*
+  # только посмотреть блоки с gmshop66:
+  python3 scripts/fix-nginx-gmshop66-proxy.py --show /etc/nginx/sites-available/astramotors
+
+После правок: nginx -t && systemctl reload nginx
 """
 from __future__ import annotations
 
+import glob
 import re
 import shutil
 import sys
@@ -27,7 +33,6 @@ PROXY_BLOCK = """
 
 
 def extract_server_blocks(text: str) -> list[tuple[int, int, str]]:
-    """Возвращает список (start, end, block) для каждого top-level server { ... }."""
     blocks: list[tuple[int, int, str]] = []
     i = 0
     n = len(text)
@@ -57,47 +62,68 @@ def extract_server_blocks(text: str) -> list[tuple[int, int, str]]:
     return blocks
 
 
+def has_proxy_to_next(block: str) -> bool:
+    """Есть ли уже прокси именно на Next на этом сервере."""
+    return bool(
+        re.search(
+            r"^\s*proxy_pass\s+http://127\.0\.0\.1:3000",
+            block,
+            re.MULTILINE,
+        )
+    )
+
+
 def needs_proxy(block: str) -> bool:
     if "gmshop66.ru" not in block:
         return False
-    if "443" not in block and "ssl" not in block:
+    low = block.lower()
+    if "443" not in block and "ssl" not in low:
         return False
-    if "proxy_pass" in block:
+    if has_proxy_to_next(block):
         return False
     return True
 
 
 def strip_location_slash_without_proxy(inner: str) -> str:
-    """Убрать из тела server все `location / { ... }`, внутри которых нет proxy_pass."""
-    inner2 = inner
+    """Remove only `location / { ... }` blocks that do not proxy to Next (127.0.0.1:3000)."""
+    pos = 0
+    parts: list[str] = []
     while True:
-        m = re.search(r"\n\s*location\s*/\s*\{", inner2)
+        m = re.search(r"\n\s*location\s*/\s*\{", inner[pos:])
         if not m:
+            parts.append(inner[pos:])
             break
-        start = m.start()
-        b = inner2.find("{", m.start())
+        abs_start = pos + m.start()
+        parts.append(inner[pos:abs_start])
+        b = inner.find("{", abs_start)
         depth = 0
         k = b
-        while k < len(inner2):
-            if inner2[k] == "{":
+        while k < len(inner):
+            if inner[k] == "{":
                 depth += 1
-            elif inner2[k] == "}":
+            elif inner[k] == "}":
                 depth -= 1
                 if depth == 0:
-                    seg = inner2[start : k + 1]
-                    if "proxy_pass" not in seg:
-                        inner2 = inner2[:start] + inner2[k + 1 :]
+                    seg = inner[abs_start : k + 1]
+                    if not re.search(
+                        r"^\s*proxy_pass\s+http://127\.0\.0\.1:3000",
+                        seg,
+                        re.MULTILINE,
+                    ):
+                        # drop certbot/static-only location /
+                        pos = k + 1
                     else:
-                        inner2 = inner2[k + 1 :]
+                        parts.append(seg)
+                        pos = k + 1
                     break
             k += 1
         else:
+            parts.append(inner[abs_start:])
             break
-    return inner2.rstrip()
+    return "".join(parts).rstrip()
 
 
 def patch_block(block: str) -> str:
-    """Вставить PROXY_BLOCK внутрь server { ... } перед закрывающей скобкой."""
     first = block.find("{")
     if first == -1:
         return block
@@ -114,19 +140,28 @@ def patch_block(block: str) -> str:
     return block
 
 
-def main() -> int:
-    if len(sys.argv) != 2:
-        print("Usage: fix-nginx-gmshop66-proxy.py /etc/nginx/sites-available/astramotors", file=sys.stderr)
-        return 2
-    path = Path(sys.argv[1])
-    if not path.is_file():
-        print(f"File not found: {path}", file=sys.stderr)
-        return 1
+def show_gmshop66(path: Path, text: str) -> None:
+    print(f"=== {path} ===")
+    for idx, (_s, _e, block) in enumerate(extract_server_blocks(text), 1):
+        if "gmshop66.ru" not in block:
+            continue
+        has443 = "443" in block
+        sslish = "ssl" in block.lower()
+        prox = has_proxy_to_next(block)
+        print(f"  server block #{idx}: listen 443-ish={has443 or sslish}, proxy->3000={prox}")
+        print("  ---")
+        for line in block.splitlines()[:25]:
+            print(f"  {line}")
+        if block.count("\n") > 25:
+            print("  ...")
+        print()
+
+
+def process_file(path: Path) -> int:
     text = path.read_text(encoding="utf-8", errors="replace")
     blocks = extract_server_blocks(text)
     if not blocks:
-        print("No server { } blocks found.", file=sys.stderr)
-        return 1
+        return 0
 
     patched = 0
     new_parts: list[str] = []
@@ -143,13 +178,67 @@ def main() -> int:
     out = "".join(new_parts)
 
     if patched == 0:
-        print("Nothing to do: no gmshop66 HTTPS block without proxy_pass, or proxy already set.")
         return 0
 
     bak = path.with_suffix(path.suffix + ".bak-gmshop66")
     shutil.copy2(path, bak)
+    print(f"Backup: {bak}")
     path.write_text(out, encoding="utf-8")
-    print(f"Patched {patched} server block(s). Backup: {bak}")
+    print(f"Patched {patched} server block(s) in {path}")
+    return patched
+
+
+def main() -> int:
+    args = [a for a in sys.argv[1:] if a]
+    if not args:
+        print("Usage: fix-nginx-gmshop66-proxy.py [--show] <nginx.conf> [more.conf ...]", file=sys.stderr)
+        return 2
+
+    show_only = False
+    if args[0] == "--show":
+        show_only = True
+        args = args[1:]
+    if not args:
+        print("No files given.", file=sys.stderr)
+        return 2
+
+    paths: list[Path] = []
+    for a in args:
+        if "*" in a:
+            paths.extend(Path(p) for p in glob.glob(a))
+            continue
+        p = Path(a)
+        if p.is_dir():
+            paths.extend(f for f in sorted(p.iterdir()) if f.is_file())
+        else:
+            paths.append(p)
+
+    seen: set[Path] = set()
+    uniq = []
+    for p in paths:
+        try:
+            r = p.resolve()
+        except OSError:
+            r = p
+        if r in seen or not p.is_file():
+            continue
+        seen.add(r)
+        uniq.append(p)
+
+    if show_only:
+        for p in uniq:
+            if "gmshop66.ru" in p.read_text(encoding="utf-8", errors="replace"):
+                show_gmshop66(p, p.read_text(encoding="utf-8", errors="replace"))
+        return 0
+
+    total = 0
+    for p in uniq:
+        if "gmshop66.ru" not in p.read_text(encoding="utf-8", errors="replace"):
+            continue
+        total += process_file(p)
+    if total == 0:
+        print("Nothing to do: no gmshop66.ru HTTPS block missing proxy_pass to 127.0.0.1:3000.")
+        print("Run with --show <file> to inspect server blocks.")
     return 0
 
 
