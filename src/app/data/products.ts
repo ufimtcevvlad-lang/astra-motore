@@ -852,10 +852,15 @@ const OPEL_PILOT_RAW: Array<{
     brand: "Sibtek",
     country: "Китай / ЕС",
     category: "Воздушные фильтры",
-    car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    car: "Opel Astra G/H, Corsa B/C, Meriva A, Zafira A, Speedster; Chevrolet Viva и др. — уточняйте по VIN",
+    image: "/images/catalog/opel-55/01-packaging-label.png",
+    images: [
+      "/images/catalog/opel-55/01-packaging-label.png",
+      "/images/catalog/opel-55/02-top.png",
+      "/images/catalog/opel-55/03-angle.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул AF0163. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Воздушный фильтр SIBTEK (на упаковке может быть маркировка AF 63, в выгрузке — AF0163). Типичное применение: Opel Astra G/H, Corsa, Meriva A, Zafira A, Speedster; Chevrolet Viva и др. Кроссы вроде MANN C 30 130, BOSCH 1 457 433 281, GM 5834282 / 835622. Меняйте по регламенту ТО или при загрязнении. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-56",
