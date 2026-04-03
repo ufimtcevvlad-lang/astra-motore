@@ -96,7 +96,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Chevrolet Cruze, Opel (F16D4, F18D4)",
-    image: "/images/catalog/opel-3.jpg",
+    image: "/images/catalog/opel-3/01-packaging.png",
     description:
       "Уплотнительное кольцо впускного канала теплообменника масла. При замене маслоохладителя или течи с сопряжения рекомендуется ставить новое кольцо для герметичности системы смазки.",
     analogIds: ["opel-5", "opel-6"],
@@ -131,7 +131,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/catalog/opel-5.jpg",
+    image: "/images/catalog/opel-5/01-packaging.png",
     description:
       "Кольцо уплотнения на патрубке маслоохладителя. Мелкая деталь, от которой зависит герметичность контуры охлаждения масла — при снятии трубки заменяйте обязательно.",
     analogIds: ["opel-3", "opel-6"],
@@ -146,7 +146,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.4 / 1.6 (A14XER, A16XER)",
-    image: "/images/catalog/opel-6.jpg",
+    image: "/images/catalog/opel-6/01-packaging.png",
     description:
       "Альтернативный номер уплотнительного кольца для линий маслоохладителя на тех же моторах A14XER/A16XER. Уточняйте по схеме узла при заказе — взаимозаменяемость с другими позициями из вашего файла указана в блоке аналогов.",
     analogIds: ["opel-3", "opel-5"],
@@ -161,7 +161,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Turbo и атмосферные Ecotec",
-    image: "/images/catalog/opel-7.jpg",
+    image: "/images/catalog/opel-7/01-packaging.png",
     description:
       "Уплотнение выпускного канала маслоохладителя для ряда турбо и атмосферных двигателей Ecotec. При течи масла в зоне теплообменника меняется в комплекте с разбором узла.",
   },
@@ -175,7 +175,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Z16XEL, Z18XER",
-    image: "/images/catalog/opel-8.jpg",
+    image: "/images/catalog/opel-8/01-packaging.png",
     description:
       "Кольцо на выпуск из маслоохладителя для Z16XEL и Z18XER. После демонтажа деталь не рекомендуется ставить повторно из‑за потери упругости.",
   },
@@ -219,7 +219,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Z18XER, Z16LET / LEL / LER",
-    image: "/images/catalog/opel-11.jpg",
+    image: "/images/catalog/opel-11/01-packaging.png",
     description:
       "Прокладка между корпусом масляного фильтра и блоком для ряда моторов Ecotec. При течи масла в зоне фильтра меняется вместе с очисткой посадочных поверхностей.",
     analogIds: ["opel-12"],
@@ -234,7 +234,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel 1.6 / 1.8 Ecotec (LET, LER, XEP и др.)",
-    image: "/images/catalog/opel-12.jpg",
+    image: "/images/catalog/opel-12/01-packaging.png",
     description:
       "Альтернативный номер прокладки корпуса масляного фильтра под другие варианты компоновки Ecotec. Перед заказом сверяйте с заводским каталогом и снятой деталью.",
     analogIds: ["opel-11"],
@@ -249,7 +249,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Прокладки, сальники и кольца",
     car: "Opel Astra H/J, Zafira B (Ecotec)",
-    image: "/images/catalog/opel-13.jpg",
+    image: "/images/catalog/opel-13/01-packaging.png",
     description:
       "Прокладка узла масляного фильтра в зоне теплообменника с охлаждением масла. Рекомендуется менять при снятии корпуса или при течи в этом сопряжении.",
     analogIds: ["opel-11", "opel-12"],
@@ -321,7 +321,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Chevrolet Cruze, Opel Astra J, Insignia и др.",
-    image: "/images/catalog/opel-18.jpg",
+    image: "/images/catalog/opel-18/01-packaging.png",
+    images: [
+      "/images/catalog/opel-18/01-packaging.png",
+      "/images/catalog/opel-18/02-part.png",
+    ],
     description:
       "Крышка расширительного бачка системы охлаждения. Поддерживает рабочее давление в контуре; трещины и износ уплотнения приводят к потере ОЖ и перегреву.",
     analogIds: ["opel-17"],
