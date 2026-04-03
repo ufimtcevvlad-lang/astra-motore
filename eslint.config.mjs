@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Кэш сторонних скриптов (Telegram widget и т.п.) — не наш код
+    "data/cache/**",
   ]),
 ]);
 
