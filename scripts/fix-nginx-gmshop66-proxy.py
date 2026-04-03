@@ -29,6 +29,12 @@ RE_PROXY_PASS_NEXT = re.compile(
     re.MULTILINE | re.IGNORECASE,
 )
 
+def should_skip_patch_path(p: Path) -> bool:
+    """Резервные копии и мусор не патчим (grep -rl часто подхватывает *.bak)."""
+    n = p.name.lower()
+    return ".bak" in n or n.endswith("~") or n.endswith(".old")
+
+
 PROXY_BLOCK = """
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -298,6 +304,25 @@ def inspect_merged_config() -> int:
             if block.count("\n") > 45:
                 print("...")
         print()
+
+    print(
+        "--- все server с listen 443 (порядок как в nginx -T): "
+        "ищите несколько блоков с gmshop66 и разные listen (IP vs 0.0.0.0) ---",
+    )
+    for i, (_s, _e, b) in enumerate(blocks, 1):
+        if not re.search(r"^\s*listen\s+[^\n;]*\b443\b", b, re.MULTILINE):
+            continue
+        listen_lines = [ln.strip() for ln in b.splitlines() if re.match(r"^\s*listen\b", ln)][:5]
+        sn_lines = [ln.strip() for ln in b.splitlines() if re.match(r"^\s*server_name\b", ln)][:3]
+        gm = "gmshop66" in b.lower()
+        prox_sl = location_slash_proxies_next(b)
+        dfl = "default_server" in b
+        print(f"#{i} gmshop66={gm} proxy_in_location/={prox_sl} default_server={dfl}")
+        for L in listen_lines:
+            print(f"    {L}")
+        for L in sn_lines:
+            print(f"    {L}")
+        print()
     return 0
 
 
@@ -373,7 +398,8 @@ def main() -> int:
         if r in seen or not p.is_file():
             continue
         seen.add(r)
-        uniq.append(p)
+        if not should_skip_patch_path(p):
+            uniq.append(p)
 
     if show_only:
         for p in uniq:
@@ -388,8 +414,9 @@ def main() -> int:
         total += process_file(p)
     if total == 0:
         print("Nothing to do: нет HTTPS-блока gmshop66.ru, где в первом location / нет proxy на :3000.")
-        print("Уточните файлы: sudo grep -rl gmshop66 /etc/nginx")
+        print("Уточните файлы (без бэкапов): sudo grep -rl gmshop66 /etc/nginx --exclude='*.bak*'")
         print("Затем: sudo python3 .../fix-nginx-gmshop66-proxy.py --show <файл>")
+        print("Не передавайте *.bak* в скрипт — правится только копия, сайт не меняется.")
     return 0
 
 
