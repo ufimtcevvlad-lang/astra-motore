@@ -61,6 +61,7 @@ const OPEL_PILOT_RAW: Array<{
     images: [
       "/images/catalog/opel-1/03-box.png",
       "/images/catalog/opel-1/04-pack-back.png",
+      "/images/catalog/opel-1/05-sku-0242229699.png",
       "/images/catalog/opel-1/01-spark.png",
       "/images/catalog/opel-1/02-spark-alt.png",
     ],
@@ -78,7 +79,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Двигатель",
     car: "Opel 1.6 Z16XER",
-    image: "/images/catalog/opel-2.jpg",
+    image: "/images/catalog/opel-2/01-packaging.png",
+    images: [
+      "/images/catalog/opel-2/01-packaging.png",
+      "/images/catalog/opel-2/02-part.png",
+    ],
     description:
       "Оригинальная масляная форсунка для охлаждения днища поршня на двигателе Z16XER. Подаёт масло на теплонагруженные зоны; при закоксовке или течи двигатель перегревается — замену лучше не откладывать.",
   },
@@ -388,7 +393,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи и зажигание",
     car: "Opel Astra J A14NEL/NET; уточняйте по двигателю",
-    image: "/images/catalog/opel-10.jpg",
+    image: "/images/catalog/opel-23/01-box.png",
+    images: [
+      "/images/catalog/opel-23/01-box.png",
+      "/images/catalog/opel-23/02-box-retail.png",
+      "/images/catalog/opel-23/03-spark.png",
+    ],
     description:
       "Свеча зажигания Bosch для указанных модификаций моторов. Перед заказом сверяйте калильное число и резьбу со штатной свечой или каталогом.",
     analogIds: ["opel-1", "opel-10"],
