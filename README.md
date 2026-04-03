@@ -90,7 +90,7 @@ npm run indexnow:send
 ```
 
 Скрипт:
-- использует ключ `public/astramotors-indexnow-20260319.txt`
+- использует ключ `public/gmshop66-indexnow-20260403.txt`
 - отправляет в `https://yandex.com/indexnow` список главных страниц + `/product/:id`
 
 ## Каталог и аналоги запчастей
@@ -98,9 +98,9 @@ npm run indexnow:send
 - Товары и **аналоги** задаются **только из вашего файла/каталога** (например Excel «топ продаж»): связи между строками или явные колонки с артикулами аналогов.
 - **Из интернета аналоги не подтягиваются** (ни парсинг, ни внешние API) — на карточке показываются только позиции, которые есть в том же наборе данных.
 
-### Пилот Opel (строки 1–30 Excel)
+### Каталог Opel (строки 1–99 из «топ 100 продаж опель.xlsx»)
 
-- Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и цена из файла; расчёт витринной цены — в коде (`src/app/lib/price.ts`, не выводится на сайте).
+- Данные в `src/app/data/products.ts` (массив `OPEL_PILOT_RAW`): название, артикул, количество и цена из файла; расчёт витринной цены — в коде (`src/app/lib/price.ts`, не выводится на сайте). Первые 30 позиций с фото/описаниями; строки 31–99 без фото (`/images/catalog/_pending.jpg` — серый плейсхолдер в карточке).
 - Каталог на отдельной странице: `/catalog` (`src/app/catalog/page.tsx` + `ProductCatalog`). Главная — лендинг с превью позиций.
 - **Поиск в шапке:** подсказки с горизонтальной прокруткой карточек (`HeaderSearchAutocomplete`), API `GET /api/catalog/search?q=…&limit=…`; общая логика совпадений — `src/app/lib/catalog-search.ts` (та же, что фильтр в каталоге).
 - Единый вид: `components/catalog/` — `CatalogProductCard`, `CatalogProductGrid`, `CatalogChrome` (крошки + H1), `CatalogSectionHeading`; марки в шапке — через меню **Каталог** (Витрина, Opel, Chevrolet, GM).

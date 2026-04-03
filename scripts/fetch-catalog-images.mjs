@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public", "images", "catalog");
 
-const UA = "AstraMotorsBot/1.0 (https://astramotors.shop; catalog image sync)";
+const UA = "AstraMotorsBot/1.0 (https://gmshop66.ru; catalog image sync)";
 
 const FILES = [
   ["opel-2.jpg", "https://upload.wikimedia.org/wikipedia/commons/5/5c/Injector.jpg"],

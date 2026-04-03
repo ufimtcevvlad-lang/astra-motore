@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const KEY = "astramotors-indexnow-20260319";
-const HOST = "astramotors.shop";
+const KEY = "gmshop66-indexnow-20260403";
+const HOST = "gmshop66.ru";
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
 const siteUrl = `https://${HOST}`;

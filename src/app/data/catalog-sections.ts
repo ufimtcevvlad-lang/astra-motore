@@ -95,6 +95,12 @@ export const CATALOG_SECTIONS = [
     groupSlug: "podveska" satisfies CatalogGroupSlug,
   },
   {
+    slug: "tormoza",
+    title: "Тормозная система",
+    hint: "Колодки и расходники по тормозам",
+    groupSlug: "podveska" satisfies CatalogGroupSlug,
+  },
+  {
     slug: "elektrika",
     title: "Автосвет и электрика",
     hint: "Лампы и расходники",

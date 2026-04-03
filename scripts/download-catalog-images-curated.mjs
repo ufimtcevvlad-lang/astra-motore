@@ -12,7 +12,7 @@ const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public", "images", "catalog");
 const MANIFEST = path.join(OUT, "commons-sources.json");
 
-const UA = "AstraMotorsCatalog/1.0 (curated Wikimedia download; astramotors.shop)";
+const UA = "AstraMotorsCatalog/1.0 (curated Wikimedia download; gmshop66.ru)";
 
 /** Один URL → несколько id (одинаковое фото для похожих позиций витрины) */
 const GROUPS = [
