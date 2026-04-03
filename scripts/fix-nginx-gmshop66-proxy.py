@@ -9,6 +9,8 @@
   python3 scripts/fix-nginx-gmshop66-proxy.py /etc/nginx/sites-available/*
   # только посмотреть блоки с gmshop66:
   python3 scripts/fix-nginx-gmshop66-proxy.py --show /etc/nginx/sites-available/astramotors
+  # что реально видит nginx (после всех include) — от root:
+  python3 scripts/fix-nginx-gmshop66-proxy.py --inspect
 
 После правок: nginx -t && systemctl reload nginx
 """
@@ -17,8 +19,15 @@ from __future__ import annotations
 import glob
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
+
+# Учитываем localhost и необязательный слэш после порта.
+RE_PROXY_PASS_NEXT = re.compile(
+    r"^\s*proxy_pass\s+http://(127\.0\.0\.1|localhost):3000/?\s*;",
+    re.MULTILINE | re.IGNORECASE,
+)
 
 PROXY_BLOCK = """
     location / {
@@ -64,13 +73,7 @@ def extract_server_blocks(text: str) -> list[tuple[int, int, str]]:
 
 def has_proxy_to_next(block: str) -> bool:
     """Есть ли уже прокси именно на Next на этом сервере."""
-    return bool(
-        re.search(
-            r"^\s*proxy_pass\s+http://127\.0\.0\.1:3000",
-            block,
-            re.MULTILINE,
-        )
-    )
+    return bool(RE_PROXY_PASS_NEXT.search(block))
 
 
 def needs_proxy(block: str) -> bool:
@@ -105,11 +108,7 @@ def strip_location_slash_without_proxy(inner: str) -> str:
                 depth -= 1
                 if depth == 0:
                     seg = inner[abs_start : k + 1]
-                    if not re.search(
-                        r"^\s*proxy_pass\s+http://127\.0\.0\.1:3000",
-                        seg,
-                        re.MULTILINE,
-                    ):
+                    if not RE_PROXY_PASS_NEXT.search(seg):
                         # drop certbot/static-only location /
                         pos = k + 1
                     else:
@@ -157,6 +156,79 @@ def show_gmshop66(path: Path, text: str) -> None:
         print()
 
 
+def inspect_merged_config() -> int:
+    """Печатает из `nginx -T` все server {}, где встречается gmshop66 (как в итоговом конфиге)."""
+    try:
+        proc = subprocess.run(
+            ["nginx", "-T"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
+    except FileNotFoundError:
+        print("nginx не найден в PATH.", file=sys.stderr)
+        return 1
+    out = proc.stdout or ""
+    err = (proc.stderr or "").strip()
+    if proc.returncode != 0:
+        print(err or out[:2000], file=sys.stderr)
+        print("Запустите от root: sudo nginx -T", file=sys.stderr)
+        return proc.returncode or 1
+
+    blocks = extract_server_blocks(out)
+    hits = [(i, b) for i, b in enumerate(blocks, 1) if "gmshop66" in b[2].lower()]
+    if not hits:
+        print("В объединённом конфиге нет строки «gmshop66». Проверьте server_name в файлах sites-enabled.")
+        return 0
+
+    for idx, (_start, _end, block) in hits:
+        sn = [
+            ln
+            for ln in block.splitlines()
+            if re.match(r"^\s*server_name\b", ln)
+        ]
+        listen = [ln for ln in block.splitlines() if re.match(r"^\s*listen\b", ln)]
+        default_srv = "default_server" in block
+        prox = has_proxy_to_next(block)
+        apex_ok = False
+        www_present = False
+        for ln in sn:
+            m = re.search(r"server_name\s+(.+?);", ln)
+            if not m:
+                continue
+            parts = re.findall(r"\S+", m.group(1))
+            if "gmshop66.ru" in parts:
+                apex_ok = True
+            if "www.gmshop66.ru" in parts:
+                www_present = True
+        www_only = www_present and not apex_ok
+
+        print(f"=== server #{idx} (итоговый nginx -T) ===")
+        for ln in listen[:12]:
+            print(ln)
+        if len(listen) > 12:
+            print(f"... (+{len(listen) - 12} listen)")
+        for ln in sn:
+            print(ln)
+        if default_srv:
+            print("(в блоке есть default_server)")
+        print(f"proxy_pass -> :3000 (127.0.0.1|localhost): {prox}")
+        if www_only:
+            print(
+                "ВНИМАНИЕ: в server_name нет gmshop66.ru (только www?). "
+                "Запрос на https://gmshop66.ru/ может уйти в ДРУГОЙ server → 404.",
+            )
+        if not prox:
+            print("--- фрагмент блока (ищите location / и proxy_pass) ---")
+            for ln in block.splitlines()[:45]:
+                print(ln)
+            if block.count("\n") > 45:
+                print("...")
+        print()
+    return 0
+
+
 def process_file(path: Path) -> int:
     text = path.read_text(encoding="utf-8", errors="replace")
     blocks = extract_server_blocks(text)
@@ -191,8 +263,14 @@ def process_file(path: Path) -> int:
 def main() -> int:
     args = [a for a in sys.argv[1:] if a]
     if not args:
-        print("Usage: fix-nginx-gmshop66-proxy.py [--show] <nginx.conf> [more.conf ...]", file=sys.stderr)
+        print(
+            "Usage: fix-nginx-gmshop66-proxy.py [--show|--inspect] <nginx.conf> [more.conf ...]",
+            file=sys.stderr,
+        )
         return 2
+
+    if args[0] == "--inspect":
+        return inspect_merged_config()
 
     show_only = False
     if args[0] == "--show":
