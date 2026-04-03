@@ -2,8 +2,11 @@
 
 import { useEffect } from "react";
 
-/** ID счётчика из metrika.yandex.ru → Настройки → Код счётчика */
-const COUNTER_ID = 107737371;
+/** ID счётчика: metrika.yandex.ru → Настройки → Код счётчика. На проде задайте NEXT_PUBLIC_YANDEX_METRIKA_ID в .env.local */
+const COUNTER_ID = (() => {
+  const n = Number(process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID);
+  return Number.isFinite(n) && n > 0 ? n : 107737371;
+})();
 
 const isDev = process.env.NODE_ENV === "development";
 
