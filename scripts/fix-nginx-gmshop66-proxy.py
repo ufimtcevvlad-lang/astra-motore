@@ -214,10 +214,10 @@ def inspect_merged_config() -> int:
         return 0
 
     https_dup = [
-        (i, b)
-        for i, b in enumerate(blocks, 1)
-        if "gmshop66" in b.lower()
-        and re.search(r"^\s*listen\s+[^\n;]*\b443\b", b, re.MULTILINE)
+        (i, block_str)
+        for i, (_s, _e, block_str) in enumerate(blocks, 1)
+        if "gmshop66" in block_str.lower()
+        and re.search(r"^\s*listen\s+[^\n;]*\b443\b", block_str, re.MULTILINE)
     ]
     if len(https_dup) > 1:
         print(
@@ -387,8 +387,9 @@ def main() -> int:
             continue
         total += process_file(p)
     if total == 0:
-        print("Nothing to do: no gmshop66.ru HTTPS block missing proxy_pass to 127.0.0.1:3000.")
-        print("Run with --show <file> to inspect server blocks.")
+        print("Nothing to do: нет HTTPS-блока gmshop66.ru, где в первом location / нет proxy на :3000.")
+        print("Уточните файлы: sudo grep -rl gmshop66 /etc/nginx")
+        print("Затем: sudo python3 .../fix-nginx-gmshop66-proxy.py --show <файл>")
     return 0
 
 
