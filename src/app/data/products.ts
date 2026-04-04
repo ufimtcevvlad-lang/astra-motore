@@ -495,9 +495,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Двигатель",
     car: "Chevrolet Cruze F16D4, F18D4",
-    image: "/images/catalog/opel-16.jpg",
+    image: "/images/catalog/opel-28/01-box-gm.png",
+    images: [
+      "/images/catalog/opel-28/01-box-gm.png",
+      "/images/catalog/opel-28/02-cover-top.png",
+      "/images/catalog/opel-28/03-cover-underside.png",
+    ],
     description:
-      "Клапанная крышка в сборе / узел ГБЦ для Cruze с двигателями F16D4 и F18D4. Замена при трещинах, деформации или неконтролируемой течи масла сверху мотора — работы согласуйте с сервисом.",
+      "Клапанная крышка в сборе / узел ГБЦ для Cruze с двигателями F16D4 и F18D4. В галерее: коробка **96889998**, затем крышка сверху и снизу. Замена при трещинах, деформации или неконтролируемой течи масла сверху мотора — работы согласуйте с сервисом.",
   },
   {
     id: "opel-29",
@@ -555,11 +560,14 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-32/01-box-mopar-25192230.png",
     images: [
       "/images/catalog/opel-32/01-box-mopar-25192230.png",
+      "/images/catalog/opel-32/04-psa-box-25192231.png",
       "/images/catalog/opel-32/02-housing-pierburg-gm25192230.png",
+      "/images/catalog/opel-32/05-housing-gm25192231.png",
       "/images/catalog/opel-32/03-housing-gm55575062.png",
+      "/images/catalog/opel-32/06-housing-alt.png",
     ],
     description:
-      "Пластиковый корпус/коллектор термостата (в комплектации без самого термостата — сверяйте с каталогом). На детали встречаются номера GM **25192230** (в т.ч. поставка Pierburg) и **55575062**. Меняют при трещинах, подсосах ОЖ и некорректной работе системы охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
+      "Пластиковый корпус/коллектор термостата (в комплектации без самого термостата — сверяйте с каталогом). На детали встречаются номера GM **25192230** / **25192231** (в т.ч. поставка Pierburg) и **55575062**. Меняют при трещинах, подсосах ОЖ и некорректной работе системы охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-33",
@@ -1672,6 +1680,26 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/_pending.jpg",
     description:
       "Свеча зажигания **Champion RC10MCC** (на керамике также может быть индекс **R6**). Фотографии для карточки добавим позже; перед заказом сверяйте применение по VIN.",
+  },
+  {
+    id: "opel-107",
+    name: "Комплект ремня ГРМ INA / Schaeffler (Timing Belt KIT)",
+    sku: "530056210",
+    qty: 40,
+    priceRaw: 9200,
+    brand: "INA",
+    country: "Румыния / ЕС",
+    category: "Двигатель",
+    car: "Opel / Chevrolet — уточняйте применение по VIN",
+    image: "/images/catalog/opel-107/01-box-label.png",
+    images: [
+      "/images/catalog/opel-107/01-box-label.png",
+      "/images/catalog/opel-107/02-box-angle.png",
+      "/images/catalog/opel-107/03-kit-pulleys-hardware.png",
+      "/images/catalog/opel-107/04-timing-belt.png",
+    ],
+    description:
+      "Комплект ремня ГРМ **INA** / Schaeffler (**Timing Belt KIT**). На коробке — **530 0562 10** (в выгрузке — 530056210); в составе ремень, ролики и крепёж по комплектации. Перед заказом сверяйте применение по VIN или каталогу.",
   },
 ];
 
