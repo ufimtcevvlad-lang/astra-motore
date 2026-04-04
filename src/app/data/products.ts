@@ -606,6 +606,7 @@ const OPEL_PILOT_RAW: Array<{
       "/images/catalog/opel-35/01-box.png",
       "/images/catalog/opel-35/02-seal.png",
       "/images/catalog/opel-35/03-seal-face.png",
+      "/images/catalog/opel-35/04-box-top-label.png",
     ],
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
