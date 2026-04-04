@@ -208,9 +208,11 @@ const OPEL_PILOT_RAW: Array<{
     images: [
       "/images/catalog/opel-10/01-box.png",
       "/images/catalog/opel-10/02-box-side.png",
+      "/images/catalog/opel-10/03-spark.png",
+      "/images/catalog/opel-10/04-spark-alt.png",
     ],
     description:
-      "Оригинальная свеча зажигания GM для ряда бензиновых Ecotec. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
+      "Оригинальная свеча зажигания GM **25193473** для ряда бензиновых Ecotec. В галерее сначала коробка с номером, затем свеча вне упаковки. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
     analogIds: ["opel-1", "opel-23"],
   },
   {
@@ -1645,13 +1647,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "ЕС",
     category: "Свечи и зажигание",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-106/01-spark.png",
-    images: [
-      "/images/catalog/opel-106/01-spark.png",
-      "/images/catalog/opel-106/02-spark-alt.png",
-    ],
+    image: "/images/catalog/_pending.jpg",
     description:
-      "Свеча зажигания **Champion RC10MCC** (на керамике также может быть индекс **R6**). Не путать с другими артикулами каталога; перед заказом сверяйте применение по VIN.",
+      "Свеча зажигания **Champion RC10MCC** (на керамике также может быть индекс **R6**). Фотографии для карточки добавим позже; перед заказом сверяйте применение по VIN.",
   },
 ];
 
