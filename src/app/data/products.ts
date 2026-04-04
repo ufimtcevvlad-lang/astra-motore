@@ -204,7 +204,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
-    image: "/images/catalog/opel-10.jpg",
+    image: "/images/catalog/opel-10/01-box.png",
+    images: [
+      "/images/catalog/opel-10/01-box.png",
+      "/images/catalog/opel-10/02-box-side.png",
+    ],
     description:
       "Оригинальная свеча зажигания GM для ряда бензиновых Ecotec. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
     analogIds: ["opel-1", "opel-23"],
@@ -307,9 +311,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Opel Astra H/J, Corsa D и др.",
-    image: "/images/catalog/opel-17.jpg",
+    image: "/images/catalog/opel-17/01-packaging.png",
+    images: [
+      "/images/catalog/opel-17/01-packaging.png",
+      "/images/catalog/opel-17/02-part.png",
+    ],
     description:
-      "Датчик температуры ОЖ с Г-образным патрубком для системы охлаждения. Неисправность даёт ошибки по температуре, работу вентилятора и показания на панели.",
+      "Датчик температуры ОЖ с Г-образным патрубком для системы охлаждения. На упаковке Mopar Genuine может быть номер **55591401**. Неисправность даёт ошибки по температуре, работу вентилятора и показания на панели.",
     analogIds: ["opel-18"],
   },
   {
@@ -591,7 +599,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-35/01-box.png",
+    images: [
+      "/images/catalog/opel-35/01-box.png",
+      "/images/catalog/opel-35/02-seal.png",
+    ],
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
   },
@@ -694,15 +706,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-35/01-box.png",
+    image: "/images/catalog/opel-42/01-box.png",
     images: [
-      "/images/catalog/opel-35/01-box.png",
-      "/images/catalog/opel-42/01-box-label.png",
+      "/images/catalog/opel-42/01-box.png",
       "/images/catalog/opel-42/02-seal-face.png",
-      "/images/catalog/opel-42/03-seal-angle.png",
     ],
     description:
-      "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На сальнике может быть маркировка размеров и внутренних кодов производителя. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
+      "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На упаковке и детали типичны обозначения вроде **A/BS RD FPM** и размер **31,5×42×7** мм. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-43",
@@ -1258,9 +1268,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-80/01-box.png",
+    images: [
+      "/images/catalog/opel-80/01-box.png",
+      "/images/catalog/opel-80/02-valve.png",
+      "/images/catalog/opel-80/03-valve-alt.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 427001810. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Клапан управления фазами ГРМ INA для **A14NET** и сопоставимых моторов. На коробке — **427 0018 10** (в выгрузке — 427001810); на детали может быть маркировка **F-347512.15**. Перед заказом сверяйте совместимость по VIN или каталогу.",
   },
   {
     id: "opel-81",
@@ -1619,6 +1634,24 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/_pending.jpg",
     description:
       "Гидрокомпенсатор / толкатель клапана INA **420 0098 10** (в выгрузке — 420009810) для ряда моторов **1,4** (AKQ, CBZB и др. по каталогу). Меняют при стуке клапанного механизма по диагностике; рекомендуется замена комплектом. Перед заказом сверяйте применение по VIN.",
+  },
+  {
+    id: "opel-106",
+    name: "Свеча зажигания Champion RC10MCC",
+    sku: "RC10MCC",
+    qty: 80,
+    priceRaw: 420,
+    brand: "Champion",
+    country: "ЕС",
+    category: "Свечи и зажигание",
+    car: "Opel / Chevrolet — уточняйте применение по VIN",
+    image: "/images/catalog/opel-106/01-spark.png",
+    images: [
+      "/images/catalog/opel-106/01-spark.png",
+      "/images/catalog/opel-106/02-spark-alt.png",
+    ],
+    description:
+      "Свеча зажигания **Champion RC10MCC** (на керамике также может быть индекс **R6**). Не путать с другими артикулами каталога; перед заказом сверяйте применение по VIN.",
   },
 ];
 
