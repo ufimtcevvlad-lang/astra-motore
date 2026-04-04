@@ -605,6 +605,7 @@ const OPEL_PILOT_RAW: Array<{
     images: [
       "/images/catalog/opel-35/01-box.png",
       "/images/catalog/opel-35/02-seal.png",
+      "/images/catalog/opel-35/03-seal-face.png",
     ],
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
@@ -712,8 +713,7 @@ const OPEL_PILOT_RAW: Array<{
     images: [
       "/images/catalog/opel-42/01-box.png",
       "/images/catalog/opel-42/02-box-label.png",
-      "/images/catalog/opel-42/03-seal-face.png",
-      "/images/catalog/opel-42/04-seal-angle.png",
+      "/images/catalog/opel-42/03-seal-angle.png",
     ],
     description:
       "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На упаковке и детали типичны обозначения вроде **A/BS RD FPM** и размер **31,5×42×7** мм. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
