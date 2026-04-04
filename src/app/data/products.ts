@@ -1628,9 +1628,15 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel Astra H (Z14XEP, Z16XEL, Z18XER) — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-103/01-box-label-0580314195.png",
+    images: [
+      "/images/catalog/opel-103/01-box-label-0580314195.png",
+      "/images/catalog/opel-103/02-box-front.png",
+      "/images/catalog/opel-103/03-pump-assembly.png",
+      "/images/catalog/opel-103/04-pump-detail.png",
+    ],
     description:
-      "Электробензонасос в сборе Bosch **0 580 314 195** (в выгрузке — 0580314195). При слабом давлении в рампе, длительном пуске и отказе насоса заменяйте в сборе с сеточкой/прокладкой по регламенту. Перед заказом сверяйте применение по VIN.",
+      "Электробензонасос в сборе Bosch **0 580 314 195** (в выгрузке — 0580314195). На этикетке коробки — **0 580 314 195**; в галерее — коробка, затем насос в сборе. При слабом давлении в рампе, длительном пуске и отказе насоса заменяйте в сборе с сеточкой/прокладкой по регламенту. Перед заказом сверяйте применение по VIN.",
   },
   {
     id: "opel-104",
@@ -1718,6 +1724,39 @@ const OPEL_PILOT_RAW: Array<{
     description:
       "Корпус/коллектор термостата в поставке **PSA Groupe Original Parts**; на упаковке номер **25 192 231**, на детали — наклейка **GM 25192231** (маркировка **>PA66-GF30<** на пластике). В комплектации без самого термостата — сверяйте с каталогом. Родственный номер в линейке — **25192230**. Меняют при трещинах, подсосах ОЖ и некорректной работе охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
     analogIds: ["opel-32"],
+  },
+  {
+    id: "opel-109",
+    name: "Корпус подшипника (BEARING CASING) GM 55564395",
+    sku: "55564395",
+    qty: 20,
+    priceRaw: 4850,
+    brand: "Mopar",
+    country: "Германия",
+    category: "Двигатель",
+    car: "Opel / Chevrolet — уточняйте применение по VIN",
+    image: "/images/catalog/opel-109/01-packaging-mopar-55564395.png",
+    images: ["/images/catalog/opel-109/01-packaging-mopar-55564395.png"],
+    description:
+      "Упаковка **Mopar Genuine**: позиция **BEARING CASING**, номер **55564395** на этикетке. Перед заказом сверяйте применение по VIN или каталогу.",
+  },
+  {
+    id: "opel-110",
+    name: "Крышка клапанная ГБЦ GM 55354237",
+    sku: "55354237",
+    qty: 80,
+    priceRaw: 15200,
+    brand: "GM OE",
+    country: "Уточняется",
+    category: "Двигатель",
+    car: "Opel / Chevrolet Ecotec (Z16XER, Z18XER и др. — по каталогу)",
+    image: "/images/catalog/opel-110/01-cover-top.png",
+    images: [
+      "/images/catalog/opel-110/01-cover-top.png",
+      "/images/catalog/opel-110/02-cover-underside-gm55354237.png",
+    ],
+    description:
+      "Пластиковая клапанная крышка: на обороте отливка **GM 55 354 237**, материал **>PA66 GF35<**. Не путать с крышкой **96889998** для Cruze **F16D4/F18D4**. Замена при трещинах и течи масла — сверяйте номер с установленной деталью и по VIN.",
   },
 ];
 
