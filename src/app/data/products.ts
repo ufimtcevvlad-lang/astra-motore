@@ -711,7 +711,9 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-42/01-box.png",
     images: [
       "/images/catalog/opel-42/01-box.png",
-      "/images/catalog/opel-42/02-seal-face.png",
+      "/images/catalog/opel-42/02-box-label.png",
+      "/images/catalog/opel-42/03-seal-face.png",
+      "/images/catalog/opel-42/04-seal-angle.png",
     ],
     description:
       "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На упаковке и детали типичны обозначения вроде **A/BS RD FPM** и размер **31,5×42×7** мм. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
