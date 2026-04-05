@@ -38,9 +38,14 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
     [n],
   );
 
+  const galleryChrome =
+    "transition-opacity duration-200 max-md:opacity-100 max-md:pointer-events-auto md:opacity-0 md:pointer-events-none md:group-hover/card:opacity-100 md:group-hover/card:pointer-events-auto md:group-focus-within/card:opacity-100 md:group-focus-within/card:pointer-events-auto";
+  const galleryBadgeOpacity =
+    "transition-opacity duration-200 max-md:opacity-100 md:opacity-0 md:group-hover/card:opacity-100 md:group-focus-within/card:opacity-100";
+
   return (
-    <article className="rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
-      <div className="relative aspect-square overflow-hidden bg-white group/card">
+    <article className="group/card rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
+      <div className="relative aspect-square overflow-hidden bg-white">
         <Link
           href={productPath(p)}
           className="absolute inset-3 z-0 block"
@@ -69,7 +74,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
                 e.stopPropagation();
                 go(-1);
               }}
-              className="absolute left-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900/55 text-white shadow-md backdrop-blur-sm transition hover:bg-slate-900/75 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              className={`absolute left-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900/55 text-white shadow-md backdrop-blur-sm transition hover:bg-slate-900/75 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${galleryChrome}`}
             >
               <ChevronLeft className="ml-[-1px]" />
             </button>
@@ -81,12 +86,12 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
                 e.stopPropagation();
                 go(1);
               }}
-              className="absolute right-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900/55 text-white shadow-md backdrop-blur-sm transition hover:bg-slate-900/75 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              className={`absolute right-1 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900/55 text-white shadow-md backdrop-blur-sm transition hover:bg-slate-900/75 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${galleryChrome}`}
             >
               <ChevronRight className="mr-[-1px]" />
             </button>
             <div
-              className="pointer-events-none absolute bottom-1.5 left-1/2 z-20 -translate-x-1/2 rounded-full bg-slate-900/50 px-2 py-0.5 text-[10px] font-semibold text-white tabular-nums backdrop-blur-sm"
+              className={`pointer-events-none absolute bottom-1.5 left-1/2 z-20 -translate-x-1/2 rounded-full bg-slate-900/50 px-2 py-0.5 text-[10px] font-semibold text-white tabular-nums backdrop-blur-sm ${galleryBadgeOpacity}`}
               aria-hidden
             >
               {idx + 1}/{n}
