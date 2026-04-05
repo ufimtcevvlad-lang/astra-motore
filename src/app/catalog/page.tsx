@@ -2,19 +2,20 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { ProductCatalog } from "../components/ProductCatalog";
-import { SITE_URL } from "../lib/site";
+import { SITE_BRAND, SITE_URL } from "../lib/site";
+import { socialShareMetadata } from "../lib/seo";
 
 export const metadata: Metadata = {
   title: "Каталог запчастей",
   description:
     "Каталог GM Shop: автозапчасти GM — Opel и Chevrolet. Поиск по артикулу, группы и витрина по типу детали. Оригинал и аналоги.",
   alternates: { canonical: "/catalog" },
-  openGraph: {
-    title: "Каталог запчастей — GM Shop",
-    description: "Opel и Chevrolet: фильтры, свечи, расходники и другое. Екатеринбург.",
-    url: `${SITE_URL}/catalog`,
-    type: "website",
-  },
+  ...socialShareMetadata({
+    title: `Каталог запчастей — ${SITE_BRAND}`,
+    description:
+      "Opel и Chevrolet: фильтры, свечи, расходники и другое. Поиск по номеру детали. Екатеринбург.",
+    path: "/catalog",
+  }),
 };
 
 export default function CatalogPage() {

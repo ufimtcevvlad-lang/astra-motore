@@ -4,20 +4,22 @@ import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
 import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
 import { products } from "../data/products";
+import { socialShareMetadata } from "../lib/seo";
 import { SITE_URL } from "../lib/site";
+
+const ogTitle = "Запчасти Chevrolet в Екатеринбурге — GM Shop";
+const ogDesc = "Оригинал и аналоги запчастей Chevrolet. Екатеринбург.";
 
 export const metadata: Metadata = {
   title: "Запчасти Chevrolet в Екатеринбурге — купить оригинал и аналоги",
   description:
     "Подбор запчастей Chevrolet в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-chevrolet" },
-  openGraph: {
-    title: "Запчасти Chevrolet в Екатеринбурге — GM Shop",
-    description:
-      "Оригинал и аналоги запчастей Chevrolet. Екатеринбург.",
-    url: `${SITE_URL}/zapchasti-chevrolet`,
-    type: "article",
-  },
+  ...socialShareMetadata({
+    title: ogTitle,
+    description: ogDesc,
+    path: "/zapchasti-chevrolet",
+  }),
 };
 
 export default function ChevroletPage() {

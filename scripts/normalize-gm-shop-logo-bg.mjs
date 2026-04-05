@@ -3,7 +3,6 @@
  * Подгоняет однотонный тёмно-серый фон gm-shop-logo.jpg под цвет шапки (#05070A).
  * Запуск: node scripts/normalize-gm-shop-logo-bg.mjs
  */
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "../lib/use-is-client";
 import { ProductImage } from "./ProductImage";
 
 type Props = {
@@ -41,15 +42,12 @@ export function ProductImageGallery({ alt, urls }: Props) {
   const list = urls.filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const current = list[active] ?? list[0];
+  const mounted = useIsClient();
+  const slideIndex = list.length === 0 ? 0 : Math.min(active, list.length - 1);
+  const current = list[slideIndex];
   const touchStartX = useRef<number | null>(null);
   const lightboxTouchStartX = useRef<number | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -117,7 +115,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
             className="fixed inset-0 z-[400] flex items-center justify-center bg-black/90 p-3 sm:p-6"
             role="dialog"
             aria-modal="true"
-            aria-label={`Просмотр: ${list.length > 1 ? `фото ${active + 1} из ${list.length}` : alt}`}
+            aria-label={`Просмотр: ${list.length > 1 ? `фото ${slideIndex + 1} из ${list.length}` : alt}`}
             onClick={() => setLightboxOpen(false)}
           >
             <button
@@ -161,7 +159,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
                   className="pointer-events-none absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm"
                   aria-hidden
                 >
-                  {active + 1} / {list.length}
+                  {slideIndex + 1} / {list.length}
                 </div>
               </>
             ) : null}
@@ -175,7 +173,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
               <ProductImage
                 key={current}
                 src={current}
-                alt={list.length > 1 ? `${alt} — фото ${active + 1} из ${list.length}` : alt}
+                alt={list.length > 1 ? `${alt} — фото ${slideIndex + 1} из ${list.length}` : alt}
                 fill
                 className="object-contain object-center"
                 sizes="100vw"
@@ -213,14 +211,14 @@ export function ProductImageGallery({ alt, urls }: Props) {
       onTouchEnd={onTouchEnd}
       role={list.length > 1 ? "region" : undefined}
       aria-roledescription={list.length > 1 ? "Галерея фотографий" : undefined}
-      aria-label={list.length > 1 ? `${alt}, фото ${active + 1} из ${list.length}. Стрелки или свайп для переключения.` : undefined}
+      aria-label={list.length > 1 ? `${alt}, фото ${slideIndex + 1} из ${list.length}. Стрелки или свайп для переключения.` : undefined}
     >
       <div className="absolute inset-3">
         <div className="relative h-full w-full">
           <ProductImage
             key={current}
             src={current}
-            alt={list.length > 1 ? `${alt} — фото ${active + 1} из ${list.length}` : alt}
+            alt={list.length > 1 ? `${alt} — фото ${slideIndex + 1} из ${list.length}` : alt}
             fill
             className="pointer-events-none object-contain object-center"
             sizes="(max-width: 768px) 100vw, 440px"
@@ -257,7 +255,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
             className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-slate-900/45 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
             aria-hidden
           >
-            {active + 1} / {list.length}
+            {slideIndex + 1} / {list.length}
           </div>
         </>
       ) : null}
@@ -283,11 +281,11 @@ export function ProductImageGallery({ alt, urls }: Props) {
             key={`${src}-${idx}`}
             type="button"
             role="tab"
-            aria-selected={idx === active}
+            aria-selected={idx === slideIndex}
             aria-label={`Показать фото ${idx + 1}`}
             onClick={() => setActive(idx)}
             className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
-              idx === active ? "border-amber-500 ring-1 ring-amber-400/40" : "border-slate-200 hover:border-slate-300"
+              idx === slideIndex ? "border-amber-500 ring-1 ring-amber-400/40" : "border-slate-200 hover:border-slate-300"
             }`}
           >
             <div className="absolute inset-1">

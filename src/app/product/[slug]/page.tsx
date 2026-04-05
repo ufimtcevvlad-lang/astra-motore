@@ -8,6 +8,13 @@ import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
+import {
+  OFFER_PRICE_VALID_UNTIL,
+  SEO_LOCALE,
+  SITE_LANGUAGE,
+  defaultOgImages,
+  truncateMetaDescription,
+} from "../../lib/seo";
 import { SITE_BRAND, SITE_URL } from "../../lib/site";
 
 export const dynamicParams = false;
@@ -36,21 +43,39 @@ export async function generateMetadata({
   }
 
   const title = `${product.name} — ${product.brand}`;
-  const description = `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Страна: ${product.country}. Артикул: ${product.sku}.`;
+  const description = truncateMetaDescription(
+    `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Артикул: ${product.sku}.`,
+  );
   const url = productPath(product);
   const galleryUrls = getProductImageUrls(product);
-  const ogImages = galleryUrls.map((u) => ({ url: `${SITE_URL}${u}` }));
+  const ogImages =
+    galleryUrls.length > 0
+      ? galleryUrls.map((u) => ({ url: `${SITE_URL}${u}` }))
+      : defaultOgImages();
+
+  const keywords = [
+    product.sku,
+    product.brand,
+    product.category,
+    "запчасть Opel",
+    "запчасть Chevrolet",
+    "GM Shop",
+    "Екатеринбург",
+  ];
 
   return {
     title,
     description,
+    keywords,
     alternates: { canonical: url },
     openGraph: {
       title,
       description,
       url: `${SITE_URL}${url}`,
-      type: "article",
-      images: ogImages.length > 0 ? ogImages : undefined,
+      siteName: SITE_BRAND,
+      locale: SEO_LOCALE,
+      type: "website",
+      images: ogImages,
     },
   };
 }
@@ -99,8 +124,11 @@ export default function ProductPage({
     name: product.name,
     description: product.description,
     sku: product.sku,
+    category: product.category,
     brand: { "@type": "Brand", name: product.brand },
     image: imageUrls.length > 0 ? imageUrls.map((u) => SITE_URL + u) : undefined,
+    itemCondition: "https://schema.org/NewCondition",
+    inLanguage: SITE_LANGUAGE,
     offers: {
       "@type": "Offer",
       priceCurrency: "RUB",
@@ -108,6 +136,8 @@ export default function ProductPage({
       availability:
         product.inStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       url: SITE_URL + canonicalPath,
+      itemCondition: "https://schema.org/NewCondition",
+      priceValidUntil: OFFER_PRICE_VALID_UNTIL,
     },
   };
 

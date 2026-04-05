@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
 import { CookieConsentBanner } from "./components/CookieConsentBanner";
@@ -6,6 +6,14 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
 import { MetrikaDeferred } from "./components/MetrikaDeferred";
+import { getOrganizationJsonLd, getWebSiteJsonLd } from "./lib/schema-jsonld";
+import {
+  DEFAULT_META_DESCRIPTION,
+  SEO_KEYWORDS,
+  SEO_LOCALE,
+  defaultOgImages,
+  defaultRobots,
+} from "./lib/seo";
 import { SITE_BRAND, SITE_URL } from "./lib/site";
 import "./globals.css";
 
@@ -21,6 +29,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  keywords: SEO_KEYWORDS,
+  authors: [{ name: SITE_BRAND, url: SITE_URL }],
+  creator: SITE_BRAND,
+  publisher: SITE_BRAND,
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
@@ -29,36 +41,30 @@ export const metadata: Metadata = {
     default: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге`,
     template: `%s — ${SITE_BRAND}`,
   },
-  description:
-    `Магазин ${SITE_BRAND}: автозапчасти GM — Opel и Chevrolet. Оригинал и качественные аналоги, доставка по Екатеринбургу.`,
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
+  description: DEFAULT_META_DESCRIPTION,
+  robots: defaultRobots,
   openGraph: {
     title: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet)`,
-    description:
-      "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
+    description: DEFAULT_META_DESCRIPTION,
     url: SITE_URL,
     siteName: SITE_BRAND,
+    locale: SEO_LOCALE,
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet)`,
-    description:
-      "Автозапчасти GM — Opel и Chevrolet. Оригинал и аналоги, доставка по Екатеринбургу.",
+    images: defaultOgImages(),
   },
   verification: {
     yandex: "d754ed4e8ec9f534",
   },
+  category: "ecommerce",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#05070A" },
+  ],
 };
 
 export default function RootLayout({
@@ -69,41 +75,8 @@ export default function RootLayout({
   const maintenanceMode = process.env.MAINTENANCE_MODE === "1";
   const maintenanceMessage = process.env.MAINTENANCE_MESSAGE || "Ведутся работы по улучшению сайта.";
 
-  const organizationLd = {
-    "@context": "https://schema.org",
-    "@type": "AutoPartsStore",
-    name: SITE_BRAND,
-    url: SITE_URL,
-    telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
-    areaServed: "Екатеринбург",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Екатеринбург",
-      streetAddress: "ул. Готвальда, 9",
-      addressCountry: "RU",
-    },
-    openingHoursSpecification: [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "10:00",
-        closes: "20:00",
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Saturday", "Sunday"],
-        opens: "10:00",
-        closes: "18:00",
-      },
-    ],
-  };
-
-  const websiteLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE_BRAND,
-    url: SITE_URL,
-  };
+  const organizationLd = getOrganizationJsonLd();
+  const websiteLd = getWebSiteJsonLd();
 
   return (
     <html lang="ru">

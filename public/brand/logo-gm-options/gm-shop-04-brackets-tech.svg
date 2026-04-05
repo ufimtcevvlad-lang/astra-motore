@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 72" fill="none" role="img" aria-label="GM SHOP variant 4">
+  <path stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 14H6v44h4M78 14h4v44h-4" opacity="0.95"/>
+  <text x="88" y="44" font-family="system-ui,-apple-system,sans-serif" font-size="24" font-weight="800" fill="#f8fafc" letter-spacing="0.14em">GM SHOP</text>
+  <path stroke="#475569" stroke-width="1" d="M88 52h200" opacity="0.6"/>
+  <text x="88" y="64" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="600" fill="#64748b" letter-spacing="0.2em">ЗАПЧАСТИ GM</text>
+  <rect x="252" y="18" width="42" height="34" rx="6" stroke="#fbbf24" stroke-width="1.5" fill="rgba(251,191,36,0.12)"/>
+  <text x="273" y="41" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="17" font-weight="800" fill="#fbbf24">66</text>
+</svg>

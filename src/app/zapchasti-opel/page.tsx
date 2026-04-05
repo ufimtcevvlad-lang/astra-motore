@@ -5,20 +5,22 @@ import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
 import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
 import { products } from "../data/products";
 
+import { socialShareMetadata } from "../lib/seo";
 import { SITE_URL } from "../lib/site";
+
+const ogTitle = "Запчасти Opel в Екатеринбурге — GM Shop";
+const ogDesc = "Оригинал и аналоги запчастей Opel. Екатеринбург.";
 
 export const metadata: Metadata = {
   title: "Запчасти Opel в Екатеринбурге — купить оригинал и аналоги",
   description:
     "Подбор запчастей Opel в Екатеринбурге по артикулу. Оригинальные детали и качественные аналоги. Доставка и консультация по телефону.",
   alternates: { canonical: "/zapchasti-opel" },
-  openGraph: {
-    title: "Запчасти Opel в Екатеринбурге — GM Shop",
-    description:
-      "Оригинал и аналоги запчастей Opel. Екатеринбург.",
-    url: `${SITE_URL}/zapchasti-opel`,
-    type: "article",
-  },
+  ...socialShareMetadata({
+    title: ogTitle,
+    description: ogDesc,
+    path: "/zapchasti-opel",
+  }),
 };
 
 export default function OpelPage() {

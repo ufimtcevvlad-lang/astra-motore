@@ -3,13 +3,22 @@ import type { Metadata } from "next";
 import { BrandWordmark } from "./components/BrandWordmark";
 import { HomeFeatured } from "./components/HomeFeatured";
 import { HOME_FEATURED_PRODUCTS } from "./data/products";
-import { SITE_BRAND } from "./lib/site";
+import { DEFAULT_META_DESCRIPTION, SEO_LOCALE, defaultOgImages } from "./lib/seo";
+import { SITE_BRAND, SITE_URL } from "./lib/site";
 
 export const metadata: Metadata = {
   title: "Главная",
-  description:
-    `${SITE_BRAND} — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.`,
+  description: `${SITE_BRAND} — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Каталог и консультация менеджера.`,
   alternates: { canonical: "/" },
+  openGraph: {
+    title: `${SITE_BRAND} — главная`,
+    description: DEFAULT_META_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_BRAND,
+    locale: SEO_LOCALE,
+    type: "website",
+    images: defaultOgImages(),
+  },
 };
 
 export default function HomePage() {

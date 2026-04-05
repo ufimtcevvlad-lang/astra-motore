@@ -4,6 +4,7 @@ import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
 import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
 import { products } from "../data/products";
+import { socialShareMetadata } from "../lib/seo";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
   description:
     "Запчасти GM в Екатеринбурге: Opel и Chevrolet. Оригинал и аналоги. Доставка и консультация.",
   alternates: { canonical: "/zapchasti-gm" },
+  ...socialShareMetadata({
+    title: "Запчасти GM (Opel, Chevrolet) — GM Shop",
+    description: "Оригинал и аналоги GM в Екатеринбурге. Каталог и доставка.",
+    path: "/zapchasti-gm",
+  }),
 };
 
 export default function GmPage() {
