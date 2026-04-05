@@ -3,11 +3,13 @@ name: catalog-product-media
 description: >-
   Product photo workflow for autoparts-shop: consistent 1:1 catalog tiles with
   object-fit contain on #fff, white photobox alignment, paths under
-  public/images/catalog/{id}/, SKU match to products.ts, performance at scale
-  (~10k+ SKUs, many images). Use when adding or changing catalog images, product
-  cards, galleries, Next/Image sizing, thumbnails, batch assets, or when the
-  user mentions фото каталога, карточка товара, галерея, превью, оптимизация
-  картинок, photobox, артикул на фото, opel-*, images in products.ts.
+  public/images/catalog/{id}/, SKU match to products.ts, mandatory Sharp
+  normalization (including PNG recompress) after any new upload, performance
+  at scale (~10k+ SKUs, many images). Use when adding or changing catalog
+  images, product cards, galleries, Next/Image sizing, thumbnails, batch
+  assets, or when the user mentions фото каталога, карточка товара, галерея,
+  превью, оптимизация картинок, photobox, артикул на фото, opel-*, images in
+  products.ts.
 ---
 
 # Каталог: медиа товаров (Astra Motors / autoparts-shop)
@@ -27,6 +29,20 @@ description: >-
 4. **Тёмные дропдауны** (поиск, превью корзины): область превью товара — **белый квадрат** под фото, чтобы совпадать с фотобоксом.
 5. **Исходники:** фотобокс; не удалять обязательные маркировки OE без запроса.
 
+## Сжатие при загрузке (обязательно)
+
+После **каждого** добавления или замены файлов в `public/images/catalog/` агент **обязан** прогнать нормализацию, чтобы в репозиторий не попадали «сырые» снимки с телефона/сканера без пережатия.
+
+1. Выполнить из корня репозитория:
+
+   `npm run catalog:normalize-images:recompress-png`
+
+   (это `node scripts/normalize-catalog-images.mjs --recompress-png`: EXIF-поворот, даунскейл стороны **>1600px**, пережатие **PNG** в том числе для кадров уже меньше 1600px; JPEG проходит через пайплайн; WebP без уменьшения по-прежнему можно не трогать — см. `reference.md`).
+
+2. Скрипт сам не подменяет файл, если после перекодирования он стал **больше** исходника более чем на **5%** (тогда кадр пропускается).
+
+3. Без этого шага задача по новым фото **не считается завершённой** (вместе с проверкой путей и `npm run typecheck`).
+
 ## Производительность
 
 - Список: не отдавать гигантские оригиналы; целиться в миниатюры (длинная сторона **~300–480px** в идеале на этапе пайплайна); `sizes` под колонку; `lazy` по умолчанию.
@@ -45,9 +61,11 @@ description: >-
 
 ## Алгоритм
 
-1. Найти все `ProductImage` / `Image` для товаров.
-2. Выставить **square + white + contain** согласно этому скиллу.
-3. `npm run typecheck`.
+1. Положить файлы в `public/images/catalog/{productId}/`, имена `01-…`, `02-…`.
+2. **`npm run catalog:normalize-images:recompress-png`** — обязательно после новых/заменённых фото.
+3. В `products.ts` проставить `image` / `images` по **`sku` с этикетки**; наименования карточки не менять без явной просьбы пользователя.
+4. Найти все `ProductImage` / `Image` для товаров при правках UI и выставить **square + white + contain** согласно этому скиллу.
+5. `npm run typecheck`.
 
 ## Ограничения
 

@@ -70,3 +70,31 @@ export function getLegacyProductRedirects(): Array<{
     permanent: true as const,
   }));
 }
+
+/**
+ * После слияния фото: карточки opel-111–opel-115 удалены, снимки на opel-27/37/38/44/51.
+ * Старые slug и прямые ссылки /product/opel-11x ведём на канонический URL.
+ */
+export function getRemovedDuplicateProductRedirects(): Array<{
+  source: string;
+  destination: string;
+  permanent: true;
+}> {
+  const to = (id: string): string => {
+    const p = products.find((x) => x.id === id);
+    return p ? productPath(p) : "/";
+  };
+  const permanent = true as const;
+  return [
+    { source: "/product/opel-111", destination: to("opel-37"), permanent },
+    { source: "/product/opel-112", destination: to("opel-38"), permanent },
+    { source: "/product/opel-113", destination: to("opel-27"), permanent },
+    { source: "/product/opel-114", destination: to("opel-44"), permanent },
+    { source: "/product/opel-115", destination: to("opel-51"), permanent },
+    { source: "/product/gm-oe-96353007", destination: to("opel-37"), permanent },
+    { source: "/product/mopar-55354563", destination: to("opel-38"), permanent },
+    { source: "/product/opel-oe-24583232", destination: to("opel-44"), permanent },
+    { source: "/product/gm-oe-55559352", destination: to("opel-51"), permanent },
+    { source: "/product/gm-oe-25185121-opel-27", destination: to("opel-27"), permanent },
+  ];
+}

@@ -5,6 +5,9 @@
  * - вписать в 1600×1600 без увеличения мелких
  * - PNG: сжатие; JPEG: mozjpeg; WebP: quality 85
  * Если результат крупнее исходника >5% — файл не трогаем.
+ *
+ * Флаги:
+ *   --recompress-png  — перекодировать PNG уже <1600px (по умолчанию такие файлы не трогаем).
  */
 import sharp from "sharp";
 import { readdir, stat, unlink, rename } from "fs/promises";
@@ -30,7 +33,7 @@ async function walk(dir) {
   return out;
 }
 
-async function processFile(file) {
+async function processFile(file, { recompressPng = false } = {}) {
   const before = (await stat(file)).size;
   const ext = path.extname(file).toLowerCase();
   const tmp = file + ".opt.tmp";
@@ -40,8 +43,11 @@ async function processFile(file) {
   const h = meta.height ?? 0;
   const needsResize = w > MAX_EDGE || h > MAX_EDGE;
 
-  // PNG/WebP при типичном размере <1600 уже сжаты; повторный PNG encode часто раздувает файл — пропускаем.
-  if (!needsResize && (ext === ".png" || ext === ".webp")) {
+  // WebP и PNG без даунскейла: по умолчанию не трогаем (перекодирование часто раздувает файл).
+  if (!needsResize && ext === ".webp") {
+    return { file, before, after: before, skipped: "no-resize-lossless" };
+  }
+  if (!needsResize && ext === ".png" && !recompressPng) {
     return { file, before, after: before, skipped: "no-resize-lossless" };
   }
 
@@ -71,6 +77,11 @@ async function processFile(file) {
 }
 
 async function main() {
+  const recompressPng = process.argv.includes("--recompress-png");
+  if (recompressPng) {
+    console.log("→ Режим --recompress-png: мелкие PNG тоже перекодируем (если выход меньше исходника).");
+  }
+
   const files = await walk(ROOT);
   console.log(`→ Найдено файлов: ${files.length}`);
   let saved = 0;
@@ -80,7 +91,7 @@ async function main() {
 
   for (const file of files) {
     try {
-      const r = await processFile(file);
+      const r = await processFile(file, { recompressPng });
       if (r.skipped === "larger-output") {
         skippedLarger++;
         console.log(`  skip (больше исходника): ${path.relative(ROOT, r.file)}`);
