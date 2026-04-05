@@ -7,6 +7,7 @@ import { getProductImageUrls, products } from "../../data/products";
 import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
+import { plainProductDescription, ProductDescription } from "../../components/ProductDescription";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -44,7 +45,7 @@ export async function generateMetadata({
 
   const title = `${product.name} — ${product.brand}`;
   const description = truncateMetaDescription(
-    `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Артикул: ${product.sku}.`,
+    `${plainProductDescription(product.description)} Категория: ${product.category}. Бренд: ${product.brand}. Артикул: ${product.sku}.`,
   );
   const url = productPath(product);
   const galleryUrls = getProductImageUrls(product);
@@ -122,7 +123,7 @@ export default function ProductPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description: plainProductDescription(product.description),
     sku: product.sku,
     category: product.category,
     brand: { "@type": "Brand", name: product.brand },
@@ -172,7 +173,7 @@ export default function ProductPage({
             {product.category}
           </p>
           <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
-          <p className="text-sm text-slate-600">{product.description}</p>
+          <ProductDescription text={product.description} />
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
             <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
               Номер запчасти:{" "}
