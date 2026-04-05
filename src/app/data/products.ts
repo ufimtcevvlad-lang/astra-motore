@@ -702,9 +702,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "Польша",
     category: "Масляные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-41/01-filtron-op570-box.png",
+    images: [
+      "/images/catalog/opel-41/01-filtron-op570-box.png",
+      "/images/catalog/opel-41/02-filtron-op570-filter.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул OP570. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Масляный фильтр **FILTRON OP 570** (артикул в каталоге **OP570**): на упаковке маркировка **OP 570**, тип **OIL FILTER** / масляный фильтр, **Made in Poland** на корпусе. Типичное применение в выгрузке — **F14D3, F16D3, T18SED** (Nexia/Lanos и др.); перед заказом сверяйте номер с установленным фильтром и применение по VIN.",
   },
   {
     id: "opel-42",
