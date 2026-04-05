@@ -27,4 +27,3 @@ export function ProductClient({ product }: { product: Product }) {
     </div>
   );
 }
-

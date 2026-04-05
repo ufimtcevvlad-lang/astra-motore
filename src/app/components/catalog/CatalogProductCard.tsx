@@ -4,6 +4,7 @@ import Link from "next/link";
 import { memo, useCallback, useState } from "react";
 import { ProductImage } from "../ProductImage";
 import { getProductImageUrls, type Product } from "../../data/products";
+import { productPath } from "../../lib/product-slug";
 
 function ChevronLeft({ className }: { className?: string }) {
   return (
@@ -41,7 +42,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
     <article className="rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
       <div className="relative aspect-square overflow-hidden bg-white group/card">
         <Link
-          href={`/product/${p.id}`}
+          href={productPath(p)}
           className="absolute inset-3 z-0 block"
           aria-label={`${p.name}, арт. ${p.sku} — подробнее`}
         >
@@ -105,7 +106,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
         <p className="text-xs text-slate-600">Арт. {p.sku}</p>
         <div className="mt-auto pt-1">
           <Link
-            href={`/product/${p.id}`}
+            href={productPath(p)}
             className="inline-flex w-full justify-center rounded-lg bg-amber-400 px-3 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300"
           >
             Подробнее

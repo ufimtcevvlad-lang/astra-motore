@@ -1,9 +1,12 @@
 import { products, type Product } from "../data/products";
 import { sortProductsById } from "../data/catalog-sections";
+import { getProductSlug } from "./product-slug";
 
 /** Лёгкий объект для API и подсказок (без длинного description) */
 export type SearchResultItem = {
   id: string;
+  /** Канонический сегмент URL карточки */
+  slug: string;
   sku: string;
   name: string;
   brand: string;
@@ -73,6 +76,7 @@ function relevanceScore(p: IndexedProduct, q: string): number {
 function toSearchResultItem(p: Product): SearchResultItem {
   return {
     id: p.id,
+    slug: getProductSlug(p),
     sku: p.sku,
     name: p.name,
     brand: p.brand,

@@ -206,7 +206,7 @@ export function HeaderSearchAutocomplete() {
                 {results.map((p) => (
                   <Link
                     key={p.id}
-                    href={`/product/${p.id}`}
+                    href={`/product/${p.slug}`}
                     role="option"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 border-b border-slate-800/60 px-3 py-2.5 transition last:border-b-0 hover:bg-slate-800/40"

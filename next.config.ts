@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { getLegacyProductRedirects } from "./src/app/lib/product-slug";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -20,6 +21,7 @@ const nextConfig: NextConfig = {
       { source: "/podbor-po-vin", destination: "/", permanent: true },
       { source: "/zapchasti-cadillac", destination: "/zapchasti-gm", permanent: true },
       { source: "/zapchasti-hummer", destination: "/zapchasti-gm", permanent: true },
+      ...getLegacyProductRedirects(),
     ];
   },
   async headers() {

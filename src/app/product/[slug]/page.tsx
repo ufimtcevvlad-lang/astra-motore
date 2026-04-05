@@ -5,26 +5,25 @@ import { CatalogChrome } from "../../components/catalog/CatalogChrome";
 import { ProductImageGallery } from "../../components/ProductImageGallery";
 import { getProductImageUrls, products } from "../../data/products";
 import { getCheaperAnalogs } from "../../lib/product-analogs";
+import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
 import { SITE_URL } from "../../lib/site";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
+  return products.map((p) => ({ slug: getProductSlug(p) }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { id?: string } | Promise<{ id?: string }>;
+  params: { slug?: string } | Promise<{ slug?: string }>;
 }): Promise<Metadata> {
   const resolved = (await params) || {};
-  const id = resolved?.id;
+  const slug = resolved?.slug;
 
-  const product = id
-    ? products.find((p) => String(p.id) === String(id))
-    : undefined;
+  const product = slug ? getProductBySlug(slug) : undefined;
 
   if (!product) {
     return {
@@ -32,13 +31,13 @@ export async function generateMetadata({
       description:
         "Подбор запчастей по артикулу. Оригинальные детали и качественные аналоги.",
       robots: { index: true, follow: true },
-      alternates: { canonical: "/product" },
+      alternates: { canonical: "/catalog" },
     };
   }
 
   const title = `${product.name} — ${product.brand}`;
   const description = `${product.description} Категория: ${product.category}. Бренд: ${product.brand}. Страна: ${product.country}. Артикул: ${product.sku}.`;
-  const url = `/product/${product.id}`;
+  const url = productPath(product);
   const galleryUrls = getProductImageUrls(product);
   const ogImages = galleryUrls.map((u) => ({ url: `${SITE_URL}${u}` }));
 
@@ -59,14 +58,15 @@ export async function generateMetadata({
 export default function ProductPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = use(params);
-  const product = products.find((p) => String(p.id) === String(id));
+  const { slug } = use(params);
+  const product = getProductBySlug(slug);
   if (!product) return notFound();
 
   const cheaperAnalogs = getCheaperAnalogs(product, products);
   const imageUrls = getProductImageUrls(product);
+  const canonicalPath = productPath(product);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -88,7 +88,7 @@ export default function ProductPage({
         "@type": "ListItem",
         position: 3,
         name: product.name,
-        item: SITE_URL + `/product/${product.id}`,
+        item: SITE_URL + canonicalPath,
       },
     ],
   };
@@ -107,7 +107,7 @@ export default function ProductPage({
       price: product.price,
       availability:
         product.inStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      url: SITE_URL + `/product/${product.id}`,
+      url: SITE_URL + canonicalPath,
     },
   };
 
@@ -164,7 +164,7 @@ export default function ProductPage({
 
       {cheaperAnalogs.length > 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
+          <h2 className="text-lg font-sem-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
             Аналоги дешевле
           </h2>
           <p className="text-xs text-slate-500">
@@ -174,7 +174,7 @@ export default function ProductPage({
             {cheaperAnalogs.map((a) => (
               <li key={a.id}>
                 <Link
-                  href={`/product/${a.id}`}
+                  href={productPath(a)}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-slate-200 px-4 py-3 hover:border-amber-300 hover:bg-amber-50/40 transition"
                 >
                   <div>

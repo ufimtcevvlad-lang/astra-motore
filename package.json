@@ -11,7 +11,7 @@
     "metrika:daily": "node scripts/metrika-daily.mjs",
     "bot:telegram": "node scripts/telegram-bot.mjs",
     "logs:rotate": "node scripts/rotate-data-logs.mjs",
-    "indexnow:send": "node scripts/indexnow-send.mjs",
+    "indexnow:send": "tsx scripts/indexnow-send.ts",
     "opel:excel-preview": "node scripts/opel-excel-to-ts.mjs",
     "catalog:images": "node scripts/download-catalog-images-curated.mjs",
     "catalog:normalize-images": "node scripts/normalize-catalog-images.mjs",
@@ -32,6 +32,7 @@
     "eslint-config-next": "16.1.6",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "xlsx": "^0.18.5"
   }
