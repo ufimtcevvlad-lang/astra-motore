@@ -96,5 +96,7 @@ export function getRemovedDuplicateProductRedirects(): Array<{
     { source: "/product/opel-oe-24583232", destination: to("opel-44"), permanent },
     { source: "/product/gm-oe-55559352", destination: to("opel-51"), permanent },
     { source: "/product/gm-oe-25185121-opel-27", destination: to("opel-27"), permanent },
+    /** opel-46: sku на фото/коробке ZFR6U9 вместо внутреннего 90318 */
+    { source: "/product/ngk-90318", destination: to("opel-46"), permanent },
   ];
 }

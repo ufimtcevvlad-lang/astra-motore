@@ -543,9 +543,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-31/01-mopar-55558112-pack.png",
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55558112. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "На фото — оригинальная упаковка **Mopar Genuine Parts**: позиция **O-RING**, номер на этикетке **55 558 112** (**55558112**), **Qty 1**, **Made in IT**. Артикул в карточке совпадает с маркировкой на пакете. Позиция из выгрузки «топ 100 продаж Opel»; перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-32",
@@ -781,16 +781,22 @@ const OPEL_PILOT_RAW: Array<{
   {
     id: "opel-46",
     name: "Свеча зажигания NGK ZFR6U9 (идентичны 25193474)",
-    sku: "90318",
+    sku: "ZFR6U9",
     qty: 100,
     priceRaw: 500.25,
     brand: "NGK",
     country: "Япония / ЕС",
     category: "Свечи и зажигание",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-46/01-ngk-zfr6u9-box.png",
+    images: [
+      "/images/catalog/opel-46/01-ngk-zfr6u9-box.png",
+      "/images/catalog/opel-46/02-ngk-zfr6u9-plug.png",
+      "/images/catalog/opel-46/03-ngk-zfr6u9-plug-alt.png",
+      "/images/catalog/opel-46/04-ngk-zfr6u9-plug-alt2.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 90318. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Свеча зажигания **NGK**; на коробке маркировка **ZFR6U-9** (в каталоге **ZFR6U9**), тип **COPPER CORE**. На корпусе свечи — **JAPAN**. Кросс по наименованию карточки — **25193474** (GM). Меняют комплектом по регламенту ТО; перед заказом сверяйте применение по VIN.",
   },
   {
     id: "opel-47",
@@ -835,9 +841,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-49/01-gm-55578957-pack.png",
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55578957. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Упаковка **GM Genuine Parts**: **SEAL, ENG COOL THERM HSG**, артикул **55578957**, **QTY 10**, группа **GR. 1.252**, **MADE IN KOREA** — чёрные уплотнения корпуса термостата в пакете. Номер на этикетке совпадает с **sku** карточки. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-50",
@@ -976,9 +982,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-58/01-gm-13370133-label.png",
+    images: [
+      "/images/catalog/opel-58/01-gm-13370133-label.png",
+      "/images/catalog/opel-58/02-gm-13370133-side.png",
+    ],
     description:
-      "Позиция из выгрузки «топ 100 продаж Opel». Артикул 13370133. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
+      "Расширительный бачок ОЖ с датчиком; на этикетке **GM# 13370133**, **Opel Automobile GmbH**, **Qty 1**, **Made in Slovakia**. Второй кадр — вид сбоку (горловина, штуцер, разъём датчика). **sku** карточки совпадает с номером на белой наклейке. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-59",
