@@ -15,7 +15,8 @@
     "indexnow:send": "tsx scripts/indexnow-send.ts",
     "opel:excel-preview": "node scripts/opel-excel-to-ts.mjs",
     "catalog:images": "node scripts/download-catalog-images-curated.mjs",
-    "catalog:normalize-images": "node scripts/normalize-catalog-images.mjs",
+    "catalog:normalize-images": "node scripts/normalize-catalog-images.mjs --to-webp",
+    "catalog:normalize-images:legacy": "node scripts/normalize-catalog-images.mjs",
     "catalog:normalize-images:recompress-png": "node scripts/normalize-catalog-images.mjs --recompress-png",
     "catalog:export-xlsx": "tsx scripts/export-products-xlsx.ts",
     "deploy:vps": "./scripts/deploy-vps.sh"

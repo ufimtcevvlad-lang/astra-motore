@@ -4,7 +4,8 @@ description: >-
   Product photo workflow for autoparts-shop: consistent 1:1 catalog tiles with
   object-fit contain on #fff, white photobox alignment, paths under
   public/images/catalog/{id}/, SKU match to products.ts, mandatory Sharp
-  normalization (including PNG recompress) after any new upload, performance
+  normalization to WebP (resize + lossy, auto patch products.ts) after any new
+  upload, performance
   at scale (~10k+ SKUs, many images). Use when adding or changing catalog
   images, product cards, galleries, Next/Image sizing, thumbnails, batch
   assets, or when the user mentions фото каталога, карточка товара, галерея,
@@ -31,17 +32,19 @@ description: >-
 
 ## Сжатие при загрузке (обязательно)
 
-После **каждого** добавления или замены файлов в `public/images/catalog/` агент **обязан** прогнать нормализацию, чтобы в репозиторий не попадали «сырые» снимки с телефона/сканера без пережатия.
+После **каждого** добавления или замены файлов в `public/images/catalog/` агент **обязан** прогнать нормализацию: так фото занимают меньше места на диске, а этикетки остаются читаемыми (WebP ~quality 86, длинная сторона до **1600px**).
 
 1. Выполнить из корня репозитория:
 
-   `npm run catalog:normalize-images:recompress-png`
+   `npm run catalog:normalize-images`
 
-   (это `node scripts/normalize-catalog-images.mjs --recompress-png`: EXIF-поворот, даунскейл стороны **>1600px**, пережатие **PNG** в том числе для кадров уже меньше 1600px; JPEG проходит через пайплайн; WebP без уменьшения по-прежнему можно не трогать — см. `reference.md`).
+   Это `node scripts/normalize-catalog-images.mjs --to-webp`: поворот по EXIF, вписывание в **1600×1600** без апскейла, прозрачный PNG — на белый фон **#fff**, сохранение в **`.webp`**, исходные `.png`/`.jpg`/`.jpeg` удаляются; уже **`.webp`** перекодируются на месте. Пути в **`src/app/data/products.ts`** и **`public/images/catalog/commons-sources.json`** скрипт **подставляет сам** (`.png`/`.jpg` → `.webp`).
 
-2. Скрипт сам не подменяет файл, если после перекодирования он стал **больше** исходника более чем на **5%** (тогда кадр пропускается).
+2. Проверка без записи: `node scripts/normalize-catalog-images.mjs --to-webp --dry-run`.
 
-3. Без этого шага задача по новым фото **не считается завершённой** (вместе с проверкой путей и `npm run typecheck`).
+3. Старый режим без WebP (только если явно нужно): `npm run catalog:normalize-images:legacy` или `…:recompress-png` — см. `reference.md`.
+
+4. Без шага п.1 задача по новым фото **не считается завершённой** (плюс проверка путей и `npm run typecheck`).
 
 ## Производительность
 
@@ -62,7 +65,7 @@ description: >-
 ## Алгоритм
 
 1. Положить файлы в `public/images/catalog/{productId}/`, имена `01-…`, `02-…`.
-2. **`npm run catalog:normalize-images:recompress-png`** — обязательно после новых/заменённых фото.
+2. **`npm run catalog:normalize-images`** — обязательно после новых/заменённых фото (WebP + автопатч путей).
 3. В `products.ts` проставить `image` / `images` по **`sku` с этикетки**; наименования карточки не менять без явной просьбы пользователя.
 4. Найти все `ProductImage` / `Image` для товаров при правках UI и выставить **square + white + contain** согласно этому скиллу.
 5. `npm run typecheck`.
