@@ -162,7 +162,7 @@ export function HeaderSearchAutocomplete() {
             placeholder="Введите номер или название детали"
             autoComplete="off"
             aria-autocomplete="list"
-            className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-9 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
+            className="min-w-0 flex-1 border-0 bg-transparent py-2 pl-10 pr-9 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
           />
           {value ? (
             <button
@@ -179,7 +179,7 @@ export function HeaderSearchAutocomplete() {
         </div>
         <button
           type="submit"
-            className="shrink-0 rounded-xl bg-amber-400 px-3 py-2.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
+            className="shrink-0 rounded-xl bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
         >
           Найти
         </button>
@@ -270,12 +270,12 @@ export function HeaderSearchAutocompleteFallback() {
           type="search"
           placeholder="Введите номер или название детали"
           autoComplete="off"
-          className="min-w-0 flex-1 border-0 bg-transparent py-2.5 pl-10 pr-3 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
+          className="min-w-0 flex-1 border-0 bg-transparent py-2 pl-10 pr-3 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
         />
       </div>
       <button
         type="submit"
-        className="shrink-0 rounded-xl bg-amber-400 px-3 py-2.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
+        className="shrink-0 rounded-xl bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
       >
         Найти
       </button>

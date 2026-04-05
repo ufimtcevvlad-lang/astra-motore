@@ -6,7 +6,7 @@
  */
 export function BrandLogo() {
   return (
-    <div className="flex min-w-0 items-center py-1">
+    <div className="flex min-w-0 items-center py-0">
       {/* eslint-disable-next-line @next/next/no-img-element -- растровый локап; PNG с фоном под шапку (#05070A), без next/image crop */}
       <img
         src="/brand/gm-shop-logo-header.png"
