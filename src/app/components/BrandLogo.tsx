@@ -2,7 +2,7 @@
 
 /**
  * Логотип шапки: единый растровый локап GM SHOP (GENERAL MOTORS / OPEL · CHEVROLET / 66).
- * Линейный масштаб от базовых высот макета: 0.75 (0.5×1.5 — увеличение в полтора раза от прежнего 0.5).
+ * Линейный масштаб от базовых высот макета: 0.9 (= 0.75 + 0.15). Отступы шапки не меняются.
  */
 export function BrandLogo() {
   return (
@@ -14,7 +14,7 @@ export function BrandLogo() {
         draggable={false}
         loading="eager"
         decoding="async"
-        className="h-[calc(6.75rem*0.75)] w-auto max-w-[min(96vw,calc(640px*0.75))] object-contain object-left sm:h-[calc(8rem*0.75)] sm:max-w-[min(94vw,calc(720px*0.75))] md:h-[calc(9.75rem*0.75)] md:max-w-[min(92vw,calc(800px*0.75))] lg:h-[calc(10.5rem*0.75)]"
+        className="h-[calc(6.75rem*0.9)] w-auto max-w-[min(96vw,calc(640px*0.9))] object-contain object-left sm:h-[calc(8rem*0.9)] sm:max-w-[min(94vw,calc(720px*0.9))] md:h-[calc(9.75rem*0.9)] md:max-w-[min(92vw,calc(800px*0.9))] lg:h-[calc(10.5rem*0.9)]"
       />
     </div>
   );
