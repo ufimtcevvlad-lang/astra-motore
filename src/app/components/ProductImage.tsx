@@ -13,7 +13,11 @@ export function ProductImage({ src, alt, fill, className, sizes, quality = 72 }:
     return (
       <div
         className={className}
-        style={fill ? { position: "absolute", inset: 0, background: "#e2e8f0" } : { aspectRatio: "4/3", background: "#e2e8f0" }}
+        style={
+          fill
+            ? { position: "absolute", inset: 0, background: "#ffffff" }
+            : { aspectRatio: "1/1", background: "#ffffff" }
+        }
         aria-hidden
       />
     );

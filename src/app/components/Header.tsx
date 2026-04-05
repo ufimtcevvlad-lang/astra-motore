@@ -183,8 +183,16 @@ export function Header() {
                       <ul className="max-h-64 space-y-2 overflow-auto pr-1">
                         {items.map((item) => (
                           <li key={item.product.id} className="flex gap-2 rounded-lg border border-slate-700 bg-slate-900/50 p-2">
-                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-slate-700 bg-slate-800">
-                              <Image src={item.product.image} alt={item.product.name} fill sizes="48px" className="object-cover" />
+                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-slate-600 bg-white">
+                              <div className="absolute inset-0.5">
+                                <Image
+                                  src={item.product.image}
+                                  alt={`${item.product.name}, арт. ${item.product.sku}`}
+                                  fill
+                                  sizes="48px"
+                                  className="object-contain object-center"
+                                />
+                              </div>
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="line-clamp-2 text-xs text-slate-100">{item.product.name}</p>

@@ -39,18 +39,22 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
 
   return (
     <article className="rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
-      <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden group/card">
+      <div className="relative aspect-square overflow-hidden bg-white group/card">
         <Link
           href={`/product/${p.id}`}
-          className="absolute inset-0 z-0 block"
-          aria-label={`${p.name} — подробнее`}
+          className="absolute inset-3 z-0 block"
+          aria-label={`${p.name}, арт. ${p.sku} — подробнее`}
         >
           <ProductImage
             key={src}
             src={src}
-            alt={n > 1 ? `${p.name} — фото ${idx + 1} из ${n}` : p.name}
+            alt={
+              n > 1
+                ? `${p.name}, арт. ${p.sku} — фото ${idx + 1} из ${n}`
+                : `${p.name}, арт. ${p.sku}`
+            }
             fill
-            className="object-cover"
+            className="object-contain object-center"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </Link>

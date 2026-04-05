@@ -211,14 +211,16 @@ export function HeaderSearchAutocomplete() {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 border-b border-slate-800/60 px-3 py-2.5 transition last:border-b-0 hover:bg-slate-800/40"
                   >
-                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-800/90 ring-1 ring-slate-700/80">
-                      <ProductImage
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        className="object-cover"
-                        sizes="56px"
-                      />
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-600 bg-white ring-1 ring-slate-700/80">
+                      <div className="absolute inset-0.5">
+                        <ProductImage
+                          src={p.image}
+                          alt={`${p.name}, арт. ${p.sku}`}
+                          fill
+                          className="object-contain object-center"
+                          sizes="56px"
+                        />
+                      </div>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] leading-snug text-slate-200">

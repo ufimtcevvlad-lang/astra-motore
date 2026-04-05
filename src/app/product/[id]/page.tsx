@@ -141,7 +141,7 @@ export default function ProductPage({
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
             {product.category}
           </p>
-          <ProductImageGallery alt={product.name} urls={imageUrls} />
+          <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
           <p className="text-sm text-slate-600">{product.description}</p>
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
             <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">

@@ -254,14 +254,16 @@ export default function CartPage() {
                   key={item.product.id}
                   className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-4 sm:p-4"
                 >
-                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                    <Image
-                      src={item.product.image}
-                      alt={item.product.name}
-                      width={80}
-                      height={80}
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                    <div className="absolute inset-1.5">
+                      <Image
+                        src={item.product.image}
+                        alt={`${item.product.name}, арт. ${item.product.sku}`}
+                        fill
+                        sizes="80px"
+                        className="object-contain object-center"
+                      />
+                    </div>
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
                     <p className="line-clamp-2 text-sm font-semibold text-slate-900 sm:text-base">{item.product.name}</p>
@@ -329,14 +331,16 @@ export default function CartPage() {
             <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
               {recommendations.map((p) => (
                 <article key={p.id} className="rounded-xl border border-slate-200 bg-white p-3">
-                  <div className="relative mb-2 aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                    <Image
-                      src={p.image}
-                      alt={p.name}
-                      fill
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                      className="object-cover"
-                    />
+                  <div className="relative mb-2 aspect-square overflow-hidden rounded-lg border border-slate-200 bg-white">
+                    <div className="absolute inset-2">
+                      <Image
+                        src={p.image}
+                        alt={`${p.name}, арт. ${p.sku}`}
+                        fill
+                        sizes="(max-width: 1024px) 50vw, 25vw"
+                        className="object-contain object-center"
+                      />
+                    </div>
                   </div>
                   <p className="line-clamp-2 min-h-10 text-sm font-medium text-slate-800">{p.name}</p>
                   <p className="mt-1 text-sm font-semibold text-amber-700">{p.price.toLocaleString("ru-RU")} ₽</p>

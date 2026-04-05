@@ -8,9 +8,9 @@ type Props = {
   urls: string[];
 };
 
-/** Рамка ближе к портрету + object-cover — без пустых полос по бокам у вертикальных фото */
+/** Единый квадрат, белый фон, contain — деталь целиком (фотобокс). См. .cursor/skills/catalog-product-media */
 const STAGE =
-  "relative w-full max-w-[min(100%,440px)] mx-auto aspect-[3/4] sm:aspect-[4/5] overflow-hidden rounded-lg bg-slate-200 shadow-inner";
+  "relative w-full max-w-[min(100%,440px)] mx-auto aspect-square overflow-hidden rounded-lg bg-white border border-slate-200/90 shadow-inner";
 
 function ChevronLeft({ className }: { className?: string }) {
   return (
@@ -57,7 +57,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
   };
 
   if (list.length === 0) {
-    return <div className={`${STAGE} bg-slate-100`} aria-hidden />;
+    return <div className={STAGE} aria-hidden />;
   }
 
   const stage = (
@@ -84,15 +84,17 @@ export function ProductImageGallery({ alt, urls }: Props) {
       aria-roledescription={list.length > 1 ? "Галерея фотографий" : undefined}
       aria-label={list.length > 1 ? `${alt}, фото ${active + 1} из ${list.length}. Стрелки или свайп для переключения.` : undefined}
     >
-      <ProductImage
-        key={current}
-        src={current}
-        alt={list.length > 1 ? `${alt} — фото ${active + 1} из ${list.length}` : alt}
-        fill
-        className="object-cover object-center"
-        sizes="(max-width: 768px) 100vw, 440px"
-        quality={85}
-      />
+      <div className="absolute inset-3">
+        <ProductImage
+          key={current}
+          src={current}
+          alt={list.length > 1 ? `${alt} — фото ${active + 1} из ${list.length}` : alt}
+          fill
+          className="object-contain object-center"
+          sizes="(max-width: 768px) 100vw, 440px"
+          quality={85}
+        />
+      </div>
 
       {list.length > 1 ? (
         <>
@@ -139,11 +141,13 @@ export function ProductImageGallery({ alt, urls }: Props) {
             aria-selected={idx === active}
             aria-label={`Показать фото ${idx + 1}`}
             onClick={() => setActive(idx)}
-            className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
+            className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 bg-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 ${
               idx === active ? "border-amber-500 ring-1 ring-amber-400/40" : "border-slate-200 hover:border-slate-300"
             }`}
           >
-            <ProductImage src={src} alt="" fill className="object-cover" sizes="64px" quality={60} />
+            <div className="absolute inset-1">
+              <ProductImage src={src} alt="" fill className="object-contain object-center" sizes="64px" quality={60} />
+            </div>
           </button>
         ))}
       </div>
