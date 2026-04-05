@@ -15,6 +15,7 @@
     "opel:excel-preview": "node scripts/opel-excel-to-ts.mjs",
     "catalog:images": "node scripts/download-catalog-images-curated.mjs",
     "catalog:normalize-images": "node scripts/normalize-catalog-images.mjs",
+    "catalog:export-xlsx": "tsx scripts/export-products-xlsx.ts",
     "deploy:vps": "./scripts/deploy-vps.sh"
   },
   "dependencies": {

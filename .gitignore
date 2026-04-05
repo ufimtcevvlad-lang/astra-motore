@@ -20,6 +20,9 @@
 # production
 /build
 
+# выгрузки каталога (npm run catalog:export-xlsx)
+/exports/
+
 # misc
 .DS_Store
 *.pem
