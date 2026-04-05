@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BrandWordmark } from "./components/BrandWordmark";
 import { HomeFeatured } from "./components/HomeFeatured";
 import { HOME_FEATURED_PRODUCTS } from "./data/products";
+import { SITE_BRAND } from "./lib/site";
 
 export const metadata: Metadata = {
   title: "Главная",
   description:
-    "gmshop 66 — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.",
+    `${SITE_BRAND} — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.`,
   alternates: { canonical: "/" },
 };
 
@@ -20,10 +22,9 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
               Екатеринбург • GM • Opel &amp; Chevrolet
             </p>
-            <h1 className="space-y-3 sm:space-y-4">
-              <span className="block font-mono text-[clamp(2rem,6vw,3.75rem)] font-bold leading-[1.05] tracking-tight text-slate-100">
-                gmshop
-                <span className="text-amber-400"> 66</span>
+            <h1 className="space-y-3 sm:space-y-5">
+              <span className="block">
+                <BrandWordmark variant="hero" />
               </span>
               <span className="block text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight text-slate-200 leading-snug">
                 Запчасти с доставкой{" "}

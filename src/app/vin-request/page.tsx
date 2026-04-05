@@ -4,7 +4,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "VIN-запрос",
-  description: "Подбор запчастей по VIN — gmshop 66, Екатеринбург.",
+  description: "Подбор запчастей по VIN — GM Shop, Екатеринбург.",
   alternates: { canonical: "/vin-request" },
 };
 

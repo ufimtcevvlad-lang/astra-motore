@@ -8,7 +8,7 @@ import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { use } from "react";
-import { SITE_URL } from "../../lib/site";
+import { SITE_BRAND, SITE_URL } from "../../lib/site";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -27,7 +27,7 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Каталог товаров — gmshop 66",
+      title: `Каталог товаров — ${SITE_BRAND}`,
       description:
         "Подбор запчастей по артикулу. Оригинальные детали и качественные аналоги.",
       robots: { index: true, follow: true },

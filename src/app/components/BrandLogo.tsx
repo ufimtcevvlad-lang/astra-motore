@@ -1,5 +1,7 @@
 "use client";
 
+import { BrandWordmark } from "./BrandWordmark";
+
 /**
  * Логотип шапки: растровый знак + типографика.
  */
@@ -31,12 +33,10 @@ export function BrandLogo() {
 
       <div className="min-w-0 select-none">
         <div className="inline-block w-fit max-w-full">
-          <p className="font-mono font-bold leading-[1.05] tracking-tight text-slate-100">
-            <span className="block whitespace-nowrap text-[0.95rem] sm:text-xl md:text-2xl">
-              gmshop<span className="text-amber-400"> 66</span>
-            </span>
+          <p className="leading-[1.05]">
+            <BrandWordmark variant="header" />
           </p>
-          <div className="mt-1.5 h-px w-full bg-amber-400/55 sm:mt-2.5" aria-hidden />
+          <div className="mt-1.5 h-px w-full max-w-[min(100%,12rem)] bg-gradient-to-r from-amber-400/70 via-amber-400/35 to-transparent sm:mt-2 sm:max-w-none sm:from-amber-400/60 sm:via-amber-400/25" aria-hidden />
         </div>
         <p className="mt-1.5 max-w-[15rem] text-[9px] font-medium uppercase leading-relaxed tracking-[0.11em] text-slate-400 sm:mt-2.5 sm:max-w-none sm:text-xs md:text-[0.8125rem] md:tracking-[0.16em]">
           Автозапчасти GM
