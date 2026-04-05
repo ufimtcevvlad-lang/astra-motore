@@ -1736,9 +1736,13 @@ const OPEL_PILOT_RAW: Array<{
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
     image: "/images/catalog/opel-109/01-packaging-mopar-55564395.png",
-    images: ["/images/catalog/opel-109/01-packaging-mopar-55564395.png"],
+    images: [
+      "/images/catalog/opel-109/01-packaging-mopar-55564395.png",
+      "/images/catalog/opel-109/02-part-top.png",
+      "/images/catalog/opel-109/03-part-underside.png",
+    ],
     description:
-      "Упаковка **Mopar Genuine**: позиция **BEARING CASING**, номер **55564395** на этикетке. Перед заказом сверяйте применение по VIN или каталогу.",
+      "Упаковка **Mopar Genuine**: позиция **BEARING CASING**, номер **55564395** на этикетке; далее — вид детали в сборе. Перед заказом сверяйте применение по VIN или каталогу.",
   },
   {
     id: "opel-110",
@@ -1750,13 +1754,9 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Двигатель",
     car: "Opel / Chevrolet Ecotec (Z16XER, Z18XER и др. — по каталогу)",
-    image: "/images/catalog/opel-110/01-cover-top.png",
-    images: [
-      "/images/catalog/opel-110/01-cover-top.png",
-      "/images/catalog/opel-110/02-cover-underside-gm55354237.png",
-    ],
+    image: "/images/catalog/_pending.jpg",
     description:
-      "Пластиковая клапанная крышка: на обороте отливка **GM 55 354 237**, материал **>PA66 GF35<**. Не путать с крышкой **96889998** для Cruze **F16D4/F18D4**. Замена при трещинах и течи масла — сверяйте номер с установленной деталью и по VIN.",
+      "Пластиковая клапанная крышка: на обороте отливка **GM 55 354 237**, материал **>PA66 GF35<**. Не путать с крышкой **96889998** для Cruze **F16D4/F18D4**. Фотографии для карточки добавим позже; замена при трещинах и течи масла — сверяйте номер с установленной деталью и по VIN.",
   },
 ];
 
