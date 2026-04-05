@@ -6,7 +6,7 @@ import { HOME_FEATURED_PRODUCTS } from "./data/products";
 export const metadata: Metadata = {
   title: "Главная",
   description:
-    "GM Shop 66 — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.",
+    "gmshop 66 — автозапчасти GM для Opel и Chevrolet в Екатеринбурге. Оригинал и аналоги, доставка, подбор по артикулу. Перейдите в каталог или свяжитесь с менеджером.",
   alternates: { canonical: "/" },
 };
 
@@ -20,10 +20,15 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
               Екатеринбург • GM • Opel &amp; Chevrolet
             </p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              Запчасти с доставкой{" "}
-              <span className="text-amber-400">&amp;</span>{" "}
-              честный подбор
+            <h1 className="space-y-3 sm:space-y-4">
+              <span className="block font-mono text-[clamp(2rem,6vw,3.75rem)] font-bold leading-[1.05] tracking-tight text-slate-100">
+                gmshop
+                <span className="text-amber-400"> 66</span>
+              </span>
+              <span className="block text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight text-slate-200 leading-snug">
+                Запчасти с доставкой{" "}
+                <span className="text-amber-400">&amp;</span> честный подбор
+              </span>
             </h1>
             <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
               Оригинал и проверенные аналоги. Удобный каталог на отдельной странице — без перегруза главной.

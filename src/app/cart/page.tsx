@@ -35,7 +35,7 @@ export default function CartPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "courier">("pickup");
   const [paymentMethod, setPaymentMethod] = useState<"sbp" | "card" | "cash">("sbp");
   const pickupPoints = [
-    { id: "p1", name: "GM Shop 66, ул. Готвальда, 9", note: "Пн–Пт 10:00–20:00, Сб–Вс 10:00–18:00" },
+    { id: "p1", name: "gmshop 66, ул. Готвальда, 9", note: "Пн–Пт 10:00–20:00, Сб–Вс 10:00–18:00" },
   ] as const;
   const [pickupPointId, setPickupPointId] = useState<(typeof pickupPoints)[number]["id"]>(pickupPoints[0].id);
   const [name, setName] = useState("");
@@ -230,7 +230,7 @@ export default function CartPage() {
       <div className="rounded-xl border border-amber-100 bg-white p-8 text-center shadow-sm">
         <p className="text-lg font-bold text-amber-700">Заказ принят!</p>
         <p className="mt-2 text-slate-600">
-          Менеджер <span className="font-medium text-amber-700">GM Shop 66</span> свяжется с вами в ближайшее время.
+          Менеджер <span className="font-medium text-amber-700">gmshop 66</span> свяжется с вами в ближайшее время.
         </p>
         <Link
           href="/catalog"
@@ -446,7 +446,7 @@ export default function CartPage() {
                     </div>
                     <div className="overflow-hidden rounded-xl border border-slate-200">
                       <iframe
-                        title="Пункты выдачи GM Shop 66"
+                        title="Пункты выдачи gmshop 66"
                         src="https://yandex.ru/map-widget/v1/org/gm_drive/1299977455"
                         className="h-64 w-full border-0"
                         loading="lazy"

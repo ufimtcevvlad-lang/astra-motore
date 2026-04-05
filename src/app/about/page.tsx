@@ -5,9 +5,9 @@ import { SimpleDoc } from "../components/legal/SimpleDoc";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
-  title: "О компании GM Shop 66",
+  title: "О компании gmshop 66",
   description:
-    "GM Shop 66 — магазин автозапчастей для Opel и Chevrolet в Екатеринбурге. Подбор по VIN, оригинальные детали и качественные аналоги, помощь с выбором и заказом.",
+    "gmshop 66 — магазин автозапчастей для Opel и Chevrolet в Екатеринбурге. Подбор по VIN, оригинальные детали и качественные аналоги, помощь с выбором и заказом.",
   alternates: { canonical: "/about" },
 };
 
@@ -31,9 +31,9 @@ export default function AboutPage() {
         crumbs={[{ label: "Главная", href: "/" }, { label: "О компании" }]}
         title="О компании"
       />
-      <SimpleDoc title="GM Shop 66">
+      <SimpleDoc title="gmshop 66">
         <p>
-          <strong>GM Shop 66</strong> — специализированный магазин автозапчастей для автомобилей Opel и Chevrolet в
+          <strong>gmshop 66</strong> — специализированный магазин автозапчастей для автомобилей Opel и Chevrolet в
           Екатеринбурге. Мы помогаем быстро и точно подобрать детали для регулярного обслуживания и ремонта: от
           расходников до узлов ходовой части, двигателя, системы охлаждения, тормозной системы и электрики.
         </p>
@@ -42,7 +42,7 @@ export default function AboutPage() {
           используем данные производителя, артикулы, идентификационный номер автомобиля и технические параметры авто,
           чтобы снизить риск ошибки при покупке.
         </p>
-        <h2 className="text-lg font-semibold text-slate-900">Что вы получаете в GM Shop 66</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Что вы получаете в gmshop 66</h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>подбор автозапчастей Opel и Chevrolet по идентификационному номеру автомобиля и артикулу;</li>
           <li>оригинальные детали и проверенные аналоги в разных ценовых сегментах;</li>

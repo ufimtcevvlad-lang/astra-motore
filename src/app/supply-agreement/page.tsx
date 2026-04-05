@@ -7,7 +7,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Публичная оферта",
-  description: "Публичная оферта и условия продажи запчастей GM Shop 66.",
+  description: "Публичная оферта и условия продажи запчастей gmshop 66.",
   alternates: { canonical: "/supply-agreement" },
 };
 

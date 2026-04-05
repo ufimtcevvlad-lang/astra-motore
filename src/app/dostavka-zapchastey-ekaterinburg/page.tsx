@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
-  title: "Доставка запчастей в Екатеринбурге — GM Shop 66",
+  title: "Доставка запчастей в Екатеринбурге — gmshop 66",
   description:
     "Доставка запчастей GM (Opel, Chevrolet) в Екатеринбурге. Оригинал и качественные аналоги. Уточним сроки и наличие.",
   alternates: { canonical: "/dostavka-zapchastey-ekaterinburg" },

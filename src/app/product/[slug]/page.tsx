@@ -27,7 +27,7 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Каталог товаров — GM Shop 66",
+      title: "Каталог товаров — gmshop 66",
       description:
         "Подбор запчастей по артикулу. Оригинальные детали и качественные аналоги.",
       robots: { index: true, follow: true },

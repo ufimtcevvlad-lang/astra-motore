@@ -6,7 +6,7 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Политика cookies",
-  description: "Условия использования файлов cookies на сайте GM Shop 66.",
+  description: "Условия использования файлов cookies на сайте gmshop 66.",
   alternates: { canonical: "/cookie-policy" },
 };
 
@@ -35,7 +35,7 @@ export default function CookiePolicyPage() {
           Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.cookiePolicy}.
         </p>
         <p>
-          Настоящая Политика описывает, как сайт GM Shop 66 использует файлы cookies и аналогичные технологии.
+          Настоящая Политика описывает, как сайт gmshop 66 использует файлы cookies и аналогичные технологии.
         </p>
         <h2 className="text-lg font-semibold text-slate-900">1. Что такое cookies</h2>
         <p>

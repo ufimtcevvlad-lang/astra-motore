@@ -31,9 +31,9 @@ export function BrandLogo() {
 
       <div className="min-w-0 select-none">
         <div className="inline-block w-fit max-w-full">
-          <p className="font-semibold uppercase leading-[1.05] tracking-[0.14em] text-white sm:tracking-[0.2em]">
+          <p className="font-mono font-bold leading-[1.05] tracking-tight text-slate-100">
             <span className="block whitespace-nowrap text-[0.95rem] sm:text-xl md:text-2xl">
-              ASTRA <span className="text-amber-400">MOTORS</span>
+              gmshop<span className="text-amber-400"> 66</span>
             </span>
           </p>
           <div className="mt-1.5 h-px w-full bg-amber-400/55 sm:mt-2.5" aria-hidden />
