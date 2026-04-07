@@ -631,7 +631,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-36/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 535220. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1004,7 +1004,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-59/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55556224. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1018,7 +1018,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-60/01.webp",
+    images: [
+      "/images/catalog/opel-60/01.webp",
+      "/images/catalog/opel-60/02.webp",
+      "/images/catalog/opel-60/03.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55567048. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1065,7 +1070,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Подвеска",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-63/01.webp",
+    images: [
+      "/images/catalog/opel-63/01.webp",
+      "/images/catalog/opel-63/02.webp",
+      "/images/catalog/opel-63/03.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 3531201. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1107,7 +1117,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Автосвет и электрика",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-66/01.webp",
+    images: [
+      "/images/catalog/opel-66/01.webp",
+      "/images/catalog/opel-66/02.webp",
+      "/images/catalog/opel-66/03.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 1987302804. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1149,7 +1164,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Масляные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-69/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55565385. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1163,7 +1178,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Масляные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-70/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55568536. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1177,7 +1192,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Масляные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-71/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55568539. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1191,7 +1206,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-72/01.webp",
+    images: [
+      "/images/catalog/opel-72/01.webp",
+      "/images/catalog/opel-72/02.webp",
+      "/images/catalog/opel-72/03.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 25193922. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1205,7 +1225,15 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-73/01.webp",
+    images: [
+      "/images/catalog/opel-73/01.webp",
+      "/images/catalog/opel-73/02.webp",
+      "/images/catalog/opel-73/03.webp",
+      "/images/catalog/opel-73/04.webp",
+      "/images/catalog/opel-73/05.webp",
+      "/images/catalog/opel-73/06.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55567049. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1336,7 +1364,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-82/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 90542913. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1494,7 +1522,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-93/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55568033. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
@@ -1508,7 +1536,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Подвеска",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-94/01.webp",
+    images: [
+      "/images/catalog/opel-94/01.webp",
+      "/images/catalog/opel-94/02.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 13230777. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
