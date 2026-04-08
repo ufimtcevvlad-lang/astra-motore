@@ -1333,7 +1333,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-79/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 25193519. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
