@@ -119,7 +119,7 @@ const OPEL_PILOT_RAW: Array<{
     ],
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
-    analogIds: ["opel-9", "opel-30"],
+    analogIds: [],
   },
   {
     id: "opel-5",
@@ -182,21 +182,6 @@ const OPEL_PILOT_RAW: Array<{
     ],
     description:
       "Кольцо на выпуск из маслоохладителя для Z16XEL и Z18XER. На этикетке **55353331**; в галерее два ракурса оригинальной упаковки Opel. После демонтажа деталь не рекомендуется ставить повторно из‑за потери упругости.",
-  },
-  {
-    id: "opel-9",
-    name: "Фильтр масляный HENGST Astra H/J A16XER, Z16XER, A18XER, Z18XER, A14XEL/XER/NEL",
-    sku: "E611HD122",
-    qty: 493.5,
-    priceRaw: 908.71,
-    brand: "Hengst",
-    country: "Германия",
-    category: "Масляные фильтры",
-    car: "Opel Astra H/J, Zafira B и др.",
-    image: "/images/catalog/opel-9.webp",
-    description:
-      "Другая заводская спецификация масляного фильтра Hengst для тех же семейств Ecotec, что и E611HD442. Перед заказом сверяйте номер с установленным фильтром или заводским каталогом.",
-    analogIds: ["opel-4", "opel-30"],
   },
   {
     id: "opel-10",
@@ -265,34 +250,6 @@ const OPEL_PILOT_RAW: Array<{
     analogIds: ["opel-11", "opel-12"],
   },
   {
-    id: "opel-14",
-    name: "Лампа подсветки номера BOSCH W5W (5W)",
-    sku: "1987302206",
-    qty: 303,
-    priceRaw: 52.25,
-    brand: "Bosch",
-    country: "Германия",
-    category: "Автосвет и электрика",
-    car: "Универсальная W5W (T10), уточняйте по авто",
-    image: "/images/catalog/opel-14.webp",
-    description:
-      "Галогеновая лампа Bosch W5W 5 Вт для подсветки номерного знака и других цоколей W2.1x9.5d. Соответствуйте мощность и тип цоколя штатной лампе.",
-  },
-  {
-    id: "opel-15",
-    name: "Тяга стабилизатора передняя DELPHI Astra-H c IDS+",
-    sku: "TC879",
-    qty: 258,
-    priceRaw: 1214.75,
-    brand: "Delphi",
-    country: "США / ЕС",
-    category: "Подвеска",
-    car: "Opel Astra H с IDS+",
-    image: "/images/catalog/opel-15.webp",
-    description:
-      "Передняя тяга / стойка стабилизатора Delphi для Astra H с системой IDS+. Влияет на крен и сцепление с дорогой; люфт и стуки при проезде неровностей — повод проверить наконечники и втулки стабилизатора.",
-  },
-  {
     id: "opel-16",
     name: "Прокладка клапанной крышки ELRING Z18XER, Z16XER/XN/LEL/LER, A16XER",
     sku: "354030",
@@ -346,34 +303,6 @@ const OPEL_PILOT_RAW: Array<{
     analogIds: ["opel-17"],
   },
   {
-    id: "opel-19",
-    name: "Сальник распредвала передний Cruze F18D4",
-    sku: "55563374",
-    qty: 211,
-    priceRaw: 628.43,
-    brand: "GM OE",
-    country: "Европейский склад GM",
-    category: "Прокладки, сальники и кольца",
-    car: "Chevrolet Cruze 1.8 F18D4",
-    image: "/images/catalog/opel-19.webp",
-    description:
-      "Передний сальник распределительного вала для двигателя F18D4. При течи масла со стороны ГРМ меняется при снятии привода или цепи по регламенту.",
-  },
-  {
-    id: "opel-20",
-    name: "Колпачёк маслосъёмный Cruze F18D4",
-    sku: "55574221",
-    qty: 192,
-    priceRaw: 186.46,
-    brand: "GM OE",
-    country: "Европейский склад GM",
-    category: "Двигатель",
-    car: "Chevrolet Cruze 1.8 F18D4",
-    image: "/images/catalog/opel-20.webp",
-    description:
-      "Маслосъёмный колпачок клапана для F18D4. Износ колпачков даёт дым из выхлопа на холостом ходу и повышенный расход масла — замена комплектом по головке.",
-  },
-  {
     id: "opel-21",
     name: "Фильтр воздушный SIBTEK Astra-J, Cruze A14XEL/XER, A16XER",
     sku: "AF01109",
@@ -391,20 +320,6 @@ const OPEL_PILOT_RAW: Array<{
     ],
     description:
       "Воздушный фильтр SIBTEK (на упаковке — AF 109, в выгрузке — AF01109). Для бензиновых Ecotec на Astra J и Cruze; на этикетке также указаны Orlando, Opel/Vauxhall Astra J GTC, Zotye T600 и кроссы OEM/аналогов (MANN C 26106, BOSCH F 026 400 385 и др.). Меняется по регламенту ТО или при загрязнении. Перед заказом сверяйте применение по VIN или каталогу.",
-  },
-  {
-    id: "opel-22",
-    name: "Колпачёк маслосъёмный ELRING Z10XEP, A12XER, Z12XEP, Z14XEP, Z18XE",
-    sku: "476691",
-    qty: 168,
-    priceRaw: 127.74,
-    brand: "Elring",
-    country: "Германия",
-    category: "Двигатель",
-    car: "Opel / Chevrolet (Z10XEP, A12XER, Z12XEP, Z14XEP, Z18XE)",
-    image: "/images/catalog/opel-20.webp",
-    description:
-      "Маслосъёмный колпачок Elring для ряда бензиновых двигателей. Рекомендуется менять комплектом при капремонте головки или при признаках прогара масла в камеру сгорания.",
   },
   {
     id: "opel-23",
@@ -428,20 +343,6 @@ const OPEL_PILOT_RAW: Array<{
     analogIds: ["opel-1", "opel-10"],
   },
   {
-    id: "opel-24",
-    name: "Пистон подкрылка (12mm) IMS Corsa C, Vectra C, Meriva A, Zafira",
-    sku: "23002100C",
-    qty: 164,
-    priceRaw: 15,
-    brand: "IMS",
-    country: "ЕС",
-    category: "Кузов и крепёж",
-    car: "Opel Corsa C, Vectra C, Meriva A, Zafira",
-    image: "/images/catalog/opel-14.webp",
-    description:
-      "Пластиковая клипса (пистон) крепления подкрылка и облицовок, 12 mm. При снятии подкрылка часто ломается — имеет смысл иметь запас при ремонте.",
-  },
-  {
     id: "opel-25",
     name: "Фильтр салонный SIBTEK Aveo T300/Astra-J/Cruze/Cobalt/Insignia/Mokka",
     sku: "AC0454",
@@ -459,21 +360,6 @@ const OPEL_PILOT_RAW: Array<{
     ],
     description:
       "Салонный фильтр SIBTEK (на упаковке — AC 54, в выгрузке — AC0454). Типичное применение: Chevrolet Cruze, Orlando, Trax, Malibu, Spark, Tracker и др.; Opel Astra J, Insignia, Mokka, Meriva B, Zafira C и др.; на этикетке также кроссы вроде MANN CU 2442, FRAM CF10774, GM 13271190. Меняйте 1–2 раза в год или при запахе и слабом потоке воздуха. Установка по направлению потока (AIR FLOW на корпусе). Перед заказом сверяйте применение по VIN или каталогу.",
-  },
-  {
-    id: "opel-26",
-    name: "Уплотнительное кольцо трубки маслоохладителя A14NEL",
-    sku: "55568540",
-    qty: 140,
-    priceRaw: 1025.76,
-    brand: "GM OE",
-    country: "Европейский склад GM",
-    category: "Прокладки, сальники и кольца",
-    car: "Opel / Chevrolet 1.4 A14NEL",
-    image: "/images/catalog/opel-3.webp",
-    description:
-      "Уплотнительное кольцо линии маслоохладителя для двигателя A14NEL. При демонтаже патрубка заменяйте кольцо — повторная установка старого часто даёт подсос и потерю масла.",
-    analogIds: ["opel-3", "opel-5"],
   },
   {
     id: "opel-27",
@@ -507,35 +393,6 @@ const OPEL_PILOT_RAW: Array<{
     ],
     description:
       "Клапанная крышка в сборе / узел ГБЦ для Cruze с двигателями F16D4 и F18D4. Порядок снимков: полный вид крышки сверху; вырезка с маркировкой **GM# 96889998** на упаковке/этикетке; вид изнутри. Когда появится фото целой заводской коробки, его поставят первым кадром. Замена при трещинах, деформации или неконтролируемой течи масла сверху мотора — работы согласуйте с сервисом.",
-  },
-  {
-    id: "opel-29",
-    name: "Ремень ГРМ, к-кт SKF Astra/Vectra/Meriva/Zafira 1.6/1.8 (XEP, XER) 02-",
-    sku: "VKMA05260",
-    qty: 132,
-    priceRaw: 9971.38,
-    brand: "SKF",
-    country: "Швеция / ЕС",
-    category: "Двигатель",
-    car: "Opel Astra, Vectra, Meriva, Zafira 1.6 / 1.8 (XEP, XER)",
-    image: "/images/catalog/opel-15.webp",
-    description:
-      "Комплект ремня ГРМ SKF для указанных моторов и годов выпуска. Меняется по регламенту или при шуме и люфте роликов; состав комплекта сверяйте с каталогом по VIN.",
-  },
-  {
-    id: "opel-30",
-    name: "Фильтр масляный FILTRON Astra H/J A16XER, Z16XER, A18XER, Z18XER, A14XEL/XER/NEL",
-    sku: "OE6486",
-    qty: 130,
-    priceRaw: 634.35,
-    brand: "Filtron",
-    country: "Польша",
-    category: "Масляные фильтры",
-    car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
-    image: "/images/catalog/opel-4.webp",
-    description:
-      "Масляный фильтр Filtron для бензиновых Ecotec с тем же применением, что у аналогов Hengst в каталоге. Перед заказом сверяйте номер с установленным фильтром.",
-    analogIds: ["opel-4", "opel-9"],
   },
   {
     id: "opel-31",
@@ -1552,7 +1409,8 @@ const OPEL_PILOT_RAW: Array<{
   },
 ];
 
-export const products: Product[] = OPEL_PILOT_RAW.map((r) => ({
+export const products: Product[
+] = OPEL_PILOT_RAW.map((r) => ({
   id: r.id,
   sku: r.sku,
   name: r.name,
