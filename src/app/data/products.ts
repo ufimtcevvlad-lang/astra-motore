@@ -1366,7 +1366,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-81/01.webp",
+    images: [
+      "/images/catalog/opel-81/01.webp",
+      "/images/catalog/opel-81/02.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 13118272. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
