@@ -8,10 +8,6 @@ import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { plainProductDescription, ProductDescription } from "../../components/ProductDescription";
-import { ProductSpecs } from "./_components/ProductSpecs";
-import { ProductLongDescription } from "./_components/ProductLongDescription";
-import { ProductFitment } from "./_components/ProductFitment";
-import { ProductCrossNumbers } from "./_components/ProductCrossNumbers";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -123,15 +119,6 @@ export default function ProductPage({
     ],
   };
 
-  const additionalProperty =
-    product.specs && product.specs.length > 0
-      ? product.specs.map((s) => ({
-          "@type": "PropertyValue",
-          name: s.label,
-          value: s.value,
-        }))
-      : undefined;
-
   const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -143,7 +130,6 @@ export default function ProductPage({
     image: imageUrls.length > 0 ? imageUrls.map((u) => SITE_URL + u) : undefined,
     itemCondition: "https://schema.org/NewCondition",
     inLanguage: SITE_LANGUAGE,
-    additionalProperty,
     offers: {
       "@type": "Offer",
       priceCurrency: "RUB",
@@ -206,17 +192,6 @@ export default function ProductPage({
         </div>
         <ProductClient product={product} />
       </div>
-
-      {product.specs && product.specs.length > 0 ? <ProductSpecs specs={product.specs} /> : null}
-      {product.longDescription ? (
-        <ProductLongDescription longDescription={product.longDescription} />
-      ) : null}
-      {product.fitment && product.fitment.length > 0 ? (
-        <ProductFitment fitment={product.fitment} />
-      ) : null}
-      {product.crossNumbers && product.crossNumbers.length > 0 ? (
-        <ProductCrossNumbers crossNumbers={product.crossNumbers} />
-      ) : null}
 
       {cheaperAnalogs.length > 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
