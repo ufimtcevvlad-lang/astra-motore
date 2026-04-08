@@ -1508,7 +1508,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-90/01.webp",
+    images: [
+      "/images/catalog/opel-90/01.webp",
+      "/images/catalog/opel-90/02.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 7110203SX. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
