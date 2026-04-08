@@ -1095,7 +1095,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Свечи и зажигание",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-64/01.webp",
+    images: [
+      "/images/catalog/opel-64/01.webp",
+      "/images/catalog/opel-64/02.webp",
+      "/images/catalog/opel-64/03.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 95528733. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
