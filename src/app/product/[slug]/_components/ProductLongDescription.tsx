@@ -2,6 +2,8 @@ import type { ProductLongDescription as TLongDescription } from "../../../data/p
 
 type Props = {
   longDescription: TLongDescription;
+  /** Когда true — добавляет внешний <section> с заголовком (для standalone-использования). Внутри таба оставить false. */
+  withWrapper?: boolean;
 };
 
 const SECTIONS: Array<{ key: keyof TLongDescription; title: string }> = [
@@ -11,15 +13,12 @@ const SECTIONS: Array<{ key: keyof TLongDescription; title: string }> = [
   { key: "install", title: "Особенности установки" },
 ];
 
-export function ProductLongDescription({ longDescription }: Props) {
+export function ProductLongDescription({ longDescription, withWrapper = false }: Props) {
   const hasAny = SECTIONS.some((s) => Boolean(longDescription[s.key]?.trim()));
   if (!hasAny) return null;
 
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-      <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-2">
-        Подробное описание
-      </h2>
+  const inner = (
+    <div className="space-y-4">
       {SECTIONS.map((section) => {
         const value = longDescription[section.key]?.trim();
         if (!value) return null;
@@ -30,6 +29,17 @@ export function ProductLongDescription({ longDescription }: Props) {
           </div>
         );
       })}
+    </div>
+  );
+
+  if (!withWrapper) return inner;
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+      <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-2">
+        Подробное описание
+      </h2>
+      {inner}
     </section>
   );
 }

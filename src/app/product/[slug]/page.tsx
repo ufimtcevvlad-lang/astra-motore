@@ -10,6 +10,7 @@ import { ProductClient } from "./ProductClient";
 import { plainProductDescription, ProductDescription } from "../../components/ProductDescription";
 import { ProductSpecs } from "./_components/ProductSpecs";
 import { ProductLongDescription } from "./_components/ProductLongDescription";
+import { ProductTabs, type ProductTab } from "./_components/ProductTabs";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -185,7 +186,6 @@ export default function ProductPage({
             {product.category}
           </p>
           <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
-          <ProductDescription text={product.description} />
           <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
             <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
               Номер запчасти:{" "}
@@ -205,10 +205,32 @@ export default function ProductPage({
         <ProductClient product={product} />
       </div>
 
-      {product.specs && product.specs.length > 0 ? <ProductSpecs specs={product.specs} /> : null}
-      {product.longDescription ? (
-        <ProductLongDescription longDescription={product.longDescription} />
-      ) : null}
+      {(() => {
+        const tabs: ProductTab[] = [];
+
+        tabs.push({
+          key: "description",
+          title: "Описание",
+          content: (
+            <div className="space-y-4">
+              <ProductDescription text={product.description} />
+              {product.longDescription ? (
+                <ProductLongDescription longDescription={product.longDescription} />
+              ) : null}
+            </div>
+          ),
+        });
+
+        if (product.specs && product.specs.length > 0) {
+          tabs.push({
+            key: "specs",
+            title: "Характеристики",
+            content: <ProductSpecs specs={product.specs} />,
+          });
+        }
+
+        return <ProductTabs tabs={tabs} />;
+      })()}
 
       {cheaperAnalogs.length > 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
