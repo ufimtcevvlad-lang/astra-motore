@@ -1277,7 +1277,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-75/01.webp",
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 1987947949. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
