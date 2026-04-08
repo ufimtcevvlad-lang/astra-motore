@@ -192,6 +192,28 @@ export async function POST(request: Request) {
     );
   }
 
+  // Лимиты длин — защита от мусорных/DoS-запросов
+  const NAME_MAX = 120;
+  const EMAIL_MAX = 254;
+  const SHORT_MAX = 80;
+  const REQUEST_MAX = 3000;
+  const COMMENT_MAX = 2000;
+
+  if (
+    name.length > NAME_MAX ||
+    emailNorm.length > EMAIL_MAX ||
+    brand.length > SHORT_MAX ||
+    (model && model.length > SHORT_MAX) ||
+    (engine && engine.length > SHORT_MAX) ||
+    (transmission && transmission.length > SHORT_MAX) ||
+    (year && year.length > SHORT_MAX) ||
+    (carBody && carBody.length > SHORT_MAX) ||
+    requestText.length > REQUEST_MAX ||
+    (comment && comment.length > COMMENT_MAX)
+  ) {
+    return NextResponse.json({ error: "Одно из полей слишком длинное" }, { status: 400 });
+  }
+
   try {
     await appendConsentLog({
       event: "vin_request_submit",
