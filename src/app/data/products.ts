@@ -1056,7 +1056,13 @@ const OPEL_PILOT_RAW: Array<{
     country: "ЕС",
     category: "Свечи и зажигание",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-62/01.webp",
+    images: [
+      "/images/catalog/opel-62/01.webp",
+      "/images/catalog/opel-62/02.webp",
+      "/images/catalog/opel-62/03.webp",
+      "/images/catalog/opel-62/04.webp",
+    ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул CE2000912B1. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
   },
