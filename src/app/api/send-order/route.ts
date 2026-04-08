@@ -111,6 +111,15 @@ export async function POST(request: Request) {
   if (!humanOk) {
     return NextResponse.json({ error: "Проверка безопасности не пройдена" }, { status: 400 });
   }
+
+  // Лимиты длин — защита от мусорных/DoS-запросов
+  const NAME_MAX = 120;
+  const PHONE_MAX = 32;
+  const COMMENT_MAX = 2000;
+  const CITY_MAX = 120;
+  const ITEM_NAME_MAX = 300;
+  const ITEMS_MAX = 200;
+
   if (
     !name?.trim() ||
     !phone?.trim() ||
@@ -122,6 +131,65 @@ export async function POST(request: Request) {
       { error: "Не заполнены имя, телефон, корзина или согласие на обработку персональных данных" },
       { status: 400 }
     );
+  }
+
+  if (name.trim().length > NAME_MAX || phone.trim().length > PHONE_MAX) {
+    return NextResponse.json({ error: "Имя или телефон слишком длинные" }, { status: 400 });
+  }
+
+  // Телефон: минимум 10 цифр (российские номера ≥ 10)
+  const phoneDigits = phone.replace(/\D/g, "");
+  if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+    return NextResponse.json({ error: "Некорректный номер телефона" }, { status: 400 });
+  }
+
+  if (comment && comment.length > COMMENT_MAX) {
+    return NextResponse.json({ error: "Комментарий слишком длинный" }, { status: 400 });
+  }
+
+  if (deliveryCity && deliveryCity.length > CITY_MAX) {
+    return NextResponse.json({ error: "Название города слишком длинное" }, { status: 400 });
+  }
+
+  if (items.length === 0) {
+    return NextResponse.json({ error: "Корзина пуста" }, { status: 400 });
+  }
+
+  if (items.length > ITEMS_MAX) {
+    return NextResponse.json({ error: "Слишком много позиций в корзине" }, { status: 400 });
+  }
+
+  // Проверяем каждую позицию корзины
+  for (const item of items) {
+    if (
+      !item ||
+      typeof item.name !== "string" ||
+      !item.name.trim() ||
+      item.name.length > ITEM_NAME_MAX ||
+      typeof item.quantity !== "number" ||
+      !Number.isFinite(item.quantity) ||
+      item.quantity <= 0 ||
+      item.quantity > 10_000 ||
+      typeof item.price !== "number" ||
+      !Number.isFinite(item.price) ||
+      item.price < 0 ||
+      typeof item.sum !== "number" ||
+      !Number.isFinite(item.sum) ||
+      item.sum < 0
+    ) {
+      return NextResponse.json({ error: "Некорректные данные позиции корзины" }, { status: 400 });
+    }
+  }
+
+  // Проверяем итоговую сумму
+  if (!Number.isFinite(total) || total < 0 || total > 100_000_000) {
+    return NextResponse.json({ error: "Некорректная сумма заказа" }, { status: 400 });
+  }
+
+  // Сумма по позициям должна совпадать с total (с поправкой на копейки)
+  const itemsTotal = items.reduce((acc, it) => acc + it.sum, 0);
+  if (Math.abs(itemsTotal - total) > 1) {
+    return NextResponse.json({ error: "Сумма заказа не совпадает с позициями" }, { status: 400 });
   }
 
   try {

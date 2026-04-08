@@ -1,46 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GM Shop 66 — интернет-магазин автозапчастей (Opel / Chevrolet / GM)
 
-## Getting Started
+Next.js 16 + React 19 + TypeScript. Деплой — VPS Timeweb (см. `DEPLOY.md` и `TIMEWEB-ИНСТРУКЦИЯ.md`).
 
-First, run the development server:
+## Быстрый старт (локально)
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Открой [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# astra-motore
-
-## Telegram: ежедневная статистика из Яндекс.Метрики
-
-В проекте есть скрипт, который берёт сводку из Яндекс.Метрики за **вчера (по МСК)** и отправляет в Telegram.
-
-### Переменные окружения
+## Переменные окружения
 
 Смотри `.env.example`. На сервере в `/var/www/astra-motors/.env.local` должны быть:
 
@@ -49,6 +20,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - `YANDEX_METRIKA_OAUTH_TOKEN`
 - `YANDEX_METRIKA_COUNTER_ID` (по умолчанию `108384071`)
 - `NEXT_PUBLIC_YANDEX_METRIKA_ID` — тот же номер, для тега Метрики в сборке
+
+## Telegram: ежедневная статистика из Яндекс.Метрики
+
+В проекте есть скрипт, который берёт сводку из Яндекс.Метрики за **вчера (по МСК)** и отправляет в Telegram.
 
 ### Получить OAuth-токен Яндекс.Метрики
 
@@ -134,16 +109,6 @@ cd /var/www/astra-motors
 pm2 start "npm run -s bot:telegram" --name astra-telegram-bot
 pm2 save
 ```
-
-## Производительность и структура
-
-- **`src/app/lib/site.ts`** — единый `SITE_URL` для SEO, canonical и JSON-LD (без дублирования строк).
-- **Корзина** (`CartContext`) — стабильные колбэки `useCallback` + `useMemo` для значения контекста, меньше лишних перерисовок.
-- **Каталог** — `CatalogProductCard` и чипы фильтра обёрнуты в `memo`.
-- **Главная** — блок «Популярные позиции» использует предвычисленный `HOME_FEATURED_PRODUCTS` в `data/products.ts` (сортировка один раз при загрузке модуля).
-- **Яндекс.Метрика** — отложенная загрузка через `MetrikaDeferred` (`dynamic(..., { ssr: false })`); логи в консоль только в `development`.
-- **`next.config.ts`** — `poweredByHeader: false`, настройки `images` (AVIF/WebP, размеры).
-- **Иконки** — заданы в `metadata.icons` в `layout.tsx` (без дублирующих `<link>` в `<head>`).
 
 ## Производительность и структура
 
