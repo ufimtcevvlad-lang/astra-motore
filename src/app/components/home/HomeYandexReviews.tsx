@@ -30,13 +30,13 @@ export function HomeYandexReviews() {
         </a>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-        {/* Левая колонка: виджет отзывов Яндекса */}
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]">
+        {/* Левая колонка: виджет отзывов Яндекса — фиксированная ширина под размер виджета */}
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <iframe
             title="Отзывы GM Shop на Яндекс.Картах"
             src={REVIEWS_EMBED_URL}
-            className="h-[560px] w-full border-0 lg:h-[620px]"
+            className="block h-[560px] w-full border-0 lg:h-[620px]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
