@@ -134,10 +134,10 @@ export function Header() {
     <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
         {/* Верхняя строка: логотип | поиск | корзина | вход */}
-        <div className="flex flex-col gap-2 py-2 sm:gap-3 lg:flex-row lg:items-center lg:justify-between lg:py-2">
+        <div className="flex flex-col gap-2 py-2 sm:gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-2 xl:gap-10">
           <Link
             href="/"
-            className="group flex min-w-0 flex-shrink-0 items-center overflow-visible rounded-lg py-0 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A]"
+            className="group flex min-w-0 flex-shrink-0 items-center overflow-visible rounded-lg py-0 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A] lg:-ml-1 xl:-ml-2"
             aria-label={`${SITE_BRAND} — на главную`}
           >
             <BrandLogo />
@@ -255,12 +255,16 @@ export function Header() {
             )}
           </div>
         </div>
+      </div>
 
-        {/* Основное меню — на всю ширину контейнера */}
-        <nav
-          className="flex w-full items-stretch gap-1 overflow-x-auto border-t border-slate-800/90 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-nowrap sm:gap-0 sm:overflow-visible"
-          aria-label="Основное меню"
-        >
+      {/* Разделительная линия на всю ширину шапки (не обрезается контейнером) */}
+      <div className="border-t border-slate-800/90">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
+          {/* Основное меню — на всю ширину контейнера */}
+          <nav
+            className="flex w-full items-stretch gap-1 overflow-x-auto py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-nowrap sm:gap-0 sm:overflow-visible"
+            aria-label="Основное меню"
+          >
           <Link href="/" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
             Главная
           </Link>
@@ -310,7 +314,8 @@ export function Header() {
           <Link href="/vin-request" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
             VIN запрос
           </Link>
-        </nav>
+          </nav>
+        </div>
       </div>
 
       {/* Desktop: компактная панель сверху при скролле */}

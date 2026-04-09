@@ -1,9 +1,11 @@
+import Link from "next/link";
+
 /**
  * Блок отзывов с Яндекс.Карт.
  *
- * Используется официальный бесплатный виджет от Яндекса через iframe.
- * Подтягивает отзывы с карточки организации 1299977455 (GM Shop на Яндекс.Картах).
- * Отзывы обновляются автоматически — ничего не нужно редактировать.
+ * 2-колоночный layout:
+ *  - Слева: iframe виджет отзывов с Яндекса (обновляется автоматически)
+ *  - Справа: «карточка доверия» с рейтингом, ключевыми фактами и CTA
  */
 
 const YANDEX_ORG_ID = "1299977455";
@@ -28,14 +30,75 @@ export function HomeYandexReviews() {
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <iframe
-          title="Отзывы GM Shop на Яндекс.Картах"
-          src={REVIEWS_EMBED_URL}
-          className="h-[560px] w-full border-0 sm:h-[640px]"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
+        {/* Левая колонка: виджет отзывов Яндекса */}
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <iframe
+            title="Отзывы GM Shop на Яндекс.Картах"
+            src={REVIEWS_EMBED_URL}
+            className="h-[560px] w-full border-0 lg:h-[620px]"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+
+        {/* Правая колонка: карточка доверия */}
+        <aside className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50 via-white to-white p-6 shadow-sm lg:p-7">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-amber-600">4,7</span>
+              <span className="text-sm font-medium text-slate-500">из 5</span>
+            </div>
+            <div className="mt-1 text-amber-500" aria-label="Рейтинг 4.7 из 5">
+              ★★★★★
+            </div>
+            <p className="mt-2 text-xs text-slate-500">Средняя оценка на Яндекс.Картах</p>
+          </div>
+
+          <div className="space-y-3 border-t border-amber-200/60 pt-4 text-sm text-slate-700">
+            <div className="flex items-start gap-2">
+              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
+              <span>
+                <strong className="font-semibold text-slate-900">12+ лет</strong> в Екатеринбурге
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
+              <span>
+                <strong className="font-semibold text-slate-900">Специализация</strong> на Opel и Chevrolet
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
+              <span>
+                <strong className="font-semibold text-slate-900">Только проверенные</strong> европейские бренды
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
+              <span>
+                <strong className="font-semibold text-slate-900">Редкие позиции</strong> со своего склада
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-auto flex flex-col gap-2 border-t border-amber-200/60 pt-4">
+            <a
+              href={YANDEX_ORG_PAGE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-amber-500 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
+            >
+              Смотреть все отзывы
+            </a>
+            <Link
+              href="/contacts"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Как нас найти
+            </Link>
+          </div>
+        </aside>
       </div>
     </section>
   );
