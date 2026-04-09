@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
 import { CookieConsentBanner } from "./components/CookieConsentBanner";
+import { FloatingContactButtons } from "./components/FloatingContactButtons";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
@@ -106,6 +107,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <FloatingContactButtons />
           <CookieConsentBanner />
         </CartProvider>
       </body>
