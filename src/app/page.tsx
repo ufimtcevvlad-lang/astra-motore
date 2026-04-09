@@ -3,7 +3,7 @@ import { HomeAdvantages } from "./components/home/HomeAdvantages";
 import { HomeFAQ } from "./components/home/HomeFAQ";
 import { HOME_FAQ_ITEMS } from "./components/home/home-faq-data";
 import { HomeFinalCTA } from "./components/home/HomeFinalCTA";
-import { HomeHero } from "./components/home/HomeHero";
+import { HomeHeroCarousel } from "./components/home/HomeHeroCarousel";
 import { HomeHowItWorks } from "./components/home/HomeHowItWorks";
 import { HomePopularCategories } from "./components/home/HomePopularCategories";
 import { HomeYandexReviews } from "./components/home/HomeYandexReviews";
@@ -58,7 +58,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
-      <HomeHero />
+      <HomeHeroCarousel />
       <HomeAdvantages />
       <HomePopularCategories />
       <HomeHowItWorks />
