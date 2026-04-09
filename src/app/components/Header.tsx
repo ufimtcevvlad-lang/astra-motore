@@ -131,7 +131,7 @@ export function Header() {
   }, [isCartPreviewOpen]);
 
   return (
-    <header className="border-b border-slate-800 bg-gradient-to-r from-[#05070A] via-[#090D13] to-[#05070A] shadow-lg">
+    <header className="border-b border-slate-800 bg-[#05070A] shadow-lg">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
         {/* Верхняя строка: логотип | поиск | корзина | вход */}
         <div className="flex flex-col gap-2 py-2 sm:gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-2 xl:gap-10">

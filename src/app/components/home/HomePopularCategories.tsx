@@ -95,7 +95,7 @@ export function HomePopularCategories() {
               href={href}
               className="group/cat flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/70 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100">
+              <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-50">
                 <div className="absolute inset-6 flex items-center justify-center">
                   <div className="relative h-full w-full">
                     <Image

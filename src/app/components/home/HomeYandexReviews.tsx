@@ -46,13 +46,15 @@ export function HomeYandexReviews() {
         <aside className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50 via-white to-white p-6 shadow-sm lg:p-7">
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-amber-600">4,7</span>
+              <span className="text-4xl font-black text-amber-600">4,5</span>
               <span className="text-sm font-medium text-slate-500">из 5</span>
             </div>
-            <div className="mt-1 text-amber-500" aria-label="Рейтинг 4.7 из 5">
+            <div className="mt-1 text-amber-500" aria-label="Рейтинг 4,5 из 5">
               ★★★★★
             </div>
-            <p className="mt-2 text-xs text-slate-500">Средняя оценка на Яндекс.Картах</p>
+            <p className="mt-2 text-xs text-slate-500">
+              Средняя оценка на Яндекс.Картах · 39 отзывов
+            </p>
           </div>
 
           <div className="space-y-3 border-t border-amber-200/60 pt-4 text-sm text-slate-700">

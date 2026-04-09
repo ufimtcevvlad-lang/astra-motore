@@ -33,8 +33,8 @@ const ADVANTAGES: Advantage[] = [
     text: "Возврат по закону: 14 дней на товары надлежащего качества, гарантия производителя на каждую деталь.",
   },
   {
-    accent: "🏁",
-    title: "Самовывоз и доставка по Екб",
+    accent: "Екб",
+    title: "Самовывоз и доставка",
     text: "Адрес самовывоза: ул. Готвальда, 9. Курьерская доставка по Екатеринбургу и отправка по России через СДЭК.",
   },
 ];
@@ -45,7 +45,7 @@ export function HomeAdvantages() {
       <div className="text-center">
         <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Почему GM Shop 66</h2>
         <p className="mt-2 text-sm text-slate-600 sm:text-base">
-          Специализация на запчастях GM в Екатеринбурге с 2013 года
+          Что вы получаете, заказывая у нас
         </p>
       </div>
 

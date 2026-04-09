@@ -12,7 +12,7 @@ import { SITE_BRAND, SITE_URL } from "./lib/site";
 
 export const metadata: Metadata = {
   title: "Главная",
-  description: `${SITE_BRAND} — запчасти GM, Opel и Chevrolet в Екатеринбурге с 2013 года. Оригинал и проверенные аналоги, подбор по VIN, редкие позиции со своего склада. Работаем только с GM.`,
+  description: `Запчасти Opel и Chevrolet в Екатеринбурге. Оригинал и проверенные бренды. Подбор по VIN, редкие позиции. ${SITE_BRAND} — самовывоз и доставка по Екб.`,
   alternates: { canonical: "/" },
   openGraph: {
     title: `${SITE_BRAND} — автозапчасти GM, Opel, Chevrolet`,

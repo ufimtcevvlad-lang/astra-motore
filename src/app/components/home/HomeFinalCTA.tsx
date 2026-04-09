@@ -39,51 +39,60 @@ function PhoneIcon({ className }: { className?: string }) {
 
 export function HomeFinalCTA() {
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-8 text-white shadow-xl sm:p-10">
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0F172A] via-[#0A0E15] to-[#020617] p-8 text-white shadow-2xl sm:p-12">
       <div className="absolute inset-0 opacity-[0.07] bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
       <div className="relative z-10 mx-auto max-w-3xl text-center">
-        <h2 className="text-2xl font-bold sm:text-3xl">Не нашли нужную запчасть?</h2>
-        <p className="mt-3 text-sm text-slate-300 sm:text-base">
-          Пришлите VIN автомобиля или артикул — найдём даже редкую позицию.
-          Работаем с Opel, Chevrolet, Cadillac, Buick и другими моделями GM.
+        <h2 className="text-3xl font-bold sm:text-4xl">
+          Не нашли запчасть? <span className="text-amber-400">Мы её найдём.</span>
+        </h2>
+        <p className="mt-4 text-sm text-slate-300 sm:text-base">
+          Пришлите VIN автомобиля или артикул — найдём даже редкую позицию. Работаем с Opel,
+          Chevrolet и другими моделями GM.
         </p>
 
+        {/* Главные кнопки — 2 шт */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
             href={`https://wa.me/${PHONE_WA_TG}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/30 transition hover:bg-[#1ebe57]"
+            className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-[#1ebe57]"
           >
             <WhatsAppIcon className="h-5 w-5" />
-            WhatsApp
+            Написать в WhatsApp
           </a>
+          <Link
+            href="/vin-request"
+            className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-7 py-3.5 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
+          >
+            Подобрать по VIN
+          </Link>
+        </div>
+
+        {/* Альтернативные способы связи — мелкой строкой */}
+        <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-slate-400">
+          <span>или</span>
           <a
             href={`https://t.me/+${PHONE_WA_TG}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[#26A5E4] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/30 transition hover:bg-[#1e8cbf]"
+            className="inline-flex items-center gap-1 text-[#26A5E4] underline-offset-2 hover:underline"
           >
-            <TelegramIcon className="h-5 w-5" />
+            <TelegramIcon className="h-4 w-4" />
             Telegram
           </a>
-          <Link
-            href="/vin-request"
-            className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/30 transition hover:bg-amber-300"
-          >
-            Запрос по VIN
-          </Link>
+          <span>·</span>
           <a
             href={`tel:+${PHONE_WA_TG}`}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-500/70 px-6 py-3 text-sm font-semibold text-white transition hover:border-slate-300 hover:bg-white/10"
+            className="inline-flex items-center gap-1 text-slate-200 underline-offset-2 hover:underline"
           >
-            <PhoneIcon className="h-4 w-4" />
+            <PhoneIcon className="h-3.5 w-3.5" />
             {PHONE_DISPLAY}
           </a>
-        </div>
+        </p>
 
-        <p className="mt-6 text-xs text-slate-400">
-          Ответ менеджера в течение 15 минут в рабочее время (Пн–Пт 10:00–20:00, Сб–Вс 10:00–18:00)
+        <p className="mt-4 text-xs text-slate-500">
+          Ответ менеджера в течение 15 минут · Пн–Пт 10:00–20:00 · Сб–Вс 10:00–18:00
         </p>
       </div>
     </section>
