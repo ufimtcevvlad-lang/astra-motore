@@ -2,8 +2,8 @@
 
 /**
  * Логотип шапки: растровый локап GM SHOP (GENERAL MOTORS / OPEL · CHEVROLET / 66).
- * Без scale/overflow-visible — логотип строго в границах своей flex-ячейки,
- * не торчит на разделительную линию меню ниже.
+ * Прежний визуальный размер (как при scale(1.2)), но без scale и overflow-visible —
+ * контейнер сам растягивается под высоту логотипа, логотип не торчит на линию меню.
  */
 export function BrandLogo() {
   return (
@@ -15,7 +15,7 @@ export function BrandLogo() {
         draggable={false}
         loading="eager"
         decoding="async"
-        className="h-16 w-auto max-w-[320px] origin-left object-contain object-left sm:h-20 sm:max-w-[380px] md:h-24 md:max-w-[440px]"
+        className="h-[96px] w-auto max-w-[min(96vw,560px)] origin-left object-contain object-left sm:h-[112px] sm:max-w-[min(94vw,620px)] md:h-[128px] md:max-w-[min(92vw,680px)] lg:h-[144px]"
       />
     </div>
   );
