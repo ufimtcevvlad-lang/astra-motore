@@ -11,6 +11,7 @@ import { plainProductDescription, ProductDescription } from "../../components/Pr
 import { ProductSpecs } from "./_components/ProductSpecs";
 import { ProductLongDescription } from "./_components/ProductLongDescription";
 import { ProductTabs, type ProductTab } from "./_components/ProductTabs";
+import { TrackProductView, RecentlyViewed } from "../../components/RecentlyViewed";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -205,6 +206,8 @@ export default function ProductPage({
         <ProductClient product={product} />
       </div>
 
+      <TrackProductView productId={product.id} />
+
       {(() => {
         const tabs: ProductTab[] = [];
 
@@ -263,6 +266,8 @@ export default function ProductPage({
           </ul>
         </section>
       ) : null}
+
+      <RecentlyViewed excludeId={product.id} />
     </div>
   );
 }

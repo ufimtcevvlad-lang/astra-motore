@@ -4,24 +4,38 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
-import { products } from "../data/products";
-import { CATALOG_SECTIONS } from "../data/catalog-sections";
+import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
+import { RecentlyViewed } from "./RecentlyViewed";
+import { productMatchesTextQuery } from "../lib/catalog-search";
+import { products, type Product } from "../data/products";
 import {
-  applyFilters,
-  computeBrandFacets,
-  DEFAULT_FILTERS,
-  filtersToSearchParams,
-  getActiveChips,
-  hasActiveFilters,
-  removeChip,
-  searchParamsToFilters,
-  type CatalogFilterState,
-  type SortMode,
-} from "./catalog/CatalogFilters";
+  CATALOG_GROUPS,
+  CATALOG_SECTIONS,
+  sectionsInGroup,
+  sortProductsById,
+} from "../data/catalog-sections";
 
-type ProductCatalogProps = {
-  hideHubIntro?: boolean;
-};
+type SortMode = "popular" | "price-asc" | "price-desc" | "name";
+type ViewMode = "grid" | "list";
+type CatalogSectionSlug = (typeof CATALOG_SECTIONS)[number]["slug"];
+
+const VIEW_MODE_KEY = "catalog-view-mode";
+
+function useViewMode(): [ViewMode, (mode: ViewMode) => void] {
+  const [mode, setModeState] = useState<ViewMode>("grid");
+
+  useEffect(() => {
+    const stored = localStorage.getItem(VIEW_MODE_KEY);
+    if (stored === "list" || stored === "grid") setModeState(stored);
+  }, []);
+
+  const setMode = useCallback((next: ViewMode) => {
+    setModeState(next);
+    localStorage.setItem(VIEW_MODE_KEY, next);
+  }, []);
+
+  return [mode, setMode];
+}
 
 const SORT_OPTIONS: Array<{ value: SortMode; label: string }> = [
   { value: "popular", label: "По популярности" },
@@ -30,106 +44,158 @@ const SORT_OPTIONS: Array<{ value: SortMode; label: string }> = [
   { value: "name", label: "По названию" },
 ];
 
-const sectionTitleBySlug = new Map(
-  CATALOG_SECTIONS.map((s) => [s.slug, s.title] as const),
+const sectionTitleBySlug: Map<string, string> = new Map(
+  CATALOG_SECTIONS.map((s) => [s.slug, s.title]),
 );
 
-function ProductCatalogInner(_props: ProductCatalogProps) {
+type ProductCatalogProps = {
+  hideHubIntro?: boolean;
+};
+
+function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Инициализируем state из URL
-  const [filters, setFilters] = useState<CatalogFilterState>(() =>
-    searchParamsToFilters(searchParams),
-  );
+  const [query, setQuery] = useState("");
+  const [activeSlug, setActiveSlug] = useState<CatalogSectionSlug | "all">("all");
+  const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set());
+  const [priceFrom, setPriceFrom] = useState<number | null>(null);
+  const [priceTo, setPriceTo] = useState<number | null>(null);
+  const [sort, setSort] = useState<SortMode>("popular");
+  const [viewMode, setViewMode] = useViewMode();
 
-  // Sync с URL при навигации (кнопка назад, ссылка)
+  // Синхронизация поля поиска с ?q= при переходе из шапки или по ссылке
   useEffect(() => {
-    setFilters(searchParamsToFilters(searchParams));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация с URL (внешняя система)
+    setQuery(searchParams.get("q") ?? "");
+    const sectionParam = searchParams.get("section");
+    if (sectionParam && sectionTitleBySlug.has(sectionParam)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveSlug(sectionParam as CatalogSectionSlug);
+    }
   }, [searchParams]);
 
-  // Обновить URL при изменении фильтров
-  const updateUrl = useCallback(
-    (newFilters: CatalogFilterState) => {
-      const params = filtersToSearchParams(newFilters);
-      const qs = params.toString();
-      router.replace(qs ? `/catalog?${qs}` : "/catalog", { scroll: false });
-    },
-    [router],
+  const queryNorm = query.trim().toLowerCase();
+  const groupedMode = activeSlug === "all" && !queryNorm && selectedBrands.size === 0 && priceFrom === null && priceTo === null;
+
+  const sectionBySlug = useMemo(
+    () => new Map(CATALOG_SECTIONS.map((section) => [section.slug, section] as const)),
+    [],
   );
 
-  const setFilter = useCallback(
-    <K extends keyof CatalogFilterState>(key: K, value: CatalogFilterState[K]) => {
-      setFilters((prev) => {
-        const next = { ...prev, [key]: value };
-        updateUrl(next);
-        return next;
-      });
-    },
-    [updateUrl],
+  // Фильтрация
+  const filtered = useMemo(() => {
+    const activeSectionTitle =
+      activeSlug === "all" ? null : (sectionBySlug.get(activeSlug)?.title ?? null);
+
+    const result = products.filter((p) => {
+      if (activeSectionTitle && p.category !== activeSectionTitle) return false;
+      if (queryNorm && !productMatchesTextQuery(p, queryNorm)) return false;
+      if (selectedBrands.size > 0 && !selectedBrands.has(p.brand)) return false;
+      if (priceFrom !== null && p.price < priceFrom) return false;
+      if (priceTo !== null && p.price > priceTo) return false;
+      return true;
+    });
+
+    switch (sort) {
+      case "price-asc":
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case "name":
+        result.sort((a, b) => a.name.localeCompare(b.name, "ru"));
+        break;
+      case "popular":
+      default:
+        result.sort(sortProductsById);
+        break;
+    }
+
+    return result;
+  }, [queryNorm, activeSlug, selectedBrands, priceFrom, priceTo, sort, sectionBySlug]);
+
+  // Группировка по разделам для grouped mode
+  const itemsBySectionTitle = useMemo(() => {
+    const bySection = new Map<string, Product[]>();
+    for (const p of filtered) {
+      const list = bySection.get(p.category);
+      if (list) list.push(p);
+      else bySection.set(p.category, [p]);
+    }
+    return bySection;
+  }, [filtered]);
+
+  // Фасеты: кол-во товаров по каждому бренду (без учёта текущего выбора бренда)
+  const brandFacets = useMemo(() => {
+    const activeSectionTitle =
+      activeSlug === "all" ? null : (sectionBySlug.get(activeSlug)?.title ?? null);
+
+    const base = products.filter((p) => {
+      if (activeSectionTitle && p.category !== activeSectionTitle) return false;
+      if (queryNorm && !productMatchesTextQuery(p, queryNorm)) return false;
+      if (priceFrom !== null && p.price < priceFrom) return false;
+      if (priceTo !== null && p.price > priceTo) return false;
+      return true;
+    });
+
+    const counts = new Map<string, number>();
+    for (const p of base) {
+      counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
+    }
+    return counts;
+  }, [queryNorm, activeSlug, priceFrom, priceTo, sectionBySlug]);
+
+  const sortedBrands = useMemo(
+    () =>
+      [...brandFacets.entries()]
+        .filter(([, count]) => count > 0)
+        .sort((a, b) => b[1] - a[1]),
+    [brandFacets],
   );
 
-  const clearAll = useCallback(() => {
-    setFilters(DEFAULT_FILTERS);
-    router.replace("/catalog", { scroll: false });
-  }, [router]);
-
-  const handleRemoveChip = useCallback(
-    (chipKey: string) => {
-      setFilters((prev) => {
-        const next = removeChip(prev, chipKey);
-        updateUrl(next);
-        return next;
-      });
-    },
-    [updateUrl],
-  );
-
-  const toggleBrand = useCallback(
-    (brand: string) => {
-      setFilters((prev) => {
-        const newBrands = new Set(prev.brands);
-        if (newBrands.has(brand)) newBrands.delete(brand);
-        else newBrands.add(brand);
-        const next = { ...prev, brands: newBrands };
-        updateUrl(next);
-        return next;
-      });
-    },
-    [updateUrl],
-  );
-
-  // ========== Вычисления ==========
-
-  const filtered = useMemo(
-    () => applyFilters(products, filters, sectionTitleBySlug),
-    [filters],
-  );
-
-  const brandFacets = useMemo(
-    () => computeBrandFacets(products, filters, sectionTitleBySlug),
-    [filters],
-  );
-
-  // Все бренды отсортированные по количеству
-  const sortedBrands = useMemo(() => {
-    return [...brandFacets.entries()]
-      .filter(([, count]) => count > 0)
-      .sort((a, b) => b[1] - a[1]);
-  }, [brandFacets]);
-
-  const chips = useMemo(
-    () => getActiveChips(filters, sectionTitleBySlug),
-    [filters],
-  );
-
-  const isFiltered = hasActiveFilters(filters);
+  // Кол-во товаров по разделам (для dropdown)
+  const sectionCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const p of products) {
+      counts.set(p.category, (counts.get(p.category) ?? 0) + 1);
+    }
+    return counts;
+  }, []);
 
   // Цена мин/макс для плейсхолдеров
   const priceRange = useMemo(() => {
     if (products.length === 0) return { min: 0, max: 0 };
     const prices = products.map((p) => p.price);
     return { min: Math.min(...prices), max: Math.max(...prices) };
+  }, []);
+
+  const hasActiveFilters =
+    queryNorm.length > 0 ||
+    activeSlug !== "all" ||
+    selectedBrands.size > 0 ||
+    priceFrom !== null ||
+    priceTo !== null ||
+    sort !== "popular";
+
+  const clearFilters = () => {
+    setQuery("");
+    setActiveSlug("all");
+    setSelectedBrands(new Set());
+    setPriceFrom(null);
+    setPriceTo(null);
+    setSort("popular");
+    router.replace("/catalog");
+  };
+
+  const toggleBrand = useCallback((brand: string) => {
+    setSelectedBrands((prev) => {
+      const next = new Set(prev);
+      if (next.has(brand)) next.delete(brand);
+      else next.add(brand);
+      return next;
+    });
   }, []);
 
   // Мобильный sidebar
@@ -142,39 +208,13 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
   const applyPriceFilter = useCallback(() => {
     const from = priceFromRef.current?.value ? Number(priceFromRef.current.value) : null;
     const to = priceToRef.current?.value ? Number(priceToRef.current.value) : null;
-    setFilters((prev) => {
-      const next = { ...prev, priceFrom: from, priceTo: to };
-      updateUrl(next);
-      return next;
-    });
-  }, [updateUrl]);
+    setPriceFrom(from !== null && !isNaN(from) ? from : null);
+    setPriceTo(to !== null && !isNaN(to) ? to : null);
+  }, []);
 
   // ========== Sidebar фильтров ==========
-
   const FilterPanel = (
     <div className="space-y-5">
-      {/* Марка авто */}
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Марка</p>
-        <div className="mt-2 inline-flex w-full rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group">
-          {(["all", "opel", "chevrolet"] as const).map((id) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={filters.carBrand === id}
-              onClick={() => setFilter("carBrand", id)}
-              className={`flex-1 rounded-md px-2 py-2 text-xs font-medium transition ${
-                filters.carBrand === id
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {id === "all" ? "Все" : id === "opel" ? "Opel" : "Chevrolet"}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Раздел */}
       <div>
         <label htmlFor="sidebar-section" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -182,19 +222,26 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
         </label>
         <select
           id="sidebar-section"
-          value={filters.section}
-          onChange={(e) => setFilter("section", e.target.value)}
+          value={activeSlug}
+          onChange={(e) =>
+            setActiveSlug(e.target.value === "all" ? "all" : (e.target.value as CatalogSectionSlug))
+          }
           className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25"
         >
-          <option value="all">Все разделы</option>
-          {CATALOG_SECTIONS.map((s) => (
-            <option key={s.slug} value={s.slug}>{s.title}</option>
-          ))}
+          <option value="all">Все разделы ({products.length})</option>
+          {CATALOG_SECTIONS.map((s) => {
+            const count = sectionCounts.get(s.title) ?? 0;
+            return (
+              <option key={s.slug} value={s.slug}>
+                {s.title} ({count})
+              </option>
+            );
+          })}
         </select>
       </div>
 
       {/* Бренд производителя */}
-      {sortedBrands.length > 0 && (
+      {sortedBrands.length > 1 && (
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Бренд</p>
           <div className="mt-2 max-h-56 space-y-1 overflow-y-auto">
@@ -205,7 +252,7 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
               >
                 <input
                   type="checkbox"
-                  checked={filters.brands.has(brand)}
+                  checked={selectedBrands.has(brand)}
                   onChange={() => toggleBrand(brand)}
                   className="h-4 w-4 rounded border-slate-300 accent-amber-500"
                 />
@@ -225,7 +272,7 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
             ref={priceFromRef}
             type="number"
             placeholder={`от ${priceRange.min}`}
-            defaultValue={filters.priceFrom ?? ""}
+            defaultValue={priceFrom ?? ""}
             onBlur={applyPriceFilter}
             onKeyDown={(e) => e.key === "Enter" && applyPriceFilter()}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-amber-400"
@@ -235,7 +282,7 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
             ref={priceToRef}
             type="number"
             placeholder={`до ${priceRange.max}`}
-            defaultValue={filters.priceTo ?? ""}
+            defaultValue={priceTo ?? ""}
             onBlur={applyPriceFilter}
             onKeyDown={(e) => e.key === "Enter" && applyPriceFilter()}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-amber-400"
@@ -243,22 +290,14 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
         </div>
       </div>
 
-      {/* Только в наличии */}
-      <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
-        <input
-          type="checkbox"
-          checked={filters.inStockOnly}
-          onChange={(e) => setFilter("inStockOnly", e.target.checked)}
-          className="h-4 w-4 rounded border-slate-300 accent-amber-500"
-        />
-        Только в наличии
-      </label>
-
       {/* Сбросить */}
-      {isFiltered && (
+      {hasActiveFilters && (
         <button
           type="button"
-          onClick={clearAll}
+          onClick={() => {
+            clearFilters();
+            setMobileFiltersOpen(false);
+          }}
           className="w-full rounded-lg border border-slate-300 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
         >
           Сбросить все фильтры
@@ -269,26 +308,83 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
 
   return (
     <section className="space-y-6">
+      {!hideHubIntro ? (
+        <div className="rounded-xl border border-amber-100 bg-amber-50/50 px-4 py-3 text-sm">
+          <p className="font-medium text-slate-800">Каталоги по марке</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Link
+              href="/zapchasti-opel"
+              className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-900 hover:border-amber-400"
+            >
+              Opel
+            </Link>
+            <Link
+              href="/zapchasti-chevrolet"
+              className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-medium text-amber-900 hover:border-amber-400"
+            >
+              Chevrolet
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
       {/* Шапка: поиск + сортировка */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="search"
-            value={filters.query}
-            onChange={(e) => setFilter("query", e.target.value)}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Название, артикул или модель авто…"
             className="flex-1 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/30"
           />
-          <select
-            value={filters.sort}
-            onChange={(e) => setFilter("sort", e.target.value as SortMode)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-700 outline-none focus:border-amber-400 sm:w-52"
-          >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortMode)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-700 outline-none focus:border-amber-400 sm:w-52"
+            >
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+
+            {/* Переключатель сетка/список */}
+            <div className="hidden sm:flex rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+              <button
+                type="button"
+                aria-label="Сетка"
+                aria-pressed={viewMode === "grid"}
+                onClick={() => setViewMode("grid")}
+                className={`rounded-md p-2 transition ${viewMode === "grid" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Список"
+                aria-pressed={viewMode === "list"}
+                onClick={() => setViewMode("list")}
+                className={`rounded-md p-2 transition ${viewMode === "list" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"}`}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
+
+        <CatalogGroupNav
+          products={filtered}
+          visible={groupedMode}
+          variant="inline"
+        />
 
         {/* Мобильная кнопка фильтров */}
         <button
@@ -299,27 +395,57 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          Фильтры{chips.length > 0 ? ` (${chips.length})` : ""}
+          Фильтры
+          {(selectedBrands.size > 0 || activeSlug !== "all" || priceFrom !== null || priceTo !== null)
+            ? ` (${(selectedBrands.size > 0 ? 1 : 0) + (activeSlug !== "all" ? 1 : 0) + (priceFrom !== null || priceTo !== null ? 1 : 0)})`
+            : ""}
         </button>
       </div>
 
-      {/* Чипы активных фильтров */}
-      {chips.length > 0 && (
+      {/* Активные фильтры (чипы) */}
+      {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-2">
-          {chips.map((chip) => (
+          {activeSlug !== "all" && (
             <button
-              key={chip.key}
               type="button"
-              onClick={() => handleRemoveChip(chip.key)}
+              onClick={() => setActiveSlug("all")}
               className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900 transition hover:bg-amber-200"
             >
-              {chip.label}
+              {sectionTitleBySlug.get(activeSlug) ?? activeSlug}
+              <span aria-hidden className="ml-0.5 text-amber-600">✕</span>
+            </button>
+          )}
+          {[...selectedBrands].map((brand) => (
+            <button
+              key={brand}
+              type="button"
+              onClick={() => toggleBrand(brand)}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900 transition hover:bg-amber-200"
+            >
+              {brand === "—" ? "Без бренда" : brand}
               <span aria-hidden className="ml-0.5 text-amber-600">✕</span>
             </button>
           ))}
+          {(priceFrom !== null || priceTo !== null) && (
+            <button
+              type="button"
+              onClick={() => {
+                setPriceFrom(null);
+                setPriceTo(null);
+                if (priceFromRef.current) priceFromRef.current.value = "";
+                if (priceToRef.current) priceToRef.current.value = "";
+              }}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900 transition hover:bg-amber-200"
+            >
+              {priceFrom ? `от ${priceFrom.toLocaleString("ru-RU")}` : ""}
+              {priceFrom && priceTo ? " " : ""}
+              {priceTo ? `до ${priceTo.toLocaleString("ru-RU")}` : ""} ₽
+              <span aria-hidden className="ml-0.5 text-amber-600">✕</span>
+            </button>
+          )}
           <button
             type="button"
-            onClick={clearAll}
+            onClick={clearFilters}
             className="text-sm text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
           >
             Сбросить всё
@@ -353,16 +479,57 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
               </p>
               <button
                 type="button"
-                onClick={clearAll}
+                onClick={clearFilters}
                 className="mt-4 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
               >
                 Сбросить фильтры
               </button>
             </div>
+          ) : groupedMode ? (
+            <div className="space-y-10">
+              {CATALOG_GROUPS.map((group) => {
+                const sections = sectionsInGroup(group.slug);
+                const hasAny = sections.some(
+                  (sec) => (itemsBySectionTitle.get(sec.title)?.length ?? 0) > 0,
+                );
+                if (!hasAny) return null;
+
+                return (
+                  <div
+                    key={group.slug}
+                    id={`catalog-group-${group.slug}`}
+                    className="scroll-mt-28 space-y-8"
+                  >
+                    <h2 className="border-b border-amber-200/80 pb-2 text-xl font-semibold text-slate-900">
+                      {group.title}
+                    </h2>
+
+                    {sections.map((section) => {
+                      const items = itemsBySectionTitle.get(section.title) ?? [];
+                      if (items.length === 0) return null;
+                      return (
+                        <div
+                          key={section.slug}
+                          id={`catalog-${section.slug}`}
+                          className="scroll-mt-28 space-y-4"
+                        >
+                          <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
+                          <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"}>
+                            {items.map((p) => (
+                              <CatalogProductCard key={p.id} p={p} variant={viewMode} />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"}>
               {filtered.map((p) => (
-                <CatalogProductCard key={p.id} p={p} />
+                <CatalogProductCard key={p.id} p={p} variant={viewMode} />
               ))}
             </div>
           )}
@@ -372,12 +539,10 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
       {/* Мобильный bottom-sheet */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
-          {/* Overlay */}
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setMobileFiltersOpen(false)}
           />
-          {/* Panel */}
           <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-5 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900">Фильтры</h3>
@@ -403,6 +568,8 @@ function ProductCatalogInner(_props: ProductCatalogProps) {
           </div>
         </div>
       )}
+
+      <RecentlyViewed />
     </section>
   );
 }

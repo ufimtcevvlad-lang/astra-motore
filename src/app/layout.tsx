@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
+import { FavoritesProvider } from "./components/FavoritesContext";
 import { CookieConsentBanner } from "./components/CookieConsentBanner";
 import { FloatingContactButtons } from "./components/FloatingContactButtons";
 import { Footer } from "./components/Footer";
@@ -101,14 +102,16 @@ export default function RootLayout({
         <MetrikaDeferred />
 
         <CartProvider>
-          <Header />
-          <main className="mx-auto min-h-[60vh] max-w-7xl px-4 pb-6 pt-6">
-            {maintenanceMode ? <MaintenanceNotice message={maintenanceMessage} /> : null}
-            {children}
-          </main>
-          <Footer />
-          <FloatingContactButtons />
-          <CookieConsentBanner />
+          <FavoritesProvider>
+            <Header />
+            <main className="mx-auto min-h-[60vh] max-w-7xl px-4 pb-6 pt-6">
+              {maintenanceMode ? <MaintenanceNotice message={maintenanceMessage} /> : null}
+              {children}
+            </main>
+            <Footer />
+            <FloatingContactButtons />
+            <CookieConsentBanner />
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>

@@ -4,18 +4,8 @@ import Link from "next/link";
 import { CATALOG_GROUPS, sectionsInGroup } from "../../data/catalog-sections";
 import type { Product } from "../../data/products";
 
-type BrandFilter = "all" | "opel" | "chevrolet";
-
-function productMatchesBrand(p: Product, brand: BrandFilter): boolean {
-  if (brand === "all") return true;
-  const t = p.car.toLowerCase();
-  if (brand === "opel") return t.includes("opel");
-  return t.includes("chevrolet");
-}
-
 type CatalogGroupNavProps = {
   products: Product[];
-  brandFilter: BrandFilter;
   /** Показывать только в режиме «все разделы» без поиска */
   visible: boolean;
   /** inline — лента под поиском (мобилка); sidebar — слева от сетки (десктоп) */
@@ -27,7 +17,6 @@ type CatalogGroupNavProps = {
  */
 export function CatalogGroupNav({
   products,
-  brandFilter,
   visible,
   variant,
 }: CatalogGroupNavProps) {
@@ -36,7 +25,7 @@ export function CatalogGroupNav({
   const groupsWithItems = CATALOG_GROUPS.filter((group) => {
     const sections = sectionsInGroup(group.slug);
     return sections.some((sec) =>
-      products.some((p) => p.category === sec.title && productMatchesBrand(p, brandFilter))
+      products.some((p) => p.category === sec.title),
     );
   });
 
