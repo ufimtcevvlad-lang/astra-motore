@@ -23,6 +23,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 
@@ -79,12 +80,38 @@ function isPending(imagePath) {
   return imagePath.includes("_pending");
 }
 
+/** MD5-хеш файла для дедупликации. */
+function fileHash(filePath) {
+  return crypto.createHash("md5").update(fs.readFileSync(filePath)).digest("hex");
+}
+
+/**
+ * Список фото в папке, с дедупликацией по MD5.
+ * Если два файла идентичны — оставляем только первый (по sort-порядку).
+ * Возвращает { files: string[], skippedDupes: string[] }.
+ */
 function listSourcePhotos(dir) {
-  if (!fs.existsSync(dir)) return [];
-  return fs
+  if (!fs.existsSync(dir)) return { files: [], skippedDupes: [] };
+  const all = fs
     .readdirSync(dir)
     .filter((f) => SOURCE_EXT.test(f) && !f.startsWith("."))
-    .sort(); // имена уже с префиксом порядка съёмки
+    .sort();
+
+  const seen = new Map();
+  const files = [];
+  const skippedDupes = [];
+
+  for (const f of all) {
+    const hash = fileHash(path.join(dir, f));
+    if (seen.has(hash)) {
+      skippedDupes.push(`${f} (= ${seen.get(hash)})`);
+    } else {
+      seen.set(hash, f);
+      files.push(f);
+    }
+  }
+
+  return { files, skippedDupes };
 }
 
 /** Конвертирует один файл в WebP. HEIC обрабатываем через sips → JPEG → sharp */
@@ -174,13 +201,13 @@ async function main() {
   for (const p of products) {
     const sortedDir = path.join(SORT_DIR, p.sku);
     if (!fs.existsSync(sortedDir)) continue;
-    const sources = listSourcePhotos(sortedDir);
+    const { files: sources, skippedDupes } = listSourcePhotos(sortedDir);
     if (sources.length === 0) continue;
     if (!isPending(p.image)) {
-      plan.push({ ...p, sources, action: "skip-has-photo", sortedDir });
+      plan.push({ ...p, sources, skippedDupes, action: "skip-has-photo", sortedDir });
       continue;
     }
-    plan.push({ ...p, sources, action: "import", sortedDir });
+    plan.push({ ...p, sources, skippedDupes, action: "import", sortedDir });
   }
 
   const toImport = plan.filter((p) => p.action === "import");
@@ -188,7 +215,13 @@ async function main() {
 
   log(colorize(`✅ К импорту: ${toImport.length} товаров`, "green"));
   for (const p of toImport) {
-    log(`   ${colorize(p.sku, "cyan")} → ${p.id}  (${p.sources.length} фото)`);
+    const dupeNote = p.skippedDupes.length > 0
+      ? colorize(` (пропущено ${p.skippedDupes.length} дублей)`, "yellow")
+      : "";
+    log(`   ${colorize(p.sku, "cyan")} → ${p.id}  (${p.sources.length} фото${dupeNote})`);
+    for (const d of p.skippedDupes) {
+      log(colorize(`      ↳ дубль: ${d}`, "gray"));
+    }
   }
   log("");
   log(colorize(`⏭  Пропускаем (фото уже есть на сайте): ${toSkip.length}`, "yellow"));
