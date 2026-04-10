@@ -2,7 +2,6 @@
 // Аналоги: только id из ЭТОГО же массива (связи из вашей выгрузки Excel), без интернета.
 
 import { roundRetailRubles } from "../lib/price";
-import { seoProductName } from "../lib/seo-name";
 import { sortProductsById } from "./catalog-sections";
 
 /** Строка технической характеристики — пара «название → значение». */
@@ -2270,7 +2269,7 @@ export const products: Product[
 ] = OPEL_PILOT_RAW.map((r) => ({
   id: r.id,
   sku: r.sku,
-  name: seoProductName(r.name, r.sku),
+  name: r.name,
   brand: r.brand,
   country: r.country,
   category: r.category,
