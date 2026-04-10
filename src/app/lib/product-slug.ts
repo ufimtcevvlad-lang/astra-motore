@@ -1,10 +1,26 @@
 import { products, type Product } from "../data/products";
 
-/** Латиница + цифры для сегментов URL (бренд на этикетке + артикул). */
-function slugifySegment(s: string): string {
+/** Транслитерация кириллицы → латиница (ГОСТ 7.79-2000 Б, упрощённая). */
+const TRANSLIT: Record<string, string> = {
+  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh",
+  з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o",
+  п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "kh", ц: "ts",
+  ч: "ch", ш: "sh", щ: "shch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu",
+  я: "ya",
+};
+
+function transliterate(s: string): string {
   return s
-    .trim()
     .toLowerCase()
+    .split("")
+    .map((c) => TRANSLIT[c] ?? c)
+    .join("");
+}
+
+/** Латиница + цифры для сегментов URL. */
+function slugifySegment(s: string): string {
+  return transliterate(s)
+    .trim()
     .normalize("NFD")
     .replace(/\p{M}/gu, "")
     .replace(/&/g, " and ")
@@ -12,10 +28,24 @@ function slugifySegment(s: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-function baseProductSlug(brand: string, sku: string): string {
-  const b = slugifySegment(brand) || "brand";
-  const k = slugifySegment(sku) || "sku";
-  return `${b}-${k}`;
+/** Извлекает тип детали из названия (первые 1-3 слова до бренда/кода мотора). */
+function extractPartType(name: string): string {
+  // Берём часть до «|» (артикула), потом до первого бренда в верхнем регистре или кода мотора
+  const clean = name.split("|")[0].trim();
+  // Отсекаем всё начиная с бренда (BOSCH, HENGST, SIBTEK и т.д.) или кода мотора (A16XER, Z18XER, F16D4)
+  const cutoff = clean.search(/\b[A-Z]{2,}[a-z]*\b|\b[A-Z]\d{2}[A-Z]/);
+  const raw = cutoff > 0 ? clean.slice(0, cutoff).trim() : clean;
+  // Максимум 5 слов для slug
+  const words = raw.split(/\s+/).slice(0, 5);
+  return words.join(" ").replace(/[,()]/g, "").trim();
+}
+
+function baseProductSlug(product: Product): string {
+  const partType = slugifySegment(extractPartType(product.name));
+  const b = slugifySegment(product.brand) || "brand";
+  const k = slugifySegment(product.sku) || "sku";
+  // svecha-zazhiganiya-bosch-0242229699
+  return partType ? `${partType}-${b}-${k}` : `${b}-${k}`;
 }
 
 function assignSlugs(list: Product[]): {
@@ -27,7 +57,7 @@ function assignSlugs(list: Product[]): {
   const idToSlug = new Map<string, string>();
 
   for (const p of sorted) {
-    const base = baseProductSlug(p.brand, p.sku);
+    const base = baseProductSlug(p);
     let slug = base;
     if (slugToProduct.has(slug)) {
       slug = `${base}-${slugifySegment(p.id) || "item"}`;
@@ -47,7 +77,7 @@ function assignSlugs(list: Product[]): {
 const { idToSlug, slugToProduct } = assignSlugs(products);
 
 export function getProductSlug(product: Product): string {
-  return idToSlug.get(product.id) ?? baseProductSlug(product.brand, product.sku);
+  return idToSlug.get(product.id) ?? baseProductSlug(product);
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
@@ -58,17 +88,25 @@ export function productPath(product: Product): string {
   return `/product/${getProductSlug(product)}`;
 }
 
-/** Постоянные редиректы со старых URL `/product/:id` на канонические slug. */
+/** Постоянные редиректы со старых URL `/product/:id` и `/product/{brand}-{sku}` на канонические slug. */
 export function getLegacyProductRedirects(): Array<{
   source: string;
   destination: string;
   permanent: true;
 }> {
-  return products.map((p) => ({
-    source: `/product/${p.id}`,
-    destination: productPath(p),
-    permanent: true as const,
-  }));
+  const redirects: Array<{ source: string; destination: string; permanent: true }> = [];
+  const permanent = true as const;
+  for (const p of products) {
+    const dest = productPath(p);
+    // Редирект с /product/{id}
+    redirects.push({ source: `/product/${p.id}`, destination: dest, permanent });
+    // Редирект со старого формата {brand}-{sku} (без типа детали)
+    const oldSlug = `${slugifySegment(p.brand) || "brand"}-${slugifySegment(p.sku) || "sku"}`;
+    if (`/product/${oldSlug}` !== dest) {
+      redirects.push({ source: `/product/${oldSlug}`, destination: dest, permanent });
+    }
+  }
+  return redirects;
 }
 
 /**
