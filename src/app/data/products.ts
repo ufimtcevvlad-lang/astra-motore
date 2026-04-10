@@ -2619,7 +2619,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Chevrolet Cruze — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-135/01.webp",
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 95390848. Перед заказом сверяйте совместимость по VIN.",
   },
