@@ -8,6 +8,7 @@ import { getCheaperAnalogs } from "../../lib/product-analogs";
 import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { plainProductDescription, ProductDescription } from "../../components/ProductDescription";
+import { TrackProductView, RecentlyViewed } from "../../components/RecentlyViewed";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -193,6 +194,8 @@ export default function ProductPage({
         <ProductClient product={product} />
       </div>
 
+      <TrackProductView productId={product.id} />
+
       {cheaperAnalogs.length > 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
           <h2 className="text-lg font-sem-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
@@ -224,6 +227,8 @@ export default function ProductPage({
           </ul>
         </section>
       ) : null}
+
+      <RecentlyViewed excludeId={product.id} />
     </div>
   );
 }

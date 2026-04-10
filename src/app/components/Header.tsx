@@ -10,6 +10,7 @@ import {
 } from "./search/HeaderSearchAutocomplete";
 import { SITE_BRAND } from "../lib/site";
 import { useCart } from "./CartContext";
+import { useFavorites } from "./FavoritesContext";
 
 type MeResponse = {
   user: null | {
@@ -81,6 +82,7 @@ function NavHoverDropdown({
 
 export function Header() {
   const { items } = useCart();
+  const { count: favCount } = useFavorites();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const [user, setUser] = useState<MeResponse["user"]>(null);
@@ -148,6 +150,20 @@ export function Header() {
           </Suspense>
 
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 lg:flex-nowrap lg:pl-2">
+            <Link
+              href="/favorites"
+              className="relative flex items-center gap-1 rounded-full border border-slate-500/80 px-2.5 py-1.5 text-xs font-medium text-slate-100 transition hover:border-red-400/60 hover:text-red-300 sm:px-3 sm:text-sm"
+              aria-label={`Избранное${favCount > 0 ? `, ${favCount} товаров` : ""}`}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={favCount > 0 ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {favCount > 0 && (
+                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  {favCount}
+                </span>
+              )}
+            </Link>
             <div className="relative" ref={cartPreviewRef}>
               <button
                 type="button"
