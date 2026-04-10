@@ -71,6 +71,18 @@ export const CATALOG_SECTIONS = [
     groupSlug: "to-rashod" satisfies CatalogGroupSlug,
   },
   {
+    slug: "filtry-toplivnye",
+    title: "Топливные фильтры",
+    hint: "Топливная фильтрация для дизелей и бензина",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
+  },
+  {
+    slug: "filtry-akpp",
+    title: "Фильтры АКПП",
+    hint: "Фильтры автоматической коробки передач",
+    groupSlug: "to-rashod" satisfies CatalogGroupSlug,
+  },
+  {
     slug: "dvigatel",
     title: "Двигатель",
     hint: "Смазка, маслосъёмные колпачки",
