@@ -57,31 +57,11 @@ export function HomeYandexReviews() {
             </p>
           </div>
 
-          <div className="space-y-3 border-t border-amber-200/60 pt-4 text-sm text-slate-700">
-            <div className="flex items-start gap-2">
-              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
-              <span>
-                <strong className="font-semibold text-slate-900">12+ лет</strong> в Екатеринбурге
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
-              <span>
-                <strong className="font-semibold text-slate-900">Специализация</strong> на Opel и Chevrolet
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
-              <span>
-                <strong className="font-semibold text-slate-900">Только проверенные</strong> европейские бренды
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="mt-0.5 text-amber-500" aria-hidden>✓</span>
-              <span>
-                <strong className="font-semibold text-slate-900">Редкие позиции</strong> со своего склада
-              </span>
-            </div>
+          <div className="border-t border-amber-200/60 pt-4">
+            <p className="text-sm leading-relaxed text-slate-700">
+              Оценки и отзывы реальных клиентов с Яндекс.Карт. Мы не модерируем
+              и не редактируем — всё как есть.
+            </p>
           </div>
 
           <div className="mt-auto flex flex-col gap-2 border-t border-amber-200/60 pt-4">

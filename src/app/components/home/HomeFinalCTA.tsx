@@ -46,45 +46,51 @@ export function HomeFinalCTA() {
           Не нашли запчасть? <span className="text-amber-400">Мы её найдём.</span>
         </h2>
         <p className="mt-4 text-sm text-slate-300 sm:text-base">
-          Пришлите VIN автомобиля или артикул — найдём даже редкую позицию. Работаем с Opel,
-          Chevrolet и другими моделями GM.
+          Пришлите VIN или артикул — вернёмся с ценой и сроком. Доставка по всей России.
         </p>
 
-        {/* Главные кнопки — 2 шт */}
+        {/* Основные CTA — внутренние страницы сайта */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={`https://wa.me/${PHONE_WA_TG}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-[#1ebe57]"
-          >
-            <WhatsAppIcon className="h-5 w-5" />
-            Написать в WhatsApp
-          </a>
           <Link
             href="/vin-request"
-            className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-7 py-3.5 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
+            className="inline-flex items-center justify-center rounded-full bg-amber-400 px-8 py-4 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
           >
-            Подобрать по VIN
+            VIN запрос
+          </Link>
+          <Link
+            href="/catalog"
+            className="inline-flex items-center justify-center rounded-full border border-slate-500/80 px-8 py-4 text-base font-medium text-slate-100 transition hover:border-slate-300 hover:bg-white/5"
+          >
+            Открыть каталог
           </Link>
         </div>
 
-        {/* Альтернативные способы связи — мелкой строкой */}
+        {/* Мессенджеры и телефон — мелкой строкой, как дополнительный способ */}
         <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-slate-400">
-          <span>или</span>
+          <span>Также на связи в</span>
           <a
             href={`https://t.me/+${PHONE_WA_TG}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#26A5E4] underline-offset-2 hover:underline"
+            className="inline-flex items-center gap-1 text-slate-300 underline-offset-2 hover:underline"
           >
             <TelegramIcon className="h-4 w-4" />
             Telegram
           </a>
+          <span>и</span>
+          <a
+            href={`https://wa.me/${PHONE_WA_TG}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-slate-300 underline-offset-2 hover:underline"
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+            WhatsApp
+          </a>
           <span>·</span>
           <a
             href={`tel:+${PHONE_WA_TG}`}
-            className="inline-flex items-center gap-1 text-slate-200 underline-offset-2 hover:underline"
+            className="inline-flex items-center gap-1 text-slate-300 underline-offset-2 hover:underline"
           >
             <PhoneIcon className="h-3.5 w-3.5" />
             {PHONE_DISPLAY}

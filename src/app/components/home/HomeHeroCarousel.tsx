@@ -39,10 +39,8 @@ type Slide = {
   headline: ReactNode;
   /** Описание. */
   text: string;
-  /** Главная кнопка (амбер). */
-  primaryCta: { label: string; href: string; external?: boolean };
-  /** Вторичная кнопка (outline). */
-  secondaryCta?: { label: string; href: string; external?: boolean };
+  /** Единственная кнопка (амбер). Каждый слайд — своя уникальная ссылка. */
+  primaryCta: { label: string; href: string };
   /** Большой декоративный акцент справа. */
   accent: SlideAccent;
 };
@@ -53,28 +51,26 @@ const SLIDES: Slide[] = [
     eyebrow: "Екатеринбург · с 2013 года",
     headline: (
       <>
-        Находим то, чего нет
-        <span className="block text-amber-400">у других</span>
+        Запчасти GM, которых нет
+        <span className="block text-amber-400">у крупных поставщиков</span>
       </>
     ),
-    text: "Специализируемся на запчастях GM в Екатеринбурге. Оригинал и проверенные европейские бренды — никакого безымянного хлама.",
-    primaryCta: { label: "Подобрать по VIN", href: "/vin-request" },
-    secondaryCta: { label: "Открыть каталог", href: "/catalog" },
-    accent: { label: "12+", caption: "лет специализации на GM" },
+    text: "Оригинал и проверенные аналоги Opel, Chevrolet. В наличии на складе и под заказ. Подбор по VIN, доставка по всей России.",
+    primaryCta: { label: "Открыть каталог", href: "/catalog" },
+    accent: { label: "12+", caption: "лет с GM" },
   },
   {
     id: "to",
-    eyebrow: "Плановое ТО",
+    eyebrow: "Расходники для ТО",
     headline: (
       <>
-        Всё для регламентного
-        <span className="block text-amber-400">обслуживания</span>
+        Всё для планового ТО —
+        <span className="block text-amber-400">в одном месте</span>
       </>
     ),
-    text: "Свечи, масляные и воздушные фильтры, прокладки, ремни ГРМ. Оригинал и проверенные аналоги в наличии.",
-    primaryCta: { label: "Смотреть расходники", href: "/catalog" },
-    secondaryCta: { label: "Популярные позиции", href: "/catalog#popular" },
-    accent: { label: "★", caption: "только проверенные бренды" },
+    text: "Свечи, фильтры, прокладки, ремни ГРМ. Оригинал и проверенные аналоги. Отправьте VIN запрос — соберём список под ваш мотор.",
+    primaryCta: { label: "VIN запрос", href: "/vin-request" },
+    accent: { label: "ТО", caption: "соберём комплект" },
   },
   {
     id: "vin",
@@ -85,28 +81,22 @@ const SLIDES: Slide[] = [
         <span className="block text-amber-400">за 15 минут</span>
       </>
     ),
-    text: "Пришлите идентификационный номер автомобиля — менеджер подтвердит применимость и предложит варианты с точными артикулами.",
-    primaryCta: { label: "Запрос по VIN", href: "/vin-request" },
-    secondaryCta: { label: "Как это работает", href: "/how-to-order" },
-    accent: { label: "VIN", caption: "ответ в течение 15 минут" },
+    text: "Не уверены в артикуле? Отправьте VIN запрос — подтвердим применимость и предложим варианты с точной ценой. Отвечаем за подбор.",
+    primaryCta: { label: "Как заказать", href: "/how-to-order" },
+    accent: { label: "VIN", caption: "точный подбор" },
   },
   {
     id: "rare",
-    eyebrow: "Эксклюзив",
+    eyebrow: "Сложный подбор",
     headline: (
       <>
-        Нужна редкая
-        <span className="block text-amber-400">запчасть?</span>
+        Находим то, чего нет
+        <span className="block text-amber-400">в свободной продаже</span>
       </>
     ),
-    text: "Находим детали, которые не могут достать крупные поставщики. Работа с редкими позициями — наша повседневная задача.",
-    primaryCta: {
-      label: "Написать в WhatsApp",
-      href: "https://wa.me/79022540111",
-      external: true,
-    },
-    secondaryCta: { label: "Наши контакты", href: "/contacts" },
-    accent: { label: "∞", caption: "найдём то, чего нет у других" },
+    text: "Позиции из внутреннего каталога GM, снятые с производства детали, нестандартные артикулы. Если не нашли — свяжитесь с нами.",
+    primaryCta: { label: "Связаться с нами", href: "/contacts" },
+    accent: { label: "∞", caption: "найдём" },
   },
 ];
 
@@ -206,35 +196,14 @@ export function HomeHeroCarousel() {
                     {slide.text}
                   </p>
 
-                  <div className="flex flex-wrap gap-3 pt-2">
-                    {slide.primaryCta.external ? (
-                      <a
-                        href={slide.primaryCta.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center justify-center rounded-full bg-amber-400 px-7 py-3.5 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
-                      >
-                        {slide.primaryCta.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={slide.primaryCta.href}
-                        tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center justify-center rounded-full bg-amber-400 px-7 py-3.5 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
-                      >
-                        {slide.primaryCta.label}
-                      </Link>
-                    )}
-                    {slide.secondaryCta ? (
-                      <Link
-                        href={slide.secondaryCta.href}
-                        tabIndex={isActive ? 0 : -1}
-                        className="inline-flex items-center justify-center rounded-full border border-slate-500/80 px-7 py-3.5 text-base font-medium text-slate-100 transition hover:border-slate-300 hover:bg-white/5"
-                      >
-                        {slide.secondaryCta.label}
-                      </Link>
-                    ) : null}
+                  <div className="pt-2">
+                    <Link
+                      href={slide.primaryCta.href}
+                      tabIndex={isActive ? 0 : -1}
+                      className="inline-flex items-center justify-center rounded-full bg-amber-400 px-8 py-4 text-base font-semibold text-slate-950 shadow-xl shadow-black/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
+                    >
+                      {slide.primaryCta.label}
+                    </Link>
                   </div>
                 </div>
 
