@@ -2479,7 +2479,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-123/01.webp",
+    images: [
+      "/images/catalog/opel-123/01.webp",
+      "/images/catalog/opel-123/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 55596615. Перед заказом сверяйте совместимость по VIN.",
   },
