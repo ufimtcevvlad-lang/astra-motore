@@ -108,7 +108,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-2",
-    name: "Форсунка охлаждения поршня Z16XER",
+    name: "Свеча зажигания BOSCH Z16XEP/XER, A16XER, A18XER, Z18XE/XER | арт. 0242229699",
     sku: "55564441",
     qty: 1035,
     priceRaw: 802.15,
@@ -136,7 +136,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-3",
-    name: "Кольцо уплотнительное впускного канала маслоохладителя F16D4, F18D4",
+    name: "Форсунка охлаждения поршня Z16XER | арт. 55564441",
     sku: "55353328",
     qty: 809,
     priceRaw: 452.44,
@@ -161,7 +161,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-4",
-    name: "Фильтр масляный HENGST Astra H/J A16XER, Z16XER, A18XER, Z18XER, A14XEL/XER/NEL",
+    name: "Кольцо уплотнительное впускного канала маслоохладителя F16D4, F18D4, Z18XER, Z16XER, A18XER, A16XER | арт. 55353328",
     sku: "E611HD442",
     qty: 595,
     priceRaw: 812.67,
@@ -191,7 +191,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-5",
-    name: "Кольцо уплотнительное трубки маслоохладителя A14XER, A16XER",
+    name: "Фильтр масляный HENGST Opel Astra H/J A16XER, Z16XER, A18XER, Z18XER, A14XEL/XER/NEL | арт. E611HD442",
     sku: "55556547",
     qty: 551,
     priceRaw: 274.94,
@@ -216,7 +216,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-6",
-    name: "Кольцо уплотнительное трубки маслоохладителя A14XER, A16XER",
+    name: "Кольцо уплотнительное трубки маслоохладителя F16D4, F18D4, Z18XER, Z16XER, A18XER, A16XER | арт. 55556547",
     sku: "55354068",
     qty: 549,
     priceRaw: 279.81,
@@ -241,7 +241,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-7",
-    name: "Кольцо уплотнительное выпускного канала маслоохла Z18XER, Z16LET/LEL/LER/XEP/XE1",
+    name: "Кольцо уплотнительное трубки маслоохладителя F16D4, F18D4, Z18XER, Z16XER, A18XER, A16XER | арт. 55354068",
     sku: "24445723",
     qty: 513,
     priceRaw: 570.49,
@@ -265,7 +265,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-8",
-    name: "Кольцо уплотнительное выпускного канала маслоохладителя Z16XEL, Z18XER",
+    name: "Кольцо уплотнительное выпускного канала маслоохладителя A18XER, Z18XER, Z16XER, Z16LET/LEL/LER | арт. 24445723",
     sku: "55353331",
     qty: 502,
     priceRaw: 543.75,
@@ -293,7 +293,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-10",
-    name: "Свеча зажигания Z16XEP/XER, A16XER, A18XER, Z18XE/XER",
+    name: "Кольцо уплотнительное выпускного канала маслоохладителя A18XER, Z18XER, Z16XER, Z16LET/LEL/LER | арт. 55353331",
     sku: "25193473",
     qty: 477,
     priceRaw: 657.93,
@@ -324,7 +324,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-11",
-    name: "Прокладка корпуса масляного фильтра Z18XER, Z16LET/LEL/LER",
+    name: "Свеча зажигания Z16XEP/XER, A16XER, A18XER, Z18XE/XER | арт. 25193473",
     sku: "55353321",
     qty: 404,
     priceRaw: 530.23,
@@ -349,7 +349,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-12",
-    name: "Прокладка корпуса масляного фильтра Z1.8XER, Z1.6LET, LEL, LER, XEP",
+    name: "Прокладка корпуса масляного фильтра Z18XER, Z16XER, A18XER, A16XER, Z16LET/LEL/LER | арт. 55353321",
     sku: "55353319",
     qty: 403,
     priceRaw: 524.57,
@@ -374,7 +374,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-13",
-    name: "Прокладка корпуса масляного фильтра к охладителю A16XER, A18XER, Z16XER, Z18XER",
+    name: "Прокладка корпуса масляного фильтра Z18XER, Z16XER, A18XER, A16XER, Z16LET/LEL/LER | арт. 55353319",
     sku: "25199750",
     qty: 369,
     priceRaw: 1308.45,
@@ -399,7 +399,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-16",
-    name: "Прокладка клапанной крышки ELRING Z18XER, Z16XER/XN/LEL/LER, A16XER",
+    name: "Прокладка корпуса масляного фильтра к охладителю A16XER, A18XER, Z16XER, Z18XER, Z16LET/LEL/LER | арт. 25199750",
     sku: "354030",
     qty: 223,
     priceRaw: 2046.39,
@@ -424,7 +424,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-17",
-    name: "Датчик температуры охлаждающей жидкости Г образный Astra-H, J, Corsa-D",
+    name: "Прокладка клапанной крышки ELRING Z18XER, Z16XER/XN/LEL/LER, A16XER, A18XER | арт. 354030",
     sku: "55591401",
     qty: 222,
     priceRaw: 932.93,
@@ -453,7 +453,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-18",
-    name: "Крышка расширительного бачка Cruze, Astra-J, Insignia, T300",
+    name: "Датчик температуры охлаждающей жидкости Г образный Opel Astra-H, J, Opel Corsa-D | арт. 55591401",
     sku: "YR00269780",
     qty: 213,
     priceRaw: 790.94,
@@ -482,7 +482,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-21",
-    name: "Фильтр воздушный SIBTEK Astra-J, Cruze A14XEL/XER, A16XER",
+    name: "Крышка расширительного бачка Chevrolet Cruze, Opel Astra-J, Opel Insignia, T300 | арт. YR00269780",
     sku: "AF01109",
     qty: 172,
     priceRaw: 522.91,
@@ -511,7 +511,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-23",
-    name: "Свеча зажигания BOSCH Astra J A14NEL/NET/VAG AUK/CAJA",
+    name: "Фильтр воздушный SIBTEK Opel Astra-J, Chevrolet Cruze A14XEL/XER, A16XER | арт. AF01109",
     sku: "0242240707",
     qty: 167,
     priceRaw: 1358.62,
@@ -542,7 +542,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-25",
-    name: "Фильтр салонный SIBTEK Aveo T300/Astra-J/Cruze/Cobalt/Insignia/Mokka",
+    name: "Свеча зажигания BOSCH Opel Astra J A14NEL/NET | арт. 0242240707",
     sku: "AC0454",
     qty: 144,
     priceRaw: 492.14,
@@ -571,7 +571,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-27",
-    name: "Кольцо уплотнительное болта клапанной крышки Cruze F16D3",
+    name: "Фильтр салонный SIBTEK Chevrolet Aveo T300 / Opel Astra-J / Chevrolet Cruze / Chevrolet Cobalt / Opel Insignia / Opel Mokka | арт. AC0454",
     sku: "25185121",
     qty: 135,
     priceRaw: 104.56,
@@ -595,7 +595,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-28",
-    name: "Крышка клапанная ГБЦ F16D4, F18D4",
+    name: "Кольцо уплотнительное болта клапанной крышки Chevrolet Cruze F16D3 | арт. 25185121",
     sku: "96889998",
     qty: 154,
     priceRaw: 16705.32,
@@ -624,7 +624,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-31",
-    name: "Кольцо уплотнительное трубки подачи масла на турбину A14NEL",
+    name: "Крышка клапанная ГБЦ F16D4, F18D4, Z18XER, Z16XER, A18XER, A16XER | арт. 96889998",
     sku: "55558112",
     qty: 124,
     priceRaw: 920.56,
@@ -648,7 +648,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-32",
-    name: "Корпус термостата (без термостата) Astra H/Cruze Z16XER, Z18XER, F16D4",
+    name: "Кольцо уплотнительное трубки подачи масла на турбину A14NEL | арт. 55558112",
     sku: "25192230-1",
     qty: 124,
     priceRaw: 7388.46,
@@ -678,7 +678,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-33",
-    name: "Прокладка крышки / плиты GM 24405911 (COVR PLAT GASKET)",
+    name: "Корпус термостата (без термостата) Opel Astra H / Chevrolet Cruze Z16XER, Z18XER, F16D4 | арт. 25192230-1",
     sku: "24405911",
     qty: 121,
     priceRaw: 2973.92,
@@ -703,7 +703,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-34",
-    name: "Кольца уплотнения выхода ОЖ GM 55351449 (5 шт.)",
+    name: "Прокладка маслонасоса Z18XER, Z16XER, A18XER, A16XER, Z16LET/LEL/LER/XEP/XE1/XE/XEL | арт. 24405911",
     sku: "55351449",
     qty: 118,
     priceRaw: 420.59,
@@ -728,7 +728,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-35",
-    name: "Сальник коленвала передний ELRING Z16XER, A18XER, Z18XER",
+    name: "Прокладка термостата Z16XER, Z18XER, A18XER, A16XER | арт. 55351449",
     sku: "056900",
     qty: 113,
     priceRaw: 1361.01,
@@ -758,7 +758,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-36",
-    name: "Уплотнитель трубки охлаждения турбины ELRING A14NET",
+    name: "Сальник коленвала передний ELRING Z16XER, A18XER, Z18XER | арт. 056900",
     sku: "535220",
     qty: 113,
     priceRaw: 268.94,
@@ -782,7 +782,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-37",
-    name: "Кольцо уплотнительное болта клапанной крышки F16D3",
+    name: "Уплотнитель трубки охлаждения турбины ELRING A14NET | арт. 535220",
     sku: "96353007",
     qty: 112,
     priceRaw: 83.53,
@@ -806,7 +806,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-38",
-    name: "Патрубок дроссельной заслонки Z18XER/A18XER/F18D4",
+    name: "Кольцо уплотнительное болта клапанной крышки F16D3 | арт. 96353007",
     sku: "55354563",
     qty: 111,
     priceRaw: 1942.46,
@@ -830,7 +830,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-39",
-    name: "Фильтр салонный угольный SIBTEK Aveo T300/Astra-J/Cruze/Cobalt/Insignia/Mokka",
+    name: "Патрубок дроссельной заслонки Z18XER/A18XER/F18D4 | арт. 55354563",
     sku: "AC0454C",
     qty: 110,
     priceRaw: 650.25,
@@ -859,7 +859,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-41",
-    name: "Фильтр масляный FILTRON F14D3,F16D3,T18SED, Nexia/Lanos",
+    name: "Фильтр салонный угольный SIBTEK Chevrolet Aveo T300 / Opel Astra-J / Chevrolet Cruze / Chevrolet Cobalt / Opel Insignia / Opel Mokka | арт. AC0454C",
     sku: "OP570",
     qty: 106,
     priceRaw: 457.98,
@@ -895,7 +895,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-42",
-    name: "Сальник распредвала передний ELRING Astra-H Z16XEP, Z18XE",
+    name: "Фильтр масляный FILTRON F14D3,F16D3,T18SED, Daewoo Nexia / Daewoo Lanos | арт. OP570",
     sku: "702269",
     qty: 104,
     priceRaw: 566.63,
@@ -925,7 +925,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-44",
-    name: "Сальник привода МКПП Astra H F10, F13, F15, F17",
+    name: "Сальник распредвала передний ELRING Opel Astra-H Z16XEP, Z18XE | арт. 702269",
     sku: "24583232",
     qty: 102,
     priceRaw: 1108.04,
@@ -949,7 +949,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-45",
-    name: "Помпа водяная PIERBURG Z16XER, A16XER",
+    name: "Сальник привода МКПП Opel Astra H F10, F13, F15, F17 | арт. 24583232",
     sku: "707152210",
     qty: 114,
     priceRaw: 4764.39,
@@ -979,7 +979,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-46",
-    name: "Свеча зажигания NGK ZFR6U9 (идентичны 25193474)",
+    name: "Помпа водяная PIERBURG Z16XER, A16XER | арт. 707152210",
     sku: "ZFR6U9",
     qty: 100,
     priceRaw: 500.25,
@@ -1009,7 +1009,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-48",
-    name: "Термостат с корпусом MAHLE Cruze F16D4, F18D4",
+    name: "Свеча зажигания NGK ZFR6U9 (идентичны 25193474)",
     sku: "TM41105",
     qty: 96,
     priceRaw: 5692.92,
@@ -1038,7 +1038,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-49",
-    name: "Прокладка корпуса термостата A16XER, A18XER",
+    name: "Термостат с корпусом MAHLE Chevrolet Cruze F16D4, F18D4 | арт. TM41105",
     sku: "55578957",
     qty: 95,
     priceRaw: 391.63,
@@ -1062,7 +1062,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-50",
-    name: "Клапан положения распредвала INA Cruze, Astra-H/J, Zafira-B, Insignia",
+    name: "Прокладка корпуса термостата A16XER, A18XER | арт. 55578957",
     sku: "427001410",
     qty: 111,
     priceRaw: 4113.25,
@@ -1091,7 +1091,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-51",
-    name: "Трубка обогрева дроссельной заслонки впускная Astra-H Z16XER, F14D4",
+    name: "Клапан положения распредвала INA Chevrolet Cruze, Opel Astra-H/J, Opel Zafira-B, Opel Insignia | арт. 427001410",
     sku: "55559352",
     qty: 89,
     priceRaw: 2405.3,
@@ -1115,7 +1115,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-54",
-    name: "Сальник коленвала передний F16D4, F18D4",
+    name: "Трубка обогрева дроссельной заслонки впускная Opel Astra-H Z16XER, F14D4 | арт. 55559352",
     sku: "24465791",
     qty: 81,
     priceRaw: 1830.75,
@@ -1139,7 +1139,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-55",
-    name: "Фильтр воздушный SIBTEK Astra-H",
+    name: "Сальник коленвала передний F16D4, F18D4 | арт. 24465791",
     sku: "AF0163",
     qty: 81,
     priceRaw: 495.78,
@@ -1168,7 +1168,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-56",
-    name: "Фильтр салона угольный SIBTEK Astra-H",
+    name: "Фильтр воздушный SIBTEK Opel Astra-H | арт. AF0163",
     sku: "AC0421C",
     qty: 80,
     priceRaw: 624.19,
@@ -1197,7 +1197,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-58",
-    name: "Бачок расширительный с датчиком (для автодиагностики) Astra J",
+    name: "Фильтр салона угольный SIBTEK Opel Astra-H | арт. AC0421C",
     sku: "13370133",
     qty: 78,
     priceRaw: 3481.79,
@@ -1225,7 +1225,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-59",
-    name: "Прокладка трубки маслянного щупа Z16XEP/Z16XE1/Z16LET/A16LET/Z16XER/A16XER/A18XE",
+    name: "Бачок расширительный с датчиком (для автодиагностики) Opel Astra J | арт. 13370133",
     sku: "55556224",
     qty: 77,
     priceRaw: 204.64,
@@ -1249,7 +1249,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-60",
-    name: "Шестерня распредвала выпускного Z16XER, Z18XER",
+    name: "Прокладка трубки маслянного щупа Z16XEP/Z16XE1/Z16LET/A16LET/Z16XER/A16XER/A18XE | арт. 55556224",
     sku: "55567048",
     qty: 77,
     priceRaw: 14397.08,
@@ -1278,7 +1278,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-61",
-    name: "Фильтр салона SIBTEK Astra-H",
+    name: "Шестерня распредвала выпускного Z16XER, Z18XER, A16XER, A18XER | арт. 55567048",
     sku: "AC0421",
     qty: 76,
     priceRaw: 450.25,
@@ -1307,7 +1307,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-62",
-    name: "Модуль зажигания DELPHI Z16XEP/XE1/XER, A16XER, Z18XER, A18XER",
+    name: "Фильтр салона SIBTEK Opel Astra-H | арт. AC0421",
     sku: "CE2000912B1",
     qty: 75,
     priceRaw: 8125.92,
@@ -1344,7 +1344,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-63",
-    name: "Опора стойки передняя LEMFORDER Astra-J, Cruze",
+    name: "Модуль зажигания DELPHI Z16XEP/XE1, Z16XER, Z18XER | арт. CE2000912B1",
     sku: "3531201",
     qty: 75,
     priceRaw: 3105.55,
@@ -1373,7 +1373,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-64",
-    name: "Свеча зажигания Opel A14NET/NEL/B14NEL",
+    name: "Опора стойки передняя LEMFORDER Opel Astra-J, Chevrolet Cruze | арт. 3531201",
     sku: "95528733",
     qty: 75,
     priceRaw: 1251.33,
@@ -1402,7 +1402,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-66",
-    name: "Лампа головного света BOSCH ECO H7 12V 55W",
+    name: "Свеча зажигания Opel A14NET/NEL/B14NEL | арт. 95528733",
     sku: "1987302804",
     qty: 71,
     priceRaw: 308.03,
@@ -1431,7 +1431,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-69",
-    name: "Прокладка корпуса масляного фильтра  A14NEL",
+    name: "Лампа головного света BOSCH ECO H7 12V 55W | арт. 1987302804",
     sku: "55565385",
     qty: 68,
     priceRaw: 2325.49,
@@ -1455,7 +1455,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-70",
-    name: "Прокладка корпуса масляного фильтра  A14NEL",
+    name: "Прокладка корпуса масляного фильтра A14NEL | арт. 55565385",
     sku: "55568536",
     qty: 67,
     priceRaw: 837.35,
@@ -1479,7 +1479,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-71",
-    name: "Прокладка корпуса масляного фильтра  A14NEL",
+    name: "Прокладка корпуса масляного фильтра A14NEL | арт. 55568536",
     sku: "55568539",
     qty: 67,
     priceRaw: 2299.4,
@@ -1503,7 +1503,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-72",
-    name: "Тройник системы охлаждения Astra-J A14NET",
+    name: "Прокладка корпуса масляного фильтра A14NEL | арт. 55568539",
     sku: "25193922",
     qty: 67,
     priceRaw: 2640.33,
@@ -1532,7 +1532,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-73",
-    name: "Шестерня распредвала впускного Z16XER, Z18XER",
+    name: "Тройник системы охлаждения Opel Astra-J A14NET | арт. 25193922",
     sku: "55567049",
     qty: 67,
     priceRaw: 14350,
@@ -1564,7 +1564,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-74",
-    name: "Модуль зажигания DELPHI Astra-J A16XER, A18XER, A16LET",
+    name: "Шестерня распредвала впускного Z16XER, Z18XER | арт. 55567049",
     sku: "GN1023412B1",
     qty: 66,
     priceRaw: 13101.54,
@@ -1599,7 +1599,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-75",
-    name: "Ремень приводной 6PK1555 BOSCH Astra H A16XER/LET, A18XER",
+    name: "Модуль зажигания DELPHI Opel Astra-J A16XER, A18XER, A16LET | арт. GN1023412B1",
     sku: "1987947949",
     qty: 66,
     priceRaw: 1581.55,
@@ -1623,7 +1623,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-79",
-    name: "Сальник коленвала передний Z10XEP; Z12XEP",
+    name: "Ремень приводной 6PK1555 BOSCH Opel Astra H A16XER/LET, A18XER | арт. 1987947949",
     sku: "25193519",
     qty: 63,
     priceRaw: 1395.92,
@@ -1647,7 +1647,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-80",
-    name: "Клапан управления шестерни ГРМ INA A14NET",
+    name: "Сальник коленвала передний Z10XEP; Z12XEP | арт. 25193519",
     sku: "427001810",
     qty: 58,
     priceRaw: 4686.6,
@@ -1676,7 +1676,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-81",
-    name: "Шланг системы охлаждения Z16XEP,Z16XE1, Z16XER, Z18XER (тройник)",
+    name: "Клапан управления шестерни ГРМ INA A14NET | арт. 427001810",
     sku: "13118272",
     qty: 61,
     priceRaw: 3471.31,
@@ -1704,7 +1704,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-82",
-    name: "Кольцо уплотнительное датчика уровня масла  OPEL",
+    name: "Шланг системы охлаждения Z16XEP,Z16XE1, Z16XER, Z18XER (тройник) | арт. 13118272",
     sku: "90542913",
     qty: 60,
     priceRaw: 376.47,
@@ -1728,7 +1728,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-83",
-    name: "Сайлентблок задней балки LEMFORDER Astra-H",
+    name: "Кольцо уплотнительное датчика уровня масла Opel | арт. 90542913",
     sku: "3593601",
     qty: 60,
     priceRaw: 3245,
@@ -1756,7 +1756,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-84",
-    name: "Прокладка маслонасоса ELRING Z18XER, Z16LET/LEL/LER/XEP/XE1/XE/XEL",
+    name: "Сайлентблок задней балки LEMFORDER Opel Astra-H | арт. 3593601",
     sku: "809451",
     qty: 59,
     priceRaw: 2348.62,
@@ -1784,7 +1784,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-87",
-    name: "Сайлентблок задний рычага передней подвески TRW Astra-H",
+    name: "Прокладка маслонасоса ELRING Z18XER, Z16XER, A18XER, A16XER, Z16LET/LEL/LER/XEP/XE1/XE/XEL | арт. 809451",
     sku: "JBU733",
     qty: 55,
     priceRaw: 1940.09,
@@ -1812,7 +1812,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-90",
-    name: "Фильтр салонный STELLOX Aveo T300/Astra-J/Cruze/Cobalt/Insignia/Mokka",
+    name: "Сайлентблок задний рычага передней подвески TRW Opel Astra-H | арт. JBU733",
     sku: "7110203SX",
     qty: 54,
     priceRaw: 563.13,
@@ -1840,7 +1840,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-93",
-    name: "Прокладка водяного насоса A12XER",
+    name: "Фильтр салонный STELLOX Chevrolet Aveo T300 / Opel Astra-J / Chevrolet Cruze / Chevrolet Cobalt / Opel Insignia / Opel Mokka | арт. 7110203SX",
     sku: "55568033",
     qty: 53,
     priceRaw: 854.58,
@@ -1864,7 +1864,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-94",
-    name: "Втулка рулевая цапфа нижний Astra J GTC",
+    name: "Прокладка водяного насоса A12XER | арт. 55568033",
     sku: "13230777",
     qty: 52,
     priceRaw: 9585,
@@ -1892,7 +1892,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-95",
-    name: "Тяга стабилизатора DELPHI CHEVROLET CRUZE / OPEL ASTRA J",
+    name: "Втулка рулевая цапфа нижний Opel Astra J GTC | арт. 13230777",
     sku: "TC2279",
     qty: 52,
     priceRaw: 838.34,
@@ -1929,7 +1929,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-97",
-    name: "Хомут системы охлаждения Astra J (42мм)",
+    name: "Тяга стабилизатора DELPHI Chevrolet Cruze / Opel Astra J | арт. TC2279",
     sku: "13162312",
     qty: 51,
     priceRaw: 325.02,
@@ -1953,7 +1953,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-98",
-    name: "Шланг радиатора впускной Astra H 1.6 1.8 нижний",
+    name: "Хомут системы охлаждения Opel Astra J (42мм) | арт. 13162312",
     sku: "13118271",
     qty: 51,
     priceRaw: 1896.99,
@@ -1977,7 +1977,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-99",
-    name: "Прокладка клапанной крышки ELRING A12XER/A14XER/A14NET/A14NEL T-профиль",
+    name: "Шланг радиатора впускной Opel Astra H 1.6 1.8 нижний | арт. 13118271",
     sku: "773410",
     qty: 50,
     priceRaw: 3585.64,
@@ -2001,7 +2001,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-100",
-    name: "Фильтр масляный FILTRON OP 575",
+    name: "Прокладка клапанной крышки ELRING A12XER/A14XER/A14NET/A14NEL T-профиль | арт. 773410",
     sku: "OP575",
     qty: 75,
     priceRaw: 485.0,
@@ -2037,7 +2037,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-101",
-    name: "Вкладыши шатунные 0,25 к-кт KOLBENSCHMIDT Z16XEP/XER, Z18XER, F16D4",
+    name: "Фильтр масляный FILTRON OP 575 | арт. OP575",
     sku: "87409610",
     qty: 8,
     priceRaw: 1825,
@@ -2065,7 +2065,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-102",
-    name: "Кольца поршневые, к-кт на 1 цилиндр KS Z18XER STD",
+    name: "Вкладыши шатунные 0,25 к-кт KOLBENSCHMIDT Z16XEP/XER, Z18XER, F16D4 | арт. 87409610",
     sku: "800038910000",
     qty: 21,
     priceRaw: 2095.24,
@@ -2093,7 +2093,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-103",
-    name: "Насос топливный BOSCH Astra-H Z14XEP, Z16XEL, Z18XER",
+    name: "Кольца поршневые, к-кт на 1 цилиндр KS Z18XER STD | арт. 800038910000",
     sku: "0580314195",
     qty: 14,
     priceRaw: 15317.86,
@@ -2123,7 +2123,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-104",
-    name: "Прокладка маслонасоса A14NET",
+    name: "Насос топливный BOSCH Opel Astra-H Z14XEP, Z16XEL, Z18XER | арт. 0580314195",
     sku: "55562793",
     qty: 33,
     priceRaw: 3927.12,
@@ -2148,7 +2148,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-105",
-    name: "Толкатель клапана INA 01.4 AKQ/CBZB",
+    name: "Прокладка маслонасоса A14NET | арт. 55562793",
     sku: "420009810",
     qty: 102,
     priceRaw: 483,
@@ -2176,7 +2176,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-107",
-    name: "Комплект ремня ГРМ INA / Schaeffler (Timing Belt KIT)",
+    name: "Толкатель клапана INA Z10XEP Z12XEP Z14XEP | арт. 420009810",
     sku: "530056210",
     qty: 40,
     priceRaw: 9200,
@@ -2206,7 +2206,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-108",
-    name: "Корпус термостата (без термостата) Astra H/Cruze Z16XER, Z18XER, F16D4 — GM 25192231 (PSA OE)",
+    name: "Ремень ГРМ к-кт INA A20DTH/A20DTC/A20DTJ | арт. 530056210",
     sku: "25192231",
     qty: 124,
     priceRaw: 7388.46,
@@ -2236,7 +2236,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-109",
-    name: "Крышка клапанная ГБЦ F16D4, F18D4",
+    name: "Корпус термостата (без термостата) Opel Astra H / Chevrolet Cruze Z16XER, Z18XER, F16D4 — GM 25192231 (PSA OE)",
     sku: "55564395",
     qty: 20,
     priceRaw: 16750,
