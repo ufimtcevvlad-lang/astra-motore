@@ -11,11 +11,26 @@ export function getOrganizationJsonLd() {
     logo: absoluteUrl("/brand/gm-shop-logo-header.png"),
     telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
     areaServed: "Екатеринбург",
+    priceRange: "₽₽",
+    currenciesAccepted: "RUB",
+    paymentAccepted: "Cash, Credit Card, SBP",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Екатеринбург",
       streetAddress: "ул. Готвальда, 9",
       addressCountry: "RU",
+      postalCode: "620100",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 56.850673,
+      longitude: 60.568755,
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.5",
+      reviewCount: "39",
+      bestRating: "5",
     },
     openingHoursSpecification: [
       {
@@ -30,6 +45,9 @@ export function getOrganizationJsonLd() {
         opens: "10:00",
         closes: "18:00",
       },
+    ],
+    sameAs: [
+      "https://yandex.ru/maps/org/gm_drive/1299977455/",
     ],
   } as const;
 }
