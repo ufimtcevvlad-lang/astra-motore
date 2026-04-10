@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
   },
   title: {
-    default: `${SITE_BRAND} — автозапчасти GM (Opel, Chevrolet) в Екатеринбурге`,
+    default: `${SITE_BRAND} — оригинальные запчасти Opel и Chevrolet в Екатеринбурге`,
     template: `%s — ${SITE_BRAND}`,
   },
   description: DEFAULT_META_DESCRIPTION,
