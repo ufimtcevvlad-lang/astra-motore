@@ -46,9 +46,9 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${product.name} — ${product.brand} | ${SITE_BRAND}`;
+  const title = `${product.name} — ${product.brand}`;
   const description = truncateMetaDescription(
-    `${product.name}. ${plainProductDescription(product.description)} Цена ${product.price} ₽, в наличии. Доставка по Екатеринбургу и России. Арт. ${product.sku}.`,
+    `${plainProductDescription(product.description)} Категория: ${product.category}. Бренд: ${product.brand}. Артикул: ${product.sku}.`,
   );
   const url = productPath(product);
   const galleryUrls = getProductImageUrls(product);
@@ -59,14 +59,12 @@ export async function generateMetadata({
 
   const keywords = [
     product.sku,
-    product.name,
     product.brand,
     product.category,
-    `${product.category} ${product.brand}`,
-    "запчасти Opel",
-    "запчасти Chevrolet",
-    "автозапчасти Екатеринбург",
-    SITE_BRAND,
+    "запчасть Opel",
+    "запчасть Chevrolet",
+    "GM Shop",
+    "Екатеринбург",
   ];
 
   return {
