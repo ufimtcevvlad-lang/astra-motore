@@ -2341,7 +2341,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Chevrolet Cruze — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-114/01.webp",
+    images: [
+      "/images/catalog/opel-114/01.webp",
+      "/images/catalog/opel-114/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 95390881. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2373,7 +2377,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Chevrolet Orlando — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-116/01.webp",
+    images: [
+      "/images/catalog/opel-116/01.webp",
+      "/images/catalog/opel-116/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 95390880. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2405,7 +2413,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Corsa D — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-118/01.webp",
+    images: [
+      "/images/catalog/opel-118/01.webp",
+      "/images/catalog/opel-118/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 022453. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2419,7 +2431,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Corsa D — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-119/01.webp",
+    images: [
+      "/images/catalog/opel-119/01.webp",
+      "/images/catalog/opel-119/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 022758. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2433,7 +2449,14 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Corsa D — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-120/01.webp",
+    images: [
+      "/images/catalog/opel-120/01.webp",
+      "/images/catalog/opel-120/02.webp",
+      "/images/catalog/opel-120/03.webp",
+      "/images/catalog/opel-120/04.webp",
+      "/images/catalog/opel-120/05.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 13191203. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2515,7 +2538,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Astra H — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-125/01.webp",
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул PH2377. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2529,7 +2552,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-126/01.webp",
+    images: [
+      "/images/catalog/opel-126/01.webp",
+      "/images/catalog/opel-126/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 13251476. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2557,7 +2584,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Astra H, Opel Vectra C — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-128/01.webp",
+    images: [
+      "/images/catalog/opel-128/01.webp",
+      "/images/catalog/opel-128/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 3406354. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2589,7 +2620,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel Astra J — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-130/01.webp",
+    images: [
+      "/images/catalog/opel-130/01.webp",
+      "/images/catalog/opel-130/02.webp",
+      "/images/catalog/opel-130/03.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 13338427. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2621,7 +2657,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-132/01.webp",
+    images: [
+      "/images/catalog/opel-132/01.webp",
+      "/images/catalog/opel-132/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 13251474. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2635,7 +2675,7 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Chevrolet Cruze — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-133/01.webp",
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 95390876. Перед заказом сверяйте совместимость по VIN.",
   },
@@ -2677,7 +2717,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Chevrolet Aveo T300 — уточняйте по VIN",
-    image: "/images/catalog/_pending.jpg",
+    image: "/images/catalog/opel-136/01.webp",
+    images: [
+      "/images/catalog/opel-136/01.webp",
+      "/images/catalog/opel-136/02.webp",
+    ],
     description:
       "Позиция из дополнительного каталога GM Shop 66. Артикул 96958201. Перед заказом сверяйте совместимость по VIN.",
   },
