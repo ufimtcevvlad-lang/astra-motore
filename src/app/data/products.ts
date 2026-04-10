@@ -2261,7 +2261,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-110",
-    name: "Патрубок впускной радиатора системы охлаждения GATES Corsa-D АКПП | арт. 052651",
+    name: "Патрубок впускной радиатора системы охлаждения GATES Opel Corsa D АКПП | арт. 052651",
     sku: "052651",
     qty: 10,
     priceRaw: 3010.73,
@@ -2275,7 +2275,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-111",
-    name: "Патрубок от тройника к расширительному бачку GATES Corsa D A12XER | арт. 021603",
+    name: "Патрубок от тройника к расширительному бачку GATES Opel Corsa D A12XER | арт. 021603",
     sku: "021603",
     qty: 10,
     priceRaw: 1500,
@@ -2289,7 +2289,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-112",
-    name: "Патрубок отопителя Astra H, Zafira B | арт. 13170118",
+    name: "Патрубок отопителя Opel Astra H, Opel Zafira B | арт. 13170118",
     sku: "13170118",
     qty: 10,
     priceRaw: 6241.48,
@@ -2303,7 +2303,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-113",
-    name: "Патрубок отопителя впускной Cruze | арт. 95390883",
+    name: "Патрубок отопителя впускной Chevrolet Cruze | арт. 95390883",
     sku: "95390883",
     qty: 10,
     priceRaw: 2453,
@@ -2317,7 +2317,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-114",
-    name: "Патрубок отопителя впускной Cruze F16D3 | арт. 95390881",
+    name: "Патрубок отопителя впускной Chevrolet Cruze F16D3 | арт. 95390881",
     sku: "95390881",
     qty: 10,
     priceRaw: 2022.22,
@@ -2359,7 +2359,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-117",
-    name: "Патрубок отопителя салона нижний Cruze | арт. 95390887",
+    name: "Патрубок отопителя салона нижний Chevrolet Cruze | арт. 95390887",
     sku: "95390887",
     qty: 10,
     priceRaw: 4894.36,
@@ -2373,7 +2373,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-118",
-    name: "Патрубок печки впускной GATES Corsa D | арт. 022453",
+    name: "Патрубок печки впускной GATES Opel Corsa D | арт. 022453",
     sku: "022453",
     qty: 10,
     priceRaw: 2300,
@@ -2387,7 +2387,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-119",
-    name: "Патрубок печки выпускной GATES Corsa D | арт. 022758",
+    name: "Патрубок печки выпускной GATES Opel Corsa D | арт. 022758",
     sku: "022758",
     qty: 10,
     priceRaw: 2625,
@@ -2401,7 +2401,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-120",
-    name: "Патрубок радиатора впускной Corsa D | арт. 13191203",
+    name: "Патрубок радиатора впускной Opel Corsa D | арт. 13191203",
     sku: "13191203",
     qty: 10,
     priceRaw: 3990.5,
@@ -2415,7 +2415,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-121",
-    name: "Патрубок радиатора выпускной Corsa D | арт. 13191209",
+    name: "Патрубок радиатора выпускной Opel Corsa D | арт. 13191209",
     sku: "13191209",
     qty: 10,
     priceRaw: 5738.4,
@@ -2471,7 +2471,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-125",
-    name: "Шланг обогревателя впуск PATRON Astra H Z16XEP | арт. PH2377",
+    name: "Шланг обогревателя впуск PATRON Opel Astra H Z16XEP | арт. PH2377",
     sku: "PH2377",
     qty: 10,
     priceRaw: 2300,
@@ -2499,7 +2499,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-127",
-    name: "Шланг отвода газов Mokka A18XER | арт. 96969578",
+    name: "Шланг отвода газов Opel Mokka A18XER | арт. 96969578",
     sku: "96969578",
     qty: 10,
     priceRaw: 1999.53,
@@ -2513,7 +2513,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-128",
-    name: "Шланг отвода газов SASIC Opel Astra H/Vectra C Z18XER | арт. 3406354",
+    name: "Шланг отвода газов SASIC Opel Astra H/Opel Vectra C Z18XER | арт. 3406354",
     sku: "3406354",
     qty: 10,
     priceRaw: 1456.82,
@@ -2527,7 +2527,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-129",
-    name: "Шланг отопителя салона впускной Сhevrolet Aveo T300 F16D4 МКПП | арт. 96958206",
+    name: "Шланг отопителя салона впускной Сhevrolet Chevrolet Aveo T300 F16D4 МКПП | арт. 96958206",
     sku: "96958206",
     qty: 10,
     priceRaw: 1204.71,
@@ -2541,7 +2541,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-130",
-    name: "Шланг отопителя салона выпускной Astra J | арт. 13338427",
+    name: "Шланг отопителя салона выпускной Opel Astra J | арт. 13338427",
     sku: "13338427",
     qty: 10,
     priceRaw: 4366.08,
@@ -2583,7 +2583,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-133",
-    name: "Шланг системы охлаждения (от бачка к тройнику пластиковому) Cruze F16D3 | арт. 95390876",
+    name: "Шланг системы охлаждения (от бачка к тройнику пластиковому) Chevrolet Cruze F16D3 | арт. 95390876",
     sku: "95390876",
     qty: 10,
     priceRaw: 1266.67,
@@ -2625,7 +2625,7 @@ const OPEL_PILOT_RAW: Array<{
   },
   {
     id: "opel-136",
-    name: "Шланг системы охлаждения от радиатора к бачку Aveo T300 F16D4 | арт. 96958201",
+    name: "Шланг системы охлаждения от радиатора к бачку Chevrolet Aveo T300 F16D4 | арт. 96958201",
     sku: "96958201",
     qty: 10,
     priceRaw: 1520.33,
