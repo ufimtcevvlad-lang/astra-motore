@@ -739,7 +739,6 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-35/01-box.webp",
     images: [
       "/images/catalog/opel-35/01-box.webp",
-      "/images/catalog/opel-35/04-box-top-label.webp",
       "/images/catalog/opel-35/02-seal.webp",
       "/images/catalog/opel-35/03-seal-face.webp",
     ],
@@ -1543,11 +1542,8 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-73/01.webp",
     images: [
       "/images/catalog/opel-73/01.webp",
-      "/images/catalog/opel-73/02.webp",
       "/images/catalog/opel-73/03.webp",
-      "/images/catalog/opel-73/04.webp",
       "/images/catalog/opel-73/05.webp",
-      "/images/catalog/opel-73/06.webp",
     ],
     description:
       "Позиция из выгрузки «топ 100 продаж Opel». Артикул 55567049. Фотографию и расширенное описание можно добавить позже; перед заказом сверяйте совместимость по VIN или каталогу.",
