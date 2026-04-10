@@ -5,6 +5,7 @@ import { memo, useCallback, useState } from "react";
 import { ProductImage } from "../ProductImage";
 import { getProductImageUrls, type Product } from "../../data/products";
 import { productPath } from "../../lib/product-slug";
+import { useCart } from "../CartContext";
 
 function ChevronLeft({ className }: { className?: string }) {
   return (
@@ -26,9 +27,17 @@ function ChevronRight({ className }: { className?: string }) {
 export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: Product }) {
   const urls = getProductImageUrls(p);
   const [active, setActive] = useState(0);
+  const [justAdded, setJustAdded] = useState(false);
+  const { addToCart } = useCart();
   const n = urls.length;
   const idx = n > 0 ? active % n : 0;
   const src = urls[idx] ?? p.image;
+
+  const handleAddToCart = useCallback(() => {
+    addToCart(p);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  }, [addToCart, p]);
 
   const go = useCallback(
     (dir: -1 | 1) => {
@@ -46,6 +55,28 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
   return (
     <article className="group/card rounded-xl bg-white shadow-md border border-slate-200/90 flex flex-col overflow-hidden hover:shadow-lg hover:border-amber-400/50 transition">
       <div className="relative aspect-square overflow-hidden bg-white">
+        {/* Бейджи */}
+        <div className="absolute left-2 top-2 z-10 flex flex-col gap-1">
+          {p.inStock > 0 ? (
+            <span className="rounded-md bg-emerald-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+              В наличии
+            </span>
+          ) : (
+            <span className="rounded-md bg-slate-400 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+              Под заказ
+            </span>
+          )}
+          {p.brand === "GM OE" && (
+            <span className="rounded-md border border-amber-400 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800">
+              Оригинал GM
+            </span>
+          )}
+        </div>
+        {p.inStock > 300 && (
+          <span className="absolute right-2 top-2 z-10 rounded-md bg-amber-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            Хит
+          </span>
+        )}
         <Link
           href={productPath(p)}
           className="absolute inset-3 z-0 block"
@@ -104,9 +135,35 @@ export const CatalogProductCard = memo(function CatalogProductCard({ p }: { p: P
           {p.category}
         </span>
         <h2 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{p.name}</h2>
-        <p className="text-lg font-bold text-amber-700 tabular-nums">
-          {p.price.toLocaleString("ru-RU")} ₽
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-lg font-bold text-amber-700 tabular-nums">
+            {p.price.toLocaleString("ru-RU")} ₽
+          </p>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAddToCart();
+            }}
+            aria-label={justAdded ? "Добавлено" : "Добавить в корзину"}
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition ${
+              justAdded
+                ? "bg-emerald-500 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-700"
+            }`}
+          >
+            {justAdded ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden>
+                <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+        </div>
         <p className="line-clamp-1 text-xs text-slate-500">{p.car}</p>
         <p className="text-xs text-slate-600">Арт. {p.sku}</p>
         <div className="mt-auto pt-1">
