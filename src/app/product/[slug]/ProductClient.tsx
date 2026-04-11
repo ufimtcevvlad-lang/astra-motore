@@ -24,7 +24,10 @@ export function ProductClient({ product }: { product: Product }) {
   };
 
   return (
-    <div className="space-y-4 rounded-2xl bg-white p-6 shadow-md h-fit md:sticky md:top-24">
+    <div className="relative space-y-4 rounded-2xl bg-white p-6 shadow-md h-fit md:sticky md:top-24 overflow-hidden">
+      {/* Акцентная полоска сверху */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-amber-600" />
+
       {/* Цена + Избранное */}
       <div className="flex items-center justify-between">
         <p className="text-3xl font-bold text-slate-900 tracking-tight">
@@ -52,8 +55,12 @@ export function ProductClient({ product }: { product: Product }) {
       </div>
 
       {/* Наличие */}
-      <p className="text-[11px] text-slate-400">
-        В наличии: {product.inStock} шт.
+      <p className="flex items-center gap-1 text-xs text-green-600">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+        В наличии
+        <span className="text-slate-400 ml-0.5">({product.inStock} шт.)</span>
       </p>
 
       {/* Количество + В корзину */}
@@ -112,7 +119,7 @@ export function ProductClient({ product }: { product: Product }) {
             <circle cx="5.5" cy="18.5" r="2.5" />
             <circle cx="18.5" cy="18.5" r="2.5" />
           </svg>
-          <span>Доставка по Екатеринбургу</span>
+          <span>Доставка по Екатеринбургу и РФ</span>
           <span className="ml-auto text-amber-600 opacity-0 group-hover:opacity-100 transition">→</span>
         </Link>
 
@@ -154,7 +161,7 @@ export function ProductClient({ product }: { product: Product }) {
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          Доставка по Екб
+          Доставка по РФ
         </span>
       </div>
 

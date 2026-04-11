@@ -30,12 +30,12 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
       onClick={handleShare}
       aria-label={shared ? "Ссылка скопирована" : "Поделиться"}
       title={shared ? "Ссылка скопирована!" : "Поделиться"}
-      className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition"
+      className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-white/80 text-slate-500 shadow-sm backdrop-blur-sm hover:text-amber-600 hover:bg-white transition-all duration-200"
     >
       {shared ? (
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -49,8 +49,8 @@ export function ShareButton({ title, url }: { title: string; url: string }) {
         </svg>
       ) : (
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

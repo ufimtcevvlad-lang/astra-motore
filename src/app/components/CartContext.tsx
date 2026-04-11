@@ -60,7 +60,7 @@ function CartToast({ productName, onDone }: { productName: string; onDone: () =>
     const timer = setTimeout(() => {
       setVisible(false);
       setTimeout(onDone, 300);
-    }, 2500);
+    }, 3500);
     return () => clearTimeout(timer);
   }, [onDone]);
 
@@ -93,6 +93,7 @@ function CartToast({ productName, onDone }: { productName: string; onDone: () =>
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => readCartFromStorage());
   const [toastProduct, setToastProduct] = useState<string | null>(null);
+  const [toastKey, setToastKey] = useState(0);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
     clearTimeout(toastTimer.current);
     setToastProduct(product.name);
+    setToastKey((k) => k + 1);
   }, []);
 
   const removeFromCart = useCallback((productId: string) => {
@@ -165,7 +167,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       {children}
       {toastProduct ? (
         <CartToast
-          key={toastProduct + Date.now()}
+          key={toastKey}
           productName={toastProduct}
           onDone={() => setToastProduct(null)}
         />

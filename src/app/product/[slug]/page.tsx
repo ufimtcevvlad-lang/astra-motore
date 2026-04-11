@@ -197,25 +197,19 @@ export default function ProductPage({
           { label: "Главная", href: "/" },
           { label: "Каталог", href: "/catalog" },
           { label: product.category, href: categoryHref },
-          { label: "Товар" },
+          { label: product.brand },
         ]}
         title={product.name}
-        description={
-          <p className="text-slate-600">
-            {product.category} • {product.brand} • арт. {product.sku}
-          </p>
-        }
       />
 
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
-              {product.category}
-            </p>
-            <ShareButton title={product.name} url={canonicalPath} />
+          <div className="relative">
+            <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
+            <div className="absolute right-2 top-2 z-20">
+              <ShareButton title={product.name} url={canonicalPath} />
+            </div>
           </div>
-          <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
 
           {/* Инфо-карточка */}
           <div className="rounded-xl border border-slate-200/80 bg-white p-4 text-sm shadow-sm">
