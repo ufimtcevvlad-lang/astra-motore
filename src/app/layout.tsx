@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "./components/CartContext";
 import { FavoritesProvider } from "./components/FavoritesContext";
 import { CookieConsentBanner } from "./components/CookieConsentBanner";
+import { FloatingCartButton } from "./components/FloatingCartButton";
 import { FloatingContactButtons } from "./components/FloatingContactButtons";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -109,6 +110,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <FloatingCartButton />
             <FloatingContactButtons />
             <CookieConsentBanner />
           </FavoritesProvider>

@@ -218,23 +218,28 @@ export default function ProductPage({
           <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
 
           {/* Инфо-карточка */}
-          <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-sm">
-            <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2.5 items-baseline">
-              <span className="text-xs text-slate-500">Артикул</span>
-              <span className="font-mono font-semibold tracking-wide text-slate-900 flex items-center gap-1.5">
-                {product.sku}
-                <CopySkuButton sku={product.sku} />
-              </span>
-
-              <span className="text-xs text-slate-500">Бренд</span>
-              <span className="font-medium text-slate-800">{product.brand}</span>
-
-              <span className="text-xs text-slate-500">Страна</span>
-              <span className="text-slate-700">{product.country}</span>
-
-              <span className="text-xs text-slate-500">Авто</span>
-              <span className="text-slate-600">{product.car}</span>
-            </div>
+          <div className="rounded-xl border border-slate-200/80 bg-white p-4 text-sm shadow-sm">
+            <dl className="divide-y divide-slate-100">
+              <div className="flex items-baseline justify-between gap-3 py-2.5 first:pt-0">
+                <dt className="text-xs text-slate-500 shrink-0">Артикул</dt>
+                <dd className="font-mono font-semibold tracking-wide text-slate-900 flex items-center gap-1.5">
+                  {product.sku}
+                  <CopySkuButton sku={product.sku} />
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 py-2.5">
+                <dt className="text-xs text-slate-500">Бренд</dt>
+                <dd className="font-medium text-slate-800">{product.brand}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 py-2.5">
+                <dt className="text-xs text-slate-500">Страна</dt>
+                <dd className="text-slate-700">{product.country}</dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 py-2.5 last:pb-0">
+                <dt className="text-xs text-slate-500">Авто</dt>
+                <dd className="text-slate-600 text-right">{product.car}</dd>
+              </div>
+            </dl>
           </div>
         </div>
         <ProductClient product={product} />

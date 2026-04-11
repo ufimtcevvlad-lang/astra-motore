@@ -24,11 +24,12 @@ export function ProductClient({ product }: { product: Product }) {
   };
 
   return (
-    <div className="space-y-4 rounded-2xl bg-white p-5 shadow-sm border border-slate-200 h-fit">
+    <div className="space-y-4 rounded-2xl bg-white p-6 shadow-md h-fit md:sticky md:top-24">
       {/* Цена + Избранное */}
       <div className="flex items-center justify-between">
-        <p className="text-2xl font-bold text-amber-600">
-          {product.price.toLocaleString("ru-RU")} ₽
+        <p className="text-3xl font-bold text-slate-900 tracking-tight">
+          {product.price.toLocaleString("ru-RU")}{" "}
+          <span className="text-xl font-semibold text-slate-500">₽</span>
         </p>
         <button
           type="button"
@@ -57,12 +58,12 @@ export function ProductClient({ product }: { product: Product }) {
 
       {/* Количество + В корзину */}
       <div className="flex items-center gap-3">
-        <div className="inline-flex items-center border border-slate-200 rounded-lg">
+        <div className="inline-flex items-center border border-slate-200 rounded-xl">
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             disabled={qty <= 1}
-            className="flex h-9 w-9 items-center justify-center text-slate-600 hover:bg-slate-100 rounded-l-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex h-10 w-10 items-center justify-center text-slate-600 hover:bg-slate-100 rounded-l-xl transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Уменьшить количество"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
@@ -76,7 +77,7 @@ export function ProductClient({ product }: { product: Product }) {
             type="button"
             onClick={() => setQty((q) => Math.min(product.inStock, q + 1))}
             disabled={qty >= product.inStock}
-            className="flex h-9 w-9 items-center justify-center text-slate-600 hover:bg-slate-100 rounded-r-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="flex h-10 w-10 items-center justify-center text-slate-600 hover:bg-slate-100 rounded-r-xl transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Увеличить количество"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
@@ -87,7 +88,7 @@ export function ProductClient({ product }: { product: Product }) {
         </div>
         <button
           onClick={handleAddToCart}
-          className="flex-1 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition shadow-sm"
+          className="flex-1 rounded-xl bg-amber-600 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-amber-700 hover:shadow-lg hover:shadow-amber-600/25 active:scale-[0.98]"
         >
           В корзину
         </button>
