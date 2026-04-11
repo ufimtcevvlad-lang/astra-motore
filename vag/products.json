@@ -1,0 +1,99 @@
+[
+  {
+    "id": "opel-105",
+    "name": "Толкатель клапана INA Z10XEP Z12XEP Z14XEP | арт. 420009810",
+    "sku": "420009810",
+    "qty": 102,
+    "priceRaw": 483,
+    "brand": "INA",
+    "country": "Германия / ЕС",
+    "category": "Двигатель",
+    "car": "VAG 1.4 AKQ, CBZB",
+    "images": ["01-box.webp", "02-blister.webp"],
+    "hasPhotos": true
+  },
+  {
+    "id": "opel-137",
+    "name": "Датчик давления масла ERA 0,7 bar (коричневый) Passat CDAB 1.8/2.0 | арт. 330325",
+    "sku": "330325",
+    "qty": 10,
+    "priceRaw": 590,
+    "brand": "ERA",
+    "country": "Италия",
+    "category": "Автосвет и электрика",
+    "car": "VW Passat CDAB 1.8/2.0",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-140",
+    "name": "Клапан электронной регулировки фаз ГРМ ERA BWK/CAXA | арт. 554024",
+    "sku": "554024",
+    "qty": 10,
+    "priceRaw": 9333.33,
+    "brand": "ERA",
+    "country": "Италия",
+    "category": "Двигатель",
+    "car": "VW/Skoda BWK/CAXA",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-143",
+    "name": "Натяжитель приводного ремня GATES CJSA | арт. T39272",
+    "sku": "T39272",
+    "qty": 10,
+    "priceRaw": 2029,
+    "brand": "Gates",
+    "country": "Бельгия",
+    "category": "Двигатель",
+    "car": "VW CJSA",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-144",
+    "name": "Натяжитель ремня генератора GATES 1.8/2.0 CDAA, CCZA, CDAB | арт. T39087",
+    "sku": "T39087",
+    "qty": 10,
+    "priceRaw": 7700,
+    "brand": "Gates",
+    "country": "Бельгия",
+    "category": "Двигатель",
+    "car": "VW/Audi CDAA, CCZA, CDAB 1.8/2.0",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-145",
+    "name": "Натяжитель ремня генератора INA CDNC Q5 | арт. 534033310",
+    "sku": "534033310",
+    "qty": 10,
+    "priceRaw": 2883.41,
+    "brand": "INA",
+    "country": "Германия",
+    "category": "Двигатель",
+    "car": "Audi Q5 CDNC",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-146",
+    "name": "Ролик натяжителя ремня навесного оборудования PATRON BZB | арт. PT52133B",
+    "sku": "PT52133B",
+    "qty": 10,
+    "priceRaw": 706.33,
+    "brand": "Patron",
+    "country": "Беларусь",
+    "category": "Двигатель",
+    "car": "VW BZB",
+    "hasPhotos": false
+  },
+  {
+    "id": "opel-149",
+    "name": "Фильтр АКПП HENGST Polo седан (SGR) | арт. EG940HD477",
+    "sku": "EG940HD477",
+    "qty": 10,
+    "priceRaw": 6412.5,
+    "brand": "Hengst",
+    "country": "Германия",
+    "category": "Фильтры АКПП",
+    "car": "VW Polo седан",
+    "hasPhotos": false
+  }
+]
