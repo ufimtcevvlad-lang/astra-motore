@@ -46,3 +46,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# drizzle migrations (generated, not committed)
+drizzle/
+
+# SQLite database files
+data/shop.db
+data/shop.db-wal
+data/shop.db-shm
