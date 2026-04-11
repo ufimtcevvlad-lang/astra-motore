@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUploader from "./ImageUploader";
+import SpecsEditor from "./SpecsEditor";
+import AnalogsSelector from "./AnalogsSelector";
 import ConfirmModal from "./ConfirmModal";
 
 interface Category {
@@ -250,11 +252,21 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </select>
       </div>
 
-      {/* Характеристики — placeholder for commit 3 */}
-      <div id="specs-section" />
+      {/* Характеристики */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Характеристики</h2>
+        <SpecsEditor specs={specs} onChange={setSpecs} />
+      </div>
 
-      {/* Аналоги — placeholder for commit 3 */}
-      <div id="analogs-section" />
+      {/* Аналоги */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Аналоги</h2>
+        <AnalogsSelector
+          analogs={analogs}
+          currentProductId={product?.id}
+          onChange={setAnalogs}
+        />
+      </div>
 
       {/* Действия */}
       <div className="flex items-center gap-3">
