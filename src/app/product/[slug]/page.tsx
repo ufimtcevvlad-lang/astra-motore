@@ -12,6 +12,9 @@ import { ProductSpecs } from "./_components/ProductSpecs";
 import { ProductLongDescription } from "./_components/ProductLongDescription";
 import { ProductTabs, type ProductTab } from "./_components/ProductTabs";
 import { TrackProductView, RecentlyViewed } from "../../components/RecentlyViewed";
+import { CatalogProductCard } from "../../components/catalog/CatalogProductCard";
+import { CopySkuButton } from "./_components/CopySkuButton";
+import { ShareButton } from "./_components/ShareButton";
 import { use } from "react";
 import {
   OFFER_PRICE_VALID_UNTIL,
@@ -98,6 +101,11 @@ export default function ProductPage({
   const imageUrls = getProductImageUrls(product);
   const canonicalPath = productPath(product);
 
+  /* Рекомендуемые: та же категория, исключая текущий, макс 6 */
+  const recommended = products
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 6);
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -156,15 +164,19 @@ export default function ProductPage({
     },
   };
 
+  // JSON-LD данные безопасны — формируются из наших собственных данных в products.ts
+  const breadcrumbJson = JSON.stringify(breadcrumbLd);
+  const productJson = JSON.stringify(productLd);
+
   return (
     <div className="space-y-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+        dangerouslySetInnerHTML={{ __html: productJson }}
       />
 
       <CatalogChrome
@@ -183,24 +195,32 @@ export default function ProductPage({
 
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
         <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
-            {product.category}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
+              {product.category}
+            </p>
+            <ShareButton title={product.name} url={canonicalPath} />
+          </div>
           <ProductImageGallery alt={`${product.name}, арт. ${product.sku}`} urls={imageUrls} />
-          <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 space-y-3 text-sm">
-            <p className="text-base font-semibold text-slate-900 border-l-4 border-amber-500 pl-3">
-              Номер запчасти:{" "}
-              <span className="font-mono tracking-wide">{product.sku}</span>
-            </p>
-            <p className="text-slate-700">
-              <span className="font-medium text-slate-900">Бренд:</span> {product.brand}
-            </p>
-            <p className="text-slate-700">
-              <span className="font-medium text-slate-900">Страна:</span> {product.country}
-            </p>
-            <p className="text-slate-600">
-              <span className="font-medium text-slate-800">Применяемость:</span> {product.car}
-            </p>
+
+          {/* Инфо-карточка */}
+          <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-sm">
+            <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2.5 items-baseline">
+              <span className="text-xs text-slate-500">Артикул</span>
+              <span className="font-mono font-semibold tracking-wide text-slate-900 flex items-center gap-1.5">
+                {product.sku}
+                <CopySkuButton sku={product.sku} />
+              </span>
+
+              <span className="text-xs text-slate-500">Бренд</span>
+              <span className="font-medium text-slate-800">{product.brand}</span>
+
+              <span className="text-xs text-slate-500">Страна</span>
+              <span className="text-slate-700">{product.country}</span>
+
+              <span className="text-xs text-slate-500">Авто</span>
+              <span className="text-slate-600">{product.car}</span>
+            </div>
           </div>
         </div>
         <ProductClient product={product} />
@@ -232,12 +252,28 @@ export default function ProductPage({
           });
         }
 
+        if (recommended.length >= 2) {
+          tabs.push({
+            key: "recommended",
+            title: "Рекомендуем",
+            content: (
+              <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 snap-x">
+                {recommended.map((p) => (
+                  <div key={p.id} className="w-56 shrink-0 snap-start">
+                    <CatalogProductCard p={p} />
+                  </div>
+                ))}
+              </div>
+            ),
+          });
+        }
+
         return <ProductTabs tabs={tabs} />;
       })()}
 
       {cheaperAnalogs.length > 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
-          <h2 className="text-lg font-sem-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
+          <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-2 mb-2">
             Аналоги дешевле
           </h2>
           <p className="text-xs text-slate-500">
