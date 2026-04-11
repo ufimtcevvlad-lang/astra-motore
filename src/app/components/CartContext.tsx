@@ -6,9 +6,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import Link from "next/link";
 import type { Product } from "../data/products";
 
 export type CartItem = {
@@ -50,8 +52,48 @@ function readCartFromStorage(): CartItem[] {
   }
 }
 
+function CartToast({ productName, onDone }: { productName: string; onDone: () => void }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    const timer = setTimeout(() => {
+      setVisible(false);
+      setTimeout(onDone, 300);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [onDone]);
+
+  return (
+    <div
+      className={`fixed top-4 right-4 z-[500] max-w-xs rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg transition-all duration-300 ${
+        visible ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
+      }`}
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </span>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-slate-900">Добавлено в корзину</p>
+          <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">{productName}</p>
+          <Link href="/cart" className="mt-1 inline-block text-xs font-medium text-amber-600 hover:underline">
+            Перейти в корзину →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => readCartFromStorage());
+  const [toastProduct, setToastProduct] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
@@ -67,6 +109,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { product, quantity: 1 }];
     });
+    clearTimeout(toastTimer.current);
+    setToastProduct(product.name);
   }, []);
 
   const removeFromCart = useCallback((productId: string) => {
@@ -116,7 +160,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items, addToCart, removeFromCart, setItemQuantity, increaseQuantity, decreaseQuantity, clearCart]
   );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      {toastProduct ? (
+        <CartToast
+          key={toastProduct + Date.now()}
+          productName={toastProduct}
+          onDone={() => setToastProduct(null)}
+        />
+      ) : null}
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {
