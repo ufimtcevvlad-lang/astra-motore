@@ -40,7 +40,7 @@ export type Product = {
   price: number;
   inStock: number;
   image: string;
-  /** Дополнительные фото товара (обложка = `image` = первый кадр `images[]`; порядок: коробка/упаковка целиком → крупно артикул на этикетке → деталь/ракурсы) */
+  /** Дополнительные фото товара (обложка = `image` = первый кадр `images[]`; порядок: деталь/ракурсы → коробка/упаковка → артикул на этикетке) */
   images?: string[];
   description: string;
   /** Ссылки на аналоги из того же каталога */
@@ -85,12 +85,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (моторы Ecotec)",
-    image: "/images/catalog/opel-1/03-box.webp",
+    image: "/images/catalog/opel-1/01-spark.webp",
     images: [
-      "/images/catalog/opel-1/03-box.webp",
-      "/images/catalog/opel-1/04-pack-back.webp",
       "/images/catalog/opel-1/01-spark.webp",
       "/images/catalog/opel-1/02-spark-alt.webp",
+      "/images/catalog/opel-1/03-box.webp",
+      "/images/catalog/opel-1/04-pack-back.webp",
     ],
     description:
       "Свеча зажигания Bosch для бензиновых двигателей GM Ecotec. Подходит для плановой замены по регламенту ТО, обеспечивает стабильный запуск и ровную работу двигателя. Геометрия резьбы и параметры затяжки соответствуют распространенным спецификациям для моторов Opel/Chevrolet этого семейства.",
@@ -116,10 +116,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Двигатель",
     car: "Opel 1.6 Z16XER",
-    image: "/images/catalog/opel-2/01-packaging.webp",
+    image: "/images/catalog/opel-2/02-part.webp",
     images: [
-      "/images/catalog/opel-2/01-packaging.webp",
       "/images/catalog/opel-2/02-part.webp",
+      "/images/catalog/opel-2/01-packaging.webp",
     ],
     description:
       "Оригинальная масляная форсунка для охлаждения днища поршня на двигателе Z16XER. Подаёт масло на теплонагруженные зоны; при закоксовке или течи двигатель перегревается — замену лучше не откладывать.",
@@ -169,11 +169,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Масляные фильтры",
     car: "Opel Astra H/J, Zafira B и др.",
-    image: "/images/catalog/opel-4/01-box.webp",
+    image: "/images/catalog/opel-4/02-filter-with-gasket.webp",
     images: [
-      "/images/catalog/opel-4/01-box.webp",
       "/images/catalog/opel-4/02-filter-with-gasket.webp",
       "/images/catalog/opel-4/03-filter.webp",
+      "/images/catalog/opel-4/01-box.webp",
     ],
     description:
       "Масляный фильтр Hengst для бензиновых Ecotec с резьбой и клапаном против слива. Рекомендуется менять вместе с маслом по интервалу производителя.",
@@ -301,12 +301,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Свечи и зажигание",
     car: "Opel Astra H/J, Zafira B и др. (Ecotec)",
-    image: "/images/catalog/opel-10/01-box.webp",
+    image: "/images/catalog/opel-10/03-spark.webp",
     images: [
-      "/images/catalog/opel-10/01-box.webp",
-      "/images/catalog/opel-10/02-box-side.webp",
       "/images/catalog/opel-10/03-spark.webp",
       "/images/catalog/opel-10/04-spark-alt.webp",
+      "/images/catalog/opel-10/01-box.webp",
+      "/images/catalog/opel-10/02-box-side.webp",
     ],
     description:
       "Оригинальная свеча зажигания GM **25193473** для ряда бензиновых Ecotec. В галерее сначала коробка с номером, затем свеча вне упаковки. Ресурс и калильное число подобраны заводом; для сравнения по цене смотрите аналоги из того же каталога (например Bosch).",
@@ -432,10 +432,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Opel Astra H/J, Corsa D и др.",
-    image: "/images/catalog/opel-17/01-packaging.webp",
+    image: "/images/catalog/opel-17/02-part.webp",
     images: [
-      "/images/catalog/opel-17/01-packaging.webp",
       "/images/catalog/opel-17/02-part.webp",
+      "/images/catalog/opel-17/01-packaging.webp",
     ],
     description:
       "Датчик температуры ОЖ с Г-образным патрубком для системы охлаждения. На упаковке Mopar Genuine может быть номер **55591401**. Неисправность даёт ошибки по температуре, работу вентилятора и показания на панели.",
@@ -461,10 +461,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Европейский склад GM",
     category: "Охлаждение",
     car: "Chevrolet Cruze, Opel Astra J, Insignia и др.",
-    image: "/images/catalog/opel-18/01-packaging.webp",
+    image: "/images/catalog/opel-18/02-part.webp",
     images: [
-      "/images/catalog/opel-18/01-packaging.webp",
       "/images/catalog/opel-18/02-part.webp",
+      "/images/catalog/opel-18/01-packaging.webp",
     ],
     description:
       "Крышка расширительного бачка системы охлаждения. Поддерживает рабочее давление в контуре; трещины и износ уплотнения приводят к потере ОЖ и перегреву.",
@@ -490,11 +490,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Воздушные фильтры",
     car: "Opel Astra J, Chevrolet Cruze (A14XEL, A14XER, A16XER)",
-    image: "/images/catalog/opel-21/01-packaging-label.webp",
+    image: "/images/catalog/opel-21/03-top.webp",
     images: [
+      "/images/catalog/opel-21/03-top.webp",
       "/images/catalog/opel-21/01-packaging-label.webp",
       "/images/catalog/opel-21/02-side-brand.webp",
-      "/images/catalog/opel-21/03-top.webp",
     ],
     description:
       "Воздушный фильтр SIBTEK (на упаковке — AF 109, в выгрузке — AF01109). Для бензиновых Ecotec на Astra J и Cruze; на этикетке также указаны Orlando, Opel/Vauxhall Astra J GTC, Zotye T600 и кроссы OEM/аналогов (MANN C 26106, BOSCH F 026 400 385 и др.). Меняется по регламенту ТО или при загрязнении. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -519,12 +519,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Свечи и зажигание",
     car: "Opel Astra J A14NEL/NET; уточняйте по двигателю",
-    image: "/images/catalog/opel-23/01-box-brand.webp",
+    image: "/images/catalog/opel-23/03-spark.webp",
     images: [
-      "/images/catalog/opel-23/01-box-brand.webp",
-      "/images/catalog/opel-23/02-box-article.webp",
       "/images/catalog/opel-23/03-spark.webp",
       "/images/catalog/opel-23/04-spark-alt.webp",
+      "/images/catalog/opel-23/01-box-brand.webp",
+      "/images/catalog/opel-23/02-box-article.webp",
     ],
     description:
       "Свеча зажигания Bosch для указанных модификаций моторов. Перед заказом сверяйте калильное число и резьбу со штатной свечой или каталогом.",
@@ -550,11 +550,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Chevrolet Aveo T300, Cruze, Cobalt; Opel Astra J, Insignia, Mokka",
-    image: "/images/catalog/opel-25/01-packaging-label.webp",
+    image: "/images/catalog/opel-25/03-pleats.webp",
     images: [
+      "/images/catalog/opel-25/03-pleats.webp",
       "/images/catalog/opel-25/01-packaging-label.webp",
       "/images/catalog/opel-25/02-side-airflow.webp",
-      "/images/catalog/opel-25/03-pleats.webp",
     ],
     description:
       "Салонный фильтр SIBTEK (на упаковке — AC 54, в выгрузке — AC0454). Типичное применение: Chevrolet Cruze, Orlando, Trax, Malibu, Spark, Tracker и др.; Opel Astra J, Insignia, Mokka, Meriva B, Zafira C и др.; на этикетке также кроссы вроде MANN CU 2442, FRAM CF10774, GM 13271190. Меняйте 1–2 раза в год или при запахе и слабом потоке воздуха. Установка по направлению потока (AIR FLOW на корпусе). Перед заказом сверяйте применение по VIN или каталогу.",
@@ -606,8 +606,8 @@ const OPEL_PILOT_RAW: Array<{
     image: "/images/catalog/opel-28/01-cover-top.webp",
     images: [
       "/images/catalog/opel-28/01-cover-top.webp",
-      "/images/catalog/opel-28/02-gm96889998-label.webp",
       "/images/catalog/opel-28/03-cover-underside.webp",
+      "/images/catalog/opel-28/02-gm96889998-label.webp",
     ],
     description:
       "Клапанная крышка в сборе / узел ГБЦ для Cruze с двигателями F16D4 и F18D4. Порядок снимков: полный вид крышки сверху; вырезка с маркировкой **GM# 96889998** на упаковке/этикетке; вид изнутри. Когда появится фото целой заводской коробки, его поставят первым кадром. Замена при трещинах, деформации или неконтролируемой течи масла сверху мотора — работы согласуйте с сервисом.",
@@ -656,11 +656,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Уточняется",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-32/01-box-mopar-25192230.webp",
+    image: "/images/catalog/opel-32/02-housing-pierburg-gm25192230.webp",
     images: [
-      "/images/catalog/opel-32/01-box-mopar-25192230.webp",
       "/images/catalog/opel-32/02-housing-pierburg-gm25192230.webp",
       "/images/catalog/opel-32/03-housing-gm55575062.webp",
+      "/images/catalog/opel-32/01-box-mopar-25192230.webp",
     ],
     description:
       "Пластиковый корпус/коллектор термостата (в комплектации без самого термостата — сверяйте с каталогом). На детали встречаются номера GM **25192230** (в т.ч. поставка Pierburg) и **55575062**. Меняют при трещинах, подсосах ОЖ и некорректной работе системы охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -736,11 +736,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-35/01-box.webp",
+    image: "/images/catalog/opel-35/02-seal.webp",
     images: [
-      "/images/catalog/opel-35/01-box.webp",
       "/images/catalog/opel-35/02-seal.webp",
       "/images/catalog/opel-35/03-seal-face.webp",
+      "/images/catalog/opel-35/01-box.webp",
     ],
     description:
       "Сальник коленвала передний Elring, в упаковке указаны тип **A/BS F RD VMQ** и размеры **35×48×7** мм (артикул в выгрузке — 056900). Меняется при замене сцепления/ДМРВ или при течи с передней стороны коленвала. Перед заказом сверяйте размеры и применение по VIN или каталогу.",
@@ -837,11 +837,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Chevrolet Cruze, Orlando, Trax, Malibu, Volt; Opel Astra J, Insignia, Mokka, Meriva B, Zafira C и др. — уточняйте по VIN",
-    image: "/images/catalog/opel-39/01-packaging-label.webp",
+    image: "/images/catalog/opel-39/03-charcoal-front.webp",
     images: [
+      "/images/catalog/opel-39/03-charcoal-front.webp",
       "/images/catalog/opel-39/01-packaging-label.webp",
       "/images/catalog/opel-39/02-side-airflow.webp",
-      "/images/catalog/opel-39/03-charcoal-front.webp",
     ],
     description:
       "Угольный салонный фильтр SIBTEK (на упаковке — AC 54C, в выгрузке — AC0454C). Та же геометрия, что у бумажного AC0454, с активированным углем для запахов и выхлопных примесей. На этикетке кроссы вроде GB-9941C, FILTRON K1223A, MANN CU 2442, GM 13271191. Меняйте 1–2 раза в год или при запахе. Установка по направлению AIR FLOW на корпусе. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -866,10 +866,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Польша",
     category: "Масляные фильтры",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-41/01-filtron-op570-box.webp",
+    image: "/images/catalog/opel-41/02-filtron-op570-filter.webp",
     images: [
-      "/images/catalog/opel-41/01-filtron-op570-box.webp",
       "/images/catalog/opel-41/02-filtron-op570-filter.webp",
+      "/images/catalog/opel-41/01-filtron-op570-box.webp",
     ],
     description:
       "Масляный фильтр **FILTRON OP 570** (артикул в каталоге **OP570**): на упаковке маркировка **OP 570**, тип **OIL FILTER** / масляный фильтр, **Made in Poland** на корпусе. Типичное применение в выгрузке — **F14D3, F16D3, T18SED** (Nexia/Lanos и др.); перед заказом сверяйте номер с установленным фильтром и применение по VIN.",
@@ -902,12 +902,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-42/01-box.webp",
+    image: "/images/catalog/opel-42/03-seal-angle.webp",
     images: [
-      "/images/catalog/opel-42/01-box.webp",
-      "/images/catalog/opel-42/02-box-label.webp",
       "/images/catalog/opel-42/03-seal-angle.webp",
       "/images/catalog/opel-42/04-seal-top.webp",
+      "/images/catalog/opel-42/01-box.webp",
+      "/images/catalog/opel-42/02-box-label.webp",
     ],
     description:
       "Сальник распредвала передний Elring **702.269** (в выгрузке — 702269). На упаковке и детали типичны обозначения вроде **A/BS RD FPM** и размер **31,5×42×7** мм. Меняется при течи масла со стороны ремня ГРМ или при капремонте. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -956,12 +956,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-45/01-box.webp",
+    image: "/images/catalog/opel-45/03-pulley-face.webp",
     images: [
-      "/images/catalog/opel-45/01-box.webp",
-      "/images/catalog/opel-45/02-side-label.webp",
       "/images/catalog/opel-45/03-pulley-face.webp",
       "/images/catalog/opel-45/04-impeller.webp",
+      "/images/catalog/opel-45/01-box.webp",
+      "/images/catalog/opel-45/02-side-label.webp",
     ],
     description:
       "Водяной насос Pierburg **7.07152.21.0** (в выгрузке — 707152210). На корпусе может быть дополнительная маркировка (например 24N153). Меняют при подшипниковом гуле, люфте, подтеках ОЖ и при плановом ТО по регламенту. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -986,12 +986,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Япония / ЕС",
     category: "Свечи и зажигание",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-46/01-ngk-zfr6u9-box.webp",
+    image: "/images/catalog/opel-46/02-ngk-zfr6u9-plug.webp",
     images: [
-      "/images/catalog/opel-46/01-ngk-zfr6u9-box.webp",
       "/images/catalog/opel-46/02-ngk-zfr6u9-plug.webp",
       "/images/catalog/opel-46/03-ngk-zfr6u9-plug-alt.webp",
       "/images/catalog/opel-46/04-ngk-zfr6u9-plug-alt2.webp",
+      "/images/catalog/opel-46/01-ngk-zfr6u9-box.webp",
     ],
     description:
       "Свеча зажигания **NGK**; на коробке маркировка **ZFR6U-9** (в каталоге **ZFR6U9**), тип **COPPER CORE**. На корпусе свечи — **JAPAN**. Кросс по наименованию карточки — **25193474** (GM). Меняют комплектом по регламенту ТО; перед заказом сверяйте применение по VIN.",
@@ -1016,11 +1016,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-48/01-box.webp",
+    image: "/images/catalog/opel-47/01-assembly.webp",
     images: [
-      "/images/catalog/opel-48/01-box.webp",
       "/images/catalog/opel-47/01-assembly.webp",
       "/images/catalog/opel-47/02-assembly-alt.webp",
+      "/images/catalog/opel-48/01-box.webp",
     ],
     description:
       "Термостат MAHLE **BEHR TM 41 105** для Opel/Vauxhall (в выгрузке — TM41105). На коробке: референс 72362970, качество OE. Меняют при неисправности системы охлаждения по регламенту или диагностике. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -1069,11 +1069,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-50/01-box.webp",
+    image: "/images/catalog/opel-50/02-valve.webp",
     images: [
-      "/images/catalog/opel-50/01-box.webp",
       "/images/catalog/opel-50/02-valve.webp",
       "/images/catalog/opel-50/03-valve-alt.webp",
+      "/images/catalog/opel-50/01-box.webp",
     ],
     description:
       "Клапан положения распредвала (VVT) INA. На упаковке может быть **427 0014 10** (в выгрузке — 427001410); на детали — маркировка вроде **F-347555.02**. Перед заказом сверяйте совместимость по VIN или каталогу.",
@@ -1175,11 +1175,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Opel Astra G, Astra H, Zafira A/B и др. — уточняйте по VIN",
-    image: "/images/catalog/opel-56/01-packaging-label.webp",
+    image: "/images/catalog/opel-56/02-overview.webp",
     images: [
-      "/images/catalog/opel-56/01-packaging-label.webp",
       "/images/catalog/opel-56/02-overview.webp",
       "/images/catalog/opel-56/03-studio.webp",
+      "/images/catalog/opel-56/01-packaging-label.webp",
     ],
     description:
       "Угольный салонный фильтр SIBTEK (маркировка на упаковке AC21C, в выгрузке — AC0421C). Типичное применение: Opel Astra G/H, Zafira A/B; кроссы OEM вроде 6808607, 1718046, 13175554 (GM). Меняйте 1–2 раза в год или при запахе и слабом потоке воздуха. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -1285,11 +1285,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Китай / ЕС",
     category: "Салонные фильтры",
     car: "Opel Astra G/H, Zafira A/B и др. — уточняйте по VIN",
-    image: "/images/catalog/opel-61/01-packaging-label.webp",
+    image: "/images/catalog/opel-61/02-angle.webp",
     images: [
-      "/images/catalog/opel-61/01-packaging-label.webp",
       "/images/catalog/opel-61/02-angle.webp",
       "/images/catalog/opel-61/03-pleats-studio.webp",
+      "/images/catalog/opel-61/01-packaging-label.webp",
     ],
     description:
       "Бумажный (неугольный) салонный фильтр SIBTEK (на упаковке — AC 21, в выгрузке — AC0421). Типичное применение: Opel Astra G/H, Zafira A/B; OEM вроде 6808606, 6808607, 90521689, GM 13175553, 1808610. Для угольной версии смотрите AC0421C. Меняйте 1–2 раза в год или при слабом потоке воздуха. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -1651,11 +1651,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-80/01-box.webp",
+    image: "/images/catalog/opel-80/02-valve.webp",
     images: [
-      "/images/catalog/opel-80/01-box.webp",
       "/images/catalog/opel-80/02-valve.webp",
       "/images/catalog/opel-80/03-valve-alt.webp",
+      "/images/catalog/opel-80/01-box.webp",
     ],
     description:
       "Клапан управления фазами ГРМ INA для **A14NET** и сопоставимых моторов. На коробке — **427 0018 10** (в выгрузке — 427001810); на детали может быть маркировка **F-347512.15**. Перед заказом сверяйте совместимость по VIN или каталогу.",
@@ -1760,10 +1760,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Прокладки, сальники и кольца",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-84/01-packaging.webp",
+    image: "/images/catalog/opel-84/02-gasket-body.webp",
     images: [
-      "/images/catalog/opel-84/01-packaging.webp",
       "/images/catalog/opel-84/02-gasket-body.webp",
+      "/images/catalog/opel-84/01-packaging.webp",
     ],
     description:
       "Прокладка маслонасоса Elring **809451**. В галерее: упаковка с этикеткой артикула, затем прокладка в вакууме с маркировкой **241.822** на металле (внутренний номер Elring; заказ ведётся по **809451**). Перед заказом сверяйте применение по VIN или каталогу.",
@@ -1896,10 +1896,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "ЕС",
     category: "Подвеска",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-95/02-box.webp",
+    image: "/images/catalog/opel-95/01-part.webp",
     images: [
-      "/images/catalog/opel-95/02-box.webp",
       "/images/catalog/opel-95/01-part.webp",
+      "/images/catalog/opel-95/02-box.webp",
     ],
     description:
       "Стойка (тяга) стабилизатора Delphi Technologies TC2279 для линейки подвески и рулевого Chevrolet Cruze и Opel Astra J и сопоставимых моделей. Меняют при стуке в передней подвеске на неровностях, люфте шарниров или повреждённых пыльниках. Перед заказом сверяйте сторону (лево/право) и применение по VIN или каталогу.",
@@ -2005,10 +2005,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Польша",
     category: "Масляные фильтры",
     car: "Honda/Acura и др. по OE 15400-RBA-F01 — уточняйте по VIN",
-    image: "/images/catalog/opel-100/01-box.webp",
+    image: "/images/catalog/opel-100/02-filter.webp",
     images: [
-      "/images/catalog/opel-100/01-box.webp",
       "/images/catalog/opel-100/02-filter.webp",
+      "/images/catalog/opel-100/01-box.webp",
     ],
     description:
       "Масляный фильтр FILTRON **OP 575**. Кроссы на упаковке: OE **15400-RBA-F01**, MANN **W 610/3**, **W 610/6**, MAHLE **OC 495**, **OC 521**, PURFLUX **LS287**, **LS350**, FRAM **PH5317**. Перед заказом сверяйте номер с установленным фильтром и применение по VIN.",
@@ -2041,10 +2041,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel Z16XEP, Z16XER, Z18XER; Chevrolet Cruze F16D4 — уточняйте по VIN",
-    image: "/images/catalog/opel-101/01-box.webp",
+    image: "/images/catalog/opel-101/02-bearings-pack.webp",
     images: [
-      "/images/catalog/opel-101/01-box.webp",
       "/images/catalog/opel-101/02-bearings-pack.webp",
+      "/images/catalog/opel-101/01-box.webp",
     ],
     description:
       "Комплект шатунных вкладышей ремонтного размера **0,25** Kolbenschmidt, артикул **87409610** (на упаковке может быть **87 409 610**). Меняются при капремонте или задиров шатунных шеек; подбор размера и объёма комплекта — по каталогу и замерам. Перед заказом сверяйте применение по VIN.",
@@ -2069,10 +2069,10 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet Z18XER (STD) — уточняйте по VIN",
-    image: "/images/catalog/opel-102/01-box.webp",
+    image: "/images/catalog/opel-102/02-rings.webp",
     images: [
-      "/images/catalog/opel-102/01-box.webp",
       "/images/catalog/opel-102/02-rings.webp",
+      "/images/catalog/opel-102/01-box.webp",
     ],
     description:
       "Поршневые кольца **KS** / Kolbenschmidt на **один цилиндр**, стандартный размер (**STD**), артикул **800038910000** (на упаковке может быть **80 00389 1 0 000**). Для полного мотора заказывайте кратно числу цилиндров. Перед заказом сверяйте маркировку поршней и применение по VIN или каталогу.",
@@ -2097,12 +2097,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия / ЕС",
     category: "Двигатель",
     car: "Opel Astra H (Z14XEP, Z16XEL, Z18XER) — уточняйте по VIN",
-    image: "/images/catalog/opel-103/01-box-label-0580314195.webp",
+    image: "/images/catalog/opel-103/03-pump-assembly.webp",
     images: [
-      "/images/catalog/opel-103/01-box-label-0580314195.webp",
-      "/images/catalog/opel-103/02-box-front.webp",
       "/images/catalog/opel-103/03-pump-assembly.webp",
       "/images/catalog/opel-103/04-pump-detail.webp",
+      "/images/catalog/opel-103/01-box-label-0580314195.webp",
+      "/images/catalog/opel-103/02-box-front.webp",
     ],
     description:
       "Электробензонасос в сборе Bosch **0 580 314 195** (в выгрузке — 0580314195). На этикетке коробки — **0 580 314 195**; в галерее — коробка, затем насос в сборе. При слабом давлении в рампе, длительном пуске и отказе насоса заменяйте в сборе с сеточкой/прокладкой по регламенту. Перед заказом сверяйте применение по VIN.",
@@ -2152,12 +2152,12 @@ const OPEL_PILOT_RAW: Array<{
     country: "Румыния / ЕС",
     category: "Двигатель",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-107/01-box-label.webp",
+    image: "/images/catalog/opel-107/03-kit-pulleys-hardware.webp",
     images: [
-      "/images/catalog/opel-107/01-box-label.webp",
-      "/images/catalog/opel-107/02-box-angle.webp",
       "/images/catalog/opel-107/03-kit-pulleys-hardware.webp",
       "/images/catalog/opel-107/04-timing-belt.webp",
+      "/images/catalog/opel-107/01-box-label.webp",
+      "/images/catalog/opel-107/02-box-angle.webp",
     ],
     description:
       "Комплект ремня ГРМ **INA** / Schaeffler (**Timing Belt KIT**). На коробке — **530 0562 10** (в выгрузке — 530056210); в составе ремень, ролики и крепёж по комплектации. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -2182,11 +2182,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Франция",
     category: "Охлаждение",
     car: "Opel / Chevrolet — уточняйте применение по VIN",
-    image: "/images/catalog/opel-108/01-box-psa-25192231.webp",
+    image: "/images/catalog/opel-108/03-housing-alt.webp",
     images: [
-      "/images/catalog/opel-108/01-box-psa-25192231.webp",
-      "/images/catalog/opel-108/02-housing-gm25192231-label.webp",
       "/images/catalog/opel-108/03-housing-alt.webp",
+      "/images/catalog/opel-108/02-housing-gm25192231-label.webp",
+      "/images/catalog/opel-108/01-box-psa-25192231.webp",
     ],
     description:
       "Корпус/коллектор термостата в поставке **PSA Groupe Original Parts**; на упаковке номер **25 192 231**, на детали — наклейка **GM 25192231** (маркировка **>PA66-GF30<** на пластике). В комплектации без самого термостата — сверяйте с каталогом. Родственный номер в линейке — **25192230**. Меняют при трещинах, подсосах ОЖ и некорректной работе охлаждения. Перед заказом сверяйте применение по VIN или каталогу.",
@@ -2212,11 +2212,11 @@ const OPEL_PILOT_RAW: Array<{
     country: "Германия",
     category: "Двигатель",
     car: "Chevrolet Cruze и др. с F16D4 / F18D4 — уточняйте по VIN",
-    image: "/images/catalog/opel-109/01-gm-55564395-pack.webp",
+    image: "/images/catalog/opel-109/02-valve-cover-top.webp",
     images: [
-      "/images/catalog/opel-109/01-gm-55564395-pack.webp",
       "/images/catalog/opel-109/02-valve-cover-top.webp",
       "/images/catalog/opel-109/03-valve-cover-underside.webp",
+      "/images/catalog/opel-109/01-gm-55564395-pack.webp",
     ],
     description:
       "Пластиковая клапанная крышка ГБЦ для двигателей **F16D4** и **F18D4**. Оригинальный номер **55564395**; в галерее: заводская упаковка, вид сверху и изнутри (отверстия под катушки/свечи, горловина залива масла, узел вентиляции картера). На этикетке поставки иногда встречается устаревшая строка вроде **BEARING CASING** — по факту позиция соответствует клапанной крышке; перед заказом сверяйте номер и применение по VIN или каталогу.",
