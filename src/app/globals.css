@@ -27,6 +27,12 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+@keyframes cart-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
 /* Глобальная тёмная тема: сохраняем текущую стилистику, но переводим светлые поверхности в фирменные тёмные */
 :root[data-theme="dark"] .bg-white {
   background-color: #0f172a !important;

@@ -89,6 +89,15 @@ export function Header() {
   const [showDesktopQuickBar, setShowDesktopQuickBar] = useState(false);
   const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
   const cartPreviewRef = useRef<HTMLDivElement | null>(null);
+  const [cartBounce, setCartBounce] = useState(0);
+  const prevTotalRef = useRef(totalItems);
+
+  useEffect(() => {
+    if (totalItems > prevTotalRef.current) {
+      setCartBounce((c) => c + 1);
+    }
+    prevTotalRef.current = totalItems;
+  }, [totalItems]);
 
   useEffect(() => {
     let mounted = true;
@@ -170,7 +179,10 @@ export function Header() {
                 onClick={() => setIsCartPreviewOpen((v) => !v)}
                 aria-expanded={isCartPreviewOpen}
                 aria-haspopup="dialog"
-                className="flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-1.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2 sm:text-sm"
+                className={`flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-1.5 text-xs font-semibold text-slate-950 shadow-md shadow-black/25 transition hover:bg-amber-300 sm:px-4 sm:py-2 sm:text-sm ${
+                  cartBounce > 0 ? "animate-[cart-bump_0.35s_ease]" : ""
+                }`}
+                key={`cart-btn-${cartBounce}`}
               >
                 Корзина
                 {totalItems > 0 && (

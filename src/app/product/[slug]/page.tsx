@@ -24,6 +24,7 @@ import {
   truncateMetaDescription,
 } from "../../lib/seo";
 import { SITE_BRAND, SITE_URL } from "../../lib/site";
+import { CATALOG_SECTIONS } from "../../data/catalog-sections";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -106,6 +107,12 @@ export default function ProductPage({
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 6);
 
+  /* Секция каталога по категории товара */
+  const catalogSection = CATALOG_SECTIONS.find((s) => s.title === product.category);
+  const categoryHref = catalogSection
+    ? `/catalog#catalog-${catalogSection.slug}`
+    : "/catalog";
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -125,6 +132,12 @@ export default function ProductPage({
       {
         "@type": "ListItem",
         position: 3,
+        name: product.category,
+        item: SITE_URL + categoryHref,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
         name: product.name,
         item: SITE_URL + canonicalPath,
       },
@@ -183,6 +196,7 @@ export default function ProductPage({
         crumbs={[
           { label: "Главная", href: "/" },
           { label: "Каталог", href: "/catalog" },
+          { label: product.category, href: categoryHref },
           { label: "Товар" },
         ]}
         title={product.name}
