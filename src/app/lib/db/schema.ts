@@ -141,6 +141,9 @@ export const conversations = sqliteTable("conversations", {
   customerContact: text("customer_contact").notNull().default(""),
   status: text("status").notNull().default("new"),
   rating: integer("rating"),
+  assignedAdminId: integer("assigned_admin_id").references(() => admins.id),
+  lastMessageAt: text("last_message_at"),
+  unreadCount: integer("unread_count").notNull().default(0),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
 });
@@ -153,6 +156,23 @@ export const messages = sqliteTable("messages", {
   text: text("text").notNull(),
   attachments: text("attachments").notNull().default("[]"),
   isInternalNote: integer("is_internal_note", { mode: "boolean" }).notNull().default(false),
+  readAt: text("read_at"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const chatTokens = sqliteTable("chat_tokens", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  conversationId: integer("conversation_id").notNull().references(() => conversations.id),
+  token: text("token").notNull().unique(),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
+export const pushSubscriptions = sqliteTable("push_subscriptions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  adminId: integer("admin_id").notNull().references(() => admins.id),
+  endpoint: text("endpoint").notNull(),
+  keysJson: text("keys_json").notNull(),
   createdAt: text("created_at").notNull(),
 });
 

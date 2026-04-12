@@ -5,6 +5,7 @@ import { FavoritesProvider } from "./components/FavoritesContext";
 import { CookieConsentBanner } from "./components/CookieConsentBanner";
 import { FloatingCartButton } from "./components/FloatingCartButton";
 import { FloatingContactButtons } from "./components/FloatingContactButtons";
+import ChatWidget from "./components/ChatWidget";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
@@ -112,6 +113,7 @@ export default function RootLayout({
             <Footer />
             <FloatingCartButton />
             <FloatingContactButtons />
+            <ChatWidget />
             <CookieConsentBanner />
           </FavoritesProvider>
         </CartProvider>
