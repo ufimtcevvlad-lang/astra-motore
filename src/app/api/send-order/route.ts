@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { SITE_BRAND } from "../../lib/site";
+import { db, schema } from "@/app/lib/db";
+import { sql, gte } from "drizzle-orm";
 import { appendConsentLog } from "../../lib/consent-log";
 import { checkRateLimit, getClientIp } from "../../lib/rate-limit";
 import { verifyTurnstileToken } from "../../lib/turnstile";
@@ -41,12 +41,6 @@ type Body = {
   paymentMethod?: "sbp" | "card" | "cash";
 };
 
-type PersistedOrder = Body & {
-  createdAt: string;
-  userAgent?: string;
-  ip?: string;
-};
-
 function escapeTelegram(text: string): string {
   return text
     .replace(/&/g, "&amp;")
@@ -54,12 +48,6 @@ function escapeTelegram(text: string): string {
     .replace(/>/g, "&gt;");
 }
 
-async function persistOrder(order: PersistedOrder) {
-  const dir = path.join(process.cwd(), "data");
-  const file = path.join(dir, "orders.ndjson");
-  await fs.mkdir(dir, { recursive: true });
-  await fs.appendFile(file, JSON.stringify(order) + "\n", "utf8");
-}
 
 export async function POST(request: Request) {
   const limit = checkRateLimit({
@@ -208,27 +196,45 @@ export async function POST(request: Request) {
     // ignore consent log errors
   }
 
-  // Сохраняем заказ в append-only лог на сервере (для меню бота: «Заказы»)
+  // Генерируем номер заказа: AM-YYYYMMDD-NNN
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "");
+  const todayStart = now.toISOString().slice(0, 10) + "T00:00:00";
+  const [countResult] = db
+    .select({ count: sql<number>`count(*)` })
+    .from(schema.orders)
+    .where(gte(schema.orders.createdAt, todayStart))
+    .all();
+  const seq = String(Number(countResult.count) + 1).padStart(3, "0");
+  const orderNumber = `AM-${dateStr}-${seq}`;
+
+  const nowIso = now.toISOString();
+
   try {
-    await persistOrder({
-      createdAt: new Date().toISOString(),
-      name: name.trim(),
-      phone: phone.trim(),
-      comment: comment?.trim() || "",
-      items,
+    db.insert(schema.orders).values({
+      orderNumber,
+      customerName: name.trim(),
+      customerPhone: phone.trim(),
+      customerEmail: "",
+      items: JSON.stringify(items),
       total,
-      consentPersonalData: Boolean(consentPersonalData),
-      consentMarketing: Boolean(consentMarketing),
-      deliveryMethod,
-      deliveryCity: deliveryCity?.trim() || "",
-      deliveryQuote: deliveryQuote ?? null,
-      cdekPickupPoint: cdekPickupPoint ?? null,
-      paymentMethod,
-      userAgent: request.headers.get("user-agent") || undefined,
+      deliveryMethod: deliveryMethod ?? "pickup",
+      deliveryCity: deliveryCity?.trim() ?? "",
+      deliveryAddress: "",
+      deliveryCost: typeof deliveryQuote?.deliverySum === "number" ? Math.round(deliveryQuote.deliverySum) : 0,
+      deliveryQuote: deliveryQuote ? JSON.stringify(deliveryQuote) : null,
+      cdekPickupPoint: cdekPickupPoint ? JSON.stringify(cdekPickupPoint) : null,
+      paymentMethod: paymentMethod ?? "cash",
+      status: "new",
+      isUrgent: false,
+      comment: comment?.trim() ?? "",
+      userAgent: request.headers.get("user-agent") ?? undefined,
       ip,
-    });
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    }).run();
   } catch {
-    // Не блокируем оформление заказа, даже если не удалось записать лог
+    // Не блокируем оформление, если запись в БД не удалась
   }
 
   const lines: string[] = [
