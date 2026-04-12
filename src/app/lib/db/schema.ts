@@ -183,6 +183,19 @@ export const quickReplies = sqliteTable("quick_replies", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+// ─── Заметки о клиентах ───
+
+export const customerNotes = sqliteTable("customer_notes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  customerPhone: text("customer_phone").notNull().unique(),
+  status: text("status").notNull().default("new"),
+  carModels: text("car_models").notNull().default(""),
+  notes: text("notes").notNull().default(""),
+  adminId: integer("admin_id").references(() => admins.id),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
 // ─── Контент ───
 
 export const pages = sqliteTable("pages", {
