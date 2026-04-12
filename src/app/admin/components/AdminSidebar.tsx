@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
@@ -25,6 +26,22 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ adminName }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const [chatUnread, setChatUnread] = useState(0);
+
+  useEffect(() => {
+    async function fetchUnread() {
+      try {
+        const res = await fetch("/api/admin/conversations/unread-count");
+        if (res.ok) {
+          const data = await res.json();
+          setChatUnread(data.unreadCount ?? 0);
+        }
+      } catch {}
+    }
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/admin/auth/logout", { method: "POST" });
@@ -60,7 +77,12 @@ export default function AdminSidebar({ adminName }: AdminSidebarProps) {
                 }`}
               >
                 <span className="text-base leading-none">{item.icon}</span>
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {item.href === "/admin/conversations" && chatUnread > 0 && (
+                  <span className="min-w-[20px] h-5 bg-indigo-500 text-white text-[11px] font-bold rounded-full flex items-center justify-center px-1">
+                    {chatUnread > 99 ? "99+" : chatUnread}
+                  </span>
+                )}
               </Link>
             </li>
           ))}
