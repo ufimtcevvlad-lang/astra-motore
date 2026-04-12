@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import ChatStartForm from "./ChatStartForm";
 
 interface Attachment {
   url: string;
@@ -126,13 +125,35 @@ export default function ChatWidget() {
     }
   }, [messages, isOpen]);
 
+  // Auto-create conversation when opening chat for first time
+  async function ensureConversation() {
+    if (conversationId) return;
+    try {
+      const res = await fetch("/api/chat/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.conversationId) {
+          setConversationId(data.conversationId);
+        }
+      }
+    } catch {}
+  }
+
   function toggleOpen() {
     setIsOpen((v) => {
       const next = !v;
       try {
         localStorage.setItem(STORAGE_KEY_OPEN, next ? "1" : "0");
       } catch {}
-      if (next) setUnreadCount(0);
+      if (next) {
+        setUnreadCount(0);
+        // Start conversation if not yet started
+        ensureConversation();
+      }
       return next;
     });
   }
@@ -211,23 +232,9 @@ export default function ChatWidget() {
             </div>
 
             {/* Body */}
-            {!conversationId ? (
-              <>
-                {/* Welcome */}
-                <div className="px-5 pt-4 pb-2 shrink-0">
-                  <p className="text-base font-semibold text-gray-900">Напишите нам</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    Обычно отвечаем в течение 15 минут
-                  </p>
-                </div>
-                <div className="flex-1 overflow-auto">
-                  <ChatStartForm onStarted={(id) => setConversationId(id)} />
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
                   {messages.length === 0 && (
                     <p className="text-xs text-gray-400 text-center py-8">
                       Напишите ваш вопрос — мы ответим как можно скорее.
@@ -341,7 +348,6 @@ export default function ChatWidget() {
                   </button>
                 </div>
               </>
-            )}
           </div>
         </div>
       )}
