@@ -151,17 +151,19 @@ export default function CategoryList() {
                 onDrop={() => handleDrop(groupIdx)}
                 className="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-grab active:cursor-grabbing transition-colors"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
                   </svg>
-                  <div className="min-w-0">
-                    <span className="text-sm font-medium text-gray-900">{cat.title}</span>
-                    <span className="ml-2 text-xs text-gray-400">{cat.slug}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900 truncate">{cat.title}</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 flex-shrink-0">
+                        {cat.productCount} товаров
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-400 block">{cat.slug}</span>
                   </div>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
-                    {cat.productCount} товаров
-                  </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link

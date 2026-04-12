@@ -32,11 +32,11 @@ export default function SettingsContactsPage() {
 
   return (
     <div className="flex flex-col flex-1">
-      <AdminHeader title="\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u044B" />
+      <AdminHeader title="Контакты" />
       <div className="p-6 max-w-2xl mx-auto w-full space-y-6">
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
           <Field
-            label="\u0422\u0435\u043B\u0435\u0444\u043E\u043D"
+            label="Телефон"
             value={data.contact_phone ?? ""}
             onChange={(v) => handleChange("contact_phone", v)}
             placeholder="+7 (999) 123-45-67"
@@ -49,10 +49,10 @@ export default function SettingsContactsPage() {
             type="email"
           />
           <Field
-            label="\u0410\u0434\u0440\u0435\u0441"
+            label="Адрес"
             value={data.contact_address ?? ""}
             onChange={(v) => handleChange("contact_address", v)}
-            placeholder="\u0433. \u041C\u043E\u0441\u043A\u0432\u0430, \u0443\u043B. \u041F\u0440\u0438\u043C\u0435\u0440\u043D\u0430\u044F, 1"
+            placeholder="г. Екатеринбург, ул. Примерная, 1"
           />
           <Field
             label="Telegram"
@@ -72,11 +72,7 @@ export default function SettingsContactsPage() {
             disabled={saving}
             className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
-            {saving
-              ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0438\u0435..."
-              : saved
-                ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u043E \u2713"
-                : "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C"}
+            {saving ? "Сохранение..." : saved ? "Сохранено ✓" : "Сохранить"}
           </button>
         </div>
       </div>

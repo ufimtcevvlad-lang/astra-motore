@@ -111,16 +111,23 @@ export default function AdminSidebar({ adminName }: AdminSidebarProps) {
       </nav>
 
       {/* Admin info + logout */}
-      <div className="px-4 py-4 border-t border-white/10">
-        <p className="text-xs text-gray-400 mb-2 truncate" title={adminName}>
-          {adminName}
-        </p>
-        <button
-          onClick={handleLogout}
-          className="w-full text-left text-xs text-red-400 hover:text-red-300 transition-colors py-1"
-        >
-          Выйти
-        </button>
+      <div className="px-4 py-3 border-t border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+            {adminName.charAt(0).toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-gray-200 font-medium truncate" title={adminName}>
+              {adminName}
+            </p>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-red-400 hover:text-red-300 transition-colors"
+            >
+              Выйти
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
   );

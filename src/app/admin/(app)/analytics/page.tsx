@@ -122,14 +122,6 @@ export default function AnalyticsPage() {
           >
             Яндекс.Метрика &#8599;
           </a>
-          <a
-            href="https://analytics.google.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-indigo-600 hover:text-indigo-800"
-          >
-            Google Analytics &#8599;
-          </a>
         </div>
       </AdminHeader>
 
@@ -192,8 +184,11 @@ export default function AnalyticsPage() {
               <p className="text-2xl font-semibold text-gray-900">
                 {summary.metrikaConnected
                   ? summary.visitors.toLocaleString("ru-RU")
-                  : "\u2014"}
+                  : "0"}
               </p>
+              {!summary.metrikaConnected && (
+                <p className="text-xs text-gray-400 mt-1">Подключите Метрику</p>
+              )}
             </div>
 
             {/* Pageviews */}
@@ -205,8 +200,11 @@ export default function AnalyticsPage() {
               <p className="text-2xl font-semibold text-gray-900">
                 {summary.metrikaConnected
                   ? summary.pageviews.toLocaleString("ru-RU")
-                  : "\u2014"}
+                  : "0"}
               </p>
+              {!summary.metrikaConnected && (
+                <p className="text-xs text-gray-400 mt-1">Подключите Метрику</p>
+              )}
             </div>
 
             {/* Orders */}

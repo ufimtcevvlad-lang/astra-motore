@@ -46,25 +46,28 @@ export default function SettingsNotificationsPage() {
       if (d.ok) {
         setTestResult({
           ok: true,
-          message: "\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E \u0443\u0441\u043F\u0435\u0448\u043D\u043E",
+          message: "Сообщение отправлено успешно",
         });
       } else {
-        setTestResult({ ok: false, message: d.error || "\u041E\u0448\u0438\u0431\u043A\u0430" });
+        setTestResult({ ok: false, message: d.error || "Ошибка" });
       }
     } catch {
-      setTestResult({ ok: false, message: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u044F" });
+      setTestResult({ ok: false, message: "Ошибка соединения" });
     }
     setTesting(false);
   }
 
   return (
     <div className="flex flex-col flex-1">
-      <AdminHeader title="\u0423\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F" />
+      <AdminHeader title="Уведомления" />
       <div className="p-6 max-w-2xl mx-auto w-full space-y-6">
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
           <h3 className="text-base font-semibold text-gray-900">
-            Telegram
+            Telegram-бот
           </h3>
+          <p className="text-sm text-gray-500">
+            Бот будет присылать уведомления о новых заказах и сообщениях в чате
+          </p>
           <Field
             label="Bot Token"
             value={data.notification_telegram_bot_token ?? ""}
@@ -87,9 +90,7 @@ export default function SettingsNotificationsPage() {
             disabled={testing}
             className="text-sm text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
           >
-            {testing
-              ? "\u041E\u0442\u043F\u0440\u0430\u0432\u043A\u0430..."
-              : "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C Telegram"}
+            {testing ? "Отправка..." : "Проверить Telegram"}
           </button>
 
           {testResult && (
@@ -101,34 +102,12 @@ export default function SettingsNotificationsPage() {
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-          <h3 className="text-base font-semibold text-gray-900">
-            VAPID-\u043A\u043B\u044E\u0447\u0438 (Push-\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F)
-          </h3>
-          <Field
-            label="Public Key"
-            value={data.notification_vapid_public ?? ""}
-            onChange={(v) => handleChange("notification_vapid_public", v)}
-            placeholder="BPnJ..."
-          />
-          <Field
-            label="Private Key"
-            value={data.notification_vapid_private ?? ""}
-            onChange={(v) => handleChange("notification_vapid_private", v)}
-            placeholder="..."
-          />
-        </div>
-
         <button
           onClick={handleSave}
           disabled={saving}
           className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
-          {saving
-            ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0438\u0435..."
-            : saved
-              ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u043E \u2713"
-              : "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C"}
+          {saving ? "Сохранение..." : saved ? "Сохранено ✓" : "Сохранить"}
         </button>
       </div>
     </div>

@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import AdminHeader from "@/app/admin/components/AdminHeader";
 
 const DAYS = [
-  { key: "schedule_monday", label: "\u041F\u043E\u043D\u0435\u0434\u0435\u043B\u044C\u043D\u0438\u043A" },
-  { key: "schedule_tuesday", label: "\u0412\u0442\u043E\u0440\u043D\u0438\u043A" },
-  { key: "schedule_wednesday", label: "\u0421\u0440\u0435\u0434\u0430" },
-  { key: "schedule_thursday", label: "\u0427\u0435\u0442\u0432\u0435\u0440\u0433" },
-  { key: "schedule_friday", label: "\u041F\u044F\u0442\u043D\u0438\u0446\u0430" },
-  { key: "schedule_saturday", label: "\u0421\u0443\u0431\u0431\u043E\u0442\u0430" },
-  { key: "schedule_sunday", label: "\u0412\u043E\u0441\u043A\u0440\u0435\u0441\u0435\u043D\u044C\u0435" },
+  { key: "schedule_monday", label: "Понедельник" },
+  { key: "schedule_tuesday", label: "Вторник" },
+  { key: "schedule_wednesday", label: "Среда" },
+  { key: "schedule_thursday", label: "Четверг" },
+  { key: "schedule_friday", label: "Пятница" },
+  { key: "schedule_saturday", label: "Суббота" },
+  { key: "schedule_sunday", label: "Воскресенье" },
 ];
 
 function parseSchedule(value: string | undefined): {
@@ -18,7 +18,7 @@ function parseSchedule(value: string | undefined): {
   from: string;
   to: string;
 } {
-  if (!value || value === "\u0432\u044B\u0445\u043E\u0434\u043D\u043E\u0439") {
+  if (!value || value === "выходной") {
     return { dayOff: !value ? false : true, from: "09:00", to: "18:00" };
   }
   const parts = value.split("-");
@@ -44,7 +44,7 @@ export default function SettingsSchedulePage() {
     (key: string, dayOff: boolean, from: string, to: string) => {
       setData((prev) => ({
         ...prev,
-        [key]: dayOff ? "\u0432\u044B\u0445\u043E\u0434\u043D\u043E\u0439" : `${from}-${to}`,
+        [key]: dayOff ? "выходной" : `${from}-${to}`,
       }));
     },
     []
@@ -64,7 +64,7 @@ export default function SettingsSchedulePage() {
 
   return (
     <div className="flex flex-col flex-1">
-      <AdminHeader title="\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0431\u043E\u0442\u044B" />
+      <AdminHeader title="Режим работы" />
       <div className="p-6 max-w-2xl mx-auto w-full space-y-6">
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-3">
           {DAYS.map(({ key, label }) => {
@@ -105,9 +105,7 @@ export default function SettingsSchedulePage() {
                     }
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="text-sm text-gray-600">
-                    {"\u0412\u044B\u0445\u043E\u0434\u043D\u043E\u0439"}
-                  </span>
+                  <span className="text-sm text-gray-600">Выходной</span>
                 </label>
               </div>
             );
@@ -118,11 +116,7 @@ export default function SettingsSchedulePage() {
             disabled={saving}
             className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
-            {saving
-              ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0438\u0435..."
-              : saved
-                ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u043E \u2713"
-                : "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C"}
+            {saving ? "Сохранение..." : saved ? "Сохранено ✓" : "Сохранить"}
           </button>
         </div>
       </div>

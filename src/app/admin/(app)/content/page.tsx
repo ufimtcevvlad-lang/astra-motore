@@ -162,8 +162,18 @@ export default function ContentBannersPage() {
         {loading ? (
           <div className="text-center text-gray-400 py-12">Загрузка...</div>
         ) : banners.length === 0 ? (
-          <div className="text-center text-gray-400 py-12">
-            Баннеров пока нет. Нажмите &laquo;+ Добавить баннер&raquo;, чтобы создать первый.
+          <div className="text-center py-16">
+            <div className="text-5xl mb-4">🖼</div>
+            <h3 className="text-lg font-medium text-gray-700 mb-2">Баннеров пока нет</h3>
+            <p className="text-sm text-gray-400 mb-6 max-w-sm mx-auto">
+              Баннеры показываются на главной странице сайта. Добавьте первый баннер с акцией или новинками.
+            </p>
+            <button
+              onClick={openCreate}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
+            >
+              + Добавить первый баннер
+            </button>
           </div>
         ) : (
           <div className="space-y-3">

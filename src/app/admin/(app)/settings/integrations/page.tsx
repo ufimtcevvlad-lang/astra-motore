@@ -46,13 +46,13 @@ export default function SettingsIntegrationsPage() {
       if (d.ok) {
         setTestResult({
           ok: true,
-          message: `\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0435\u043D\u043E. \u0412\u0438\u0437\u0438\u0442\u044B \u0441\u0435\u0433\u043E\u0434\u043D\u044F: ${d.visits ?? 0}`,
+          message: `Подключено. Визиты сегодня: ${d.visits ?? 0}`,
         });
       } else {
-        setTestResult({ ok: false, message: d.error || "\u041E\u0448\u0438\u0431\u043A\u0430" });
+        setTestResult({ ok: false, message: d.error || "Ошибка" });
       }
     } catch {
-      setTestResult({ ok: false, message: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0441\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u044F" });
+      setTestResult({ ok: false, message: "Ошибка соединения" });
     }
     setTesting(false);
   }
@@ -61,13 +61,12 @@ export default function SettingsIntegrationsPage() {
 
   return (
     <div className="flex flex-col flex-1">
-      <AdminHeader title="\u0418\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438" />
+      <AdminHeader title="Яндекс.Метрика" />
       <div className="p-6 max-w-2xl mx-auto w-full space-y-6">
-        {/* Yandex Metrika */}
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-gray-900">
-              {"\u042F\u043D\u0434\u0435\u043A\u0441.\u041C\u0435\u0442\u0440\u0438\u043A\u0430"}
+              Яндекс.Метрика
             </h3>
             <span
               className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
@@ -79,18 +78,18 @@ export default function SettingsIntegrationsPage() {
               <span
                 className={`w-1.5 h-1.5 rounded-full ${hasMetrika ? "bg-green-500" : "bg-gray-400"}`}
               />
-              {hasMetrika ? "\u041D\u0430\u0441\u0442\u0440\u043E\u0435\u043D\u043E" : "\u041D\u0435 \u043D\u0430\u0441\u0442\u0440\u043E\u0435\u043D\u043E"}
+              {hasMetrika ? "Подключено" : "Не подключено"}
             </span>
           </div>
 
           <Field
-            label="ID \u0441\u0447\u0451\u0442\u0447\u0438\u043A\u0430"
+            label="ID счётчика"
             value={data.metrika_counter_id ?? ""}
             onChange={(v) => handleChange("metrika_counter_id", v)}
             placeholder="12345678"
           />
           <Field
-            label="OAuth-\u0442\u043E\u043A\u0435\u043D"
+            label="OAuth-токен"
             value={data.metrika_token ?? ""}
             onChange={(v) => handleChange("metrika_token", v)}
             placeholder="y0_AgAAAA..."
@@ -101,9 +100,7 @@ export default function SettingsIntegrationsPage() {
             disabled={testing || !hasMetrika}
             className="text-sm text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50"
           >
-            {testing
-              ? "\u041F\u0440\u043E\u0432\u0435\u0440\u043A\u0430..."
-              : "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435"}
+            {testing ? "Проверка..." : "Проверить подключение"}
           </button>
 
           {testResult && (
@@ -115,29 +112,12 @@ export default function SettingsIntegrationsPage() {
           )}
         </div>
 
-        {/* Google Analytics */}
-        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-          <h3 className="text-base font-semibold text-gray-900">
-            Google Analytics
-          </h3>
-          <Field
-            label="Measurement ID"
-            value={data.ga_measurement_id ?? ""}
-            onChange={(v) => handleChange("ga_measurement_id", v)}
-            placeholder="G-XXXXXXXXXX"
-          />
-        </div>
-
         <button
           onClick={handleSave}
           disabled={saving}
           className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
-          {saving
-            ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u0438\u0435..."
-            : saved
-              ? "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u043E \u2713"
-              : "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C"}
+          {saving ? "Сохранение..." : saved ? "Сохранено ✓" : "Сохранить"}
         </button>
       </div>
     </div>
