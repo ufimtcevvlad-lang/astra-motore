@@ -82,7 +82,7 @@ export default function RootLayout({
   const websiteLd = getWebSiteJsonLd();
 
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
