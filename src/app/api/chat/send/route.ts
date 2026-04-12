@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, schema } from "@/app/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { getChatTokenFromCookie, verifyChatToken } from "@/app/lib/chat-auth";
+import { notifyAdminsNewMessage } from "@/app/lib/notifications";
 
 export async function POST(req: NextRequest) {
   const token = await getChatTokenFromCookie();
@@ -61,7 +62,8 @@ export async function POST(req: NextRequest) {
     })
     .where(eq(schema.conversations.id, conversationId));
 
-  // TODO: notifyAdminsNewMessage(conversationId) — Task 9 (push notifications)
+  // Fire-and-forget admin notifications
+  notifyAdminsNewMessage(conversationId, hasText ? text!.trim() : "[вложение]").catch(() => {});
 
   return NextResponse.json({ messageId });
 }
