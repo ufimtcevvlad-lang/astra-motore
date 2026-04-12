@@ -59,8 +59,8 @@ export default function AdminSidebar({ adminName }: AdminSidebarProps) {
     >
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/10">
-        <span className="text-white font-bold text-base tracking-wide">Astra Motors</span>
-        <span className="ml-2 text-xs text-indigo-400 font-medium uppercase">Admin</span>
+        <span className="text-white font-bold text-base tracking-wide">GM Shop 66</span>
+        <span className="ml-2 text-xs text-indigo-400 font-medium uppercase">Админ</span>
       </div>
 
       {/* Main nav */}

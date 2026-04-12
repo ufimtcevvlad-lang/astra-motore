@@ -88,7 +88,7 @@ export default function ConversationInfo({ conversationId }: ConversationInfoPro
         {/* Customer info */}
         <div>
           <div className="text-xs text-gray-400 mb-1">Клиент</div>
-          <div className="text-sm font-medium text-gray-800">{conversation.customerName || "Неизвестный"}</div>
+          <div className="text-sm font-medium text-gray-800">{conversation.customerName || conversation.customerContact || `Обращение #${conversation.id}`}</div>
         </div>
 
         {conversation.customerContact && (

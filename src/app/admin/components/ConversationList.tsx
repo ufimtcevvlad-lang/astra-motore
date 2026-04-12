@@ -142,7 +142,7 @@ export default function ConversationList({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1 mb-0.5">
                     <span className={`text-sm font-medium truncate ${isSelected ? "text-indigo-700" : "text-gray-800"}`}>
-                      {conv.customerName || "Неизвестный"}
+                      {conv.customerName || conv.customerContact || `Обращение #${conv.id}`}
                     </span>
                     <span className="text-xs text-gray-400 shrink-0">
                       {formatTime(conv.lastMessageAt)}
