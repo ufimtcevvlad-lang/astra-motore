@@ -47,8 +47,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# drizzle migrations (generated, not committed)
-drizzle/
+# drizzle migrations — committed, needed for deployment
+# drizzle/
 
 # SQLite database files
 data/shop.db
