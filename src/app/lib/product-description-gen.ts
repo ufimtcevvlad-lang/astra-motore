@@ -103,11 +103,9 @@ export function generateProductTitle(product: Product): string {
 export function generateProductKeywords(product: Product): string[] {
   const kw: string[] = [product.sku];
   if (product.brand) kw.push(product.brand);
-  const cleanName = product.name
-    .replace(product.sku, "")
-    .replace(product.brand, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  let cleanName = product.name.replace(product.sku, "");
+  if (product.brand) cleanName = cleanName.replace(product.brand, "");
+  cleanName = cleanName.replace(/\s+/g, " ").trim();
   if (cleanName) kw.push(cleanName);
   if (product.car) kw.push(product.car);
   kw.push("автозапчасти Екатеринбург");
