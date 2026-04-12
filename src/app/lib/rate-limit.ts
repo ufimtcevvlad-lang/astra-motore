@@ -1,7 +1,23 @@
-const buckets = new Map<string, { count: number; resetAt: number }>();
+import Database from "better-sqlite3";
+import path from "node:path";
 
-function nowMs() {
-  return Date.now();
+const dbPath = path.join(process.cwd(), "data", "shop.db");
+let _db: Database.Database | null = null;
+let _callCount = 0;
+
+function getDb(): Database.Database {
+  if (!_db) {
+    _db = new Database(dbPath);
+    _db.pragma("journal_mode = WAL");
+    _db.exec(`
+      CREATE TABLE IF NOT EXISTS rate_limits (
+        bucket_key TEXT PRIMARY KEY,
+        count       INTEGER NOT NULL DEFAULT 1,
+        reset_at    INTEGER NOT NULL
+      )
+    `);
+  }
+  return _db;
 }
 
 export function getClientIp(request: Request): string {
@@ -17,25 +33,43 @@ export function checkRateLimit(opts: {
   key: string;
   windowMs: number;
   max: number;
-}) {
+}): { allowed: boolean; retryAfterSec: number } {
+  const db = getDb();
   const ip = getClientIp(opts.request);
   const bucketKey = `${opts.key}:${ip}`;
-  const ts = nowMs();
-  const current = buckets.get(bucketKey);
+  const now = Date.now();
+  const resetAt = now + opts.windowMs;
 
-  if (!current || ts >= current.resetAt) {
-    buckets.set(bucketKey, { count: 1, resetAt: ts + opts.windowMs });
+  // Periodic cleanup every 100 calls
+  _callCount += 1;
+  if (_callCount % 100 === 0) {
+    db.prepare("DELETE FROM rate_limits WHERE reset_at <= ?").run(now);
+  }
+
+  const row = db
+    .prepare<[string], { count: number; reset_at: number }>(
+      "SELECT count, reset_at FROM rate_limits WHERE bucket_key = ?"
+    )
+    .get(bucketKey);
+
+  if (!row || now >= row.reset_at) {
+    db.prepare(`
+      INSERT INTO rate_limits (bucket_key, count, reset_at)
+      VALUES (?, 1, ?)
+      ON CONFLICT(bucket_key) DO UPDATE SET count = 1, reset_at = excluded.reset_at
+    `).run(bucketKey, resetAt);
     return { allowed: true, retryAfterSec: 0 };
   }
 
-  if (current.count >= opts.max) {
+  if (row.count >= opts.max) {
     return {
       allowed: false,
-      retryAfterSec: Math.max(1, Math.ceil((current.resetAt - ts) / 1000)),
+      retryAfterSec: Math.max(1, Math.ceil((row.reset_at - now) / 1000)),
     };
   }
 
-  current.count += 1;
-  buckets.set(bucketKey, current);
+  db.prepare(
+    "UPDATE rate_limits SET count = count + 1 WHERE bucket_key = ?"
+  ).run(bucketKey);
   return { allowed: true, retryAfterSec: 0 };
 }
