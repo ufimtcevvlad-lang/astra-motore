@@ -120,7 +120,7 @@ Create `src/app/api/admin/orders/route.ts`:
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
-import { eq, like, and, gte, lte, sql, desc, asc, or } from "drizzle-orm";
+import { eq, like, and, gte, lte, sql, desc, or } from "drizzle-orm";
 
 const PAGE_SIZE = 20;
 
@@ -132,11 +132,9 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, Number(url.searchParams.get("page") ?? 1));
   const search = url.searchParams.get("search")?.trim() || null;
   const status = url.searchParams.get("status") || null;
-  const deliveryMethod = url.searchParams.get("deliveryMethod") || null;
+  const paymentMethod = url.searchParams.get("paymentMethod") || null;
   const dateFrom = url.searchParams.get("dateFrom") || null;
   const dateTo = url.searchParams.get("dateTo") || null;
-  const sortBy = url.searchParams.get("sortBy") || "createdAt";
-  const sortOrder = url.searchParams.get("sortOrder") || "desc";
 
   const conditions = [];
 
@@ -144,15 +142,16 @@ export async function GET(req: NextRequest) {
     conditions.push(
       or(
         like(schema.orders.orderNumber, `%${search}%`),
-        like(schema.orders.customerName, `%${search}%`)
+        like(schema.orders.customerName, `%${search}%`),
+        like(schema.orders.customerPhone, `%${search}%`)
       )
     );
   }
   if (status) {
     conditions.push(eq(schema.orders.status, status));
   }
-  if (deliveryMethod) {
-    conditions.push(eq(schema.orders.deliveryMethod, deliveryMethod));
+  if (paymentMethod) {
+    conditions.push(eq(schema.orders.paymentMethod, paymentMethod));
   }
   if (dateFrom) {
     conditions.push(gte(schema.orders.createdAt, dateFrom + "T00:00:00"));
@@ -163,6 +162,7 @@ export async function GET(req: NextRequest) {
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
+  // Count for current filter
   const [countResult] = db
     .select({ count: sql<number>`count(*)` })
     .from(schema.orders)
@@ -173,10 +173,44 @@ export async function GET(req: NextRequest) {
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const offset = (page - 1) * PAGE_SIZE;
 
-  const sortColumn = sortBy === "total" ? schema.orders.total
-    : sortBy === "status" ? schema.orders.status
-    : schema.orders.createdAt;
-  const orderFn = sortOrder === "asc" ? asc : desc;
+  // Status counts for tabs (always unfiltered by status, but respect other filters)
+  const baseConditions = conditions.filter((_, i) => {
+    // Remove status condition (index depends on which conditions were added)
+    // Rebuild without status filter
+    return true;
+  });
+  const baseWhere = (() => {
+    const conds = [];
+    if (search) {
+      conds.push(
+        or(
+          like(schema.orders.orderNumber, `%${search}%`),
+          like(schema.orders.customerName, `%${search}%`),
+          like(schema.orders.customerPhone, `%${search}%`)
+        )
+      );
+    }
+    if (paymentMethod) conds.push(eq(schema.orders.paymentMethod, paymentMethod));
+    if (dateFrom) conds.push(gte(schema.orders.createdAt, dateFrom + "T00:00:00"));
+    if (dateTo) conds.push(lte(schema.orders.createdAt, dateTo + "T23:59:59"));
+    return conds.length > 0 ? and(...conds) : undefined;
+  })();
+
+  const statusCountsRaw = db
+    .select({
+      status: schema.orders.status,
+      count: sql<number>`count(*)`,
+    })
+    .from(schema.orders)
+    .where(baseWhere)
+    .groupBy(schema.orders.status)
+    .all();
+
+  const statusCounts: Record<string, number> = { all: 0, new: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
+  for (const row of statusCountsRaw) {
+    statusCounts[row.status] = Number(row.count);
+    statusCounts.all += Number(row.count);
+  }
 
   const orders = db
     .select({
@@ -184,20 +218,38 @@ export async function GET(req: NextRequest) {
       orderNumber: schema.orders.orderNumber,
       customerName: schema.orders.customerName,
       customerPhone: schema.orders.customerPhone,
+      items: schema.orders.items,
       total: schema.orders.total,
       deliveryMethod: schema.orders.deliveryMethod,
+      deliveryCity: schema.orders.deliveryCity,
+      paymentMethod: schema.orders.paymentMethod,
       status: schema.orders.status,
       isUrgent: schema.orders.isUrgent,
       createdAt: schema.orders.createdAt,
     })
     .from(schema.orders)
     .where(where)
-    .orderBy(orderFn(sortColumn))
+    .orderBy(desc(schema.orders.createdAt))
     .limit(PAGE_SIZE)
     .offset(offset)
     .all();
 
-  return NextResponse.json({ orders, total, page, totalPages });
+  // Parse items for brief display
+  const ordersWithItems = orders.map((o) => {
+    let itemsSummary = "";
+    try {
+      const parsed = JSON.parse(o.items);
+      itemsSummary = parsed
+        .map((it: { name: string; quantity: number }) => {
+          const short = it.name.length > 20 ? it.name.slice(0, 20) + "…" : it.name;
+          return `${short} ×${it.quantity}`;
+        })
+        .join(", ");
+    } catch { /* empty */ }
+    return { ...o, items: undefined, itemsSummary };
+  });
+
+  return NextResponse.json({ orders: ordersWithItems, total, page, totalPages, statusCounts });
 }
 ```
 
@@ -210,7 +262,7 @@ Expected: No errors
 
 ```bash
 git add src/app/api/admin/orders/route.ts
-git commit -m "feat(admin): orders list API with filters and pagination"
+git commit -m "feat(admin): orders list API with filters, pagination, and status counts"
 ```
 
 ---
@@ -266,7 +318,17 @@ export async function GET(
     .orderBy(desc(schema.orderStatusHistory.createdAt))
     .all();
 
-  // Parse JSON fields
+  // Статистика клиента по телефону
+  const [customerStats] = db
+    .select({
+      orderCount: sql<number>`count(*)`,
+      totalSpent: sql<number>`sum(total)`,
+    })
+    .from(schema.orders)
+    .where(eq(schema.orders.customerPhone, order.customerPhone))
+    .all();
+
+  // Парсинг JSON-полей
   let items = [];
   try { items = JSON.parse(order.items); } catch { /* empty */ }
   let deliveryQuote = null;
@@ -277,6 +339,10 @@ export async function GET(
   return NextResponse.json({
     order: { ...order, items, deliveryQuote, cdekPickupPoint },
     statusHistory,
+    customerStats: {
+      orderCount: Number(customerStats.orderCount),
+      totalSpent: Number(customerStats.totalSpent ?? 0),
+    },
   });
 }
 
@@ -440,12 +506,12 @@ git commit -m "feat(admin): order detail, update, status change, and urgent togg
 
 ---
 
-### Task 4: OrderFilters component
+### Task 4: Компонент OrderFilters
 
 **Files:**
 - Create: `src/app/admin/components/OrderFilters.tsx`
 
-- [ ] **Step 1: Create the OrderFilters component**
+- [ ] **Step 1: Создать компонент OrderFilters**
 
 Create `src/app/admin/components/OrderFilters.tsx`:
 ```tsx
@@ -456,25 +522,35 @@ import { useRef, useState } from "react";
 export interface OrderFiltersState {
   search: string;
   status: string;
-  deliveryMethod: string;
+  paymentMethod: string;
   dateFrom: string;
   dateTo: string;
 }
 
 interface OrderFiltersProps {
   filters: OrderFiltersState;
+  statusCounts: Record<string, number>;
   onChange: (filters: OrderFiltersState) => void;
 }
 
 export const defaultOrderFilters: OrderFiltersState = {
   search: "",
   status: "",
-  deliveryMethod: "",
+  paymentMethod: "",
   dateFrom: "",
   dateTo: "",
 };
 
-export default function OrderFilters({ filters, onChange }: OrderFiltersProps) {
+const STATUS_TABS = [
+  { key: "", label: "Все", color: "bg-green-600 text-white", activeColor: "bg-green-600 text-white" },
+  { key: "new", label: "Новые", color: "text-amber-600 border-amber-200", activeColor: "bg-amber-50 text-amber-700 border-amber-300" },
+  { key: "processing", label: "В обработке", color: "text-indigo-600 border-indigo-200", activeColor: "bg-indigo-50 text-indigo-700 border-indigo-300" },
+  { key: "shipped", label: "Отправлен", color: "text-blue-600 border-blue-200", activeColor: "bg-blue-50 text-blue-700 border-blue-300" },
+  { key: "delivered", label: "Доставлен", color: "text-green-600 border-green-200", activeColor: "bg-green-50 text-green-700 border-green-300" },
+  { key: "cancelled", label: "Отменён", color: "text-red-600 border-red-200", activeColor: "bg-red-50 text-red-700 border-red-300" },
+];
+
+export default function OrderFilters({ filters, statusCounts, onChange }: OrderFiltersProps) {
   const [localSearch, setLocalSearch] = useState(filters.search);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -491,90 +567,104 @@ export default function OrderFilters({ filters, onChange }: OrderFiltersProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 mb-4 space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Поиск по номеру или имени..."
-          value={localSearch}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+    <div className="space-y-3 mb-4">
+      {/* Строка фильтров */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px]">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <input
+              type="text"
+              placeholder="Номер, клиент, телефон."
+              value={localSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="border border-gray-200 rounded-lg pl-9 pr-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
 
-        {/* Status */}
-        <select
-          value={filters.status}
-          onChange={(e) => handleChange("status", e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">Все статусы</option>
-          <option value="new">Новый</option>
-          <option value="processing">В обработке</option>
-          <option value="shipped">Отправлен</option>
-          <option value="delivered">Доставлен</option>
-          <option value="cancelled">Отменён</option>
-        </select>
+          <select
+            value={filters.status}
+            onChange={(e) => handleChange("status", e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Все статусы</option>
+            <option value="new">Новый</option>
+            <option value="processing">В обработке</option>
+            <option value="shipped">Отправлен</option>
+            <option value="delivered">Доставлен</option>
+            <option value="cancelled">Отменён</option>
+          </select>
 
-        {/* Delivery method */}
-        <select
-          value={filters.deliveryMethod}
-          onChange={(e) => handleChange("deliveryMethod", e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">Все способы доставки</option>
-          <option value="pickup">Самовывоз</option>
-          <option value="courier">Курьер</option>
-        </select>
+          <select
+            value={filters.paymentMethod}
+            onChange={(e) => handleChange("paymentMethod", e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Все способы оплаты</option>
+            <option value="sbp">СБП</option>
+            <option value="card">Карта</option>
+            <option value="cash">Наличные</option>
+          </select>
 
-        {/* Placeholder for alignment */}
-        <div />
-
-        {/* Date range */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-500 whitespace-nowrap">От:</label>
           <input
             type="date"
             value={filters.dateFrom}
             onChange={(e) => handleChange("dateFrom", e.target.value)}
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-500 whitespace-nowrap">До:</label>
+          <span className="text-gray-400">—</span>
           <input
             type="date"
             value={filters.dateTo}
             onChange={(e) => handleChange("dateTo", e.target.value)}
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
+      </div>
+
+      {/* Табы статусов */}
+      <div className="flex flex-wrap gap-2">
+        {STATUS_TABS.map((tab) => {
+          const count = tab.key === "" ? statusCounts.all : (statusCounts[tab.key] ?? 0);
+          const isActive = filters.status === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => handleChange("status", tab.key)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition ${
+                isActive ? tab.activeColor : `${tab.color} bg-white hover:bg-gray-50`
+              }`}
+            >
+              {tab.label} {count}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compilation**
+- [ ] **Step 2: Проверить компиляцию TypeScript**
 
 Run: `npx tsc --noEmit`
-Expected: No errors
+Expected: Нет ошибок
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Коммит**
 
 ```bash
 git add src/app/admin/components/OrderFilters.tsx
-git commit -m "feat(admin): OrderFilters component with search, status, delivery, and date range"
+git commit -m "feat(admin): OrderFilters component with search, payment, dates, and status tabs"
 ```
 
 ---
 
-### Task 5: OrderList component
+### Task 5: Компонент OrderList
 
 **Files:**
 - Create: `src/app/admin/components/OrderList.tsx`
 
-- [ ] **Step 1: Create the OrderList component**
+- [ ] **Step 1: Создать компонент OrderList**
 
 Create `src/app/admin/components/OrderList.tsx`:
 ```tsx
@@ -588,8 +678,11 @@ interface OrderListItem {
   orderNumber: string;
   customerName: string;
   customerPhone: string;
+  itemsSummary: string;
   total: number;
   deliveryMethod: string;
+  deliveryCity: string;
+  paymentMethod: string;
   status: string;
   isUrgent: boolean;
   createdAt: string;
@@ -600,9 +693,6 @@ interface OrderListProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  sortBy: string;
-  sortOrder: string;
-  onSortChange: (column: string) => void;
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -621,46 +711,17 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-red-100 text-red-800",
 };
 
-const DELIVERY_LABELS: Record<string, string> = {
-  pickup: "Самовывоз",
-  courier: "Курьер",
+const PAYMENT_LABELS: Record<string, string> = {
+  sbp: "СБП",
+  card: "Карта",
+  cash: "Наличные",
 };
-
-function SortHeader({
-  label,
-  column,
-  sortBy,
-  sortOrder,
-  onSort,
-}: {
-  label: string;
-  column: string;
-  sortBy: string;
-  sortOrder: string;
-  onSort: (col: string) => void;
-}) {
-  const active = sortBy === column;
-  return (
-    <button
-      onClick={() => onSort(column)}
-      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase hover:text-gray-700"
-    >
-      {label}
-      {active && (
-        <span className="text-indigo-600">{sortOrder === "asc" ? "↑" : "↓"}</span>
-      )}
-    </button>
-  );
-}
 
 export default function OrderList({
   orders,
   page,
   totalPages,
   onPageChange,
-  sortBy,
-  sortOrder,
-  onSortChange,
 }: OrderListProps) {
   if (orders.length === 0) {
     return (
@@ -670,65 +731,62 @@ export default function OrderList({
     );
   }
 
+  function formatDelivery(method: string, city: string) {
+    if (method === "pickup") return "Самовывоз";
+    return city ? `СДЭК, ${city}` : "СДЭК";
+  }
+
   return (
     <div>
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-100">
-              <th className="text-left px-4 py-3">
-                <SortHeader label="Номер" column="orderNumber" sortBy={sortBy} sortOrder={sortOrder} onSort={onSortChange} />
-              </th>
-              <th className="text-left px-4 py-3 hidden sm:table-cell">
-                <span className="text-xs font-medium text-gray-500 uppercase">Клиент</span>
-              </th>
-              <th className="text-right px-4 py-3">
-                <SortHeader label="Сумма" column="total" sortBy={sortBy} sortOrder={sortOrder} onSort={onSortChange} />
-              </th>
-              <th className="text-left px-4 py-3 hidden md:table-cell">
-                <span className="text-xs font-medium text-gray-500 uppercase">Доставка</span>
-              </th>
-              <th className="text-left px-4 py-3">
-                <SortHeader label="Статус" column="status" sortBy={sortBy} sortOrder={sortOrder} onSort={onSortChange} />
-              </th>
-              <th className="text-right px-4 py-3 hidden lg:table-cell">
-                <SortHeader label="Дата" column="createdAt" sortBy={sortBy} sortOrder={sortOrder} onSort={onSortChange} />
-              </th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">№</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Дата</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Клиент</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Товары</th>
+              <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Сумма</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Доставка</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Оплата</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Статус</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr
                 key={order.id}
-                className="border-b border-gray-50 hover:bg-gray-50 transition cursor-pointer"
+                className="border-b border-gray-50 hover:bg-gray-50 transition"
               >
                 <td className="px-4 py-3">
                   <Link href={`/admin/orders/${order.id}`} className="font-medium text-indigo-600 hover:text-indigo-800">
-                    {order.orderNumber}
+                    #{order.orderNumber.replace("AM-", "").replace(/-/g, "").slice(-4)}
                   </Link>
-                  {order.isUrgent && (
-                    <span className="ml-2 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
-                      Срочный
-                    </span>
-                  )}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
+                  {new Date(order.createdAt).toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" })}{" "}
+                  {new Date(order.createdAt).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}
                 </td>
                 <td className="px-4 py-3 hidden sm:table-cell">
                   <div className="text-sm text-gray-900">{order.customerName}</div>
                   <div className="text-xs text-gray-500">{order.customerPhone}</div>
                 </td>
-                <td className="px-4 py-3 text-right font-semibold text-gray-900">
+                <td className="px-4 py-3 hidden lg:table-cell text-sm text-gray-600 max-w-[250px] truncate">
+                  {order.itemsSummary}
+                </td>
+                <td className="px-4 py-3 text-right font-semibold text-gray-900 whitespace-nowrap">
                   {Number(order.total).toLocaleString("ru-RU")} &#8381;
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell text-sm text-gray-600">
-                  {DELIVERY_LABELS[order.deliveryMethod] ?? order.deliveryMethod}
+                  {formatDelivery(order.deliveryMethod, order.deliveryCity)}
+                </td>
+                <td className="px-4 py-3 hidden md:table-cell text-sm text-gray-600">
+                  {PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}
                 </td>
                 <td className="px-4 py-3">
                   <span className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${STATUS_COLORS[order.status] ?? "bg-gray-100 text-gray-700"}`}>
                     {STATUS_LABELS[order.status] ?? order.status}
                   </span>
-                </td>
-                <td className="px-4 py-3 text-right text-sm text-gray-500 hidden lg:table-cell">
-                  {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                 </td>
               </tr>
             ))}
@@ -742,26 +800,26 @@ export default function OrderList({
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compilation**
+- [ ] **Step 2: Проверить компиляцию TypeScript**
 
 Run: `npx tsc --noEmit`
-Expected: No errors
+Expected: Нет ошибок
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Коммит**
 
 ```bash
 git add src/app/admin/components/OrderList.tsx
-git commit -m "feat(admin): OrderList component with sortable columns and status badges"
+git commit -m "feat(admin): OrderList component with items summary, delivery, and payment columns"
 ```
 
 ---
 
-### Task 6: Orders list page
+### Task 6: Страница списка заказов
 
 **Files:**
 - Create: `src/app/admin/(app)/orders/page.tsx`
 
-- [ ] **Step 1: Create the orders list page**
+- [ ] **Step 1: Создать страницу списка заказов**
 
 Create `src/app/admin/(app)/orders/page.tsx`:
 ```tsx
@@ -780,8 +838,11 @@ interface OrderListItem {
   orderNumber: string;
   customerName: string;
   customerPhone: string;
+  itemsSummary: string;
   total: number;
   deliveryMethod: string;
+  deliveryCity: string;
+  paymentMethod: string;
   status: string;
   isUrgent: boolean;
   createdAt: string;
@@ -792,19 +853,18 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [statusCounts, setStatusCounts] = useState<Record<string, number>>({
+    all: 0, new: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
     params.set("page", String(page));
-    params.set("sortBy", sortBy);
-    params.set("sortOrder", sortOrder);
     if (filters.search) params.set("search", filters.search);
     if (filters.status) params.set("status", filters.status);
-    if (filters.deliveryMethod) params.set("deliveryMethod", filters.deliveryMethod);
+    if (filters.paymentMethod) params.set("paymentMethod", filters.paymentMethod);
     if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
     if (filters.dateTo) params.set("dateTo", filters.dateTo);
 
@@ -813,12 +873,13 @@ export default function OrdersPage() {
       const data = await res.json();
       setOrders(data.orders ?? []);
       setTotalPages(data.totalPages ?? 1);
+      if (data.statusCounts) setStatusCounts(data.statusCounts);
     } catch {
       setOrders([]);
     } finally {
       setLoading(false);
     }
-  }, [page, filters, sortBy, sortOrder]);
+  }, [page, filters]);
 
   useEffect(() => {
     fetchOrders();
@@ -829,22 +890,16 @@ export default function OrdersPage() {
     setPage(1);
   }
 
-  function handleSortChange(column: string) {
-    if (sortBy === column) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortBy(column);
-      setSortOrder("desc");
-    }
-    setPage(1);
-  }
-
   return (
     <>
       <AdminHeader title="Заказы" />
 
       <div className="p-6">
-        <OrderFilters filters={filters} onChange={handleFilterChange} />
+        <OrderFilters
+          filters={filters}
+          statusCounts={statusCounts}
+          onChange={handleFilterChange}
+        />
 
         {loading ? (
           <div className="text-center py-12 text-gray-400">Загрузка...</div>
@@ -854,9 +909,6 @@ export default function OrdersPage() {
             page={page}
             totalPages={totalPages}
             onPageChange={setPage}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            onSortChange={handleSortChange}
           />
         )}
       </div>
@@ -865,26 +917,26 @@ export default function OrdersPage() {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compilation**
+- [ ] **Step 2: Проверить компиляцию TypeScript**
 
 Run: `npx tsc --noEmit`
-Expected: No errors
+Expected: Нет ошибок
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Коммит**
 
 ```bash
 git add src/app/admin/\(app\)/orders/page.tsx
-git commit -m "feat(admin): orders list page with filters, sorting, and pagination"
+git commit -m "feat(admin): orders list page with filters, status tabs, and pagination"
 ```
 
 ---
 
-### Task 7: Order detail page
+### Task 7: Страница деталей заказа
 
 **Files:**
 - Create: `src/app/admin/(app)/orders/[id]/page.tsx`
 
-- [ ] **Step 1: Create the order detail page**
+- [ ] **Step 1: Создать страницу деталей заказа**
 
 Create `src/app/admin/(app)/orders/[id]/page.tsx`:
 ```tsx
@@ -909,6 +961,11 @@ interface StatusHistoryEntry {
   createdAt: string;
 }
 
+interface CustomerStats {
+  orderCount: number;
+  totalSpent: number;
+}
+
 interface Order {
   id: number;
   orderNumber: string;
@@ -921,7 +978,7 @@ interface Order {
   deliveryCity: string;
   deliveryAddress: string;
   deliveryCost: number;
-  deliveryQuote: { tariffName?: string; deliverySum?: number } | null;
+  deliveryQuote: { tariffName?: string; deliverySum?: number; periodMin?: number | null; periodMax?: number | null } | null;
   cdekPickupPoint: { name?: string; address?: string; city?: string } | null;
   paymentMethod: string;
   status: string;
@@ -939,44 +996,47 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "Отменён",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  new: "bg-amber-100 text-amber-800",
-  processing: "bg-indigo-100 text-indigo-800",
-  shipped: "bg-blue-100 text-blue-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
+const STATUS_BUTTON_COLORS: Record<string, { active: string; inactive: string }> = {
+  new: { active: "bg-amber-100 text-amber-800 border-amber-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
+  processing: { active: "bg-indigo-100 text-indigo-800 border-indigo-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
+  shipped: { active: "bg-blue-100 text-blue-800 border-blue-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
+  delivered: { active: "bg-green-100 text-green-800 border-green-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
+  cancelled: { active: "bg-red-100 text-red-800 border-red-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
 };
 
 const PAYMENT_LABELS: Record<string, string> = {
   sbp: "СБП",
   card: "Карта",
-  cash: "При получении",
+  cash: "Наличные",
 };
 
-const DELIVERY_LABELS: Record<string, string> = {
-  pickup: "Самовывоз",
-  courier: "Курьер (СДЭК)",
-};
+// Прогрессия статусов для timeline
+const STATUS_PROGRESSION = ["new", "processing", "shipped", "delivered"];
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [statusHistory, setStatusHistory] = useState<StatusHistoryEntry[]>([]);
+  const [customerStats, setCustomerStats] = useState<CustomerStats>({ orderCount: 0, totalSpent: 0 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Status change form
+  // Смена статуса
   const [newStatus, setNewStatus] = useState("");
   const [statusComment, setStatusComment] = useState("");
 
-  // Editing states
+  // Редактирование товаров
   const [editingItems, setEditingItems] = useState(false);
   const [editItems, setEditItems] = useState<OrderItem[]>([]);
-  const [editingDelivery, setEditingDelivery] = useState(false);
-  const [editDelivery, setEditDelivery] = useState({ method: "", city: "", address: "" });
+
+  // Редактирование клиента
   const [editingClient, setEditingClient] = useState(false);
   const [editClient, setEditClient] = useState({ name: "", phone: "", email: "" });
+
+  // Редактирование доставки
+  const [editingDelivery, setEditingDelivery] = useState(false);
+  const [editDelivery, setEditDelivery] = useState({ method: "", city: "", address: "" });
 
   const fetchOrder = useCallback(async () => {
     setLoading(true);
@@ -986,6 +1046,7 @@ export default function OrderDetailPage() {
       const data = await res.json();
       setOrder(data.order);
       setStatusHistory(data.statusHistory ?? []);
+      setCustomerStats(data.customerStats ?? { orderCount: 0, totalSpent: 0 });
       setNewStatus(data.order.status);
     } catch {
       router.push("/admin/orders");
@@ -1037,11 +1098,7 @@ export default function OrderDetailPage() {
       await fetch(`/api/admin/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: editClient.name,
-          customerPhone: editClient.phone,
-          customerEmail: editClient.email,
-        }),
+        body: JSON.stringify({ customerName: editClient.name, customerPhone: editClient.phone, customerEmail: editClient.email }),
       });
       setEditingClient(false);
       await fetchOrder();
@@ -1054,11 +1111,7 @@ export default function OrderDetailPage() {
       await fetch(`/api/admin/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          deliveryMethod: editDelivery.method,
-          deliveryCity: editDelivery.city,
-          deliveryAddress: editDelivery.address,
-        }),
+        body: JSON.stringify({ deliveryMethod: editDelivery.method, deliveryCity: editDelivery.city, deliveryAddress: editDelivery.address }),
       });
       setEditingDelivery(false);
       await fetchOrder();
@@ -1074,241 +1127,276 @@ export default function OrderDetailPage() {
     );
   }
 
+  // Находим пройденные шаги для timeline
+  const currentStepIndex = STATUS_PROGRESSION.indexOf(order.status);
+  const isCancelled = order.status === "cancelled";
+
+  // Собираем данные истории по статусу
+  const historyByStatus: Record<string, StatusHistoryEntry> = {};
+  for (const entry of [...statusHistory].reverse()) {
+    historyByStatus[entry.status] = entry;
+  }
+
   return (
     <>
-      <AdminHeader title={`Заказ ${order.orderNumber}`} />
+      <AdminHeader title={`Заказ ${order.orderNumber} — детали`} />
 
-      <div className="p-6 space-y-6 max-w-4xl">
-        {/* Header: status + urgent */}
-        <div className="bg-white rounded-xl shadow-sm p-5 flex flex-wrap items-center gap-4">
-          <span className={`text-sm font-medium px-3 py-1 rounded-full ${STATUS_COLORS[order.status] ?? "bg-gray-100"}`}>
-            {STATUS_LABELS[order.status] ?? order.status}
-          </span>
-          <span className="text-sm text-gray-500">
-            {new Date(order.createdAt).toLocaleString("ru-RU")}
-          </span>
-          <button
-            onClick={handleUrgentToggle}
-            disabled={saving}
-            className={`ml-auto text-sm px-3 py-1 rounded-lg border transition ${
-              order.isUrgent
-                ? "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"
-                : "border-gray-300 text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {order.isUrgent ? "Снять срочность" : "Пометить срочным"}
-          </button>
-        </div>
-
-        {/* Client */}
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-900">Клиент</h3>
-            {!editingClient && (
-              <button onClick={() => { setEditClient({ name: order.customerName, phone: order.customerPhone, email: order.customerEmail }); setEditingClient(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
-                Редактировать
-              </button>
-            )}
-          </div>
-          {editingClient ? (
-            <div className="space-y-3">
-              <input value={editClient.name} onChange={(e) => setEditClient({ ...editClient, name: e.target.value })} placeholder="Имя" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              <input value={editClient.phone} onChange={(e) => setEditClient({ ...editClient, phone: e.target.value })} placeholder="Телефон" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              <input value={editClient.email} onChange={(e) => setEditClient({ ...editClient, email: e.target.value })} placeholder="Email" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              <div className="flex gap-2">
-                <button onClick={saveClient} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
-                <button onClick={() => setEditingClient(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-1 text-sm text-gray-700">
-              <div><span className="text-gray-500">Имя:</span> {order.customerName}</div>
-              <div><span className="text-gray-500">Телефон:</span> {order.customerPhone}</div>
-              {order.customerEmail && <div><span className="text-gray-500">Email:</span> {order.customerEmail}</div>}
-            </div>
-          )}
-        </div>
-
-        {/* Items */}
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-900">Товары</h3>
-            {!editingItems && (
-              <button onClick={() => { setEditItems([...order.items]); setEditingItems(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
-                Редактировать
-              </button>
-            )}
-          </div>
-          {editingItems ? (
-            <div className="space-y-3">
-              {editItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm">
-                  <input value={item.name} onChange={(e) => { const arr = [...editItems]; arr[i] = { ...arr[i], name: e.target.value }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 flex-1 text-sm" />
-                  <input type="number" value={item.quantity} min={1} onChange={(e) => { const arr = [...editItems]; const qty = Number(e.target.value) || 1; arr[i] = { ...arr[i], quantity: qty, sum: qty * arr[i].price }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 w-16 text-sm text-center" />
-                  <span className="text-gray-500">x {item.price.toLocaleString("ru-RU")} &#8381;</span>
-                  <span className="font-medium w-24 text-right">{item.sum.toLocaleString("ru-RU")} &#8381;</span>
-                  <button onClick={() => setEditItems(editItems.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700 p-1" title="Удалить">✕</button>
-                </div>
-              ))}
-              <div className="text-right font-semibold text-gray-900">
-                Итого: {editItems.reduce((a, b) => a + b.sum, 0).toLocaleString("ru-RU")} &#8381;
-              </div>
-              <div className="flex gap-2">
-                <button onClick={saveItems} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
-                <button onClick={() => setEditingItems(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b border-gray-100">
-                    <th className="pb-2">Название</th>
-                    <th className="pb-2 text-center">Кол-во</th>
-                    <th className="pb-2 text-right">Цена</th>
-                    <th className="pb-2 text-right">Сумма</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.items.map((item, i) => (
-                    <tr key={i} className="border-b border-gray-50">
-                      <td className="py-2">{item.name}</td>
-                      <td className="py-2 text-center">{item.quantity}</td>
-                      <td className="py-2 text-right">{item.price.toLocaleString("ru-RU")} &#8381;</td>
-                      <td className="py-2 text-right font-medium">{item.sum.toLocaleString("ru-RU")} &#8381;</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="text-right font-semibold text-gray-900 mt-3">
-                Итого: {Number(order.total).toLocaleString("ru-RU")} &#8381;
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Delivery */}
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-900">Доставка</h3>
-            {!editingDelivery && (
-              <button onClick={() => { setEditDelivery({ method: order.deliveryMethod, city: order.deliveryCity, address: order.deliveryAddress }); setEditingDelivery(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
-                Редактировать
-              </button>
-            )}
-          </div>
-          {editingDelivery ? (
-            <div className="space-y-3">
-              <select value={editDelivery.method} onChange={(e) => setEditDelivery({ ...editDelivery, method: e.target.value })} className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full">
-                <option value="pickup">Самовывоз</option>
-                <option value="courier">Курьер</option>
-              </select>
-              <input value={editDelivery.city} onChange={(e) => setEditDelivery({ ...editDelivery, city: e.target.value })} placeholder="Город" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
-              <input value={editDelivery.address} onChange={(e) => setEditDelivery({ ...editDelivery, address: e.target.value })} placeholder="Адрес" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
-              <div className="flex gap-2">
-                <button onClick={saveDelivery} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
-                <button onClick={() => setEditingDelivery(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-1 text-sm text-gray-700">
-              <div><span className="text-gray-500">Способ:</span> {DELIVERY_LABELS[order.deliveryMethod] ?? order.deliveryMethod}</div>
-              {order.deliveryCity && <div><span className="text-gray-500">Город:</span> {order.deliveryCity}</div>}
-              {order.deliveryAddress && <div><span className="text-gray-500">Адрес:</span> {order.deliveryAddress}</div>}
-              {order.cdekPickupPoint && (
-                <div><span className="text-gray-500">ПВЗ:</span> {[order.cdekPickupPoint.name, order.cdekPickupPoint.address].filter(Boolean).join(", ")}</div>
-              )}
-              {order.deliveryCost > 0 && <div><span className="text-gray-500">Стоимость:</span> {order.deliveryCost.toLocaleString("ru-RU")} &#8381;</div>}
-            </div>
-          )}
-        </div>
-
-        {/* Payment */}
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Оплата</h3>
-          <div className="text-sm text-gray-700">
-            {PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}
-          </div>
-        </div>
-
-        {/* Comment */}
-        {order.comment && (
+      <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl">
+        {/* === ЛЕВАЯ КОЛОНКА === */}
+        <div className="space-y-6">
+          {/* Статус заказа */}
           <div className="bg-white rounded-xl shadow-sm p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Комментарий клиента</h3>
-            <div className="text-sm text-gray-700 whitespace-pre-wrap">{order.comment}</div>
-          </div>
-        )}
-
-        {/* Status change */}
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <h3 className="font-semibold text-gray-900 mb-3">Смена статуса</h3>
-          <div className="space-y-3">
-            <select
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="new">Новый</option>
-              <option value="processing">В обработке</option>
-              <option value="shipped">Отправлен</option>
-              <option value="delivered">Доставлен</option>
-              <option value="cancelled">Отменён</option>
-            </select>
+            <h3 className="font-semibold text-gray-900 mb-3">Статус заказа</h3>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {["new", "processing", "shipped", "delivered"].map((s) => {
+                const isActive = newStatus === s;
+                const colors = STATUS_BUTTON_COLORS[s];
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setNewStatus(s)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition ${isActive ? colors.active : colors.inactive}`}
+                  >
+                    {STATUS_LABELS[s]}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mb-3">
+              <button
+                onClick={() => setNewStatus("cancelled")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition ${
+                  newStatus === "cancelled"
+                    ? STATUS_BUTTON_COLORS.cancelled.active
+                    : STATUS_BUTTON_COLORS.cancelled.inactive
+                }`}
+              >
+                {STATUS_LABELS.cancelled}
+              </button>
+            </div>
             <textarea
               value={statusComment}
               onChange={(e) => setStatusComment(e.target.value)}
-              placeholder="Комментарий (необязательно)"
+              placeholder="Комментарий к смене статуса (необязательно)"
               rows={2}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-3"
             />
-            <button
-              onClick={handleStatusChange}
-              disabled={saving || newStatus === order.status}
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
-            >
-              Сменить статус
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleStatusChange}
+                disabled={saving || newStatus === order.status}
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+              >
+                Сменить статус
+              </button>
+              <label className="flex items-center gap-1.5 text-sm text-gray-600">
+                <input type="checkbox" defaultChecked className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                Уведомить клиента
+              </label>
+            </div>
+          </div>
+
+          {/* Клиент */}
+          <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900">Клиент</h3>
+              {!editingClient && (
+                <button onClick={() => { setEditClient({ name: order.customerName, phone: order.customerPhone, email: order.customerEmail }); setEditingClient(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
+                  Редактировать
+                </button>
+              )}
+            </div>
+            {editingClient ? (
+              <div className="space-y-3">
+                <input value={editClient.name} onChange={(e) => setEditClient({ ...editClient, name: e.target.value })} placeholder="Имя" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
+                <input value={editClient.phone} onChange={(e) => setEditClient({ ...editClient, phone: e.target.value })} placeholder="Телефон" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
+                <input value={editClient.email} onChange={(e) => setEditClient({ ...editClient, email: e.target.value })} placeholder="Email" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
+                <div className="flex gap-2">
+                  <button onClick={saveClient} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
+                  <button onClick={() => setEditingClient(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1 text-sm">
+                <div className="font-medium text-gray-900">{order.customerName}</div>
+                <div><a href={`tel:${order.customerPhone}`} className="text-indigo-600 hover:text-indigo-800">{order.customerPhone}</a></div>
+                {order.customerEmail && <div className="text-gray-600">{order.customerEmail}</div>}
+                <div className="text-gray-400 text-xs mt-2">
+                  Заказов всего: {customerStats.orderCount} · На сумму: {customerStats.totalSpent.toLocaleString("ru-RU")} ₽
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Доставка + Оплата */}
+          <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900">Доставка</h3>
+              {!editingDelivery && (
+                <button onClick={() => { setEditDelivery({ method: order.deliveryMethod, city: order.deliveryCity, address: order.deliveryAddress }); setEditingDelivery(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
+                  Редактировать
+                </button>
+              )}
+            </div>
+            {editingDelivery ? (
+              <div className="space-y-3">
+                <select value={editDelivery.method} onChange={(e) => setEditDelivery({ ...editDelivery, method: e.target.value })} className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full">
+                  <option value="pickup">Самовывоз</option>
+                  <option value="courier">Курьер</option>
+                </select>
+                <input value={editDelivery.city} onChange={(e) => setEditDelivery({ ...editDelivery, city: e.target.value })} placeholder="Город" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
+                <input value={editDelivery.address} onChange={(e) => setEditDelivery({ ...editDelivery, address: e.target.value })} placeholder="Адрес" className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-full" />
+                <div className="flex gap-2">
+                  <button onClick={saveDelivery} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
+                  <button onClick={() => setEditingDelivery(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1 text-sm text-gray-700">
+                <div className="font-medium">
+                  {order.deliveryMethod === "pickup" ? "Самовывоз" : "СДЭК · до пункта выдачи"}
+                </div>
+                {order.deliveryCity && (
+                  <div>г. {order.deliveryCity}{order.deliveryAddress ? `, ${order.deliveryAddress}` : ""}</div>
+                )}
+                {order.cdekPickupPoint?.address && (
+                  <div>{[order.cdekPickupPoint.name, order.cdekPickupPoint.address].filter(Boolean).join(", ")}</div>
+                )}
+                {order.deliveryCost > 0 && (
+                  <div>
+                    Стоимость: {order.deliveryCost.toLocaleString("ru-RU")} ₽
+                    {order.deliveryQuote?.periodMin != null && order.deliveryQuote?.periodMax != null && (
+                      <> · Срок: {order.deliveryQuote.periodMin}-{order.deliveryQuote.periodMax} дня</>
+                    )}
+                  </div>
+                )}
+                <div>Оплата: {PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}</div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Status history */}
-        {statusHistory.length > 0 && (
+        {/* === ПРАВАЯ КОЛОНКА === */}
+        <div className="space-y-6">
+          {/* Товары */}
           <div className="bg-white rounded-xl shadow-sm p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">История изменений</h3>
-            <div className="space-y-3">
-              {statusHistory.map((entry) => (
-                <div key={entry.id} className="flex items-start gap-3 text-sm border-b border-gray-50 pb-3 last:border-0">
-                  <div className="text-gray-400 text-xs whitespace-nowrap mt-0.5">
-                    {new Date(entry.createdAt).toLocaleString("ru-RU")}
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900">Товары</h3>
+              {!editingItems && (
+                <button onClick={() => { setEditItems([...order.items]); setEditingItems(true); }} className="text-sm text-indigo-600 hover:text-indigo-800">
+                  Редактировать
+                </button>
+              )}
+            </div>
+            {editingItems ? (
+              <div className="space-y-3">
+                {editItems.map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <input value={item.name} onChange={(e) => { const arr = [...editItems]; arr[i] = { ...arr[i], name: e.target.value }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 flex-1 text-sm" />
+                    <input type="number" value={item.quantity} min={1} onChange={(e) => { const arr = [...editItems]; const qty = Number(e.target.value) || 1; arr[i] = { ...arr[i], quantity: qty, sum: qty * arr[i].price }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 w-16 text-sm text-center" />
+                    <span className="text-gray-500 whitespace-nowrap">{item.price.toLocaleString("ru-RU")} ₽</span>
+                    <button onClick={() => setEditItems(editItems.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700 p-1">✕</button>
+                  </div>
+                ))}
+                <div className="flex gap-2 pt-2">
+                  <button onClick={saveItems} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 disabled:opacity-50">Сохранить</button>
+                  <button onClick={() => setEditingItems(false)} className="border border-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">Отмена</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {order.items.map((item, i) => (
+                  <div key={i} className="flex items-start justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                    </div>
+                    <div className="text-right flex-shrink-0 ml-4">
+                      <div className="text-sm font-medium">×{item.quantity}</div>
+                      <div className="text-xs text-gray-500">{item.price.toLocaleString("ru-RU")} ₽</div>
+                    </div>
+                  </div>
+                ))}
+                <div className="border-t border-gray-100 pt-3 text-right">
+                  <div className="font-semibold text-gray-900">
+                    Итого {Number(order.total).toLocaleString("ru-RU")} ₽
+                  </div>
+                  {order.deliveryCost > 0 && (
+                    <div className="text-xs text-gray-500">вкл. доставку {order.deliveryCost.toLocaleString("ru-RU")} ₽</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* История — timeline */}
+          <div className="bg-white rounded-xl shadow-sm p-5">
+            <h3 className="font-semibold text-gray-900 mb-4">История</h3>
+            <div className="space-y-0">
+              {STATUS_PROGRESSION.map((s, i) => {
+                const isPassed = !isCancelled && i <= currentStepIndex;
+                const isCurrent = !isCancelled && i === currentStepIndex;
+                const historyEntry = historyByStatus[s];
+
+                return (
+                  <div key={s} className="flex gap-3">
+                    {/* Линия + точка */}
+                    <div className="flex flex-col items-center">
+                      <div className={`w-2.5 h-2.5 rounded-full mt-1 ${isPassed ? "bg-amber-400" : "bg-gray-300"}`} />
+                      {i < STATUS_PROGRESSION.length - 1 && (
+                        <div className={`w-0.5 flex-1 min-h-[32px] ${isPassed && i < currentStepIndex ? "bg-amber-300" : "bg-gray-200"}`} />
+                      )}
+                    </div>
+                    {/* Текст */}
+                    <div className="pb-4">
+                      <div className={`text-sm ${isCurrent ? "font-semibold text-gray-900" : isPassed ? "font-medium text-gray-700" : "text-gray-400"}`}>
+                        {STATUS_LABELS[s]}
+                      </div>
+                      {historyEntry && isPassed && (
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {new Date(historyEntry.createdAt).toLocaleDateString("ru-RU")}, {new Date(historyEntry.createdAt).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}
+                          {historyEntry.comment && <> · {historyEntry.comment}</>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {/* Отменён — отдельно если активен */}
+              {isCancelled && (
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-2.5 h-2.5 rounded-full mt-1 bg-red-400" />
                   </div>
                   <div>
-                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLORS[entry.status] ?? "bg-gray-100"}`}>
-                      {STATUS_LABELS[entry.status] ?? entry.status}
-                    </span>
-                    {entry.comment && <div className="text-gray-600 mt-1">{entry.comment}</div>}
-                    {entry.adminName && <div className="text-gray-400 text-xs mt-0.5">{entry.adminName}</div>}
+                    <div className="text-sm font-semibold text-red-700">Отменён</div>
+                    {historyByStatus.cancelled && (
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {new Date(historyByStatus.cancelled.createdAt).toLocaleDateString("ru-RU")}, {new Date(historyByStatus.cancelled.createdAt).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}
+                        {historyByStatus.cancelled.comment && <> · {historyByStatus.cancelled.comment}</>}
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </>
   );
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compilation**
+- [ ] **Step 2: Проверить компиляцию TypeScript**
 
 Run: `npx tsc --noEmit`
-Expected: No errors
+Expected: Нет ошибок
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Коммит**
 
 ```bash
 git add src/app/admin/\(app\)/orders/
-git commit -m "feat(admin): order detail page with editing, status change, and history"
+git commit -m "feat(admin): order detail page with two-column layout, status buttons, and timeline"
 ```
 
 ---
