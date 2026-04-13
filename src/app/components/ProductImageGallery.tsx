@@ -42,6 +42,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
   const list = urls.filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [zoomPos, setZoomPos] = useState<{ x: number; y: number } | null>(null);
   const mounted = useIsClient();
   const slideIndex = list.length === 0 ? 0 : Math.min(active, list.length - 1);
   const current = list[slideIndex];
@@ -186,7 +187,18 @@ export function ProductImageGallery({ alt, urls }: Props) {
       : null;
 
   if (list.length === 0) {
-    return <div className={STAGE} aria-hidden />;
+    return (
+      <div className="flex aspect-square items-center justify-center rounded-2xl bg-[#0b1220]">
+        <div className="flex flex-col items-center gap-3 text-slate-500">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+          <span className="text-sm">Фото скоро появится</span>
+        </div>
+      </div>
+    );
   }
 
   const stage = (
@@ -224,11 +236,30 @@ export function ProductImageGallery({ alt, urls }: Props) {
             sizes="(max-width: 768px) 100vw, 440px"
             quality={85}
           />
+          {zoomPos && (
+            <div
+              className="pointer-events-none absolute inset-0 z-[4] hidden rounded-md md:block"
+              style={{
+                backgroundImage: `url(${current})`,
+                backgroundSize: "200%",
+                backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+          )}
           <button
             type="button"
             className="absolute inset-0 z-[5] cursor-zoom-in rounded-md bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
             aria-label="Открыть фото на весь экран"
             onClick={() => setLightboxOpen(true)}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setZoomPos({
+                x: ((e.clientX - rect.left) / rect.width) * 100,
+                y: ((e.clientY - rect.top) / rect.height) * 100,
+              });
+            }}
+            onMouseLeave={() => setZoomPos(null)}
           />
         </div>
       </div>
