@@ -54,3 +54,4 @@ next-env.d.ts
 data/shop.db
 data/shop.db-wal
 data/shop.db-shm
+.worktrees/
