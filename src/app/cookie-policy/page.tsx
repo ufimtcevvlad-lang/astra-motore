@@ -6,7 +6,8 @@ import { SITE_URL } from "../lib/site";
 
 export const metadata: Metadata = {
   title: "Политика cookies",
-  description: "Условия использования файлов cookies на сайте GM Shop.",
+  description:
+    "Политика использования файлов cookies на сайте GM Shop 66 (gmshop66.ru).",
   alternates: { canonical: "/cookie-policy" },
 };
 
@@ -32,36 +33,93 @@ export default function CookiePolicyPage() {
       />
       <SimpleDoc title="Политика использования файлов cookies">
         <p className="text-sm text-slate-500">
-          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа: {LEGAL_VERSIONS.cookiePolicy}.
+          Дата вступления в силу: {LEGAL_EFFECTIVE_DATE}. Версия документа:{" "}
+          {LEGAL_VERSIONS.cookiePolicy}.
         </p>
+
+        <h2 className="text-lg font-semibold text-slate-900 mt-6">1. Что такое cookies</h2>
         <p>
-          Настоящая Политика описывает, как сайт GM Shop использует файлы cookies и аналогичные технологии.
+          Cookies — это небольшие текстовые файлы, которые веб-сайт сохраняет в браузере
+          пользователя во время посещения страниц. Они позволяют сайту запоминать действия и
+          предпочтения пользователя (например, содержимое корзины или факт принятия
+          cookie-баннера) в течение определённого времени, чтобы не вводить эти данные повторно
+          при каждом посещении или переходе между страницами.
         </p>
-        <h2 className="text-lg font-semibold text-slate-900">1. Что такое cookies</h2>
+
+        <h2 className="text-lg font-semibold text-slate-900 mt-6">2. Какие cookies мы используем</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border border-slate-200">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="border border-slate-200 px-3 py-2 text-left font-semibold">Категория</th>
+                <th className="border border-slate-200 px-3 py-2 text-left font-semibold">Название</th>
+                <th className="border border-slate-200 px-3 py-2 text-left font-semibold">Назначение</th>
+                <th className="border border-slate-200 px-3 py-2 text-left font-semibold">Срок хранения</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-slate-200 px-3 py-2">Необходимые</td>
+                <td className="border border-slate-200 px-3 py-2">Сессия сайта</td>
+                <td className="border border-slate-200 px-3 py-2">Корзина, авторизация</td>
+                <td className="border border-slate-200 px-3 py-2">До закрытия браузера</td>
+              </tr>
+              <tr className="bg-slate-50/50">
+                <td className="border border-slate-200 px-3 py-2">Необходимые</td>
+                <td className="border border-slate-200 px-3 py-2">Согласие на cookie</td>
+                <td className="border border-slate-200 px-3 py-2">Запоминание выбора в баннере</td>
+                <td className="border border-slate-200 px-3 py-2">1 год</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-200 px-3 py-2">Функциональные</td>
+                <td className="border border-slate-200 px-3 py-2">Избранное</td>
+                <td className="border border-slate-200 px-3 py-2">Список избранных товаров</td>
+                <td className="border border-slate-200 px-3 py-2">1 год</td>
+              </tr>
+              <tr className="bg-slate-50/50">
+                <td className="border border-slate-200 px-3 py-2">Аналитические</td>
+                <td className="border border-slate-200 px-3 py-2">Яндекс.Метрика</td>
+                <td className="border border-slate-200 px-3 py-2">Обезличенная статистика посещений</td>
+                <td className="border border-slate-200 px-3 py-2">До 1 года</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="text-lg font-semibold text-slate-900 mt-6">3. Управление cookies</h2>
         <p>
-          Cookies — это небольшие текстовые файлы, которые сохраняются в браузере пользователя и помогают сайту
-          корректно работать, запоминать настройки и собирать статистику посещений.
+          Вы можете настроить или отключить cookies в настройках своего браузера. Ниже приведены
+          ссылки на инструкции для наиболее распространённых браузеров:
         </p>
-        <h2 className="text-lg font-semibold text-slate-900">2. Какие cookies мы используем</h2>
-        <ul className="list-disc space-y-1 pl-5">
-          <li>технические (обязательные) — для базовой работы сайта;</li>
-          <li>функциональные — для сохранения пользовательских настроек;</li>
-          <li>аналитические — для оценки использования сайта и улучшения сервиса.</li>
+        <ul className="list-disc pl-6 space-y-1">
+          <li>
+            <strong>Google Chrome:</strong> Настройки → Конфиденциальность и безопасность → Файлы
+            cookie и другие данные сайтов.
+          </li>
+          <li>
+            <strong>Safari:</strong> Настройки → Конфиденциальность → Управление данными веб-сайтов.
+          </li>
+          <li>
+            <strong>Mozilla Firefox:</strong> Настройки → Приватность и защита → Куки и данные
+            сайтов.
+          </li>
+          <li>
+            <strong>Microsoft Edge:</strong> Настройки → Файлы cookie и разрешения сайта →
+            Управление файлами cookie.
+          </li>
         </ul>
-        <h2 className="text-lg font-semibold text-slate-900">3. Цели использования cookies</h2>
-        <ul className="list-disc space-y-1 pl-5">
-          <li>обеспечение корректной работы страниц и форм;</li>
-          <li>анализ посещаемости и поведения пользователей;</li>
-          <li>улучшение удобства и качества сервиса.</li>
-        </ul>
-        <h2 className="text-lg font-semibold text-slate-900">4. Управление cookies</h2>
         <p>
-          Пользователь может изменить настройки cookies в своем браузере, включая блокировку или удаление файлов.
-          Отключение обязательных cookies может привести к некорректной работе отдельных функций сайта.
+          Обратите внимание: отключение <strong>необходимых</strong> cookies может привести к
+          некорректной работе корзины, форм и авторизации на сайте.{" "}
+          <strong>Аналитические</strong> cookies можно заблокировать без ущерба для основных
+          функций сайта.
         </p>
-        <h2 className="text-lg font-semibold text-slate-900">5. Изменения политики</h2>
+
+        <h2 className="text-lg font-semibold text-slate-900 mt-6">4. Изменения политики</h2>
         <p>
-          Мы вправе обновлять настоящую Политику. Актуальная версия всегда доступна на данной странице.
+          Мы вправе обновлять настоящую Политику в связи с изменениями законодательства или
+          функциональности сайта. Актуальная версия документа с датой вступления в силу всегда
+          доступна на данной странице.
         </p>
       </SimpleDoc>
     </div>
