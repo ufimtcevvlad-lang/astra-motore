@@ -32,20 +32,26 @@ export function Footer() {
           <p>ИНН 667472249310</p>
           <p>ОГРНИП 321665800117840</p>
           <p>Юридический адрес: Свердловская обл., г. Екатеринбург, ул. Крестинского, д. 27, кв. 269</p>
-          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1">
-            <Link href="/privacy" className="hover:text-amber-400 transition">
-              Политика обработки персональных данных
-            </Link>
-            <Link href="/consent-personal-data" className="hover:text-amber-400 transition">
-              Согласие на обработку персональных данных
-            </Link>
-            <Link href="/supply-agreement" className="hover:text-amber-400 transition">
-              Публичная оферта
-            </Link>
-            <Link href="/cookie-policy" className="hover:text-amber-400 transition">
-              Cookies
-            </Link>
-          </div>
+        </div>
+        <div className="mt-4 border-t border-slate-800 pt-4 text-xs text-slate-500">
+          <p className="flex flex-wrap gap-x-1">
+            <Link href="/supply-agreement" className="hover:text-slate-300 transition">Оферта</Link>
+            <span>·</span>
+            <Link href="/returns" className="hover:text-slate-300 transition">Возврат</Link>
+            <span>·</span>
+            <Link href="/warranty" className="hover:text-slate-300 transition">Гарантия</Link>
+            <span>·</span>
+            <Link href="/payment" className="hover:text-slate-300 transition">Оплата</Link>
+          </p>
+          <p className="mt-1 flex flex-wrap gap-x-1">
+            <Link href="/privacy" className="hover:text-slate-300 transition">Конфиденциальность</Link>
+            <span>·</span>
+            <Link href="/consent-personal-data" className="hover:text-slate-300 transition">Согласие на ПДн</Link>
+            <span>·</span>
+            <Link href="/cookie-policy" className="hover:text-slate-300 transition">Cookies</Link>
+            <span>·</span>
+            <Link href="/terms" className="hover:text-slate-300 transition">Пользовательское соглашение</Link>
+          </p>
         </div>
       </div>
     </footer>
