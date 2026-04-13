@@ -1,0 +1,164 @@
+<h2>Чат и единое окно заявок</h2>
+<p class="subtitle">Как выглядит для клиента на сайте и для админа в панели</p>
+
+<div class="split" style="gap: 1.5rem; align-items: flex-start;">
+
+  <!-- Client side -->
+  <div class="mockup">
+    <div class="mockup-header">Сайт — виджет чата (для клиента)</div>
+    <div class="mockup-body" style="background: #f8fafc; min-height: 420px; position: relative; padding: 0;">
+
+      <!-- Fake page content -->
+      <div style="padding: 1.5rem; color: #94a3b8; font-size: 0.8rem;">
+        <div style="background: #e2e8f0; height: 20px; width: 60%; border-radius: 4px; margin-bottom: 8px;"></div>
+        <div style="background: #e2e8f0; height: 12px; width: 80%; border-radius: 4px; margin-bottom: 6px;"></div>
+        <div style="background: #e2e8f0; height: 12px; width: 70%; border-radius: 4px;"></div>
+      </div>
+
+      <!-- Chat widget -->
+      <div style="position: absolute; bottom: 12px; right: 12px; width: 300px; background: white; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); overflow: hidden;">
+        <!-- Chat header -->
+        <div style="background: #1e1e2e; color: white; padding: 12px 16px; display: flex; align-items: center; gap: 8px;">
+          <div style="width: 32px; height: 32px; background: #f5c542; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #1e1e2e;">AM</div>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 600;">Astra Motors</div>
+            <div style="font-size: 0.65rem; color: #22c55e;">● Онлайн</div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div style="padding: 12px; min-height: 180px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="align-self: flex-start; background: #f1f5f9; padding: 8px 12px; border-radius: 12px 12px 12px 4px; font-size: 0.8rem; color: #334155; max-width: 85%;">
+            Здравствуйте! Чем можем помочь?
+          </div>
+          <div style="align-self: flex-end; background: #6366f1; color: white; padding: 8px 12px; border-radius: 12px 12px 4px 12px; font-size: 0.8rem; max-width: 85%;">
+            Есть свечи NGK на Opel Astra J?
+          </div>
+          <div style="align-self: flex-start; background: #f1f5f9; padding: 8px 12px; border-radius: 12px 12px 12px 4px; font-size: 0.8rem; color: #334155; max-width: 85%;">
+            Да, в наличии! Артикул 0242229699, цена 450 ₽. Добавить в корзину?
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div style="border-top: 1px solid #e2e8f0; padding: 8px 12px; display: flex; gap: 8px; align-items: center;">
+          <input class="mock-input" style="flex: 1; border: none; padding: 6px 0; font-size: 0.8rem;" placeholder="Написать сообщение...">
+          <div style="color: #6366f1; font-size: 1.1rem; cursor: pointer;">➤</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Admin side -->
+  <div class="mockup">
+    <div class="mockup-header">Админка — единое окно заявок</div>
+    <div class="mockup-body" style="display: flex; min-height: 420px; padding: 0;">
+
+      <!-- Conversations list -->
+      <div style="width: 200px; border-right: 1px solid #e2e8f0; background: #fafbfc;">
+        <div style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+          <input class="mock-input" style="font-size: 0.7rem; padding: 4px 8px;" placeholder="Поиск...">
+        </div>
+
+        <!-- Conv 1 - active -->
+        <div style="padding: 10px; background: #eff6ff; border-left: 3px solid #6366f1; cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: #1e293b;">Алексей К.</span>
+            <span style="background: #dbeafe; color: #1e40af; font-size: 0.55rem; padding: 1px 5px; border-radius: 4px;">💬 Чат</span>
+          </div>
+          <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Есть свечи NGK на Opel...</div>
+          <div style="font-size: 0.6rem; color: #94a3b8; margin-top: 2px;">2 мин назад</div>
+        </div>
+
+        <!-- Conv 2 -->
+        <div style="padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: #1e293b;">Марина С.</span>
+            <span style="background: #e0f2fe; color: #0369a1; font-size: 0.55rem; padding: 1px 5px; border-radius: 4px;">✉️ Email</span>
+          </div>
+          <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Вопрос по доставке в Казань</div>
+          <div style="font-size: 0.6rem; color: #94a3b8; margin-top: 2px;">15 мин назад</div>
+        </div>
+
+        <!-- Conv 3 -->
+        <div style="padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: #1e293b;">Дмитрий В.</span>
+            <span style="background: #e0e7ff; color: #4338ca; font-size: 0.55rem; padding: 1px 5px; border-radius: 4px;">✈️ TG</span>
+          </div>
+          <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Подскажите аналог для...</div>
+          <div style="font-size: 0.6rem; color: #94a3b8; margin-top: 2px;">1 час назад</div>
+        </div>
+
+        <!-- Conv 4 - closed -->
+        <div style="padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; opacity: 0.5;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: #64748b;">Елена П.</span>
+            <span style="background: #f1f5f9; color: #94a3b8; font-size: 0.55rem; padding: 1px 5px; border-radius: 4px;">✔ Закрыт</span>
+          </div>
+          <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2px;">Спасибо, заказ получила</div>
+          <div style="font-size: 0.6rem; color: #94a3b8; margin-top: 2px;">вчера</div>
+        </div>
+      </div>
+
+      <!-- Chat area -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <!-- Chat header -->
+        <div style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">Алексей К.</div>
+            <div style="font-size: 0.65rem; color: #22c55e;">● Онлайн · Чат на сайте</div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <span style="font-size: 0.65rem; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 6px; cursor: pointer;">В работе</span>
+            <span style="font-size: 0.65rem; background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 6px; cursor: pointer;">Закрыть</span>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div style="flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
+          <div style="align-self: flex-end; background: #6366f1; color: white; padding: 8px 12px; border-radius: 12px 12px 4px 12px; font-size: 0.8rem; max-width: 75%;">
+            Здравствуйте! Чем можем помочь?
+          </div>
+          <div style="align-self: flex-start; background: #f1f5f9; padding: 8px 12px; border-radius: 12px 12px 12px 4px; font-size: 0.8rem; color: #334155; max-width: 75%;">
+            Есть свечи NGK на Opel Astra J?
+          </div>
+          <div style="align-self: flex-end; background: #6366f1; color: white; padding: 8px 12px; border-radius: 12px 12px 4px 12px; font-size: 0.8rem; max-width: 75%;">
+            Да, в наличии! Артикул 0242229699, цена 450 ₽. Добавить в корзину?
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div style="border-top: 1px solid #e2e8f0; padding: 8px 12px; display: flex; gap: 8px; align-items: center;">
+          <input class="mock-input" style="flex: 1; border: none; padding: 6px 0; font-size: 0.8rem;" placeholder="Ответить...">
+          <div style="font-size: 0.7rem; color: #6366f1; cursor: pointer; font-weight: 500;">Отправить</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Как работает</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+    <div style="background: rgba(99,102,241,0.06); padding: 1rem; border-radius: 10px;">
+      <strong>💬 Чат на сайте</strong>
+      <p style="margin-top: 6px; color: #475569;">Виджет в правом нижнем углу. Клиент пишет → админ видит в реальном времени и отвечает из админки. Когда все админы офлайн — виджет становится формой «Оставьте сообщение».</p>
+    </div>
+    <div style="background: rgba(99,102,241,0.06); padding: 1rem; border-radius: 10px;">
+      <strong>✈️ Telegram</strong>
+      <p style="margin-top: 6px; color: #475569;">Бот магазина получает сообщения от клиентов → они появляются в едином окне. Админ отвечает из админки → клиент получает ответ в Telegram.</p>
+    </div>
+    <div style="background: rgba(99,102,241,0.06); padding: 1rem; border-radius: 10px;">
+      <strong>✉️ Почта</strong>
+      <p style="margin-top: 6px; color: #475569;">Письма на адрес магазина подтягиваются в единое окно (IMAP). Админ отвечает из админки → клиент получает email.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1rem;">
+  <h3>Уведомления</h3>
+  <p style="font-size: 0.85rem; color: #475569;">Каждое новое сообщение из любого канала дублируется в Telegram-бота, чтобы админ не пропустил обращение, даже если не сидит в админке. Бейдж в меню показывает количество неотвеченных.</p>
+</div>

@@ -1,0 +1,115 @@
+<h2>Раздел 1: Клиенты — список</h2>
+<p class="subtitle">Как должен выглядеть список клиентов в админке</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Таблица с фильтрами (как Заказы)</h3>
+      <p>Таблица: имя, телефон, email, заказов, сумма, последний заказ, статус. Фильтры: поиск, статус, дата. Клик → карточка клиента.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Клиенты — вариант A</div>
+        <div class="mockup-body" style="font-size:13px">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <input class="mock-input" placeholder="🔍 Поиск по имени, телефону, email..." style="flex:1;min-width:200px">
+            <select class="mock-input" style="width:150px"><option>Все статусы</option></select>
+            <select class="mock-input" style="width:150px"><option>Сортировка ▼</option></select>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+              <tr style="border-bottom:2px solid #e5e7eb;text-align:left">
+                <th style="padding:8px">Клиент</th>
+                <th style="padding:8px">Телефон</th>
+                <th style="padding:8px">Заказов</th>
+                <th style="padding:8px">Сумма</th>
+                <th style="padding:8px">Последний</th>
+                <th style="padding:8px">Статус</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #f3f4f6">
+                <td style="padding:8px"><strong>Иванов Алексей</strong><br><span style="color:#6b7280;font-size:11px">ivanov@mail.ru</span></td>
+                <td style="padding:8px">+7 912 345-67-89</td>
+                <td style="padding:8px">12</td>
+                <td style="padding:8px;font-weight:600">84 500 ₽</td>
+                <td style="padding:8px;color:#6b7280">10.04.2026</td>
+                <td style="padding:8px"><span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:12px;font-size:11px">Постоянный</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid #f3f4f6">
+                <td style="padding:8px"><strong>Петров Сергей</strong><br><span style="color:#6b7280;font-size:11px">—</span></td>
+                <td style="padding:8px">+7 922 111-22-33</td>
+                <td style="padding:8px">1</td>
+                <td style="padding:8px;font-weight:600">3 200 ₽</td>
+                <td style="padding:8px;color:#6b7280">08.04.2026</td>
+                <td style="padding:8px"><span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:12px;font-size:11px">Новый</span></td>
+              </tr>
+              <tr style="border-bottom:1px solid #f3f4f6">
+                <td style="padding:8px"><strong>ООО «АвтоСнаб»</strong><br><span style="color:#6b7280;font-size:11px">zakaz@autosnab.ru</span></td>
+                <td style="padding:8px">+7 343 200-00-01</td>
+                <td style="padding:8px">47</td>
+                <td style="padding:8px;font-weight:600">512 000 ₽</td>
+                <td style="padding:8px;color:#6b7280">12.04.2026</td>
+                <td style="padding:8px"><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:12px;font-size:11px">Оптовик</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="color:#9ca3af;font-size:12px;margin-top:12px;text-align:center">Показано 3 из 48 клиентов</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Карточки-плитки</h3>
+      <p>Сетка карточек с ключевой инфой: имя, статус-бейдж, заказов/сумма, последний визит. Более наглядно, но меньше данных на экране.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Клиенты — вариант B</div>
+        <div class="mockup-body">
+          <input class="mock-input" placeholder="🔍 Поиск по имени, телефону, email..." style="width:100%;margin-bottom:12px">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px">
+            <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <strong>Иванов Алексей</strong>
+                <span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:12px;font-size:11px">Постоянный</span>
+              </div>
+              <div style="color:#6b7280;font-size:12px;margin-bottom:8px">+7 912 345-67-89</div>
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span>12 заказов</span>
+                <span style="font-weight:600">84 500 ₽</span>
+              </div>
+            </div>
+            <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <strong>Петров Сергей</strong>
+                <span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:12px;font-size:11px">Новый</span>
+              </div>
+              <div style="color:#6b7280;font-size:12px;margin-bottom:8px">+7 922 111-22-33</div>
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span>1 заказ</span>
+                <span style="font-weight:600">3 200 ₽</span>
+              </div>
+            </div>
+            <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <strong>ООО «АвтоСнаб»</strong>
+                <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:12px;font-size:11px">Оптовик</span>
+              </div>
+              <div style="color:#6b7280;font-size:12px;margin-bottom:8px">+7 343 200-00-01</div>
+              <div style="display:flex;justify-content:space-between;font-size:12px">
+                <span>47 заказов</span>
+                <span style="font-weight:600">512 000 ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px">
+  <h3>Рекомендация</h3>
+  <p>Вариант <strong>A (Таблица)</strong> — привычный формат, больше данных на экране, консистентен с разделом Заказы. Для 48+ клиентов таблица удобнее плиток.</p>
+</div>

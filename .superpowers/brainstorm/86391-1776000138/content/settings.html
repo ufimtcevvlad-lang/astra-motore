@@ -1,0 +1,155 @@
+<h2>Раздел 4: Настройки</h2>
+<p class="subtitle">Хаб настроек магазина</p>
+
+<div class="mockup">
+  <div class="mockup-header">Настройки</div>
+  <div class="mockup-body" style="font-size:13px">
+
+    <!-- Сетка карточек-разделов -->
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+
+      <!-- Контакты -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">📞</span>
+          <h3 style="margin:0;font-size:16px">Контакты</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">Телефон, email, адрес, соцсети, карта</p>
+      </div>
+
+      <!-- Реквизиты -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">🏢</span>
+          <h3 style="margin:0;font-size:16px">Реквизиты</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">ИНН, ОГРН, юридический адрес, название ИП/ООО</p>
+      </div>
+
+      <!-- Уведомления -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">🔔</span>
+          <h3 style="margin:0;font-size:16px">Уведомления</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">Telegram-бот, Web Push, VAPID-ключи</p>
+      </div>
+
+      <!-- Режим работы -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">🕐</span>
+          <h3 style="margin:0;font-size:16px">Режим работы</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">График по дням, выходные, праздники</p>
+      </div>
+
+      <!-- Быстрые ответы (уже есть) -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">💬</span>
+          <h3 style="margin:0;font-size:16px">Быстрые ответы</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">Шаблоны ответов для чата</p>
+      </div>
+
+      <!-- Интеграции -->
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px;cursor:pointer" onmouseover="this.style.borderColor='#4f46e5'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">🔗</span>
+          <h3 style="margin:0;font-size:16px">Интеграции</h3>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0">Яндекс.Метрика (токен, ID счётчика), Google Analytics</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Пример подраздела: Контакты -->
+<div class="mockup" style="margin-top:20px">
+  <div class="mockup-header">Настройки → Контакты</div>
+  <div class="mockup-body" style="font-size:13px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:700px">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">Телефон</label>
+        <input class="mock-input" value="+7 (343) 200-00-01" style="width:100%">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">Email</label>
+        <input class="mock-input" value="info@gmshop66.ru" style="width:100%">
+      </div>
+      <div style="grid-column:1/-1">
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">Адрес</label>
+        <input class="mock-input" value="г. Екатеринбург, ул. Примерная, 42" style="width:100%">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">Telegram</label>
+        <input class="mock-input" value="@astra_motors" style="width:100%">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">WhatsApp</label>
+        <input class="mock-input" value="+7 912 345-67-89" style="width:100%">
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="mock-button" style="background:#4f46e5;color:white;border:none">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Пример: Интеграции -->
+<div class="mockup" style="margin-top:20px">
+  <div class="mockup-header">Настройки → Интеграции</div>
+  <div class="mockup-body" style="font-size:13px">
+    <div style="max-width:600px">
+
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <strong>Яндекс.Метрика</strong>
+          <span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:12px;font-size:11px">Подключена</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">ID счётчика</label>
+            <input class="mock-input" value="12345678" style="width:100%">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">OAuth-токен</label>
+            <input class="mock-input" value="••••••••••••••••" type="password" style="width:100%">
+          </div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <strong>Google Analytics</strong>
+          <span style="background:#f3f4f6;color:#6b7280;padding:2px 8px;border-radius:12px;font-size:11px">Не настроена</span>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px">ID измерения (G-XXXXXXXX)</label>
+          <input class="mock-input" placeholder="G-" style="width:300px">
+        </div>
+        <div style="color:#9ca3af;font-size:11px;margin-top:8px">Только для ссылки на дашборд GA. Для аналитики в админке используется Яндекс.Метрика.</div>
+      </div>
+
+    </div>
+    <div style="margin-top:16px">
+      <button class="mock-button" style="background:#4f46e5;color:white;border:none">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px">
+  <h3>Структура</h3>
+  <ul style="font-size:14px;line-height:1.8">
+    <li><strong>Хаб</strong> — 6 карточек-разделов, клик → подстраница</li>
+    <li><strong>Контакты</strong> — телефон, email, адрес, Telegram, WhatsApp</li>
+    <li><strong>Реквизиты</strong> — ИНН, ОГРН, название, юр. адрес</li>
+    <li><strong>Уведомления</strong> — Telegram bot token/chat ID, VAPID-ключи</li>
+    <li><strong>Режим работы</strong> — график по дням недели</li>
+    <li><strong>Быстрые ответы</strong> — уже готово (Фаза 4)</li>
+    <li><strong>Интеграции</strong> — Метрика (OAuth-токен + ID), GA (ID для ссылки)</li>
+  </ul>
+</div>

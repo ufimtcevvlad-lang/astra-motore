@@ -1,0 +1,90 @@
+<h2>Как строить админ-панель?</h2>
+<p class="subtitle">Три принципиально разных подхода. У каждого свои плюсы и минусы.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Встроенная в сайт (рекомендую)</h3>
+      <p>Админка живёт внутри Next.js — по адресу <code>/admin</code>. Один проект, одна кодовая база, общие компоненты и стили. Деплоится вместе с сайтом.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Плюсы</h4>
+          <ul>
+            <li>Всё в одном месте — проще разработка и деплой</li>
+            <li>Общие типы данных, утилиты, API</li>
+            <li>Не нужен отдельный сервер</li>
+            <li>Единый стек (React + Next.js + Tailwind)</li>
+            <li>Быстрее реализовать</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Минусы</h4>
+          <ul>
+            <li>Бандл сайта чуть больше (но admin-страницы грузятся отдельно)</li>
+            <li>Админка и сайт деплоятся вместе</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Отдельное приложение</h3>
+      <p>Админка — отдельный проект (например, на Vite + React или отдельный Next.js). Работает на своём домене <code>admin.astramotors.ru</code>. Общается с сайтом через API.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Плюсы</h4>
+          <ul>
+            <li>Полная изоляция от сайта</li>
+            <li>Можно деплоить независимо</li>
+            <li>Свой домен — дополнительная безопасность</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Минусы</h4>
+          <ul>
+            <li>Два проекта = двойная работа по поддержке</li>
+            <li>Нужен отдельный сервер/порт</li>
+            <li>Дублирование типов и утилит</li>
+            <li>Дольше разрабатывать</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Готовое решение (AdminJS, Strapi и т.д.)</h3>
+      <p>Подключить готовый фреймворк для админок. Генерирует интерфейс на основе моделей данных.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Плюсы</h4>
+          <ul>
+            <li>Быстрый старт — базовый CRUD из коробки</li>
+            <li>Готовые виджеты (таблицы, формы, фильтры)</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Минусы</h4>
+          <ul>
+            <li>Сложно кастомизировать под нестандартные задачи (чат, заявки, 2FA через Telegram)</li>
+            <li>Чужой дизайн — не вписывается в стиль сайта</li>
+            <li>Зависимость от чужой библиотеки</li>
+            <li>Требует БД (у тебя сейчас NDJSON-файлы)</li>
+            <li>Лишний вес зависимостей</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.25rem; background: rgba(99,102,241,0.08); border-radius: 12px; border-left: 4px solid #6366f1;">
+  <h3 style="margin-top:0;">Моя рекомендация — вариант A</h3>
+  <p style="margin-bottom:0;">У тебя уже Next.js, Tailwind, готовые API-роуты. Админка по адресу <code>/admin</code> — самый логичный путь. Все кастомные фичи (чат, заявки, 2FA) легко реализовать без ограничений чужих фреймворков. Один деплой, один проект, единый стиль.</p>
+</div>

@@ -25,36 +25,7 @@ function ask(question: string): Promise<string> {
 }
 
 function askPassword(question: string): Promise<string> {
-  return new Promise((resolve) => {
-    process.stdout.write(question);
-    process.stdin.setRawMode?.(true);
-    process.stdin.resume();
-    process.stdin.setEncoding("utf8");
-
-    let password = "";
-
-    const onData = (char: string) => {
-      if (char === "\n" || char === "\r" || char === "\u0003") {
-        if (char === "\u0003") process.exit();
-        process.stdin.setRawMode?.(false);
-        process.stdin.pause();
-        process.stdin.removeListener("data", onData);
-        process.stdout.write("\n");
-        resolve(password);
-      } else if (char === "\u007f") {
-        // backspace
-        if (password.length > 0) {
-          password = password.slice(0, -1);
-          process.stdout.write("\b \b");
-        }
-      } else {
-        password += char;
-        process.stdout.write("*");
-      }
-    };
-
-    process.stdin.on("data", onData);
-  });
+  return ask(question);
 }
 
 // ─── Main ───

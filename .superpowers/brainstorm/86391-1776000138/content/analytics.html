@@ -1,0 +1,153 @@
+<h2>Раздел 3: Аналитика</h2>
+<p class="subtitle">Свои графики из БД + ссылки на Метрику/GA</p>
+
+<div class="mockup">
+  <div class="mockup-header">Аналитика</div>
+  <div class="mockup-body" style="font-size:13px">
+
+    <!-- Период -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="display:flex;gap:6px">
+        <button class="mock-button" style="font-size:11px;padding:4px 12px">Сегодня</button>
+        <button class="mock-button" style="font-size:11px;padding:4px 12px;background:#4f46e5;color:white;border-color:#4f46e5">7 дней</button>
+        <button class="mock-button" style="font-size:11px;padding:4px 12px">30 дней</button>
+        <button class="mock-button" style="font-size:11px;padding:4px 12px">90 дней</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <a href="#" style="font-size:12px;color:#4f46e5;text-decoration:none">📊 Яндекс.Метрика ↗</a>
+        <a href="#" style="font-size:12px;color:#4f46e5;text-decoration:none">📈 Google Analytics ↗</a>
+      </div>
+    </div>
+
+    <!-- Сводка — 4 карточки -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">
+      <div style="background:#f9fafb;padding:16px;border-radius:8px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:#111827">23</div>
+        <div style="font-size:12px;color:#6b7280">Заказов</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px">↑ 15% к пред. периоду</div>
+      </div>
+      <div style="background:#f9fafb;padding:16px;border-radius:8px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:#111827">156 200 ₽</div>
+        <div style="font-size:12px;color:#6b7280">Выручка</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px">↑ 22% к пред. периоду</div>
+      </div>
+      <div style="background:#f9fafb;padding:16px;border-radius:8px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:#111827">6 791 ₽</div>
+        <div style="font-size:12px;color:#6b7280">Средний чек</div>
+        <div style="font-size:11px;color:#ef4444;margin-top:4px">↓ 3% к пред. периоду</div>
+      </div>
+      <div style="background:#f9fafb;padding:16px;border-radius:8px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:#111827">1 247</div>
+        <div style="font-size:12px;color:#6b7280">Просмотров товаров</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px">↑ 8% к пред. периоду</div>
+      </div>
+    </div>
+
+    <!-- График заказов по дням -->
+    <div style="margin-bottom:24px">
+      <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:12px">Заказы по дням</div>
+      <div style="background:#f9fafb;border-radius:8px;padding:16px;height:140px;display:flex;align-items:flex-end;gap:6px;justify-content:space-between">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:40px"></div>
+          <span style="font-size:10px;color:#9ca3af">06</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:60px"></div>
+          <span style="font-size:10px;color:#9ca3af">07</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:30px"></div>
+          <span style="font-size:10px;color:#9ca3af">08</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:80px"></div>
+          <span style="font-size:10px;color:#9ca3af">09</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:100px"></div>
+          <span style="font-size:10px;color:#9ca3af">10</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#4f46e5;width:100%;border-radius:4px 4px 0 0;height:50px"></div>
+          <span style="font-size:10px;color:#9ca3af">11</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+          <div style="background:#818cf8;width:100%;border-radius:4px 4px 0 0;height:70px"></div>
+          <span style="font-size:10px;color:#9ca3af">12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Две колонки: Популярные товары + Статусы заказов -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+      <!-- Популярные товары -->
+      <div>
+        <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:8px">Популярные товары (по просмотрам)</div>
+        <div style="background:#f9fafb;border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span>Фильтр масляный GM 93185674</span>
+            <span style="font-weight:600">187</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span>Колодки передние TRW GDB1550</span>
+            <span style="font-weight:600">143</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span>Ремень ГРМ Gates 5674XS</span>
+            <span style="font-weight:600">112</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span>Амортизатор задний Monroe 26667</span>
+            <span style="font-weight:600">98</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span>Свеча зажигания NGK BKR6E</span>
+            <span style="font-weight:600">76</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Статусы заказов -->
+      <div>
+        <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:8px">Заказы по статусам</div>
+        <div style="background:#f9fafb;border-radius:8px;padding:12px">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Новый</span>
+            <span style="font-weight:600">3</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#3b82f6;display:inline-block"></span> В обработке</span>
+            <span style="font-weight:600">5</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#8b5cf6;display:inline-block"></span> Собран</span>
+            <span style="font-weight:600">2</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span> Выполнен</span>
+            <span style="font-weight:600">12</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span> Отменён</span>
+            <span style="font-weight:600">1</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px">
+  <h3>Что здесь есть</h3>
+  <ul style="font-size:14px;line-height:1.8">
+    <li><strong>Период</strong> — переключатель: сегодня / 7 / 30 / 90 дней</li>
+    <li><strong>Ссылки</strong> — прямые ссылки на Яндекс.Метрику и Google Analytics</li>
+    <li><strong>Сводка</strong> — 4 карточки с процентом изменения: заказы, выручка, средний чек, просмотры</li>
+    <li><strong>График</strong> — столбчатый график заказов по дням</li>
+    <li><strong>Топ товаров</strong> — по просмотрам за период</li>
+    <li><strong>Статусы</strong> — сколько заказов в каком статусе</li>
+  </ul>
+</div>

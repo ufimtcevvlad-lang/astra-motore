@@ -8,6 +8,7 @@ import { ProductClient } from "./ProductClient";
 import { ProductDescription } from "../../components/ProductDescription";
 import { ProductSpecs } from "./_components/ProductSpecs";
 import { ProductLongDescription } from "./_components/ProductLongDescription";
+import { ExpandableDescription } from "./_components/ExpandableDescription";
 import { TrackProductView, RecentlyViewed } from "../../components/RecentlyViewed";
 import { CatalogProductCard } from "../../components/catalog/CatalogProductCard";
 import { ShareButton } from "./_components/ShareButton";
@@ -235,7 +236,7 @@ export default function ProductPage({
           { label: product.category, href: categoryHref },
           { label: product.sku },
         ]}
-        title={`${product.sku} — ${product.name}`}
+        title={product.name}
       />
 
       <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
@@ -256,9 +257,10 @@ export default function ProductPage({
       {/* Описание */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Описание</h2>
-        <ProductDescription
-          text={product.description || generateProductDescription(product)}
-        />
+        <ProductDescription text={generateProductDescription(product)} />
+        {product.description ? (
+          <ExpandableDescription text={product.description} />
+        ) : null}
         {product.longDescription ? (
           <ProductLongDescription longDescription={product.longDescription} />
         ) : null}

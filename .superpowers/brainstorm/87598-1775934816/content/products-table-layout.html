@@ -1,0 +1,135 @@
+<h2>Таблица товаров — какой вариант ближе?</h2>
+<p class="subtitle">Основной экран раздела "Товары" в админке</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1e1e2e;">
+      <!-- Compact table variant -->
+      <div style="background: #16161e; border-radius: 8px; overflow: hidden; font-size: 11px; color: #ccc;">
+        <!-- Toolbar -->
+        <div style="padding: 10px 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="flex:1; background: rgba(255,255,255,0.06); border-radius: 4px; padding: 6px 10px; color: #888; font-size: 10px;">🔍 Поиск по названию или артикулу...</div>
+          <div style="background: rgba(99,102,241,0.15); color: #818cf8; padding: 5px 10px; border-radius: 4px; font-size: 10px;">Категория ▾</div>
+          <div style="background: rgba(99,102,241,0.15); color: #818cf8; padding: 5px 10px; border-radius: 4px; font-size: 10px;">Бренд ▾</div>
+          <div style="background: rgba(99,102,241,0.15); color: #818cf8; padding: 5px 10px; border-radius: 4px; font-size: 10px;">Наличие ▾</div>
+          <div style="background: #4f46e5; color: white; padding: 5px 12px; border-radius: 4px; font-size: 10px;">+ Добавить</div>
+        </div>
+        <!-- Table header -->
+        <div style="display: grid; grid-template-columns: 40px 1fr 100px 80px 70px 60px 50px; padding: 6px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #666; font-size: 9px; text-transform: uppercase;">
+          <div>Фото</div><div>Название</div><div>Артикул</div><div>Бренд</div><div>Цена</div><div>Наличие</div><div></div>
+        </div>
+        <!-- Row 1 -->
+        <div style="display: grid; grid-template-columns: 40px 1fr 100px 80px 70px 60px 50px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: center;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+          <div>Фильтр масляный</div>
+          <div style="color:#888;">OC 456</div>
+          <div>Mahle</div>
+          <div>850 ₽</div>
+          <div><span style="color:#4ade80;">●</span> Да</div>
+          <div style="color:#818cf8;">✎</div>
+        </div>
+        <!-- Row 2 -->
+        <div style="display: grid; grid-template-columns: 40px 1fr 100px 80px 70px 60px 50px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: center;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+          <div>Свеча зажигания иридиевая</div>
+          <div style="color:#888;">BKR6EIX</div>
+          <div>NGK</div>
+          <div>620 ₽</div>
+          <div><span style="color:#4ade80;">●</span> Да</div>
+          <div style="color:#818cf8;">✎</div>
+        </div>
+        <!-- Row 3 -->
+        <div style="display: grid; grid-template-columns: 40px 1fr 100px 80px 70px 60px 50px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: center;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+          <div>Тормозные колодки передние</div>
+          <div style="color:#888;">GDB1550</div>
+          <div>TRW</div>
+          <div>2 400 ₽</div>
+          <div><span style="color:#f87171;">●</span> Нет</div>
+          <div style="color:#818cf8;">✎</div>
+        </div>
+        <!-- Row 4 -->
+        <div style="display: grid; grid-template-columns: 40px 1fr 100px 80px 70px 60px 50px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: center;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,0.05);border-radius:4px;"></div>
+          <div>Ремень ГРМ</div>
+          <div style="color:#888;">CT1044</div>
+          <div>Gates</div>
+          <div>1 750 ₽</div>
+          <div><span style="color:#4ade80;">●</span> Да</div>
+          <div style="color:#818cf8;">✎</div>
+        </div>
+        <!-- Pagination -->
+        <div style="padding: 8px 12px; display: flex; justify-content: space-between; color: #666; font-size: 9px;">
+          <div>Показано 1-25 из 121</div>
+          <div>← 1 2 3 4 5 →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Компактная таблица</h3>
+      <p>Максимум строк на экране. Мелкие фото, все данные в одной строке. Быстро сканировать глазами по 25-50 товаров.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1e1e2e;">
+      <!-- Card-style variant -->
+      <div style="background: #16161e; border-radius: 8px; overflow: hidden; font-size: 11px; color: #ccc;">
+        <!-- Toolbar -->
+        <div style="padding: 10px 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="flex:1; background: rgba(255,255,255,0.06); border-radius: 4px; padding: 6px 10px; color: #888; font-size: 10px;">🔍 Поиск по названию или артикулу...</div>
+          <div style="background: rgba(99,102,241,0.15); color: #818cf8; padding: 5px 10px; border-radius: 4px; font-size: 10px;">Фильтры ▾</div>
+          <div style="background: #4f46e5; color: white; padding: 5px 12px; border-radius: 4px; font-size: 10px;">+ Добавить</div>
+        </div>
+        <!-- Card row 1 -->
+        <div style="padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 12px; align-items: center;">
+          <div style="width:56px;height:56px;background:rgba(255,255,255,0.05);border-radius:6px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div style="font-weight: 600; margin-bottom: 3px;">Фильтр масляный</div>
+            <div style="color: #888; font-size: 10px;">OC 456 · Mahle · Категория: ТО и расходники</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 600; color: #4ade80;">850 ₽</div>
+            <div style="font-size: 10px; color: #4ade80;">В наличии</div>
+          </div>
+          <div style="color:#818cf8; padding: 4px 8px;">✎</div>
+        </div>
+        <!-- Card row 2 -->
+        <div style="padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 12px; align-items: center;">
+          <div style="width:56px;height:56px;background:rgba(255,255,255,0.05);border-radius:6px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div style="font-weight: 600; margin-bottom: 3px;">Свеча зажигания иридиевая</div>
+            <div style="color: #888; font-size: 10px;">BKR6EIX · NGK · Категория: ТО и расходники</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 600; color: #4ade80;">620 ₽</div>
+            <div style="font-size: 10px; color: #4ade80;">В наличии</div>
+          </div>
+          <div style="color:#818cf8; padding: 4px 8px;">✎</div>
+        </div>
+        <!-- Card row 3 -->
+        <div style="padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 12px; align-items: center;">
+          <div style="width:56px;height:56px;background:rgba(255,255,255,0.05);border-radius:6px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div style="font-weight: 600; margin-bottom: 3px;">Тормозные колодки передние</div>
+            <div style="color: #888; font-size: 10px;">GDB1550 · TRW · Категория: Подвеска</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 600; color: #f87171;">2 400 ₽</div>
+            <div style="font-size: 10px; color: #f87171;">Нет в наличии</div>
+          </div>
+          <div style="color:#818cf8; padding: 4px 8px;">✎</div>
+        </div>
+        <!-- Pagination -->
+        <div style="padding: 8px 12px; display: flex; justify-content: space-between; color: #666; font-size: 9px;">
+          <div>Показано 1-15 из 121</div>
+          <div>← 1 2 3 ... 9 →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Карточки-строки</h3>
+      <p>Крупнее фото, категория видна сразу. Меньше строк на экране (15-20), но информативнее каждая строка. Проще визуально отличать товары.</p>
+    </div>
+  </div>
+</div>

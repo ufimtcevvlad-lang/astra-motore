@@ -97,7 +97,7 @@ export function generateProductMetaDescription(product: Product): string {
 }
 
 export function generateProductTitle(product: Product): string {
-  return `${product.sku} — ${product.name} | GM Shop 66`;
+  return `${product.name} | GM Shop 66`;
 }
 
 export function generateProductKeywords(product: Product): string[] {

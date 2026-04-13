@@ -1,0 +1,242 @@
+<h2>Управление товарами</h2>
+<p class="subtitle">Список товаров, редактирование и массовые операции</p>
+
+<!-- Products list -->
+<div class="mockup" style="max-width: 900px; margin: 0 auto;">
+  <div class="mockup-header">Админка → Товары</div>
+  <div class="mockup-body" style="padding: 1.25rem; background: #f8fafc;">
+
+    <!-- Toolbar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <input class="mock-input" style="width: 250px; font-size: 0.8rem; padding: 6px 10px;" placeholder="🔍 Поиск по названию, артикулу, бренду...">
+        <select style="font-size: 0.75rem; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; color: #475569; background: white;">
+          <option>Все категории</option>
+        </select>
+        <select style="font-size: 0.75rem; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; color: #475569; background: white;">
+          <option>Все бренды</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="mock-button" style="font-size: 0.75rem; padding: 6px 14px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer;">+ Добавить товар</button>
+        <button class="mock-button" style="font-size: 0.75rem; padding: 6px 12px; background: white; color: #475569; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">📥 Импорт Excel</button>
+        <button class="mock-button" style="font-size: 0.75rem; padding: 6px 12px; background: white; color: #475569; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">📤 Экспорт Excel</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div style="background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden;">
+      <table style="width: 100%; font-size: 0.78rem; border-collapse: collapse;">
+        <tr style="background: #f8fafc; color: #64748b; text-align: left;">
+          <th style="padding: 10px; font-weight: 500; width: 30px;"><input type="checkbox" style="cursor:pointer;"></th>
+          <th style="padding: 10px; font-weight: 500;">Фото</th>
+          <th style="padding: 10px; font-weight: 500;">Наименование</th>
+          <th style="padding: 10px; font-weight: 500;">Артикул</th>
+          <th style="padding: 10px; font-weight: 500;">Бренд</th>
+          <th style="padding: 10px; font-weight: 500;">Цена</th>
+          <th style="padding: 10px; font-weight: 500;">Остаток</th>
+          <th style="padding: 10px; font-weight: 500;">Действия</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 8px 10px;"><input type="checkbox" style="cursor:pointer;"></td>
+          <td style="padding: 8px 10px;"><div style="width:36px;height:36px;background:#e2e8f0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#94a3b8;">📷</div></td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Свеча зажигания NGK BKR6E</td>
+          <td style="padding: 8px 10px; color: #6366f1; font-family: monospace;">0242229699</td>
+          <td style="padding: 8px 10px; color: #475569;">Bosch</td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">450 ₽</td>
+          <td style="padding: 8px 10px;"><span style="color: #22c55e;">12 шт</span></td>
+          <td style="padding: 8px 10px;">
+            <span style="color: #6366f1; cursor: pointer; margin-right: 8px; font-size: 0.85rem;" title="Редактировать">✏️</span>
+            <span style="color: #ef4444; cursor: pointer; font-size: 0.85rem;" title="Удалить">🗑</span>
+          </td>
+        </tr>
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 8px 10px;"><input type="checkbox" style="cursor:pointer;"></td>
+          <td style="padding: 8px 10px;"><div style="width:36px;height:36px;background:#e2e8f0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#94a3b8;">📷</div></td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Фильтр масляный GM Original</td>
+          <td style="padding: 8px 10px; color: #6366f1; font-family: monospace;">55594651</td>
+          <td style="padding: 8px 10px; color: #475569;">GM</td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">680 ₽</td>
+          <td style="padding: 8px 10px;"><span style="color: #22c55e;">8 шт</span></td>
+          <td style="padding: 8px 10px;">
+            <span style="color: #6366f1; cursor: pointer; margin-right: 8px; font-size: 0.85rem;">✏️</span>
+            <span style="color: #ef4444; cursor: pointer; font-size: 0.85rem;">🗑</span>
+          </td>
+        </tr>
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 8px 10px;"><input type="checkbox" style="cursor:pointer;"></td>
+          <td style="padding: 8px 10px;"><div style="width:36px;height:36px;background:#e2e8f0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#94a3b8;">📷</div></td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Колодки тормозные передние</td>
+          <td style="padding: 8px 10px; color: #6366f1; font-family: monospace;">1605135</td>
+          <td style="padding: 8px 10px; color: #475569;">Opel</td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">2 400 ₽</td>
+          <td style="padding: 8px 10px;"><span style="color: #f59e0b;">2 шт</span></td>
+          <td style="padding: 8px 10px;">
+            <span style="color: #6366f1; cursor: pointer; margin-right: 8px; font-size: 0.85rem;">✏️</span>
+            <span style="color: #ef4444; cursor: pointer; font-size: 0.85rem;">🗑</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 10px;"><input type="checkbox" style="cursor:pointer;"></td>
+          <td style="padding: 8px 10px;"><div style="width:36px;height:36px;background:#fff3cd;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#92400e;">нет фото</div></td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Ремень ГРМ Gates</td>
+          <td style="padding: 8px 10px; color: #6366f1; font-family: monospace;">5636XS</td>
+          <td style="padding: 8px 10px; color: #475569;">Gates</td>
+          <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">3 100 ₽</td>
+          <td style="padding: 8px 10px;"><span style="color: #ef4444;">0 шт</span></td>
+          <td style="padding: 8px 10px;">
+            <span style="color: #6366f1; cursor: pointer; margin-right: 8px; font-size: 0.85rem;">✏️</span>
+            <span style="color: #ef4444; cursor: pointer; font-size: 0.85rem;">🗑</span>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Pagination -->
+      <div style="padding: 10px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b;">
+        <span>Показано 1-20 из 99 товаров</span>
+        <div style="display: flex; gap: 4px;">
+          <span style="padding: 4px 8px; background: #6366f1; color: white; border-radius: 4px;">1</span>
+          <span style="padding: 4px 8px; cursor: pointer;">2</span>
+          <span style="padding: 4px 8px; cursor: pointer;">3</span>
+          <span style="padding: 4px 8px; cursor: pointer;">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk actions -->
+    <div style="margin-top: 0.75rem; padding: 10px 14px; background: #eff6ff; border-radius: 8px; display: flex; align-items: center; gap: 12px; font-size: 0.78rem; color: #1e40af;">
+      <span>Выбрано: <strong>0</strong> товаров</span>
+      <span style="color: #cbd5e1;">|</span>
+      <span style="cursor: pointer; text-decoration: underline;">Изменить цену</span>
+      <span style="cursor: pointer; text-decoration: underline;">Изменить остаток</span>
+      <span style="cursor: pointer; text-decoration: underline; color: #ef4444;">Удалить</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Product edit form -->
+<div class="mockup" style="max-width: 900px; margin: 1.5rem auto 0;">
+  <div class="mockup-header">Редактирование товара</div>
+  <div class="mockup-body" style="padding: 1.25rem; background: #f8fafc;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+
+      <!-- Left column -->
+      <div>
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Наименование *</label>
+          <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="Свеча зажигания NGK BKR6E">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Артикул *</label>
+            <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="0242229699">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Бренд *</label>
+            <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="Bosch">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Цена (₽) *</label>
+            <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="450">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Остаток (шт)</label>
+            <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="12">
+          </div>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Категория *</label>
+          <select style="width: 100%; padding: 8px 10px; font-size: 0.85rem; border: 1px solid #d1d5db; border-radius: 6px;">
+            <option>Система зажигания</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Автомобиль</label>
+          <input class="mock-input" style="width: 100%; padding: 8px 10px; font-size: 0.85rem;" value="Opel Astra J, Chevrolet Cruze">
+        </div>
+        <div>
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Краткое описание</label>
+          <textarea style="width: 100%; padding: 8px 10px; font-size: 0.85rem; border: 1px solid #d1d5db; border-radius: 6px; height: 60px; resize: vertical;">Оригинальная свеча зажигания с иридиевым электродом</textarea>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <!-- Photo upload -->
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Фотографии</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <div style="width: 80px; height: 80px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #64748b; position: relative;">
+              📷 01.webp
+              <div style="position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; color: white; font-size: 0.55rem; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</div>
+            </div>
+            <div style="width: 80px; height: 80px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #64748b; position: relative;">
+              📷 02.webp
+              <div style="position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; color: white; font-size: 0.55rem; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</div>
+            </div>
+            <div style="width: 80px; height: 80px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #94a3b8; cursor: pointer;" title="Добавить фото">
+              +
+            </div>
+          </div>
+          <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 4px;">Перетащите или нажмите +. Форматы: WebP, JPG, PNG. Первое фото — обложка.</div>
+        </div>
+
+        <!-- Specs -->
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Характеристики</label>
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: center;">
+              <input class="mock-input" style="flex: 1; padding: 4px 8px; font-size: 0.78rem;" value="Тип электрода">
+              <input class="mock-input" style="flex: 1; padding: 4px 8px; font-size: 0.78rem;" value="Иридиевый">
+              <span style="color: #ef4444; cursor: pointer; font-size: 0.8rem;">×</span>
+            </div>
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: center;">
+              <input class="mock-input" style="flex: 1; padding: 4px 8px; font-size: 0.78rem;" value="Зазор">
+              <input class="mock-input" style="flex: 1; padding: 4px 8px; font-size: 0.78rem;" value="0.8 мм">
+              <span style="color: #ef4444; cursor: pointer; font-size: 0.8rem;">×</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #6366f1; cursor: pointer;">+ Добавить характеристику</div>
+          </div>
+        </div>
+
+        <!-- Analogs -->
+        <div>
+          <label style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px;">Аналоги</label>
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+            <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 0.78rem; color: #334155;">Свеча Denso IK20 — 380 ₽</span>
+              <span style="color: #ef4444; cursor: pointer; font-size: 0.8rem;">×</span>
+            </div>
+            <input class="mock-input" style="width: 100%; padding: 4px 8px; font-size: 0.78rem;" placeholder="Поиск по артикулу или названию...">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+      <button style="font-size: 0.8rem; padding: 8px 20px; background: white; color: #64748b; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">Отмена</button>
+      <button style="font-size: 0.8rem; padding: 8px 24px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer;">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Возможности</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+    <div>
+      <p><strong>Список товаров:</strong> поиск, фильтры по категории и бренду, пагинация, чекбоксы для массовых действий</p>
+      <p><strong>Массовые действия:</strong> выбрать несколько товаров → изменить цену, остаток или удалить</p>
+      <p><strong>Импорт Excel:</strong> загрузить файл → предпросмотр данных → подтвердить → товары добавлены/обновлены</p>
+    </div>
+    <div>
+      <p><strong>Экспорт Excel:</strong> скачать все товары (наименование, артикул, бренд, цена, остаток) одной кнопкой</p>
+      <p><strong>Редактирование:</strong> все поля товара, drag & drop фото, таблица характеристик, поиск аналогов</p>
+      <p><strong>Подсветка проблем:</strong> товары без фото выделены жёлтым, нулевой остаток — красным</p>
+    </div>
+  </div>
+</div>

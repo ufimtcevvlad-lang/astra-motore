@@ -1,0 +1,7 @@
+{"type":"server-started","port":53228,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:53228","screen_dir":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content","state_dir":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/state"}
+{"type":"screen-added","file":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content/approaches.html"}
+{"type":"screen-added","file":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content/admin-layout.html"}
+{"type":"screen-added","file":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content/chat-system.html"}
+{"type":"screen-added","file":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content/products-management.html"}
+{"type":"screen-added","file":"/Users/vladislavufimcev/Documents/autoparts-shop/.superpowers/brainstorm/67603-1775921679/content/orders-management.html"}
+{"type":"server-stopped","reason":"idle timeout"}

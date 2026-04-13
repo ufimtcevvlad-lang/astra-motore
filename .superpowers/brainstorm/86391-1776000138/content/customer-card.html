@@ -1,0 +1,117 @@
+<h2>Карточка клиента</h2>
+<p class="subtitle">Что видит админ при клике на клиента в таблице</p>
+
+<div class="mockup">
+  <div class="mockup-header">Клиенты → Иванов Алексей</div>
+  <div class="mockup-body" style="font-size:13px">
+
+    <!-- Шапка -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #e5e7eb">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <h3 style="margin:0;font-size:20px">Иванов Алексей</h3>
+          <span style="background:#dbeafe;color:#1d4ed8;padding:2px 10px;border-radius:12px;font-size:12px">Постоянный</span>
+        </div>
+        <div style="color:#6b7280;font-size:13px;display:flex;gap:16px;margin-top:6px">
+          <span>📞 +7 912 345-67-89</span>
+          <span>✉️ ivanov@mail.ru</span>
+        </div>
+        <div style="color:#6b7280;font-size:12px;margin-top:4px">🚗 Opel Astra J, Chevrolet Cruze</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="mock-button" style="font-size:12px">💬 Чаты (2)</button>
+        <button class="mock-button" style="font-size:12px">✏️ Редактировать</button>
+      </div>
+    </div>
+
+    <!-- Две колонки -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+
+      <!-- Статистика -->
+      <div>
+        <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:8px">Статистика</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:#f9fafb;padding:12px;border-radius:8px;text-align:center">
+            <div style="font-size:24px;font-weight:700;color:#111827">12</div>
+            <div style="font-size:11px;color:#6b7280">Заказов</div>
+          </div>
+          <div style="background:#f9fafb;padding:12px;border-radius:8px;text-align:center">
+            <div style="font-size:24px;font-weight:700;color:#111827">84 500 ₽</div>
+            <div style="font-size:11px;color:#6b7280">Общая сумма</div>
+          </div>
+          <div style="background:#f9fafb;padding:12px;border-radius:8px;text-align:center">
+            <div style="font-size:24px;font-weight:700;color:#111827">7 042 ₽</div>
+            <div style="font-size:11px;color:#6b7280">Средний чек</div>
+          </div>
+          <div style="background:#f9fafb;padding:12px;border-radius:8px;text-align:center">
+            <div style="font-size:24px;font-weight:700;color:#111827">10.04</div>
+            <div style="font-size:11px;color:#6b7280">Последний заказ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Заметки админа -->
+      <div>
+        <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:8px">Заметки</div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px;min-height:100px">
+          <div style="font-size:13px;color:#92400e;margin-bottom:8px">Постоянный клиент, берёт расходники на Astra J. Просит скидку от 5000₽ — даём 5%.</div>
+          <div style="font-size:13px;color:#92400e">Предпочитает самовывоз.</div>
+          <div style="margin-top:8px;text-align:right">
+            <button class="mock-button" style="font-size:11px;padding:4px 8px">✏️ Редактировать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- История заказов -->
+    <div>
+      <div style="font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:8px">История заказов</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="border-bottom:2px solid #e5e7eb;text-align:left">
+            <th style="padding:8px">№ заказа</th>
+            <th style="padding:8px">Дата</th>
+            <th style="padding:8px">Товары</th>
+            <th style="padding:8px">Сумма</th>
+            <th style="padding:8px">Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <td style="padding:8px;color:#4f46e5;font-weight:500">AM-20260410-003</td>
+            <td style="padding:8px">10.04.2026</td>
+            <td style="padding:8px">Фильтр масляный, Колодки передние</td>
+            <td style="padding:8px;font-weight:600">4 200 ₽</td>
+            <td style="padding:8px"><span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:12px;font-size:11px">Выполнен</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <td style="padding:8px;color:#4f46e5;font-weight:500">AM-20260328-011</td>
+            <td style="padding:8px">28.03.2026</td>
+            <td style="padding:8px">Амортизатор задний × 2</td>
+            <td style="padding:8px;font-weight:600">12 800 ₽</td>
+            <td style="padding:8px"><span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:12px;font-size:11px">Выполнен</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <td style="padding:8px;color:#4f46e5;font-weight:500">AM-20260315-007</td>
+            <td style="padding:8px">15.03.2026</td>
+            <td style="padding:8px">Ремень ГРМ, Ролик натяжной, Помпа</td>
+            <td style="padding:8px;font-weight:600">18 500 ₽</td>
+            <td style="padding:8px"><span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:12px;font-size:11px">Выполнен</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="color:#9ca3af;font-size:12px;margin-top:8px;text-align:center">Показано 3 из 12 заказов</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px">
+  <h3>Что здесь есть</h3>
+  <ul style="font-size:14px;line-height:1.8">
+    <li><strong>Шапка</strong> — имя, статус-бейдж, контакты, марки авто, кнопки «Чаты» и «Редактировать»</li>
+    <li><strong>Статистика</strong> — 4 карточки: заказов, сумма, средний чек, последний заказ</li>
+    <li><strong>Заметки админа</strong> — свободный текст, редактируемый</li>
+    <li><strong>История заказов</strong> — таблица с кликабельными номерами → переход в заказ</li>
+  </ul>
+</div>
