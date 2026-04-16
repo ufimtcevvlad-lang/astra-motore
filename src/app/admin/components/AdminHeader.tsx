@@ -1,3 +1,7 @@
+import dynamic from "next/dynamic";
+
+const PriceAlertBell = dynamic(() => import("./PriceAlertBell"), { ssr: false });
+
 interface AdminHeaderProps {
   title: string;
   children?: React.ReactNode;
@@ -16,6 +20,7 @@ export default function AdminHeader({ title, children }: AdminHeaderProps) {
       <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
       <div className="flex items-center gap-4">
         {children}
+        <PriceAlertBell />
         <span className="text-sm text-gray-500">{dateStr}</span>
       </div>
     </header>

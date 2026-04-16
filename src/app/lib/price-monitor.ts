@@ -54,3 +54,34 @@ export async function triggerParse(article: string, brand: string): Promise<Mark
     return null;
   }
 }
+
+export interface NotificationItem {
+  article: string;
+  brand: string;
+  your_price: number;
+  median_price: number;
+  min_price: number;
+  max_price: number;
+  deviation_pct: number;
+  sites_count: number;
+}
+
+export interface Notifications {
+  generated_at: string | null;
+  total_parsed: number;
+  red_count: number;
+  yellow_count: number;
+  green_count: number;
+  red_items: NotificationItem[];
+  yellow_items: NotificationItem[];
+}
+
+export async function fetchNotifications(): Promise<Notifications | null> {
+  try {
+    const resp = await fetch("/api/price-monitor/notifications");
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}

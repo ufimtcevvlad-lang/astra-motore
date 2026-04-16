@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import AdminHeader from "@/app/admin/components/AdminHeader";
 import StatCard from "@/app/admin/components/StatCard";
 import RecentOrdersTable from "@/app/admin/components/RecentOrdersTable";
+import { fetchNotifications, Notifications } from "@/app/lib/price-monitor";
 
 interface RecentOrder {
   id: number;
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notifications, setNotifications] = useState<Notifications | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/dashboard")
@@ -57,6 +59,7 @@ export default function DashboardPage() {
       .then((d: DashboardData) => setData(d))
       .catch((e: unknown) => setError(e instanceof Error ? e.message : "Ошибка"))
       .finally(() => setLoading(false));
+    fetchNotifications().then(setNotifications);
   }, []);
 
   const ordersDelta = data ? delta(data.ordersToday, data.ordersYesterday) : null;
@@ -102,6 +105,44 @@ export default function DashboardPage() {
                 value={data.totalProducts}
               />
             </div>
+
+            {/* Price monitor report card */}
+            {notifications && (
+              <div className="bg-white rounded-xl shadow-sm mb-6 px-5 py-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 mb-1">
+                      📊 Ночной отчёт
+                      {notifications.generated_at && (
+                        <span className="ml-2 text-xs font-normal text-gray-400">
+                          {new Date(notifications.generated_at).toLocaleDateString("ru-RU", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
+                      )}
+                    </p>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span>
+                        🔴 <span className="font-medium text-red-600">Красных: {notifications.red_count}</span>
+                      </span>
+                      <span>
+                        🟡 <span className="font-medium text-yellow-600">Жёлтых: {notifications.yellow_count}</span>
+                      </span>
+                      <span>
+                        🟢 <span className="font-medium text-green-600">Зелёных: {notifications.green_count}</span>
+                      </span>
+                    </div>
+                  </div>
+                  {notifications.total_parsed > 0 && (
+                    <p className="text-xs text-gray-400 shrink-0">
+                      Проверено {notifications.total_parsed} товаров
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Recent orders */}
             <div className="bg-white rounded-xl shadow-sm">
