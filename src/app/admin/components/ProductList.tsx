@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import Pagination from "./Pagination";
+import { MarketSummary, fetchMarketData, getPriceZone, formatPrice } from "@/app/lib/price-monitor";
 
 interface ProductItem {
   id: number;
@@ -19,6 +21,57 @@ interface ProductListProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+}
+
+const ZONE_DOT: Record<string, string> = {
+  red: "bg-red-500",
+  green: "bg-green-500",
+  yellow: "bg-yellow-400",
+  no_data: "bg-gray-300",
+};
+
+function MarketCell({ item }: { item: ProductItem }) {
+  const [data, setData] = useState<MarketSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!item.sku || !item.brand) {
+      setLoading(false);
+      return;
+    }
+    fetchMarketData(item.sku, item.brand).then((d) => {
+      setData(d);
+      setLoading(false);
+    });
+  }, [item.sku, item.brand]);
+
+  if (loading) {
+    return <span className="text-xs text-gray-300">…</span>;
+  }
+
+  const zone = getPriceZone(item.price, data);
+  const dot = ZONE_DOT[zone];
+
+  if (!data || data.offers.length === 0) {
+    return (
+      <div className="flex items-center justify-end gap-1.5">
+        <span className={`w-2 h-2 rounded-full ${dot}`} />
+        <span className="text-xs text-gray-400">нет</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex items-center justify-end gap-1.5"
+      title={`Мин: ${formatPrice(data.min_price)}, Медиана: ${formatPrice(data.median_price)}, Макс: ${formatPrice(data.max_price)} (${data.sites_count} сайт.)`}
+    >
+      <span className={`w-2 h-2 rounded-full ${dot}`} />
+      <span className="text-xs text-gray-600 whitespace-nowrap">
+        {Math.round(data.min_price)}–{Math.round(data.max_price)}₽
+      </span>
+    </div>
+  );
 }
 
 export default function ProductList({ items, page, totalPages, onPageChange }: ProductListProps) {
@@ -78,11 +131,9 @@ export default function ProductList({ items, page, totalPages, onPageChange }: P
               </div>
             </div>
 
-            {/* Market indicator (placeholder) */}
-            <div className="flex-shrink-0 w-20 text-center">
-              <span className="text-xs text-gray-400 px-2 py-0.5 rounded bg-gray-100">
-                Рынок
-              </span>
+            {/* Market indicator */}
+            <div className="flex-shrink-0 w-28">
+              <MarketCell item={item} />
             </div>
 
             {/* Edit link */}
