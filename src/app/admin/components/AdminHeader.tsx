@@ -1,6 +1,4 @@
-import dynamic from "next/dynamic";
-
-const PriceAlertBell = dynamic(() => import("./PriceAlertBell"), { ssr: false });
+import PriceAlertBell from "./PriceAlertBell";
 
 interface AdminHeaderProps {
   title: string;
