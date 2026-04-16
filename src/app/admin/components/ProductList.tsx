@@ -78,6 +78,13 @@ export default function ProductList({ items, page, totalPages, onPageChange }: P
               </div>
             </div>
 
+            {/* Market indicator (placeholder) */}
+            <div className="flex-shrink-0 w-20 text-center">
+              <span className="text-xs text-gray-400 px-2 py-0.5 rounded bg-gray-100">
+                Рынок
+              </span>
+            </div>
+
             {/* Edit link */}
             <Link
               href={`/admin/products/${item.id}`}

@@ -6,6 +6,7 @@ import ImageUploader from "./ImageUploader";
 import SpecsEditor from "./SpecsEditor";
 import AnalogsSelector from "./AnalogsSelector";
 import ConfirmModal from "./ConfirmModal";
+import MarketPriceWidget from "./MarketPriceWidget";
 
 interface Category {
   id: number;
@@ -194,6 +195,17 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
           </div>
         </div>
       </div>
+
+      {/* Рыночные цены */}
+      {isEdit && sku && brand && Number(price) > 0 && (
+        <div className="mb-6">
+          <MarketPriceWidget
+            article={sku}
+            brand={brand}
+            yourPrice={Number(price)}
+          />
+        </div>
+      )}
 
       {/* Медиа */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
