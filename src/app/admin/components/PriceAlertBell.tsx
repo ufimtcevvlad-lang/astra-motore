@@ -3,6 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Notifications, NotificationItem, fetchNotifications } from "@/app/lib/price-monitor";
 
+interface SourceStatus {
+  site: string;
+  enabled: number;
+  auth_config: string | null;
+  last_success_at: string | null;
+  last_error: string | null;
+}
+
 function formatPrice(p: number) {
   return p.toLocaleString("ru-RU") + " ₽";
 }
@@ -37,14 +45,26 @@ function ItemRow({ item, zone }: { item: NotificationItem; zone: "red" | "yellow
 
 export default function PriceAlertBell() {
   const [data, setData] = useState<Notifications | null>(null);
+  const [sources, setSources] = useState<SourceStatus[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchNotifications().then(setData);
-    const id = setInterval(() => fetchNotifications().then(setData), 5 * 60 * 1000);
+    const load = () => {
+      fetchNotifications().then(setData);
+      fetch("/api/price-monitor/status")
+        .then((r) => (r.ok ? r.json() : { sources: [] }))
+        .then((d) => setSources(d.sources || []))
+        .catch(() => setSources([]));
+    };
+    load();
+    const id = setInterval(load, 5 * 60 * 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Check exist.ru cookie status — "wholesale" means cookie expired
+  const existSource = sources.find((s) => s.site === "exist.ru");
+  const existWholesale = existSource?.auth_config === "wholesale";
 
   // Close on outside click
   useEffect(() => {
@@ -57,7 +77,7 @@ export default function PriceAlertBell() {
   }, [open]);
 
   const total = (data?.red_count ?? 0) + (data?.yellow_count ?? 0);
-  const hasAlerts = total > 0;
+  const hasAlerts = total > 0 || existWholesale;
 
   return (
     <div className="relative" ref={ref}>
@@ -98,6 +118,21 @@ export default function PriceAlertBell() {
               </span>
             )}
           </div>
+
+          {/* exist.ru cookie warning */}
+          {existWholesale && (
+            <div className="px-4 py-3 bg-orange-50 border-b border-orange-200">
+              <div className="flex items-start gap-2">
+                <span className="text-orange-500 text-lg leading-none">⚠️</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-orange-900">exist.ru: слетел cookie</p>
+                  <p className="text-xs text-orange-800 mt-0.5">
+                    Сейчас парсятся оптовые цены вместо розничных. Нужно обновить cookie — скажи "обнови cookie exist.ru" ассистенту.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Items */}
           <div className="max-h-80 overflow-y-auto">
