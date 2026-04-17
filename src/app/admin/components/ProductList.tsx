@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import Pagination from "./Pagination";
+import { saveScroll } from "./useScrollRestore";
 import {
   BulkEntry,
   bulkEntryToSummary,
@@ -71,6 +73,8 @@ function MarketCell({
 }
 
 export default function ProductList({ items, page, totalPages, onPageChange }: ProductListProps) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [market, setMarket] = useState<Map<string, BulkEntry>>(new Map());
   const [marketLoading, setMarketLoading] = useState(true);
 
@@ -158,6 +162,7 @@ export default function ProductList({ items, page, totalPages, onPageChange }: P
             {/* Edit link */}
             <Link
               href={`/admin/products/${item.id}`}
+              onClick={() => saveScroll(`${pathname}?${searchParams.toString()}`)}
               className="flex-shrink-0 p-2 text-gray-400 hover:text-indigo-600 transition"
               title="Редактировать"
             >
