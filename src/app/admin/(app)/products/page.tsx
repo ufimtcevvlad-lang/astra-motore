@@ -2,18 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import AdminHeader from "@/app/admin/components/AdminHeader";
 import ProductFilters, { ProductFiltersState } from "@/app/admin/components/ProductFilters";
 import ProductList from "@/app/admin/components/ProductList";
-
-const defaultFilters: ProductFiltersState = {
-  search: "",
-  categoryId: "",
-  brand: "",
-  inStock: "",
-  priceFrom: "",
-  priceTo: "",
-};
+import { useProductFilters } from "@/app/admin/components/useProductFilters";
+import { useScrollRestore } from "@/app/admin/components/useScrollRestore";
 
 interface Category {
   id: number;
@@ -32,13 +26,17 @@ interface ProductItem {
 }
 
 export default function ProductsPage() {
-  const [filters, setFilters] = useState<ProductFiltersState>(defaultFilters);
+  const { filters, page, setFilters, setPage } = useProductFilters();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const scrollKey = `${pathname}?${searchParams.toString()}`;
   const [items, setItems] = useState<ProductItem[]>([]);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [brands, setBrands] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useScrollRestore(scrollKey, !loading && items.length > 0);
 
   useEffect(() => {
     fetch("/api/admin/categories")
@@ -77,7 +75,6 @@ export default function ProductsPage() {
 
   function handleFilterChange(newFilters: ProductFiltersState) {
     setFilters(newFilters);
-    setPage(1);
   }
 
   return (
