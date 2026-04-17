@@ -69,7 +69,7 @@ except Exception:
 part-kom.ru | НЕ НАЙДЕН | сайт знает: Robert Bosch, Бош, BOSCH [+ добавить как алиас]
 ```
 
-Цена реализации — второй запрос без `brand`-фильтра для тех скраперов, где это применимо (exist, emex, vdopel, part-kom). Для plentycar — сканировать CSV без brand-проверки. Для armtek — API требует BRAND в запросе, при пустом вернёт ошибку; там `found_brands = null` (не пустой список — именно null, чтобы UI мог отличить «не поддерживается» от «ничего не нашли»).
+Цена реализации — второй запрос без `brand`-фильтра для тех скраперов, где это применимо (exist, emex, vdopel, part-kom, zzap). Для plentycar — сканировать CSV без brand-проверки. Если конкретный сайт не поддерживает поиск без бренда — там `found_brands = null` (не пустой список — именно null, чтобы UI мог отличить «не поддерживается» от «ничего не нашли»).
 
 **Соглашение:** `found_brands = []` означает «скрапер искал, но сайт ничего не знает об этом артикуле ни под одним брендом». `found_brands = null` означает «скрапер не поддерживает сбор списка брендов».
 
@@ -153,13 +153,15 @@ def brand_matches(site_brand: str, query_brand: str, aliases: dict[str, set[str]
       "duration_ms": 890
     },
     {
-      "site": "armtek.ru",
-      "status": "NOT_CONFIGURED",
-      "offers": [],
+      "site": "zzap.ru",
+      "status": "OFFERS",
+      "offers": [
+        {"price": 380, "delivery_days": 3, "in_stock": true}
+      ],
       "found_brands": null,
       "error_category": null,
-      "error_text": "ARMTEK_LOGIN / ARMTEK_PASSWORD не настроены",
-      "duration_ms": 0
+      "error_text": null,
+      "duration_ms": 1560
     },
     {
       "site": "emex.ru",
@@ -174,7 +176,7 @@ def brand_matches(site_brand: str, query_brand: str, aliases: dict[str, set[str]
 }
 ```
 
-Всегда 6 элементов в `sites[]`, порядок фиксированный: `exist.ru, emex.ru, armtek.ru, part-kom.ru, vdopel.ru, plentycar.ru`.
+Всегда 6 элементов в `sites[]`, порядок фиксированный: `exist.ru, emex.ru, zzap.ru, part-kom.ru, vdopel.ru, plentycar.ru`.
 
 ### `POST /aliases`
 
@@ -255,7 +257,7 @@ async def get_result(self, article: str, brand: str, aliases: dict) -> SiteResul
 │ │ exist.ru     │ 🟢 В наличии │ 311₽   │ 2 дн.           │  │
 │ │              │              │ 332₽   │ 5 дн.           │  │
 │ │ emex.ru      │ 🔴 Ошибка    │ —      │ timeout 30s     │  │
-│ │ armtek.ru    │ ⚪ Нет кред.  │ —      │ ARMTEK_LOGIN    │  │
+│ │ zzap.ru      │ 🟢 В наличии │ 380₽   │ 3 дн.           │  │
 │ │ part-kom.ru  │ 🟠 Не нашёл  │ —      │ сайт знает:     │  │
 │ │              │              │        │ Robert Bosch,   │  │
 │ │              │              │        │ Бош, BOSCH      │  │
@@ -364,11 +366,10 @@ CREATE INDEX idx_site_results_lookup ON site_results(article, brand);
 
 Фиксируем в ТЗ явно:
 
-1. **armtek.ru** без дилерского логина/пароля всегда вернёт `NOT_CONFIGURED`. Нужны реальные креды от пользователя (не тестовые).
-2. **plentycar.ru** — первый прогон медленный из-за скачивания 4 CSV-архивов (~100 МБ суммарно). Кеш живёт 12 часов.
+1. **zzap.ru** — замена armtek. Структура URL/API/селекторов исследуется на этапе реализации. Если сайт окажется полностью JS-рендер (как armtek) без HTTP-доступных данных — берём следующий кандидат (autopiter.ru).
+2. **plentycar.ru** — первый прогон медленный из-за скачивания 4 CSV-архивов (~100 МБ суммарно). Кеш живёт 12 часов. Для ночного прогона незаметно.
 3. **emex.ru / exist.ru** — cookie-сессии истекают. Мониторинг есть (колокольчик в админке), но обновлять cookies владельцу вручную.
-4. **Сроки доставки** — у armtek возвращается как `DLVDT` (может быть дата, не число дней). В v3 берём только int-значения, остальное `null`.
-5. **Cross-references (разные бренды на одном артикуле)** — не решаем. Парсер ищет конкретную пару артикул+бренд, остальные варианты показывает в `found_brands` для ручного разбирательства.
+4. **Cross-references (разные бренды на одном артикуле)** — не решаем. Парсер ищет конкретную пару артикул+бренд, остальные варианты показывает в `found_brands` для ручного разбирательства.
 
 ## Порядок реализации
 
