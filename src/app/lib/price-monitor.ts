@@ -21,7 +21,7 @@ export interface MarketSummary {
 export type PriceZone = "red" | "green" | "yellow" | "no_data";
 
 export function getPriceZone(yourPrice: number, summary: MarketSummary | null): PriceZone {
-  if (!summary || summary.offers.length === 0) return "no_data";
+  if (!summary || summary.offers_count === 0) return "no_data";
   if (yourPrice > summary.max_price) return "red";
   if (yourPrice < summary.min_price) return "yellow";
   return "green";
@@ -42,6 +42,53 @@ export async function fetchMarketData(article: string, brand: string): Promise<M
   } catch {
     return null;
   }
+}
+
+export interface BulkEntry {
+  article: string;
+  brand: string;
+  min_price: number | null;
+  max_price: number | null;
+  median_price: number | null;
+  sites_count: number;
+  offers_count: number;
+  scraped_at: string | null;
+}
+
+export async function fetchMarketDataBulk(
+  items: Array<{ article: string; brand: string }>
+): Promise<Map<string, BulkEntry>> {
+  const out = new Map<string, BulkEntry>();
+  if (items.length === 0) return out;
+  try {
+    const resp = await fetch("/api/price-monitor/bulk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items }),
+    });
+    if (!resp.ok) return out;
+    const data = await resp.json();
+    for (const r of (data.results ?? []) as BulkEntry[]) {
+      out.set(`${r.article}|${r.brand}`, r);
+    }
+  } catch {
+    /* ignore */
+  }
+  return out;
+}
+
+export function bulkEntryToSummary(entry: BulkEntry | undefined): MarketSummary | null {
+  if (!entry || entry.offers_count === 0 || entry.min_price == null) return null;
+  return {
+    article: entry.article,
+    brand: entry.brand,
+    min_price: entry.min_price,
+    max_price: entry.max_price ?? entry.min_price,
+    median_price: entry.median_price ?? entry.min_price,
+    sites_count: entry.sites_count,
+    offers_count: entry.offers_count,
+    offers: [],
+  };
 }
 
 export async function triggerParse(article: string, brand: string): Promise<MarketSummary | null> {

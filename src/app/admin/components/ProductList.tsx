@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Pagination from "./Pagination";
-import { MarketSummary, fetchMarketData, getPriceZone, formatPrice } from "@/app/lib/price-monitor";
+import {
+  BulkEntry,
+  bulkEntryToSummary,
+  fetchMarketDataBulk,
+  formatPrice,
+  getPriceZone,
+} from "@/app/lib/price-monitor";
 
 interface ProductItem {
   id: number;
@@ -30,46 +36,60 @@ const ZONE_DOT: Record<string, string> = {
   no_data: "bg-gray-300",
 };
 
-function MarketCell({ item }: { item: ProductItem }) {
-  const [data, setData] = useState<MarketSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!item.sku || !item.brand) {
-      setLoading(false);
-      return;
-    }
-    fetchMarketData(item.sku, item.brand).then((d) => {
-      setData(d);
-      setLoading(false);
-    });
-  }, [item.sku, item.brand]);
-
+function MarketCell({
+  item,
+  entry,
+  loading,
+}: {
+  item: ProductItem;
+  entry: BulkEntry | undefined;
+  loading: boolean;
+}) {
   if (loading) {
     return <span className="text-xs text-gray-300">…</span>;
   }
 
-  if (!data || data.offers.length === 0) {
+  const summary = bulkEntryToSummary(entry);
+  if (!summary) {
     return <span className="text-xs text-gray-300">—</span>;
   }
 
-  const zone = getPriceZone(item.price, data);
+  const zone = getPriceZone(item.price, summary);
   const dot = ZONE_DOT[zone];
 
   return (
     <div
       className="flex items-center justify-end gap-1.5"
-      title={`Мин: ${formatPrice(data.min_price)}, Медиана: ${formatPrice(data.median_price)}, Макс: ${formatPrice(data.max_price)} (${data.sites_count} сайт.)`}
+      title={`Мин: ${formatPrice(summary.min_price)}, Медиана: ${formatPrice(summary.median_price)}, Макс: ${formatPrice(summary.max_price)} (${summary.sites_count} сайт.)`}
     >
       <span className={`w-2 h-2 rounded-full ${dot}`} />
       <span className="text-xs text-gray-600 whitespace-nowrap">
-        {Math.round(data.min_price)}–{Math.round(data.max_price)}₽
+        {Math.round(summary.min_price)}–{Math.round(summary.max_price)}₽
       </span>
     </div>
   );
 }
 
 export default function ProductList({ items, page, totalPages, onPageChange }: ProductListProps) {
+  const [market, setMarket] = useState<Map<string, BulkEntry>>(new Map());
+  const [marketLoading, setMarketLoading] = useState(true);
+
+  useEffect(() => {
+    const payload = items
+      .filter((i) => i.sku && i.brand)
+      .map((i) => ({ article: i.sku, brand: i.brand as string }));
+    if (payload.length === 0) {
+      setMarket(new Map());
+      setMarketLoading(false);
+      return;
+    }
+    setMarketLoading(true);
+    fetchMarketDataBulk(payload).then((m) => {
+      setMarket(m);
+      setMarketLoading(false);
+    });
+  }, [items]);
+
   if (items.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm">
@@ -128,7 +148,11 @@ export default function ProductList({ items, page, totalPages, onPageChange }: P
 
             {/* Market indicator */}
             <div className="flex-shrink-0 w-28">
-              <MarketCell item={item} />
+              <MarketCell
+                item={item}
+                entry={item.brand ? market.get(`${item.sku}|${item.brand}`) : undefined}
+                loading={marketLoading}
+              />
             </div>
 
             {/* Edit link */}
