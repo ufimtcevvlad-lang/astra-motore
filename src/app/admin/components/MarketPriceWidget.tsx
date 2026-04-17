@@ -74,10 +74,31 @@ export default function MarketPriceWidget({ article, brand }: Props) {
     (s) => s.status === "OFFERS" || s.status === "OUT_OF_STOCK"
   ).length;
 
+  const scrapedAt = data?.scraped_at ? new Date(data.scraped_at) : null;
+  const ageHours = scrapedAt ? (Date.now() - scrapedAt.getTime()) / 3_600_000 : null;
+  const isStale = ageHours !== null && ageHours > 48;
+  const scrapedLabel = scrapedAt
+    ? scrapedAt.toLocaleString("ru-RU", {
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
+
   return (
     <div className="border rounded-lg p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="font-medium text-sm">Рыночные цены</h4>
+        <div className="flex items-center gap-2">
+          <h4 className="font-medium text-sm">Рыночные цены</h4>
+          {scrapedLabel ? (
+            <span className={`text-xs ${isStale ? "text-orange-600" : "text-gray-400"}`}>
+              {isStale ? "⚠ устарело · " : ""}{scrapedLabel}
+            </span>
+          ) : (
+            <span className="text-xs text-gray-400">ещё не парсили</span>
+          )}
+        </div>
         <button
           onClick={refresh}
           disabled={refreshing}

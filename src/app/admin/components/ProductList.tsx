@@ -49,17 +49,12 @@ function MarketCell({ item }: { item: ProductItem }) {
     return <span className="text-xs text-gray-300">…</span>;
   }
 
+  if (!data || data.offers.length === 0) {
+    return <span className="text-xs text-gray-300">—</span>;
+  }
+
   const zone = getPriceZone(item.price, data);
   const dot = ZONE_DOT[zone];
-
-  if (!data || data.offers.length === 0) {
-    return (
-      <div className="flex items-center justify-end gap-1.5">
-        <span className={`w-2 h-2 rounded-full ${dot}`} />
-        <span className="text-xs text-gray-400">нет</span>
-      </div>
-    );
-  }
 
   return (
     <div
