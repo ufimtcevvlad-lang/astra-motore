@@ -15,7 +15,15 @@ function formatPrice(p: number) {
   return p.toLocaleString("ru-RU") + " ₽";
 }
 
-function ItemRow({ item, zone }: { item: NotificationItem; zone: "red" | "yellow" }) {
+function ItemRow({
+  item,
+  zone,
+  onDismiss,
+}: {
+  item: NotificationItem;
+  zone: "red" | "yellow";
+  onDismiss: () => void;
+}) {
   const sign = item.deviation_pct >= 0 ? "+" : "";
   return (
     <div className="px-4 py-2.5 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
@@ -29,29 +37,101 @@ function ItemRow({ item, zone }: { item: NotificationItem; zone: "red" | "yellow
             Ваша: {formatPrice(item.your_price)} · Медиана: {formatPrice(item.median_price)}
           </p>
         </div>
-        <span
-          className={`shrink-0 text-xs font-semibold px-1.5 py-0.5 rounded ${
-            zone === "red"
-              ? "bg-red-100 text-red-700"
-              : "bg-yellow-100 text-yellow-700"
-          }`}
-        >
-          {sign}{item.deviation_pct}%
-        </span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span
+            className={`text-xs font-semibold px-1.5 py-0.5 rounded ${
+              zone === "red"
+                ? "bg-red-100 text-red-700"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
+          >
+            {sign}{item.deviation_pct}%
+          </span>
+          <button
+            onClick={onDismiss}
+            className="w-5 h-5 flex items-center justify-center text-gray-300 hover:text-gray-600 hover:bg-gray-100 rounded"
+            title="Скрыть"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </div>
   );
+}
+
+const DISMISS_KEY = "price-alerts-dismissed-v1";
+
+function loadDismissed(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(DISMISS_KEY);
+    return new Set(raw ? (JSON.parse(raw) as string[]) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveDismissed(set: Set<string>) {
+  try {
+    localStorage.setItem(DISMISS_KEY, JSON.stringify(Array.from(set)));
+  } catch {
+    /* ignore */
+  }
+}
+
+function itemKey(item: NotificationItem, generatedAt: string | null): string {
+  return `${item.article}|${item.brand}|${generatedAt ?? ""}`;
 }
 
 export default function PriceAlertBell() {
   const [data, setData] = useState<Notifications | null>(null);
   const [sources, setSources] = useState<SourceStatus[]>([]);
   const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<Set<string>>(() => loadDismissed());
   const ref = useRef<HTMLDivElement>(null);
+
+  const dismiss = (item: NotificationItem) => {
+    const key = itemKey(item, data?.generated_at ?? null);
+    setDismissed((prev) => {
+      const next = new Set(prev);
+      next.add(key);
+      saveDismissed(next);
+      return next;
+    });
+  };
+
+  const dismissAll = () => {
+    if (!data) return;
+    const keys = [
+      ...data.red_items.map((i) => itemKey(i, data.generated_at)),
+      ...data.yellow_items.map((i) => itemKey(i, data.generated_at)),
+    ];
+    setDismissed((prev) => {
+      const next = new Set(prev);
+      keys.forEach((k) => next.add(k));
+      saveDismissed(next);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const load = () => {
-      fetchNotifications().then(setData);
+      fetchNotifications().then((d) => {
+        setData(d);
+        // Prune dismissed keys that no longer match the current batch — keeps localStorage bounded.
+        if (d) {
+          const liveKeys = new Set([
+            ...d.red_items.map((i) => itemKey(i, d.generated_at)),
+            ...d.yellow_items.map((i) => itemKey(i, d.generated_at)),
+          ]);
+          setDismissed((prev) => {
+            const next = new Set(Array.from(prev).filter((k) => liveKeys.has(k)));
+            if (next.size !== prev.size) saveDismissed(next);
+            return next;
+          });
+        }
+      });
       fetch("/api/price-monitor/status")
         .then((r) => (r.ok ? r.json() : { sources: [] }))
         .then((d) => setSources(d.sources || []))
@@ -76,7 +156,13 @@ export default function PriceAlertBell() {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  const total = (data?.red_count ?? 0) + (data?.yellow_count ?? 0);
+  const redItems = (data?.red_items ?? []).filter(
+    (i) => !dismissed.has(itemKey(i, data?.generated_at ?? null))
+  );
+  const yellowItems = (data?.yellow_items ?? []).filter(
+    (i) => !dismissed.has(itemKey(i, data?.generated_at ?? null))
+  );
+  const total = redItems.length + yellowItems.length;
   const hasAlerts = total > 0 || existWholesale;
 
   return (
@@ -110,13 +196,23 @@ export default function PriceAlertBell() {
       {open && (
         <div className="absolute right-0 top-10 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
           {/* Header */}
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
             <span className="text-sm font-semibold text-gray-900">Ценовые отклонения</span>
-            {data?.generated_at && (
-              <span className="text-xs text-gray-400">
-                {new Date(data.generated_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {total > 0 && (
+                <button
+                  onClick={dismissAll}
+                  className="text-xs text-gray-500 hover:text-gray-800 underline"
+                >
+                  Скрыть все
+                </button>
+              )}
+              {data?.generated_at && (
+                <span className="text-xs text-gray-400">
+                  {new Date(data.generated_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* exist.ru cookie warning */}
@@ -140,11 +236,21 @@ export default function PriceAlertBell() {
               <p className="text-sm text-gray-400 text-center py-6">Отклонений нет</p>
             ) : (
               <>
-                {data.red_items.map((item) => (
-                  <ItemRow key={`${item.article}-${item.brand}`} item={item} zone="red" />
+                {redItems.map((item) => (
+                  <ItemRow
+                    key={`${item.article}-${item.brand}`}
+                    item={item}
+                    zone="red"
+                    onDismiss={() => dismiss(item)}
+                  />
                 ))}
-                {data.yellow_items.map((item) => (
-                  <ItemRow key={`${item.article}-${item.brand}`} item={item} zone="yellow" />
+                {yellowItems.map((item) => (
+                  <ItemRow
+                    key={`${item.article}-${item.brand}`}
+                    item={item}
+                    zone="yellow"
+                    onDismiss={() => dismiss(item)}
+                  />
                 ))}
               </>
             )}
@@ -154,8 +260,8 @@ export default function PriceAlertBell() {
           <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50 flex items-center gap-3 text-xs text-gray-500">
             {data && (
               <>
-                <span className="text-red-600 font-medium">🔴 {data.red_count}</span>
-                <span className="text-yellow-600 font-medium">🟡 {data.yellow_count}</span>
+                <span className="text-red-600 font-medium">🔴 {redItems.length}</span>
+                <span className="text-yellow-600 font-medium">🟡 {yellowItems.length}</span>
                 <span className="text-green-600 font-medium">🟢 {data.green_count}</span>
                 <span className="ml-auto">из {data.total_parsed} товаров</span>
               </>
