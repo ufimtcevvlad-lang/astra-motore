@@ -55,3 +55,4 @@ data/shop.db
 data/shop.db-wal
 data/shop.db-shm
 .worktrees/
+.claude/worktrees/
