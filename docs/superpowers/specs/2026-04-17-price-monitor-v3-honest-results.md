@@ -290,6 +290,37 @@ async def get_result(self, article: str, brand: str, aliases: dict) -> SiteResul
 - **«N из 6 сайтов нашли товар»** — количество сайтов со статусом `OFFERS` или `OUT_OF_STOCK`
 - **Бейдж зоны** (выше/в/ниже рынка) — как в v2, относительно `Мин` и `Макс`
 
+## Схема работы: ночной прогон + кеширование
+
+Парсер **не дёргает сайты при открытии товара в админке**. Работает по расписанию:
+
+1. **Ночью в 03:00** (cron на VPS) — парсер обходит весь каталог (121 товар на 2026-04-17) по всем 6 источникам. Результат сохраняется в таблицу `site_results` (заменяет прошлый срез: `DELETE` + `INSERT`).
+2. **Днём** — админка при открытии товара берёт данные из БД (`GET /offers?article=X&brand=Y`). Мгновенно, без запросов к внешним сайтам.
+3. **Кнопка «Обновить»** в карточке товара — триггерит немедленный `POST /parse?article=X&brand=Y` только по одному товару. Используется редко — когда владелец хочет свежие данные по конкретной позиции прямо сейчас.
+
+### Таблица `site_results`
+
+```sql
+CREATE TABLE site_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article TEXT NOT NULL,
+    brand TEXT NOT NULL,
+    site TEXT NOT NULL,
+    status TEXT NOT NULL,           -- OFFERS / OUT_OF_STOCK / NOT_FOUND / ERROR / NOT_CONFIGURED
+    offers_json TEXT,                -- JSON-массив офферов, если status=OFFERS
+    found_brands_json TEXT,          -- JSON-массив брендов, если status=NOT_FOUND
+    error_category TEXT,             -- timeout / http_error / auth_failed / parse_error / unknown
+    error_text TEXT,
+    duration_ms INTEGER,
+    scraped_at TEXT NOT NULL,
+    UNIQUE(article, brand, site)
+);
+
+CREATE INDEX idx_site_results_lookup ON site_results(article, brand);
+```
+
+Перед ночным прогоном: `DELETE FROM site_results;` — свежие данные полностью заменяют прошлые. История не хранится.
+
 ## Синхронизация VPS
 
 Перед работой — обязательный шаг:
