@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
+import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
 
 export async function GET(
   _req: NextRequest,
@@ -75,26 +76,65 @@ export async function PUT(
     return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
   }
 
+  // Валидация обязательных полей и числовых значений
+  const nameStr = typeof body.name === "string" ? body.name.trim() : "";
+  const skuStr = typeof body.sku === "string" ? body.sku.trim() : "";
+  const brandStr = typeof body.brand === "string" ? body.brand.trim() : "";
+  if (!nameStr || !skuStr || !brandStr) {
+    return NextResponse.json(
+      { error: "Заполните название, артикул и бренд" },
+      { status: 400 }
+    );
+  }
+  let priceOut: number | undefined;
+  if (body.price != null) {
+    const p = Number(body.price);
+    if (!Number.isFinite(p) || p < 0) {
+      return NextResponse.json({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
+    }
+    priceOut = Math.round(p);
+  }
+  let inStockOut: number | undefined;
+  if (body.inStock != null) {
+    const s = Number(body.inStock);
+    if (!Number.isFinite(s) || s < 0) {
+      return NextResponse.json({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
+    }
+    inStockOut = Math.round(s);
+  }
+
   const now = new Date().toISOString();
 
-  await db
-    .update(schema.products)
-    .set({
-      sku: body.sku,
-      name: body.name,
-      brand: body.brand,
-      country: body.country,
-      categoryId: body.categoryId,
-      car: body.car,
-      price: body.price != null ? Number(body.price) : undefined,
-      inStock: body.inStock,
-      image: body.image,
-      images: body.images ? JSON.stringify(body.images) : undefined,
-      description: body.description,
-      longDescription: body.longDescription,
-      updatedAt: now,
-    })
-    .where(eq(schema.products.id, numId));
+  try {
+    await db
+      .update(schema.products)
+      .set({
+        sku: skuStr,
+        name: nameStr,
+        brand: brandStr,
+        country: typeof body.country === "string" ? body.country : undefined,
+        categoryId: body.categoryId === undefined ? undefined : body.categoryId,
+        car: typeof body.car === "string" ? body.car : undefined,
+        price: priceOut,
+        inStock: inStockOut,
+        image: typeof body.image === "string" ? body.image : undefined,
+        images: body.images ? JSON.stringify(body.images) : undefined,
+        description: typeof body.description === "string" ? body.description : undefined,
+        longDescription:
+          body.longDescription === undefined ? undefined : body.longDescription,
+        updatedAt: now,
+      })
+      .where(eq(schema.products.id, numId));
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (/UNIQUE constraint failed: products\.sku/i.test(msg)) {
+      return NextResponse.json(
+        { error: `Артикул "${skuStr}" уже используется другим товаром.` },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ error: "Не удалось сохранить изменения" }, { status: 500 });
+  }
 
   // Re-insert specs
   if (body.specs && Array.isArray(body.specs)) {
@@ -139,7 +179,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAdmin();
@@ -147,6 +187,7 @@ export async function DELETE(
 
   const { id } = await params;
   const numId = Number(id);
+  const force = req.nextUrl.searchParams.get("force") === "1";
 
   const existing = await db
     .select()
@@ -155,6 +196,20 @@ export async function DELETE(
 
   if (existing.length === 0) {
     return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+  }
+
+  if (!force) {
+    const usage = await getOrderUsageByProductIds([numId]);
+    if (usage.length > 0) {
+      return NextResponse.json(
+        {
+          error: "product_used_in_orders",
+          ordersCount: usage[0].ordersCount,
+          message: `Этот товар есть в ${usage[0].ordersCount} заказ(ах). Удаление уберёт его из каталога, но названия в истории заказов сохранятся.`,
+        },
+        { status: 409 }
+      );
+    }
   }
 
   await db.delete(schema.products).where(eq(schema.products.id, numId));

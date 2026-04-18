@@ -83,17 +83,20 @@ function SortableHeader({
 function InlineNumber({
   value,
   onSave,
+  onError,
   suffix,
   className = "",
 }: {
   value: number;
   onSave: (n: number) => Promise<void>;
+  onError?: (msg: string) => void;
   suffix?: string;
   className?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [input, setInput] = useState(String(value));
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!editing) setInput(String(value));
@@ -109,8 +112,12 @@ function InlineNumber({
     setBusy(true);
     try {
       await onSave(n);
-    } catch {
+      setFailed(false);
+    } catch (err) {
       setInput(String(value));
+      setFailed(true);
+      onError?.(err instanceof Error ? err.message : "Не удалось сохранить");
+      setTimeout(() => setFailed(false), 2500);
     } finally {
       setBusy(false);
       setEditing(false);
@@ -126,7 +133,10 @@ function InlineNumber({
           e.preventDefault();
           setEditing(true);
         }}
-        className={`text-right hover:bg-indigo-50 px-2 py-1 rounded ${className}`}
+        className={`text-right px-2 py-1 rounded ${
+          failed ? "bg-red-50 ring-1 ring-red-300" : "hover:bg-indigo-50"
+        } ${className}`}
+        title={failed ? "Не удалось сохранить — попробуйте снова" : undefined}
       >
         {value.toLocaleString("ru-RU")}
         {suffix}
@@ -201,6 +211,7 @@ export default function ProductList({
   const searchParams = useSearchParams();
   const [market, setMarket] = useState<Map<string, BulkEntry>>(new Map());
   const [marketLoading, setMarketLoading] = useState(true);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const payload = items
@@ -211,12 +222,58 @@ export default function ProductList({
       setMarketLoading(false);
       return;
     }
-    setMarketLoading(true);
-    fetchMarketDataBulk(payload).then((m) => {
-      setMarket(m);
+
+    const CACHE_TTL = 5 * 60 * 1000;
+    const cacheKey = "admin_market_cache_v1";
+    const keysNeeded = payload.map((p) => `${p.article}|${p.brand}`);
+
+    let cached: Record<string, { expires: number; entry: BulkEntry }> = {};
+    try {
+      cached = JSON.parse(sessionStorage.getItem(cacheKey) ?? "{}");
+    } catch {
+      cached = {};
+    }
+    const now = Date.now();
+    const fresh = new Map<string, BulkEntry>();
+    const missing: { article: string; brand: string }[] = [];
+    for (const p of payload) {
+      const k = `${p.article}|${p.brand}`;
+      const c = cached[k];
+      if (c && c.expires > now) fresh.set(k, c.entry);
+      else missing.push(p);
+    }
+
+    if (missing.length === 0) {
+      setMarket(fresh);
       setMarketLoading(false);
+      return;
+    }
+
+    setMarket(fresh);
+    setMarketLoading(true);
+    fetchMarketDataBulk(missing).then((m) => {
+      const merged = new Map(fresh);
+      for (const [k, v] of m) merged.set(k, v);
+      setMarket(merged);
+      setMarketLoading(false);
+
+      // Обновляем кэш — только для ключей этой выборки
+      const next: typeof cached = { ...cached };
+      for (const k of keysNeeded) {
+        const entry = merged.get(k);
+        if (entry) next[k] = { expires: now + CACHE_TTL, entry };
+      }
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(next));
+      } catch {}
     });
   }, [items]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   if (items.length === 0) {
     return (
@@ -236,7 +293,17 @@ export default function ProductList({
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-4 right-4 z-50 max-w-sm rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 shadow-lg text-sm"
+        >
+          {toast}
+        </div>
+      )}
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <div className="min-w-[720px]">
         {/* Header row */}
         <div className="flex items-center gap-3 px-4 py-2 border-b border-gray-200 bg-gray-50 text-xs">
           <input
@@ -315,9 +382,13 @@ export default function ProductList({
 
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
-                  <div className="text-xs text-gray-500 truncate">
-                    {item.sku}
-                    {item.categoryTitle ? ` · ${item.categoryTitle}` : ""}
+                  <div className="text-xs text-gray-500 flex items-center gap-2 min-w-0">
+                    <span className="font-mono text-gray-700 flex-shrink-0">{item.sku}</span>
+                    {item.categoryTitle && (
+                      <span className="truncate" title={item.categoryTitle}>
+                        · {item.categoryTitle}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -327,6 +398,7 @@ export default function ProductList({
                   <InlineNumber
                     value={Number(item.price)}
                     onSave={(n) => onInlineUpdate(item.id, { price: n })}
+                    onError={(msg) => setToast(`Цена не сохранена: ${msg}`)}
                     suffix=" ₽"
                     className="text-sm font-semibold text-gray-900"
                   />
@@ -336,6 +408,7 @@ export default function ProductList({
                   <InlineNumber
                     value={Number(item.inStock)}
                     onSave={(n) => onInlineUpdate(item.id, { inStock: n })}
+                    onError={(msg) => setToast(`Остаток не сохранён: ${msg}`)}
                     className={`text-sm ${
                       item.inStock > 0 ? "text-green-700" : "text-red-600"
                     }`}
@@ -372,6 +445,7 @@ export default function ProductList({
               </div>
             );
           })}
+        </div>
         </div>
       </div>
 

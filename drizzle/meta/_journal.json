@@ -15,6 +15,13 @@
       "when": 1775976844733,
       "tag": "0001_peaceful_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1776000000000,
+      "tag": "0002_products_indexes_and_cascade",
+      "breakpoints": true
     }
   ]
 }
