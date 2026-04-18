@@ -102,7 +102,7 @@ export default function ConversationList({
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
           <input
             type="text"
-            placeholder="Поиск..."
+            placeholder="Имя, телефон, сообщение"
             value={localSearch}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full border border-gray-200 rounded-lg pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"

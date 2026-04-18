@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Pagination from "./Pagination";
+import { ORDER_STATUS_LABELS, ORDER_STATUS_BADGE, PAYMENT_LABELS } from "@/app/admin/lib/order-status";
 
 interface OrderListItem {
   id: number;
@@ -24,28 +25,6 @@ interface OrderListProps {
   totalPages: number;
   onPageChange: (page: number) => void;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-  new: "Новый",
-  processing: "В обработке",
-  shipped: "Отправлен",
-  delivered: "Доставлен",
-  cancelled: "Отменён",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  new: "bg-amber-100 text-amber-800",
-  processing: "bg-indigo-100 text-indigo-800",
-  shipped: "bg-blue-100 text-blue-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-};
-
-const PAYMENT_LABELS: Record<string, string> = {
-  sbp: "СБП",
-  card: "Карта",
-  cash: "Наличные",
-};
 
 export default function OrderList({
   orders,
@@ -114,8 +93,8 @@ export default function OrderList({
                   {PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${STATUS_COLORS[order.status] ?? "bg-gray-100 text-gray-700"}`}>
-                    {STATUS_LABELS[order.status] ?? order.status}
+                  <span className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${ORDER_STATUS_BADGE[order.status] ?? "bg-gray-100 text-gray-700"}`}>
+                    {ORDER_STATUS_LABELS[order.status] ?? order.status}
                   </span>
                 </td>
               </tr>
