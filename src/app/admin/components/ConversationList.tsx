@@ -12,6 +12,7 @@ interface Conversation {
   lastMessageSender?: string;
   lastMessageAt?: string;
   unreadCount: number;
+  adminNote?: string;
 }
 
 interface ConversationListProps {
@@ -156,6 +157,14 @@ export default function ConversationList({
                       </span>
                     )}
                   </div>
+                  {conv.adminNote && conv.adminNote.trim() && (
+                    <div
+                      className="mt-1 px-2 py-1 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800 line-clamp-2"
+                      title={conv.adminNote}
+                    >
+                      📝 {conv.adminNote}
+                    </div>
+                  )}
                 </div>
               </button>
             );

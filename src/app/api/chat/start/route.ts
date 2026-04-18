@@ -18,11 +18,17 @@ export async function POST(req: NextRequest) {
   }
 
   // Parse body
-  let body: { name?: string; contact?: string };
+  let body: { name?: string; contact?: string; create?: boolean };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    body = {};
+  }
+
+  // Do not create an empty conversation unless explicitly asked.
+  // Widgets call this on mount only to resume an existing chat.
+  if (!body?.create) {
+    return NextResponse.json({ conversationId: null, resumed: false });
   }
 
   const name = body?.name?.trim() || "";
