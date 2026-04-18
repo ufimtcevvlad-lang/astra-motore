@@ -144,6 +144,7 @@ export const conversations = sqliteTable("conversations", {
   assignedAdminId: integer("assigned_admin_id").references(() => admins.id),
   lastMessageAt: text("last_message_at"),
   unreadCount: integer("unread_count").notNull().default(0),
+  adminNote: text("admin_note").notNull().default(""),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
 });

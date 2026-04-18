@@ -15,6 +15,7 @@ interface ConversationDetail {
   status: string;
   createdAt: string;
   assignedAdminId?: number | null;
+  adminNote?: string;
 }
 
 interface ConversationInfoProps {
@@ -31,6 +32,10 @@ export default function ConversationInfo({ conversationId }: ConversationInfoPro
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [assignedId, setAssignedId] = useState<number | null>(null);
   const [assigning, setAssigning] = useState(false);
+  const [note, setNote] = useState("");
+  const [noteInitial, setNoteInitial] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
 
   const fetchDetail = useCallback(async () => {
     try {
@@ -39,6 +44,9 @@ export default function ConversationInfo({ conversationId }: ConversationInfoPro
       setConversation(data.conversation ?? null);
       setAdmins(data.admins ?? []);
       setAssignedId(data.assignedAdmin?.id ?? null);
+      const n = data.conversation?.adminNote ?? "";
+      setNote(n);
+      setNoteInitial(n);
     } catch {
       // ignore
     }
@@ -47,6 +55,30 @@ export default function ConversationInfo({ conversationId }: ConversationInfoPro
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
+
+  async function handleSaveNote() {
+    if (note === noteInitial) return;
+    setSavingNote(true);
+    setNoteSaved(false);
+    try {
+      const res = await fetch(`/api/admin/conversations/${conversationId}/note`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note }),
+      });
+      if (res.ok) {
+        setNoteInitial(note);
+        setNoteSaved(true);
+        setTimeout(() => setNoteSaved(false), 1500);
+      } else {
+        alert("Не удалось сохранить заметку");
+      }
+    } catch {
+      alert("Не удалось сохранить заметку");
+    } finally {
+      setSavingNote(false);
+    }
+  }
 
   async function handleAssign(adminId: number | null) {
     setAssigning(true);
@@ -114,6 +146,32 @@ export default function ConversationInfo({ conversationId }: ConversationInfoPro
         <div>
           <div className="text-xs text-gray-400 mb-1">Статус</div>
           <div className="text-sm text-gray-700 capitalize">{conversation.status}</div>
+        </div>
+
+        {/* Admin note */}
+        <div>
+          <div className="text-xs text-gray-400 mb-1 flex items-center justify-between">
+            <span>Заметка (видно только админам)</span>
+            {noteSaved && <span className="text-green-600">Сохранено</span>}
+          </div>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            onBlur={handleSaveNote}
+            placeholder="Напишите заметку о клиенте, машине или пожеланиях..."
+            rows={4}
+            className="w-full border border-yellow-200 bg-yellow-50 rounded-lg px-2 py-1.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+          />
+          <div className="flex justify-end mt-1">
+            <button
+              type="button"
+              onClick={handleSaveNote}
+              disabled={savingNote || note === noteInitial}
+              className="text-xs text-indigo-600 hover:text-indigo-800 disabled:text-gray-300 disabled:cursor-not-allowed"
+            >
+              {savingNote ? "Сохранение..." : "Сохранить"}
+            </button>
+          </div>
         </div>
 
         {/* Assignment */}

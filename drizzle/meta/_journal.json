@@ -15,6 +15,13 @@
       "when": 1775976844733,
       "tag": "0001_peaceful_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1776522849394,
+      "tag": "0002_silly_mister_sinister",
+      "breakpoints": true
     }
   ]
 }

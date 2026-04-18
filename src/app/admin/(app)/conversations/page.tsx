@@ -17,6 +17,7 @@ interface Conversation {
   lastMessageSender?: string;
   lastMessageAt?: string;
   unreadCount: number;
+  adminNote?: string;
 }
 
 export default function ConversationsPage() {

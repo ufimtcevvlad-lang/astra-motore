@@ -44,11 +44,11 @@ export default function ChatWidget() {
       if (saved === "1") setIsOpen(true);
     } catch {}
 
-    // Try to resume existing conversation
+    // Try to resume existing conversation (no DB insert unless the user sends a message)
     fetch("/api/chat/start", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ create: false }),
     })
       .then((r) => r.json())
       .then((data) => {
@@ -125,22 +125,24 @@ export default function ChatWidget() {
     }
   }, [messages, isOpen]);
 
-  // Auto-create conversation when opening chat for first time
-  async function ensureConversation() {
-    if (conversationId) return;
+  // Create conversation on-demand (only when the user actually sends something)
+  async function createConversationIfNeeded(): Promise<number | null> {
+    if (conversationId) return conversationId;
     try {
       const res = await fetch("/api/chat/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ create: true }),
       });
       if (res.ok) {
         const data = await res.json();
         if (data.conversationId) {
           setConversationId(data.conversationId);
+          return data.conversationId;
         }
       }
     } catch {}
+    return null;
   }
 
   function toggleOpen() {
@@ -149,19 +151,20 @@ export default function ChatWidget() {
       try {
         localStorage.setItem(STORAGE_KEY_OPEN, next ? "1" : "0");
       } catch {}
-      if (next) {
-        setUnreadCount(0);
-        // Start conversation if not yet started
-        ensureConversation();
-      }
+      if (next) setUnreadCount(0);
       return next;
     });
   }
 
   async function handleSend() {
-    if ((!inputText.trim() && !attachFile) || !conversationId) return;
+    if (!inputText.trim() && !attachFile) return;
     setSending(true);
     try {
+      const convId = await createConversationIfNeeded();
+      if (!convId) {
+        setSending(false);
+        return;
+      }
       let attachments: Attachment[] = [];
 
       if (attachFile) {
@@ -185,7 +188,7 @@ export default function ChatWidget() {
       });
       if (res.ok) {
         setInputText("");
-        await fetchMessages(conversationId);
+        await fetchMessages(convId);
       }
     } catch {
     } finally {

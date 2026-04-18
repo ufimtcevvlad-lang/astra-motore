@@ -63,7 +63,6 @@ export default function ConversationChat({ conversationId }: ConversationChatPro
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
-  const [isNote, setIsNote] = useState(false);
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -117,12 +116,11 @@ export default function ConversationChat({ conversationId }: ConversationChatPro
         body: JSON.stringify({
           text: trimmed,
           attachments: attachments ?? [],
-          isInternalNote: isNote,
+          isInternalNote: false,
         }),
       });
       if (!res.ok) throw new Error();
       setText("");
-      setIsNote(false);
       await fetchMessages();
     } catch {
       alert("Не удалось отправить сообщение. Проверьте соединение и попробуйте снова.");
@@ -222,30 +220,11 @@ export default function ConversationChat({ conversationId }: ConversationChatPro
         <div ref={bottomRef} />
       </div>
 
-      {/* Note mode banner */}
-      {isNote && (
-        <div className="mx-4 mb-1 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg text-xs text-yellow-700 font-medium">
-          📝 Внутренняя заметка — клиент не увидит
-        </div>
-      )}
-
       {/* Input area */}
-      <div className={`shrink-0 border-t ${isNote ? "border-yellow-200 bg-yellow-50" : "border-gray-200 bg-white"} px-3 py-2`}>
+      <div className="shrink-0 border-t border-gray-200 bg-white px-3 py-2">
         <div className="flex items-end gap-2">
           {/* Quick replies */}
           <QuickRepliesPicker onSelect={(t) => { setText((prev) => prev + t); textareaRef.current?.focus(); }} />
-
-          {/* Note toggle */}
-          <button
-            type="button"
-            onClick={() => setIsNote((v) => !v)}
-            title="Внутренняя заметка"
-            className={`p-2 rounded-lg transition-colors ${
-              isNote ? "bg-yellow-200 text-yellow-700" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            📝
-          </button>
 
           {/* File attach */}
           <button
@@ -269,11 +248,9 @@ export default function ConversationChat({ conversationId }: ConversationChatPro
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isNote ? "Заметка (только для команды)..." : "Сообщение... (Enter — отправить, Shift+Enter — новая строка)"}
+            placeholder="Сообщение... (Enter — отправить, Shift+Enter — новая строка)"
             rows={1}
-            className={`flex-1 resize-none rounded-lg px-3 py-2 text-sm border focus:outline-none focus:ring-2 focus:ring-indigo-500 max-h-32 ${
-              isNote ? "border-yellow-300 bg-yellow-50" : "border-gray-200 bg-white"
-            }`}
+            className="flex-1 resize-none rounded-lg px-3 py-2 text-sm border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 max-h-32"
             style={{ minHeight: "38px" }}
           />
 
