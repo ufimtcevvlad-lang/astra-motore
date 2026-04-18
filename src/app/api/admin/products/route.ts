@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
-import { eq, like, and, gte, lte, sql, desc, or } from "drizzle-orm";
+import { eq, like, and, gte, lte, sql, desc, asc, or } from "drizzle-orm";
 
 const PAGE_SIZE = 20;
 
@@ -17,6 +17,8 @@ export async function GET(req: NextRequest) {
   const inStock = url.searchParams.get("inStock");
   const priceFrom = url.searchParams.get("priceFrom");
   const priceTo = url.searchParams.get("priceTo");
+  const sort = url.searchParams.get("sort") || "updated";
+  const dir = url.searchParams.get("dir") === "asc" ? "asc" : "desc";
 
   const conditions = [];
 
@@ -57,6 +59,18 @@ export async function GET(req: NextRequest) {
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const offset = (page - 1) * PAGE_SIZE;
 
+  const sortColumn =
+    sort === "name"
+      ? schema.products.name
+      : sort === "price"
+        ? schema.products.price
+        : sort === "inStock"
+          ? schema.products.inStock
+          : sort === "brand"
+            ? schema.products.brand
+            : schema.products.updatedAt;
+  const orderBy = dir === "asc" ? asc(sortColumn) : desc(sortColumn);
+
   const items = await db
     .select({
       id: schema.products.id,
@@ -77,7 +91,7 @@ export async function GET(req: NextRequest) {
     .from(schema.products)
     .leftJoin(schema.categories, eq(schema.products.categoryId, schema.categories.id))
     .where(where)
-    .orderBy(desc(schema.products.updatedAt))
+    .orderBy(orderBy)
     .limit(PAGE_SIZE)
     .offset(offset);
 

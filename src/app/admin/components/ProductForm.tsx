@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUploader from "./ImageUploader";
 import SpecsEditor from "./SpecsEditor";
@@ -68,8 +68,58 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showDelete, setShowDelete] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  async function handleSave() {
+  // Mark dirty on any field change (mount = clean)
+  useEffect(() => {
+    setDirty(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    name,
+    sku,
+    brand,
+    car,
+    price,
+    inStock,
+    description,
+    longDescription,
+    categoryId,
+    image,
+    images,
+    specs,
+    analogs,
+  ]);
+  useEffect(() => {
+    setDirty(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Warn before leaving if unsaved
+  useEffect(() => {
+    if (!dirty) return;
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  // Close "⋯" menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [menuOpen]);
+
+  async function handleSave(stayOnPage = false) {
     if (!name.trim() || !sku.trim() || !brand.trim() || !price.trim()) {
       setError("Заполните обязательные поля: Название, Артикул, Бренд, Цена");
       return;
@@ -108,10 +158,48 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         throw new Error(data.error || "Ошибка сохранения");
       }
 
-      router.push("/admin/products");
+      const saved = await res.json().catch(() => null);
+      setDirty(false);
+      if (stayOnPage) {
+        if (!isEdit && saved?.id) {
+          router.replace(`/admin/products/${saved.id}`);
+        }
+      } else {
+        router.push("/admin/products");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ошибка сохранения");
     } finally {
+      setSaving(false);
+    }
+  }
+
+  // Ctrl/Cmd+S
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (!saving) handleSave(true);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saving, name, sku, brand, car, price, inStock, description, longDescription, categoryId, image, images, specs, analogs]);
+
+  async function handleDuplicate() {
+    if (!product) return;
+    if (dirty && !confirm("Есть несохранённые изменения — они не попадут в копию. Продолжить?")) {
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}/duplicate`, { method: "POST" });
+      if (!res.ok) throw new Error("Ошибка дублирования");
+      const copy = await res.json();
+      router.push(`/admin/products/${copy.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ошибка дублирования");
       setSaving(false);
     }
   }
@@ -134,7 +222,80 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500";
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="max-w-4xl">
+      {/* Sticky action bar */}
+      <div className="sticky top-0 z-10 bg-gray-50/95 backdrop-blur border-b border-gray-200 px-6 py-3 flex items-center gap-3">
+        <button
+          onClick={() => handleSave(false)}
+          disabled={saving}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+          title="Сохранить и вернуться в список"
+        >
+          {saving ? "Сохранение..." : "Сохранить"}
+        </button>
+        <button
+          onClick={() => handleSave(true)}
+          disabled={saving}
+          className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm disabled:opacity-50"
+          title="Сохранить и остаться (Ctrl+S)"
+        >
+          Сохранить и остаться
+        </button>
+        <button
+          onClick={() => {
+            if (!dirty || confirm("Есть несохранённые изменения. Уйти?")) {
+              router.push("/admin/products");
+            }
+          }}
+          className="text-sm text-gray-600 hover:text-gray-900"
+        >
+          Отмена
+        </button>
+
+        {dirty && <span className="text-xs text-amber-600">Есть несохранённые изменения</span>}
+
+        {isEdit && (
+          <div className="ml-auto relative" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="w-9 h-9 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-lg leading-none"
+              aria-label="Действия"
+              aria-haspopup="menu"
+            >
+              ⋯
+            </button>
+            {menuOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-1 text-sm"
+              >
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleDuplicate();
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-50"
+                >
+                  Дублировать товар
+                </button>
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setShowDelete(true);
+                  }}
+                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                >
+                  Удалить товар…
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="p-6">
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
           {error}
@@ -280,23 +441,6 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         />
       </div>
 
-      {/* Действия */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
-        >
-          {saving ? "Сохранение..." : "Сохранить"}
-        </button>
-        {isEdit && (
-          <button
-            onClick={() => setShowDelete(true)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm"
-          >
-            Удалить
-          </button>
-        )}
       </div>
 
       <ConfirmModal

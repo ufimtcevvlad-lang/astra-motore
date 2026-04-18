@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import AdminHeader from "@/app/admin/components/AdminHeader";
 import ProductFilters, { ProductFiltersState } from "@/app/admin/components/ProductFilters";
-import ProductList from "@/app/admin/components/ProductList";
+import ProductList, { ProductItem } from "@/app/admin/components/ProductList";
+import BulkActionBar from "@/app/admin/components/BulkActionBar";
 import { useProductFilters } from "@/app/admin/components/useProductFilters";
 import { useScrollRestore } from "@/app/admin/components/useScrollRestore";
 
@@ -14,27 +15,18 @@ interface Category {
   title: string;
 }
 
-interface ProductItem {
-  id: number;
-  name: string;
-  sku: string;
-  brand: string | null;
-  categoryTitle: string | null;
-  price: number;
-  inStock: number;
-  image: string | null;
-}
-
 export default function ProductsPage() {
-  const { filters, page, setFilters, setPage } = useProductFilters();
+  const { filters, page, sort, setFilters, setPage, setSort, reset } = useProductFilters();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const scrollKey = `${pathname}?${searchParams.toString()}`;
   const [items, setItems] = useState<ProductItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const [brands, setBrands] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   useScrollRestore(scrollKey, !loading && items.length > 0);
 
@@ -45,8 +37,7 @@ export default function ProductsPage() {
       .catch(() => {});
   }, []);
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
+  const buildQuery = useCallback(() => {
     const params = new URLSearchParams();
     params.set("page", String(page));
     if (filters.search) params.set("search", filters.search);
@@ -55,27 +46,90 @@ export default function ProductsPage() {
     if (filters.inStock) params.set("inStock", filters.inStock);
     if (filters.priceFrom) params.set("priceFrom", filters.priceFrom);
     if (filters.priceTo) params.set("priceTo", filters.priceTo);
+    params.set("sort", sort.field);
+    params.set("dir", sort.dir);
+    return params.toString();
+  }, [filters, page, sort]);
 
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`/api/admin/products?${params}`);
+      const res = await fetch(`/api/admin/products?${buildQuery()}`);
       const data = await res.json();
       setItems(data.items ?? []);
       setTotalPages(data.totalPages ?? 1);
+      setTotal(Number(data.total ?? 0));
       if (data.brands) setBrands(data.brands);
     } catch {
       setItems([]);
     } finally {
       setLoading(false);
     }
-  }, [page, filters]);
+  }, [buildQuery]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  function handleFilterChange(newFilters: ProductFiltersState) {
-    setFilters(newFilters);
+  function toggleSelect(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   }
+
+  function toggleSelectAll(select: boolean) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (select) items.forEach((i) => next.add(i.id));
+      else items.forEach((i) => next.delete(i.id));
+      return next;
+    });
+  }
+
+  async function inlineUpdate(id: number, patch: { price?: number; inStock?: number }) {
+    const res = await fetch(`/api/admin/products/${id}/quick`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) throw new Error("fail");
+    const updated = await res.json();
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)));
+  }
+
+  async function bulkPatch(action: unknown) {
+    const ids = [...selectedIds];
+    const res = await fetch(`/api/admin/products/bulk`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids, action }),
+    });
+    if (!res.ok) throw new Error("fail");
+    await fetchProducts();
+  }
+
+  async function bulkDelete() {
+    const ids = [...selectedIds];
+    const res = await fetch(`/api/admin/products/bulk`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids }),
+    });
+    if (!res.ok) throw new Error("fail");
+    setSelectedIds(new Set());
+    await fetchProducts();
+  }
+
+  const hasFilters =
+    !!filters.search ||
+    !!filters.categoryId ||
+    !!filters.brand ||
+    !!filters.inStock ||
+    !!filters.priceFrom ||
+    !!filters.priceTo;
 
   return (
     <>
@@ -86,6 +140,21 @@ export default function ProductsPage() {
         >
           Импорт Excel
         </Link>
+        <a
+          href={`/api/admin/products/export?${(() => {
+            const p = new URLSearchParams();
+            if (filters.search) p.set("search", filters.search);
+            if (filters.categoryId) p.set("categoryId", filters.categoryId);
+            if (filters.brand) p.set("brand", filters.brand);
+            if (filters.inStock) p.set("inStock", filters.inStock);
+            if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
+            if (filters.priceTo) p.set("priceTo", filters.priceTo);
+            return p.toString();
+          })()}`}
+          className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm"
+        >
+          Экспорт Excel
+        </a>
         <Link
           href="/admin/products/new"
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
@@ -99,7 +168,9 @@ export default function ProductsPage() {
           categories={categories}
           brands={brands}
           filters={filters}
-          onChange={handleFilterChange}
+          onChange={setFilters}
+          onReset={hasFilters ? reset : undefined}
+          resultCount={loading ? null : total}
         />
 
         {loading ? (
@@ -109,10 +180,27 @@ export default function ProductsPage() {
             items={items}
             page={page}
             totalPages={totalPages}
+            total={total}
+            sort={sort}
+            selectedIds={selectedIds}
             onPageChange={setPage}
+            onSortChange={setSort}
+            onToggleSelect={toggleSelect}
+            onToggleSelectAll={toggleSelectAll}
+            onInlineUpdate={inlineUpdate}
           />
         )}
       </div>
+
+      <BulkActionBar
+        selectedCount={selectedIds.size}
+        categories={categories}
+        onClear={() => setSelectedIds(new Set())}
+        onDelete={bulkDelete}
+        onSetInStock={(value) => bulkPatch({ type: "setInStock", value })}
+        onSetCategory={(categoryId) => bulkPatch({ type: "setCategory", categoryId })}
+        onPriceDelta={(percent) => bulkPatch({ type: "priceDelta", percent })}
+      />
     </>
   );
 }
