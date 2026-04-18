@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, index, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // ─── Админы ───
 
@@ -44,24 +44,33 @@ export const categories = sqliteTable("categories", {
   createdAt: text("created_at").notNull(),
 });
 
-export const products = sqliteTable("products", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  externalId: text("external_id").notNull().unique(),
-  sku: text("sku").notNull(),
-  name: text("name").notNull(),
-  brand: text("brand").notNull(),
-  country: text("country").notNull().default(""),
-  categoryId: integer("category_id").references(() => categories.id),
-  car: text("car").notNull().default(""),
-  price: integer("price").notNull(),
-  inStock: integer("in_stock").notNull().default(0),
-  image: text("image").notNull().default(""),
-  images: text("images").notNull().default("[]"),
-  description: text("description").notNull().default(""),
-  longDescription: text("long_description"),
-  createdAt: text("created_at").notNull(),
-  updatedAt: text("updated_at").notNull(),
-});
+export const products = sqliteTable(
+  "products",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    externalId: text("external_id").notNull().unique(),
+    sku: text("sku").notNull(),
+    name: text("name").notNull(),
+    brand: text("brand").notNull(),
+    country: text("country").notNull().default(""),
+    categoryId: integer("category_id").references(() => categories.id),
+    car: text("car").notNull().default(""),
+    price: integer("price").notNull(),
+    inStock: integer("in_stock").notNull().default(0),
+    image: text("image").notNull().default(""),
+    images: text("images").notNull().default("[]"),
+    description: text("description").notNull().default(""),
+    longDescription: text("long_description"),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (t) => ({
+    skuUnique: uniqueIndex("products_sku_unique").on(t.sku),
+    brandIdx: index("products_brand_idx").on(t.brand),
+    categoryIdx: index("products_category_idx").on(t.categoryId),
+    updatedIdx: index("products_updated_idx").on(t.updatedAt),
+  })
+);
 
 export const productSpecs = sqliteTable("product_specs", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -239,7 +248,7 @@ export const settings = sqliteTable("settings", {
 
 export const productViews = sqliteTable("product_views", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  productId: integer("product_id").notNull().references(() => products.id),
+  productId: integer("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
   date: text("date").notNull(),
   viewCount: integer("view_count").notNull().default(0),
 });

@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;
 
+  const EXPORT_LIMIT = 10000;
   const items = await db
     .select({
       sku: schema.products.sku,
@@ -46,7 +47,8 @@ export async function GET(req: NextRequest) {
     .from(schema.products)
     .leftJoin(schema.categories, eq(schema.products.categoryId, schema.categories.id))
     .where(where)
-    .orderBy(desc(schema.products.updatedAt));
+    .orderBy(desc(schema.products.updatedAt))
+    .limit(EXPORT_LIMIT);
 
   // Columns match Excel import: A, B empty (1C reserved), C=name, D=sku, E=brand, F=price
   // Extras for admin convenience: G=stock, H=category (ignored on reimport)

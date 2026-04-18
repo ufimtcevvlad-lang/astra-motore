@@ -110,40 +110,61 @@ export async function POST(req: NextRequest) {
   if (!auth.authorized) return auth.response;
 
   const body = await req.json();
-  const { name, sku, brand, price } = body;
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const sku = typeof body.sku === "string" ? body.sku.trim() : "";
+  const brand = typeof body.brand === "string" ? body.brand.trim() : "";
+  const priceNum = Number(body.price);
+  const inStockNum = body.inStock == null ? 0 : Number(body.inStock);
 
-  if (!name || !sku || !brand || price == null) {
+  if (!name || !sku || !brand) {
     return NextResponse.json(
-      { error: "Обязательные поля: name, sku, brand, price" },
+      { error: "Заполните название, артикул и бренд" },
       { status: 400 }
     );
+  }
+  if (!Number.isFinite(priceNum) || priceNum < 0) {
+    return NextResponse.json({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
+  }
+  if (!Number.isFinite(inStockNum) || inStockNum < 0) {
+    return NextResponse.json({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
   }
 
   const now = new Date().toISOString();
   const externalId = `admin-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-  const result = await db
-    .insert(schema.products)
-    .values({
-      externalId,
-      sku,
-      name,
-      brand,
-      country: body.country ?? "",
-      categoryId: body.categoryId ?? null,
-      car: body.car ?? "",
-      price: Number(price),
-      inStock: body.inStock ?? 0,
-      image: body.image ?? "",
-      images: body.images ? JSON.stringify(body.images) : "[]",
-      description: body.description ?? "",
-      longDescription: body.longDescription ?? null,
-      createdAt: now,
-      updatedAt: now,
-    })
-    .returning();
-
-  const product = result[0];
+  let product;
+  try {
+    const result = await db
+      .insert(schema.products)
+      .values({
+        externalId,
+        sku,
+        name,
+        brand,
+        country: body.country ?? "",
+        categoryId: body.categoryId ?? null,
+        car: body.car ?? "",
+        price: Math.round(priceNum),
+        inStock: Math.round(inStockNum),
+        image: body.image ?? "",
+        images: body.images ? JSON.stringify(body.images) : "[]",
+        description: body.description ?? "",
+        longDescription: body.longDescription ?? null,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning();
+    product = result[0];
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (/UNIQUE constraint failed: products\.sku/i.test(msg)) {
+      return NextResponse.json(
+        { error: `Артикул "${sku}" уже существует. Артикулы должны быть уникальны.` },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ error: "Не удалось сохранить товар" }, { status: 500 });
+  }
 
   if (body.specs && Array.isArray(body.specs) && body.specs.length > 0) {
     await db.insert(schema.productSpecs).values(

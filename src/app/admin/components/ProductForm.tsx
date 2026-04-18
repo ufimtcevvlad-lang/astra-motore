@@ -68,14 +68,21 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showDelete, setShowDelete] = useState(false);
+  const [confirmDeleteMessage, setConfirmDeleteMessage] = useState<string | null>(null);
+  const [showDuplicateConfirm, setShowDuplicateConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(false);
 
-  // Mark dirty on any field change (mount = clean)
+  // Mark dirty on any field change. First render registers initial values (clean).
   useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
     setDirty(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     name,
     sku,
@@ -91,10 +98,6 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     specs,
     analogs,
   ]);
-  useEffect(() => {
-    setDirty(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Warn before leaving if unsaved
   useEffect(() => {
@@ -189,9 +192,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
   async function handleDuplicate() {
     if (!product) return;
-    if (dirty && !confirm("Есть несохранённые изменения — они не попадут в копию. Продолжить?")) {
-      return;
-    }
+    setShowDuplicateConfirm(false);
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/products/${product.id}/duplicate`, { method: "POST" });
@@ -204,15 +205,33 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     }
   }
 
-  async function handleDelete() {
+  async function handleDelete(force = false) {
     if (!product) return;
     setSaving(true);
+    setShowDelete(false);
+    setConfirmDeleteMessage(null);
     try {
-      const res = await fetch(`/api/admin/products/${product.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Ошибка удаления");
+      const res = await fetch(
+        `/api/admin/products/${product.id}${force ? "?force=1" : ""}`,
+        { method: "DELETE" }
+      );
+      if (res.status === 409) {
+        const data = await res.json().catch(() => ({}));
+        if (data.error === "product_used_in_orders") {
+          setConfirmDeleteMessage(
+            `${data.message}\n\nВсё равно удалить?`
+          );
+          setSaving(false);
+          return;
+        }
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Ошибка удаления");
+      }
       router.push("/admin/products");
-    } catch {
-      setError("Ошибка удаления товара");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ошибка удаления товара");
       setSaving(false);
     }
   }
@@ -243,9 +262,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         </button>
         <button
           onClick={() => {
-            if (!dirty || confirm("Есть несохранённые изменения. Уйти?")) {
-              router.push("/admin/products");
-            }
+            if (!dirty) router.push("/admin/products");
+            else setShowCancelConfirm(true);
           }}
           className="text-sm text-gray-600 hover:text-gray-900"
         >
@@ -273,7 +291,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
                   role="menuitem"
                   onClick={() => {
                     setMenuOpen(false);
-                    handleDuplicate();
+                    if (dirty) setShowDuplicateConfirm(true);
+                    else handleDuplicate();
                   }}
                   className="w-full text-left px-4 py-2 hover:bg-gray-50"
                 >
@@ -448,8 +467,35 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
         title="Удаление товара"
         message={`Вы уверены, что хотите удалить товар "${name}"? Это действие нельзя отменить.`}
         confirmText="Удалить"
-        onConfirm={handleDelete}
+        onConfirm={() => handleDelete(false)}
         onCancel={() => setShowDelete(false)}
+      />
+
+      <ConfirmModal
+        open={confirmDeleteMessage !== null}
+        title="Товар есть в заказах"
+        message={confirmDeleteMessage ?? ""}
+        confirmText="Всё равно удалить"
+        onConfirm={() => handleDelete(true)}
+        onCancel={() => setConfirmDeleteMessage(null)}
+      />
+
+      <ConfirmModal
+        open={showDuplicateConfirm}
+        title="Несохранённые изменения"
+        message="В форме есть несохранённые изменения — они не попадут в копию. Продолжить?"
+        confirmText="Продолжить"
+        onConfirm={handleDuplicate}
+        onCancel={() => setShowDuplicateConfirm(false)}
+      />
+
+      <ConfirmModal
+        open={showCancelConfirm}
+        title="Уйти без сохранения?"
+        message="Есть несохранённые изменения. Если уйдёте — они пропадут."
+        confirmText="Уйти"
+        onConfirm={() => router.push("/admin/products")}
+        onCancel={() => setShowCancelConfirm(false)}
       />
     </div>
   );

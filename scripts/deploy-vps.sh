@@ -50,6 +50,11 @@ if [[ -f package-lock.json ]]; then
 else
   npm install
 fi
+
+# Применяем schema-миграции к SQLite (products_sku_unique, индексы, product_views CASCADE)
+echo "→ Применяю миграции БД..."
+npx tsx scripts/apply-migrations.ts
+
 npm run build
 pm2 restart astra-motors
 pm2 save

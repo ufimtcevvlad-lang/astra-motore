@@ -107,18 +107,35 @@ export default function ProductsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids, action }),
     });
-    if (!res.ok) throw new Error("fail");
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "Не удалось применить изменение");
+    }
     await fetchProducts();
   }
 
-  async function bulkDelete() {
+  async function bulkDelete(force = false) {
     const ids = [...selectedIds];
-    const res = await fetch(`/api/admin/products/bulk`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids }),
-    });
-    if (!res.ok) throw new Error("fail");
+    const res = await fetch(
+      `/api/admin/products/bulk${force ? "?force=1" : ""}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      }
+    );
+    if (res.status === 409) {
+      const data = await res.json().catch(() => ({}));
+      if (data.error === "product_used_in_orders") {
+        const err: Error & { warning?: string } = new Error("product_used_in_orders");
+        err.warning = data.message;
+        throw err;
+      }
+    }
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "Не удалось удалить");
+    }
     setSelectedIds(new Set());
     await fetchProducts();
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
 
 interface Category {
   id: number;
@@ -11,7 +12,7 @@ interface BulkActionBarProps {
   selectedCount: number;
   categories: Category[];
   onClear: () => void;
-  onDelete: () => Promise<void>;
+  onDelete: (force?: boolean) => Promise<void>;
   onSetInStock: (value: number) => Promise<void>;
   onSetCategory: (categoryId: number | null) => Promise<void>;
   onPriceDelta: (percent: number) => Promise<void>;
@@ -30,25 +31,37 @@ export default function BulkActionBar({
   const [menu, setMenu] = useState<"price" | "category" | null>(null);
   const [priceInput, setPriceInput] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showForceDeleteConfirm, setShowForceDeleteConfirm] = useState<string | null>(null);
+  const [showPriceConfirm, setShowPriceConfirm] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   if (selectedCount === 0) return null;
 
   async function run(fn: () => Promise<void>) {
     setBusy(true);
+    setError(null);
     try {
       await fn();
       setMenu(null);
       setPriceInput("");
       setCategoryInput("");
+    } catch (err) {
+      const e = err as Error & { warning?: string };
+      if (e.warning) {
+        setShowForceDeleteConfirm(e.warning);
+      } else {
+        setError(e.message || "Не удалось выполнить действие");
+      }
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <div className="sticky bottom-4 z-20 flex items-center gap-3 px-4 py-3 bg-gray-900 text-white rounded-lg shadow-lg mx-auto max-w-3xl">
+    <div className="sticky bottom-2 z-20 flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 bg-gray-900 text-white rounded-lg shadow-lg mx-auto max-w-3xl">
       <span className="text-sm font-medium">Выбрано: {selectedCount}</span>
-      <div className="h-5 w-px bg-gray-700" />
+      <div className="h-5 w-px bg-gray-700 hidden sm:block" />
 
       <button
         disabled={busy}
@@ -90,7 +103,12 @@ export default function BulkActionBar({
                 onClick={() => {
                   const n = Number(priceInput);
                   if (!Number.isFinite(n) || n === 0) return;
-                  run(() => onPriceDelta(n));
+                  if (n < -90 || n > 500) {
+                    setError("Допустимый диапазон: от −90 до +500 %");
+                    return;
+                  }
+                  setMenu(null);
+                  setShowPriceConfirm(n);
                 }}
                 className="px-3 py-1 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700"
               >
@@ -136,14 +154,10 @@ export default function BulkActionBar({
         )}
       </div>
 
-      <div className="h-5 w-px bg-gray-700" />
+      <div className="h-5 w-px bg-gray-700 hidden sm:block" />
       <button
         disabled={busy}
-        onClick={() => {
-          if (confirm(`Удалить ${selectedCount} товаров? Действие необратимо.`)) {
-            run(onDelete);
-          }
-        }}
+        onClick={() => setShowDeleteConfirm(true)}
         className="text-sm px-3 py-1.5 rounded text-red-300 hover:bg-red-900/40 disabled:opacity-50"
       >
         Удалить
@@ -155,6 +169,56 @@ export default function BulkActionBar({
       >
         Отмена
       </button>
+
+      {error && (
+        <div
+          role="alert"
+          className="basis-full text-xs bg-red-900/50 border border-red-700 text-red-100 rounded px-3 py-2 mt-1"
+        >
+          {error}
+        </div>
+      )}
+
+      <ConfirmModal
+        open={showDeleteConfirm}
+        title="Удалить выбранные товары?"
+        message={`Будет удалено ${selectedCount} товар(ов). Действие необратимо.`}
+        confirmText="Удалить"
+        onConfirm={() => {
+          setShowDeleteConfirm(false);
+          run(() => onDelete(false));
+        }}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
+      <ConfirmModal
+        open={showForceDeleteConfirm !== null}
+        title="Товары есть в заказах"
+        message={showForceDeleteConfirm ?? ""}
+        confirmText="Всё равно удалить"
+        onConfirm={() => {
+          setShowForceDeleteConfirm(null);
+          run(() => onDelete(true));
+        }}
+        onCancel={() => setShowForceDeleteConfirm(null)}
+      />
+      <ConfirmModal
+        open={showPriceConfirm !== null}
+        title="Изменить цены?"
+        message={
+          showPriceConfirm !== null
+            ? `Будет изменена цена у ${selectedCount} товар(ов) на ${
+                showPriceConfirm > 0 ? "+" : ""
+              }${showPriceConfirm}%. Продолжить?`
+            : ""
+        }
+        confirmText="Применить"
+        onConfirm={() => {
+          const n = showPriceConfirm;
+          setShowPriceConfirm(null);
+          if (n !== null) run(() => onPriceDelta(n));
+        }}
+        onCancel={() => setShowPriceConfirm(null)}
+      />
     </div>
   );
 }
