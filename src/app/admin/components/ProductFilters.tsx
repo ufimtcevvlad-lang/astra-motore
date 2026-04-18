@@ -16,6 +16,8 @@ interface ProductFiltersProps {
   brands: string[];
   filters: ProductFiltersState;
   onChange: (filters: ProductFiltersState) => void;
+  onReset?: () => void;
+  resultCount?: number | null;
 }
 
 export default function ProductFilters({
@@ -23,6 +25,8 @@ export default function ProductFilters({
   brands,
   filters,
   onChange,
+  onReset,
+  resultCount,
 }: ProductFiltersProps) {
   const [searchInput, setSearchInput] = useState(filters.search);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -111,6 +115,20 @@ export default function ProductFilters({
           className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
+
+      {onReset && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-sm text-gray-500 hover:text-gray-900 underline"
+        >
+          Сбросить
+        </button>
+      )}
+
+      {resultCount !== undefined && resultCount !== null && (
+        <span className="ml-auto text-sm text-gray-500">Найдено: {resultCount}</span>
+      )}
     </div>
   );
 }

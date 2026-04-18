@@ -14,7 +14,19 @@ const EMPTY: ProductFiltersState = {
   priceTo: "",
 };
 
-function readParams(sp: URLSearchParams): { filters: ProductFiltersState; page: number } {
+export type SortField = "updated" | "name" | "price" | "inStock" | "brand";
+export type SortDir = "asc" | "desc";
+export interface SortState {
+  field: SortField;
+  dir: SortDir;
+}
+const DEFAULT_SORT: SortState = { field: "updated", dir: "desc" };
+
+function readParams(sp: URLSearchParams): {
+  filters: ProductFiltersState;
+  page: number;
+  sort: SortState;
+} {
   return {
     filters: {
       search: sp.get("search") ?? "",
@@ -25,10 +37,14 @@ function readParams(sp: URLSearchParams): { filters: ProductFiltersState; page: 
       priceTo: sp.get("priceTo") ?? "",
     },
     page: Math.max(1, Number(sp.get("page") ?? "1") || 1),
+    sort: {
+      field: (sp.get("sort") as SortField) || "updated",
+      dir: sp.get("dir") === "asc" ? "asc" : "desc",
+    },
   };
 }
 
-function buildQuery(filters: ProductFiltersState, page: number): string {
+function buildQuery(filters: ProductFiltersState, page: number, sort: SortState): string {
   const p = new URLSearchParams();
   if (filters.search) p.set("search", filters.search);
   if (filters.categoryId) p.set("categoryId", filters.categoryId);
@@ -37,6 +53,8 @@ function buildQuery(filters: ProductFiltersState, page: number): string {
   if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
   if (filters.priceTo) p.set("priceTo", filters.priceTo);
   if (page > 1) p.set("page", String(page));
+  if (sort.field !== DEFAULT_SORT.field) p.set("sort", sort.field);
+  if (sort.dir !== DEFAULT_SORT.dir) p.set("dir", sort.dir);
   return p.toString();
 }
 
@@ -51,7 +69,10 @@ export function useProductFilters() {
   const pathname = usePathname();
   const sp = useSearchParams();
 
-  const { filters, page } = useMemo(() => readParams(new URLSearchParams(sp.toString())), [sp]);
+  const { filters, page, sort } = useMemo(
+    () => readParams(new URLSearchParams(sp.toString())),
+    [sp]
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -61,7 +82,7 @@ export function useProductFilters() {
       if (!raw) return;
       const saved = JSON.parse(raw) as ProductFiltersState;
       if (isEmpty(saved)) return;
-      const q = buildQuery(saved, 1);
+      const q = buildQuery(saved, 1, DEFAULT_SORT);
       if (q) router.replace(`${pathname}?${q}`, { scroll: false });
     } catch {
       /* ignore */
@@ -69,8 +90,8 @@ export function useProductFilters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const push = (next: ProductFiltersState, nextPage: number) => {
-    const q = buildQuery(next, nextPage);
+  const push = (next: ProductFiltersState, nextPage: number, nextSort: SortState) => {
+    const q = buildQuery(next, nextPage, nextSort);
     router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
     try {
       if (isEmpty(next)) localStorage.removeItem(STORAGE_KEY);
@@ -83,8 +104,10 @@ export function useProductFilters() {
   return {
     filters,
     page,
-    setFilters: (f: ProductFiltersState) => push(f, 1),
-    setPage: (p: number) => push(filters, p),
-    reset: () => push(EMPTY, 1),
+    sort,
+    setFilters: (f: ProductFiltersState) => push(f, 1, sort),
+    setPage: (p: number) => push(filters, p, sort),
+    setSort: (s: SortState) => push(filters, 1, s),
+    reset: () => push(EMPTY, 1, DEFAULT_SORT),
   };
 }

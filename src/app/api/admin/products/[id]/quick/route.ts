@@ -1,0 +1,54 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/app/lib/admin-middleware";
+import { db, schema } from "@/app/lib/db";
+import { eq } from "drizzle-orm";
+
+interface QuickPatchBody {
+  price?: number;
+  inStock?: number;
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireAdmin();
+  if (!auth.authorized) return auth.response;
+
+  const { id } = await params;
+  const numId = Number(id);
+  const body = (await req.json()) as QuickPatchBody;
+
+  const patch: Record<string, unknown> = { updatedAt: new Date().toISOString() };
+  if (body.price != null) {
+    const p = Number(body.price);
+    if (!Number.isFinite(p) || p < 0) {
+      return NextResponse.json({ error: "Некорректная цена" }, { status: 400 });
+    }
+    patch.price = p;
+  }
+  if (body.inStock != null) {
+    const s = Number(body.inStock);
+    if (!Number.isFinite(s) || s < 0) {
+      return NextResponse.json({ error: "Некорректный остаток" }, { status: 400 });
+    }
+    patch.inStock = s;
+  }
+
+  if (Object.keys(patch).length === 1) {
+    return NextResponse.json({ error: "Нет данных для обновления" }, { status: 400 });
+  }
+
+  await db.update(schema.products).set(patch).where(eq(schema.products.id, numId));
+
+  const [updated] = await db
+    .select({ id: schema.products.id, price: schema.products.price, inStock: schema.products.inStock })
+    .from(schema.products)
+    .where(eq(schema.products.id, numId));
+
+  if (!updated) {
+    return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+  }
+
+  return NextResponse.json(updated);
+}
