@@ -3,6 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import AdminHeader from "@/app/admin/components/AdminHeader";
+import {
+  ORDER_STATUS_LABELS as STATUS_LABELS,
+  ORDER_STATUS_BUTTON as STATUS_BUTTON_COLORS,
+  ORDER_STATUS_PROGRESSION as STATUS_PROGRESSION,
+  PAYMENT_LABELS,
+} from "@/app/admin/lib/order-status";
 
 interface OrderItem {
   name: string;
@@ -45,31 +51,6 @@ interface Order {
   createdAt: string;
   updatedAt: string;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-  new: "Новый",
-  processing: "В обработке",
-  shipped: "Отправлен",
-  delivered: "Доставлен",
-  cancelled: "Отменён",
-};
-
-const STATUS_BUTTON_COLORS: Record<string, { active: string; inactive: string }> = {
-  new: { active: "bg-amber-100 text-amber-800 border-amber-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
-  processing: { active: "bg-indigo-100 text-indigo-800 border-indigo-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
-  shipped: { active: "bg-blue-100 text-blue-800 border-blue-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
-  delivered: { active: "bg-green-100 text-green-800 border-green-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
-  cancelled: { active: "bg-red-100 text-red-800 border-red-300", inactive: "bg-white text-gray-600 border-gray-200 hover:bg-gray-50" },
-};
-
-const PAYMENT_LABELS: Record<string, string> = {
-  sbp: "СБП",
-  card: "Карта",
-  cash: "Наличные",
-};
-
-// Прогрессия статусов для timeline
-const STATUS_PROGRESSION = ["new", "processing", "shipped", "delivered"];
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -119,60 +100,64 @@ export default function OrderDetailPage() {
     if (!newStatus || newStatus === order?.status) return;
     setSaving(true);
     try {
-      await fetch(`/api/admin/orders/${id}/status`, {
+      const res = await fetch(`/api/admin/orders/${id}/status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus, comment: statusComment }),
       });
+      if (!res.ok) throw new Error();
       setStatusComment("");
       await fetchOrder();
-    } finally { setSaving(false); }
-  }
-
-  async function handleUrgentToggle() {
-    setSaving(true);
-    try {
-      await fetch(`/api/admin/orders/${id}/urgent`, { method: "PATCH" });
-      await fetchOrder();
+    } catch {
+      alert("Не удалось сменить статус. Проверьте соединение и попробуйте снова.");
     } finally { setSaving(false); }
   }
 
   async function saveItems() {
     setSaving(true);
     try {
-      await fetch(`/api/admin/orders/${id}`, {
+      const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: editItems }),
       });
+      if (!res.ok) throw new Error();
       setEditingItems(false);
       await fetchOrder();
+    } catch {
+      alert("Не удалось сохранить товары.");
     } finally { setSaving(false); }
   }
 
   async function saveClient() {
     setSaving(true);
     try {
-      await fetch(`/api/admin/orders/${id}`, {
+      const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ customerName: editClient.name, customerPhone: editClient.phone, customerEmail: editClient.email }),
       });
+      if (!res.ok) throw new Error();
       setEditingClient(false);
       await fetchOrder();
+    } catch {
+      alert("Не удалось сохранить данные клиента.");
     } finally { setSaving(false); }
   }
 
   async function saveDelivery() {
     setSaving(true);
     try {
-      await fetch(`/api/admin/orders/${id}`, {
+      const res = await fetch(`/api/admin/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ deliveryMethod: editDelivery.method, deliveryCity: editDelivery.city, deliveryAddress: editDelivery.address }),
       });
+      if (!res.ok) throw new Error();
       setEditingDelivery(false);
       await fetchOrder();
+    } catch {
+      alert("Не удалось сохранить доставку.");
     } finally { setSaving(false); }
   }
 
@@ -245,12 +230,8 @@ export default function OrderDetailPage() {
                 disabled={saving || newStatus === order.status}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
               >
-                Сменить статус
+                {saving ? "Сохранение..." : "Сменить статус"}
               </button>
-              <label className="flex items-center gap-1.5 text-sm text-gray-600">
-                <input type="checkbox" defaultChecked className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                Уведомить клиента
-              </label>
             </div>
           </div>
 
@@ -353,7 +334,7 @@ export default function OrderDetailPage() {
                     <input value={item.name} onChange={(e) => { const arr = [...editItems]; arr[i] = { ...arr[i], name: e.target.value }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 flex-1 text-sm" />
                     <input type="number" value={item.quantity} min={1} onChange={(e) => { const arr = [...editItems]; const qty = Number(e.target.value) || 1; arr[i] = { ...arr[i], quantity: qty, sum: qty * arr[i].price }; setEditItems(arr); }} className="border border-gray-200 rounded px-2 py-1 w-16 text-sm text-center" />
                     <span className="text-gray-500 whitespace-nowrap">{item.price.toLocaleString("ru-RU")} ₽</span>
-                    <button onClick={() => setEditItems(editItems.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700 p-1">✕</button>
+                    <button onClick={() => { if (confirm(`Удалить «${item.name}» из заказа?`)) setEditItems(editItems.filter((_, j) => j !== i)); }} className="text-red-500 hover:text-red-700 p-1" title="Удалить товар">✕</button>
                   </div>
                 ))}
                 <div className="flex gap-2 pt-2">
@@ -399,9 +380,9 @@ export default function OrderDetailPage() {
                   <div key={s} className="flex gap-3">
                     {/* Линия + точка */}
                     <div className="flex flex-col items-center">
-                      <div className={`w-2.5 h-2.5 rounded-full mt-1 ${isPassed ? "bg-amber-400" : "bg-gray-300"}`} />
+                      <div className={`w-2.5 h-2.5 rounded-full mt-1 ${isPassed ? "bg-green-500" : "bg-gray-300"}`} />
                       {i < STATUS_PROGRESSION.length - 1 && (
-                        <div className={`w-0.5 flex-1 min-h-[32px] ${isPassed && i < currentStepIndex ? "bg-amber-300" : "bg-gray-200"}`} />
+                        <div className={`w-0.5 flex-1 min-h-[32px] ${isPassed && i < currentStepIndex ? "bg-green-400" : "bg-gray-200"}`} />
                       )}
                     </div>
                     {/* Текст */}

@@ -26,17 +26,8 @@ export default function ConversationsPage() {
   const [filter, setFilter] = useState<"unread" | "all">("all");
   const [search, setSearch] = useState("");
   const [totalUnread, setTotalUnread] = useState(0);
-  const [currentAdminId, setCurrentAdminId] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const initialOpenApplied = useRef(false);
-
-  // Get current admin id
-  useEffect(() => {
-    fetch("/api/admin/auth/me")
-      .then((r) => r.json())
-      .then((data) => setCurrentAdminId(data.admin?.id ?? null))
-      .catch(() => {});
-  }, []);
 
   const fetchConversations = useCallback(async () => {
     const params = new URLSearchParams();
@@ -57,9 +48,9 @@ export default function ConversationsPage() {
     fetchConversations();
   }, [fetchConversations]);
 
-  // Polling every 3s
+  // Polling every 7s
   useEffect(() => {
-    intervalRef.current = setInterval(fetchConversations, 3000);
+    intervalRef.current = setInterval(fetchConversations, 7000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -100,8 +91,8 @@ export default function ConversationsPage() {
       <AdminHeader title="Чат и заявки" />
 
       <div className="flex flex-1 min-h-0">
-        {/* Left panel — conversation list */}
-        <div className="w-80 shrink-0 flex flex-col">
+        {/* Left panel — conversation list: full width on mobile (hidden when chat open), fixed 320px on md+ */}
+        <div className={`${selectedId ? "hidden md:flex" : "flex"} w-full md:w-80 shrink-0 flex-col`}>
           <ConversationList
             conversations={conversations}
             selectedId={selectedId}
@@ -114,13 +105,21 @@ export default function ConversationsPage() {
         </div>
 
         {/* Center panel — chat */}
-        <div className="flex-1 min-w-0 flex flex-col bg-gray-50">
+        <div className={`${selectedId ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col bg-gray-50`}>
           {selectedId ? (
-            <ConversationChat
-              key={selectedId}
-              conversationId={selectedId}
-              currentAdminId={currentAdminId}
-            />
+            <>
+              {/* Back button on mobile */}
+              <button
+                onClick={() => setSelectedId(null)}
+                className="md:hidden px-3 py-2 text-sm text-indigo-600 hover:bg-gray-100 text-left border-b border-gray-200 bg-white"
+              >
+                ← К списку
+              </button>
+              <ConversationChat
+                key={selectedId}
+                conversationId={selectedId}
+              />
+            </>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
               Выберите диалог
@@ -128,9 +127,9 @@ export default function ConversationsPage() {
           )}
         </div>
 
-        {/* Right panel — info (only when conversation selected) */}
+        {/* Right panel — info (only when conversation selected, hidden on < lg) */}
         {selectedId && (
-          <div className="w-72 shrink-0 border-l border-gray-200">
+          <div className="hidden lg:block w-72 shrink-0 border-l border-gray-200">
             <ConversationInfo key={selectedId} conversationId={selectedId} />
           </div>
         )}

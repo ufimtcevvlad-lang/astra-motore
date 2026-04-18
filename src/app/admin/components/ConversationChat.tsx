@@ -22,7 +22,6 @@ interface Message {
 
 interface ConversationChatProps {
   conversationId: number;
-  currentAdminId: number | null;
 }
 
 function formatMsgTime(dateStr: string): string {
@@ -60,7 +59,7 @@ function AttachmentView({ att }: { att: Attachment }) {
   );
 }
 
-export default function ConversationChat({ conversationId, currentAdminId }: ConversationChatProps) {
+export default function ConversationChat({ conversationId }: ConversationChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
@@ -94,9 +93,9 @@ export default function ConversationChat({ conversationId, currentAdminId }: Con
     fetchMessages();
   }, [fetchMessages]);
 
-  // Polling every 3s
+  // Polling every 7s
   useEffect(() => {
-    intervalRef.current = setInterval(fetchMessages, 3000);
+    intervalRef.current = setInterval(fetchMessages, 7000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -112,7 +111,7 @@ export default function ConversationChat({ conversationId, currentAdminId }: Con
     if (!trimmed && !attachments?.length) return;
     setSending(true);
     try {
-      await fetch(`/api/admin/conversations/${conversationId}/send`, {
+      const res = await fetch(`/api/admin/conversations/${conversationId}/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,11 +120,12 @@ export default function ConversationChat({ conversationId, currentAdminId }: Con
           isInternalNote: isNote,
         }),
       });
+      if (!res.ok) throw new Error();
       setText("");
       setIsNote(false);
       await fetchMessages();
     } catch {
-      // ignore
+      alert("Не удалось отправить сообщение. Проверьте соединение и попробуйте снова.");
     } finally {
       setSending(false);
     }
@@ -142,12 +142,13 @@ export default function ConversationChat({ conversationId, currentAdminId }: Con
         method: "POST",
         body: formData,
       });
+      if (!res.ok) throw new Error();
       const data = await res.json();
       if (data.url) {
         await sendMessage([{ url: data.url, name: file.name, type: file.type, size: file.size }]);
       }
     } catch {
-      // ignore
+      alert("Не удалось загрузить файл.");
     }
     e.target.value = "";
   }
