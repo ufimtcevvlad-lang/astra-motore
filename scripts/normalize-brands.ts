@@ -7,9 +7,9 @@ import { eq } from "drizzle-orm";
 
 const BRAND_MAP: Record<string, string> = {
   // GM family → единый GM
-  "GENERAL MOTORS": "GM",
-  "General Motors": "GM",
-  "GM OE": "GM",
+  "GENERAL MOTORS": "General Motors",
+  "GM OE": "General Motors",
+  GM: "General Motors",
   // Case normalization (uppercase → Title Case)
   BOSCH: "Bosch",
   PATRON: "Patron",
