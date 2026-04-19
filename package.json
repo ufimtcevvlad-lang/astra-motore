@@ -13,7 +13,6 @@
     "bot:telegram": "node scripts/telegram-bot.mjs",
     "logs:rotate": "node scripts/rotate-data-logs.mjs",
     "indexnow:send": "tsx scripts/indexnow-send.ts",
-    "seed:products-static": "tsx scripts/seed-products-from-static.ts",
     "opel:excel-preview": "node scripts/opel-excel-to-ts.mjs",
     "catalog:images": "node scripts/download-catalog-images-curated.mjs",
     "catalog:normalize-images": "node scripts/normalize-catalog-images.mjs --to-webp",
@@ -22,7 +21,6 @@
     "catalog:export-xlsx": "tsx scripts/export-products-xlsx.ts",
     "deploy:vps": "./scripts/deploy-vps.sh",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx scripts/migrate-to-sqlite.ts",
     "db:studio": "drizzle-kit studio",
     "admin:create": "tsx scripts/admin-create.ts"
   },
