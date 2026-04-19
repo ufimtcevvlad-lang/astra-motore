@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
+import { generateUniqueProductSlug } from "@/app/lib/products-db";
+import { ensureProductDir } from "@/app/lib/product-images";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 export async function POST(
   _req: NextRequest,
@@ -24,13 +27,17 @@ export async function POST(
 
   const now = new Date().toISOString();
   const externalId = `admin-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const copySku = `${src.sku}-copy`;
+  const copyName = `${src.name} (копия)`;
+  const slug = generateUniqueProductSlug({ name: copyName, brand: src.brand, sku: copySku });
 
   const [copy] = await db
     .insert(schema.products)
     .values({
       externalId,
-      sku: `${src.sku}-copy`,
-      name: `${src.name} (копия)`,
+      slug,
+      sku: copySku,
+      name: copyName,
       brand: src.brand,
       country: src.country,
       categoryId: src.categoryId,
@@ -61,6 +68,9 @@ export async function POST(
       }))
     );
   }
+
+  ensureProductDir(copySku);
+  revalidatePublicProductPages([slug]);
 
   return NextResponse.json(copy, { status: 201 });
 }

@@ -1,4 +1,4 @@
-import { products } from "../src/app/data/products";
+import { getAllProducts } from "../src/app/lib/products-db";
 import { productPath } from "../src/app/lib/product-slug";
 
 const KEY = "gmshop66-indexnow-20260403";
@@ -8,6 +8,7 @@ const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 const siteUrl = `https://${HOST}`;
 
 async function main() {
+  const products = getAllProducts();
   const urlList = [
     siteUrl,
     `${siteUrl}/catalog`,

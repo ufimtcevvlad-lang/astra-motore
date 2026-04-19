@@ -1,13 +1,13 @@
 import type { NextConfig } from "next";
 import {
-  getLegacyProductRedirects,
-  getRemovedDuplicateProductRedirects,
-} from "./src/app/lib/product-slug";
+  buildLegacyProductRedirects,
+  REMOVED_DUPLICATE_REDIRECTS,
+} from "./src/app/lib/legacy-redirects";
+import { getAllProducts, getProductByExternalId } from "./src/app/lib/products-db";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   poweredByHeader: false,
-  // Убираем console.log/info/debug из клиентских чанков в production (error/warn оставляем)
   compiler: {
     removeConsole:
       process.env.NODE_ENV === "production"
@@ -20,12 +20,25 @@ const nextConfig: NextConfig = {
     imageSizes: [32, 48, 64, 96, 128, 256],
   },
   async redirects() {
+    const allProducts = getAllProducts();
+    const legacy = buildLegacyProductRedirects(allProducts);
+    const removed = REMOVED_DUPLICATE_REDIRECTS.flatMap((r) => {
+      const target = getProductByExternalId(`static-${r.toExternalId}`);
+      if (!target || !target.slug) return [];
+      return [
+        {
+          source: `/product/${r.fromSlugOrId}`,
+          destination: `/product/${target.slug}`,
+          permanent: true as const,
+        },
+      ];
+    });
     return [
       { source: "/podbor-po-vin", destination: "/", permanent: true },
       { source: "/zapchasti-cadillac", destination: "/zapchasti-gm", permanent: true },
       { source: "/zapchasti-hummer", destination: "/zapchasti-gm", permanent: true },
-      ...getRemovedDuplicateProductRedirects(),
-      ...getLegacyProductRedirects(),
+      ...removed,
+      ...legacy,
     ];
   },
   async headers() {

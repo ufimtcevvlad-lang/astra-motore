@@ -4,7 +4,7 @@ import Link from "next/link";
 import { memo, useCallback, useState } from "react";
 import { ProductImage } from "../ProductImage";
 import { useFavorites } from "../FavoritesContext";
-import { getProductImageUrls, type Product } from "../../data/products";
+import type { Product } from "../../lib/products-types";
 import { productPath } from "../../lib/product-slug";
 
 function ChevronLeft({ className }: { className?: string }) {
@@ -33,7 +33,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
 }) {
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const liked = isFavorite(p.id);
-  const urls = getProductImageUrls(p);
+  const urls = p.images && p.images.length > 0 ? p.images : [p.image];
   const [active, setActive] = useState(0);
   const n = urls.length;
   const idx = n > 0 ? active % n : 0;

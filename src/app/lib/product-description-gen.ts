@@ -1,4 +1,4 @@
-import type { Product } from "../data/products";
+import type { Product } from "./products-types";
 
 const CATEGORY_PHRASE_MAP: Record<string, string> = {
   "Воздушные фильтры": "воздушный фильтр",

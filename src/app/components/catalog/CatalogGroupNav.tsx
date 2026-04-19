@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { CATALOG_GROUPS, sectionsInGroup } from "../../data/catalog-sections";
-import type { Product } from "../../data/products";
+import type { Product } from "../../lib/products-types";
 
 type CatalogGroupNavProps = {
   products: Product[];

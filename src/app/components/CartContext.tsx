@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
-import type { Product } from "../data/products";
+import type { Product } from "../lib/products-types";
 
 export type CartItem = {
   product: Product;

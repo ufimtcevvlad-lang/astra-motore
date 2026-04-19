@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { CatalogProductGrid } from "../components/catalog/CatalogProductGrid";
 import { CatalogSectionHeading } from "../components/catalog/CatalogSectionHeading";
-import { products } from "../data/products";
+import { getAllProducts } from "../lib/products-db";
 import { socialShareMetadata } from "../lib/seo";
 import { SITE_URL } from "../lib/site";
 
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default function ChevroletPage() {
+  const products = getAllProducts();
   const items = products.filter((p) => p.car.toLowerCase().includes("chevrolet"));
   const breadcrumbLd = {
     "@context": "https://schema.org",

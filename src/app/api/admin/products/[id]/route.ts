@@ -3,6 +3,7 @@ import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
 import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 export async function GET(
   _req: NextRequest,
@@ -175,6 +176,8 @@ export async function PUT(
     .from(schema.products)
     .where(eq(schema.products.id, numId));
 
+  revalidatePublicProductPages([updated[0]?.slug].filter(Boolean) as string[]);
+
   return NextResponse.json(updated[0]);
 }
 
@@ -212,6 +215,8 @@ export async function DELETE(
     }
   }
 
+  const deletedSlug = existing[0]?.slug;
   await db.delete(schema.products).where(eq(schema.products.id, numId));
+  revalidatePublicProductPages(deletedSlug ? [deletedSlug] : []);
   return NextResponse.json({ success: true });
 }

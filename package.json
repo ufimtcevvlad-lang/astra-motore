@@ -21,7 +21,6 @@
     "catalog:export-xlsx": "tsx scripts/export-products-xlsx.ts",
     "deploy:vps": "./scripts/deploy-vps.sh",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx scripts/migrate-to-sqlite.ts",
     "db:studio": "drizzle-kit studio",
     "admin:create": "tsx scripts/admin-create.ts"
   },

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { Product } from "../data/products";
+import type { Product } from "../lib/products-types";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 
 export function HomeFeatured({ items }: { items: Product[] }) {

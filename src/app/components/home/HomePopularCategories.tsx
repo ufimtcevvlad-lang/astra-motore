@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "../../data/products";
+import { getAllProducts } from "../../lib/products-db";
 
 type CategoryDef = {
   title: string;
@@ -59,13 +59,13 @@ const CATEGORIES: CategoryDef[] = [
 ];
 
 function minPriceInCategory(categoryTitle: string): number | undefined {
-  const filtered = products.filter((p) => p.category === categoryTitle);
+  const filtered = getAllProducts().filter((p) => p.category === categoryTitle);
   if (filtered.length === 0) return undefined;
   return Math.min(...filtered.map((p) => p.price));
 }
 
 function countInCategory(categoryTitle: string): number {
-  return products.filter((p) => p.category === categoryTitle).length;
+  return getAllProducts().filter((p) => p.category === categoryTitle).length;
 }
 
 /** Блок «Популярные расходники» — карточки категорий с реальными фото товаров. */

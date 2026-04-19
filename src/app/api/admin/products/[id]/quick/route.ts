@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 interface QuickPatchBody {
   price?: number;
@@ -42,13 +43,15 @@ export async function PATCH(
   await db.update(schema.products).set(patch).where(eq(schema.products.id, numId));
 
   const [updated] = await db
-    .select({ id: schema.products.id, price: schema.products.price, inStock: schema.products.inStock })
+    .select({ id: schema.products.id, slug: schema.products.slug, price: schema.products.price, inStock: schema.products.inStock })
     .from(schema.products)
     .where(eq(schema.products.id, numId));
 
   if (!updated) {
     return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
   }
+
+  revalidatePublicProductPages(updated.slug ? [updated.slug] : []);
 
   return NextResponse.json(updated);
 }

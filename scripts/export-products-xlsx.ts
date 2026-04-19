@@ -1,5 +1,5 @@
 /**
- * Выгрузка каталога из src/app/data/products.ts в Excel.
+ * Выгрузка каталога из БД в Excel.
  * Колонки: наименование, артикул, цена (как на сайте).
  *
  * Запуск: npm run catalog:export-xlsx
@@ -9,7 +9,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as XLSX from "xlsx";
-import { products } from "../src/app/data/products";
+import { getAllProducts } from "../src/app/lib/products-db";
+
+const products = getAllProducts();
 
 function pad2(n: number) {
   return String(n).padStart(2, "0");

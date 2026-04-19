@@ -1,23 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useFavorites } from "../components/FavoritesContext";
 import { CatalogProductCard } from "../components/catalog/CatalogProductCard";
-import { products } from "../data/products";
-
-const productsById = new Map(products.map((p) => [p.id, p]));
+import type { Product } from "../lib/products-types";
 
 export function FavoritesPageContent() {
   const { favorites } = useFavorites();
+  const [items, setItems] = useState<Product[]>([]);
 
-  const items = useMemo(
-    () =>
-      [...favorites]
-        .map((id) => productsById.get(id))
-        .filter((p) => p !== undefined),
-    [favorites],
-  );
+  useEffect(() => {
+    const ids = [...favorites];
+    if (ids.length === 0) {
+      setItems([]);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/public/products/by-ids?ids=${encodeURIComponent(ids.join(","))}`)
+      .then((r) => r.json())
+      .then((data: { items: Product[] }) => {
+        if (cancelled) return;
+        const byId = new Map(data.items.map((p) => [p.id, p]));
+        setItems(ids.map((id) => byId.get(id)).filter((p): p is Product => !!p));
+      })
+      .catch(() => {
+        if (!cancelled) setItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [favorites]);
 
   if (items.length === 0) {
     return (

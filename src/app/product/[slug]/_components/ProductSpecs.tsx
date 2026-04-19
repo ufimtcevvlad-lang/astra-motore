@@ -1,4 +1,4 @@
-import type { ProductSpec } from "../../../data/products";
+import type { ProductSpec } from "../../../lib/products-types";
 
 type Props = {
   specs: ProductSpec[];

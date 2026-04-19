@@ -3,6 +3,7 @@ import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { inArray, sql } from "drizzle-orm";
 import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 const MAX_BULK = 500;
 const PRICE_DELTA_MIN = -90; // не ниже 10% от текущей цены
@@ -86,6 +87,8 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Неизвестное действие" }, { status: 400 });
   }
 
+  revalidatePublicProductPages();
+
   return NextResponse.json({ success: true, count: ids.length });
 }
 
@@ -123,5 +126,6 @@ export async function DELETE(req: NextRequest) {
   }
 
   await db.delete(schema.products).where(inArray(schema.products.id, ids));
+  revalidatePublicProductPages();
   return NextResponse.json({ success: true, count: ids.length });
 }

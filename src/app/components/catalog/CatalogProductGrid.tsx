@@ -1,4 +1,4 @@
-import type { Product } from "../../data/products";
+import type { Product } from "../../lib/products-types";
 import { CatalogProductCard } from "./CatalogProductCard";
 
 export function CatalogProductGrid({

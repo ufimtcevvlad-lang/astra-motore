@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CatalogChrome } from "../components/catalog/CatalogChrome";
 import { ProductCatalog } from "../components/ProductCatalog";
+import { getAllProducts } from "../lib/products-db";
 import { SITE_BRAND, SITE_URL } from "../lib/site";
 import { socialShareMetadata } from "../lib/seo";
 
@@ -52,7 +53,7 @@ export default function CatalogPage() {
         }
       />
 
-      <ProductCatalog hideHubIntro />
+      <ProductCatalog hideHubIntro products={getAllProducts()} />
     </div>
   );
 }

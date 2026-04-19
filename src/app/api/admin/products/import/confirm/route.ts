@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
+import { generateUniqueProductSlug } from "@/app/lib/products-db";
+import { ensureProductDir } from "@/app/lib/product-images";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 interface ImportItem {
   sku: string;
@@ -46,8 +49,9 @@ export async function POST(req: NextRequest) {
     const categoryId = item.sectionSlug ? slugToId.get(item.sectionSlug) ?? null : null;
     try {
       const externalId = `import-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const slug = generateUniqueProductSlug({ name, brand, sku });
       db.insert(schema.products).values({
-        externalId, sku, name, brand,
+        externalId, slug, sku, name, brand,
         price: Math.round(price),
         inStock: 1,
         car: item.car,
@@ -55,6 +59,7 @@ export async function POST(req: NextRequest) {
         createdAt: now,
         updatedAt: now,
       }).run();
+      ensureProductDir(sku);
       added++;
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -75,6 +80,10 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       errors.push(`Ошибка обновления id=${item.id}: ${e instanceof Error ? e.message : String(e)}`);
     }
+  }
+
+  if (added > 0 || updated > 0) {
+    revalidatePublicProductPages();
   }
 
   return NextResponse.json({ added, updated, errors });
