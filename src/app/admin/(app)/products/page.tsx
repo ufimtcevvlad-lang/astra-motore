@@ -9,6 +9,7 @@ import ProductList, { ProductItem } from "@/app/admin/components/ProductList";
 import BulkActionBar from "@/app/admin/components/BulkActionBar";
 import { useProductFilters } from "@/app/admin/components/useProductFilters";
 import { useScrollRestore } from "@/app/admin/components/useScrollRestore";
+import { BulkCategoryModal } from "./_components/BulkCategoryModal";
 
 interface Category {
   id: number;
@@ -27,6 +28,7 @@ export default function ProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [showBulkCategoryModal, setShowBulkCategoryModal] = useState(false);
 
   useScrollRestore(scrollKey, !loading && items.length > 0);
 
@@ -46,6 +48,7 @@ export default function ProductsPage() {
     if (filters.inStock) params.set("inStock", filters.inStock);
     if (filters.priceFrom) params.set("priceFrom", filters.priceFrom);
     if (filters.priceTo) params.set("priceTo", filters.priceTo);
+    if (filters.nocat) params.set("nocat", "1");
     params.set("sort", sort.field);
     params.set("dir", sort.dir);
     return params.toString();
@@ -146,7 +149,8 @@ export default function ProductsPage() {
     !!filters.brand ||
     !!filters.inStock ||
     !!filters.priceFrom ||
-    !!filters.priceTo;
+    !!filters.priceTo ||
+    !!filters.nocat;
 
   return (
     <>
@@ -172,6 +176,14 @@ export default function ProductsPage() {
         >
           Экспорт Excel
         </a>
+        {selectedIds.size > 0 && filters.nocat && (
+          <button
+            onClick={() => setShowBulkCategoryModal(true)}
+            className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          >
+            Назначить категорию ({selectedIds.size})
+          </button>
+        )}
         <Link
           href="/admin/products/new"
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
@@ -218,6 +230,18 @@ export default function ProductsPage() {
         onSetCategory={(categoryId) => bulkPatch({ type: "setCategory", categoryId })}
         onPriceDelta={(percent) => bulkPatch({ type: "priceDelta", percent })}
       />
+
+      {showBulkCategoryModal && (
+        <BulkCategoryModal
+          ids={[...selectedIds]}
+          categories={categories}
+          onClose={() => setShowBulkCategoryModal(false)}
+          onDone={() => {
+            setSelectedIds(new Set());
+            fetchProducts();
+          }}
+        />
+      )}
     </>
   );
 }
