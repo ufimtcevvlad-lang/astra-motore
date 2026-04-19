@@ -77,8 +77,8 @@
    - `src/app/favorites/FavoritesPageContent.tsx`
    - `src/app/lib/catalog-search.ts`
    - `src/app/lib/product-analogs.ts`
-   - `src/app/lib/product-slug.ts` (только если реально читает список; возможно, только утилита)
-   - `src/app/lib/product-description-gen.ts` (только если реально читает список)
+   - `src/app/lib/product-slug.ts` — читает массив на стадии модуля, строит карту slug ↔ product. Переписать на вычисление slug только по одному объекту (ленивое), без общей карты.
+   - `src/app/lib/product-description-gen.ts` — только `type Product`, массив не читает. Нужно заменить тип-импорт на новый тип из `products-db.ts` (или оставить общий `types/product.ts`).
 6. **Админка — мутации + ревалидация:**
    - Создание/обновление/удаление товара → `revalidatePath`.
    - Подтверждение Excel-импорта → `revalidatePath` + создание папок фото по каждому SKU.
