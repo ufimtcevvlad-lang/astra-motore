@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq, like, and, gte, lte, sql, desc, asc, or, isNull } from "drizzle-orm";
+import { generateUniqueProductSlug } from "@/app/lib/products-db";
+import { ensureProductDir } from "@/app/lib/product-images";
+import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
 const PAGE_SIZE = 20;
 
@@ -135,6 +138,7 @@ export async function POST(req: NextRequest) {
 
   const now = new Date().toISOString();
   const externalId = `admin-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const slug = generateUniqueProductSlug({ name, brand, sku });
 
   let product;
   try {
@@ -142,6 +146,7 @@ export async function POST(req: NextRequest) {
       .insert(schema.products)
       .values({
         externalId,
+        slug,
         sku,
         name,
         brand,
@@ -180,6 +185,9 @@ export async function POST(req: NextRequest) {
       }))
     );
   }
+
+  ensureProductDir(sku);
+  revalidatePublicProductPages([slug]);
 
   return NextResponse.json(product, { status: 201 });
 }

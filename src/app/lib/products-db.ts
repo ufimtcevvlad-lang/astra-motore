@@ -2,6 +2,7 @@ import { db, schema } from "./db";
 import { eq, like, or } from "drizzle-orm";
 import type { Product } from "./products-types";
 import { getProductImages } from "./product-images";
+import { baseProductSlug } from "./product-slug";
 
 type ProductRow = typeof schema.products.$inferSelect;
 type CategoryRow = typeof schema.categories.$inferSelect;
@@ -125,6 +126,25 @@ export function getProductsByCarMake(make: string): Array<Product & { slug: stri
 export function getProductImageUrls(product: Pick<Product, "images" | "image">): string[] {
   if (product.images && product.images.length > 0) return product.images;
   return [product.image];
+}
+
+/** Генерирует уникальный slug для товара: база + при коллизиях суффикс -2, -3... */
+export function generateUniqueProductSlug(
+  product: Pick<Product, "name" | "brand" | "sku">,
+  excludeProductId?: number,
+): string {
+  const base = baseProductSlug(product);
+  const rows = db
+    .select({ id: schema.products.id, slug: schema.products.slug })
+    .from(schema.products)
+    .all() as Array<{ id: number; slug: string }>;
+  const taken = new Set(
+    rows.filter((r) => r.id !== excludeProductId).map((r) => r.slug),
+  );
+  if (!taken.has(base)) return base;
+  let n = 2;
+  while (taken.has(`${base}-${n}`)) n += 1;
+  return `${base}-${n}`;
 }
 
 export function searchProducts(query: string): Array<Product & { slug: string }> {
