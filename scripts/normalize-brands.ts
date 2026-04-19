@@ -10,9 +10,6 @@ const BRAND_MAP: Record<string, string> = {
   "GENERAL MOTORS": "GM",
   "General Motors": "GM",
   "GM OE": "GM",
-  // Без бренда
-  "—": "",
-  "Бренд": "",
   // Case normalization (uppercase → Title Case)
   BOSCH: "Bosch",
   PATRON: "Patron",
