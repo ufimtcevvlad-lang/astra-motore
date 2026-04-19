@@ -103,6 +103,11 @@ export const CATALOG_SECTIONS = [
   { slug: "nasosy-omyvatelya",   title: "Насосы стеклоомывателя",    hint: "",                                   groupSlug: "omyvatel" satisfies CatalogGroupSlug },
   { slug: "forsunki-omyvatelya", title: "Форсунки омывателя",        hint: "",                                   groupSlug: "omyvatel" satisfies CatalogGroupSlug },
   { slug: "bachki-omyvatelya",   title: "Бачки омывателя",           hint: "",                                   groupSlug: "omyvatel" satisfies CatalogGroupSlug },
+  // Общие секции-совпадающие-с-группой (для товаров, не разложенных по подразделам)
+  { slug: "dvigatel",            title: "Двигатель и уплотнения",    hint: "Всё по двигателю",                   groupSlug: "dvigatel" satisfies CatalogGroupSlug },
+  { slug: "ohlazhdenie",         title: "Система охлаждения",        hint: "Радиаторы, помпы, термостаты",       groupSlug: "ohlazhdenie" satisfies CatalogGroupSlug },
+  { slug: "podveska",            title: "Подвеска и рулевое",        hint: "Амортизаторы, рычаги, ШРУС",         groupSlug: "podveska" satisfies CatalogGroupSlug },
+  { slug: "elektrika",           title: "Электрика и датчики",       hint: "Датчики, свет, проводка",            groupSlug: "elektrika" satisfies CatalogGroupSlug },
 ] as const;
 
 export type CatalogSectionTitle = (typeof CATALOG_SECTIONS)[number]["title"];
