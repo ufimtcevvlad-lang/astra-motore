@@ -1,10 +1,10 @@
 import { NON_GM_MARKERS } from "../../data/non-gm-markers";
-import { CHEMISTRY_MARKERS } from "../../data/chemistry-markers";
 
-export type RejectReason = "non-gm" | "chemistry";
+export type RejectReason = "non-gm";
 
 /**
  * Возвращает причину отбраковки или null, если позиция проходит фильтр.
+ * Фильтр жидкостей/химии отключён: пользователь сам курирует прайс.
  */
 export function classify(name: string, brand: string): RejectReason | null {
   const haystack = `${name} ${brand}`.toLowerCase();
@@ -12,9 +12,6 @@ export function classify(name: string, brand: string): RejectReason | null {
   for (const token of NON_GM_MARKERS) {
     const re = new RegExp(`\\b${escapeRegExp(token)}\\b`, "i");
     if (re.test(haystack)) return "non-gm";
-  }
-  for (const token of CHEMISTRY_MARKERS) {
-    if (haystack.includes(token.toLowerCase())) return "chemistry";
   }
   return null;
 }

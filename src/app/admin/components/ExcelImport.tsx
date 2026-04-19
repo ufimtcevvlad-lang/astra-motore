@@ -25,7 +25,7 @@ interface RejectedRow {
   rawName: string;
   brand: string;
   price: number;
-  reason: "not-gm" | "chemistry";
+  reason: "non-gm";
 }
 
 interface PreviewData {
@@ -65,8 +65,7 @@ interface EditableUpdateItem {
 type Step = "upload" | "preview" | "result";
 
 const REASON_LABELS: Record<string, string> = {
-  "not-gm": "Не-GM",
-  "chemistry": "Химия",
+  "non-gm": "Не-GM",
 };
 
 export default function ExcelImport() {
