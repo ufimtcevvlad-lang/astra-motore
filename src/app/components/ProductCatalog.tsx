@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
 import { RecentlyViewed } from "./RecentlyViewed";
-import { productMatchesTextQuery } from "../lib/catalog-search";
+import { productMatchesTextQuery } from "../lib/catalog-query";
 import type { Product } from "../lib/products-types";
 import {
   CATALOG_GROUPS,
