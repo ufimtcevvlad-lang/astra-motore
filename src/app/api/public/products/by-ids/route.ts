@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     .where(inArray(schema.products.externalId, ids))
     .all();
   const cats = db.select().from(schema.categories).all();
-  const catMap = new Map(cats.map((c) => [c.id, c.slug]));
+  const catMap = new Map(cats.map((c) => [c.id, c.title]));
   const items = rows.map((r) =>
     rowToProduct(r, r.categoryId != null ? catMap.get(r.categoryId) ?? null : null),
   );

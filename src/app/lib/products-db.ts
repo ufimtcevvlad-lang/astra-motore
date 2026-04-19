@@ -10,7 +10,7 @@ type CategoryRow = typeof schema.categories.$inferSelect;
 /** Конвертирует строку БД в объект Product, добавляет галерею из файловой системы. */
 export function rowToProduct(
   row: ProductRow & { slug?: string },
-  categorySlug: string | null,
+  categoryTitle: string | null,
 ): Product & { slug: string } {
   const images = getProductImages(row.sku);
   return {
@@ -19,7 +19,7 @@ export function rowToProduct(
     name: row.name,
     brand: row.brand,
     country: row.country,
-    category: categorySlug ?? "",
+    category: categoryTitle ?? "",
     car: row.car,
     price: row.price,
     inStock: row.inStock,
@@ -30,28 +30,28 @@ export function rowToProduct(
   };
 }
 
-let categoryIdToSlug: Map<number, string> | null = null;
-function loadCategoryMap(): Map<number, string> {
-  if (!categoryIdToSlug) {
+let categoryIdToTitle: Map<number, string> | null = null;
+function loadCategoryTitleMap(): Map<number, string> {
+  if (!categoryIdToTitle) {
     const cats = db.select().from(schema.categories).all() as CategoryRow[];
-    categoryIdToSlug = new Map(cats.map((c) => [c.id, c.slug]));
+    categoryIdToTitle = new Map(cats.map((c) => [c.id, c.title]));
   }
-  return categoryIdToSlug;
+  return categoryIdToTitle;
 }
 
 /** Сбрасывает кеш карт — вызывается после мутаций в админке. */
 export function invalidateProductsDbCache(): void {
-  categoryIdToSlug = null;
+  categoryIdToTitle = null;
 }
 
-function catSlugForRow(row: ProductRow): string | null {
+function catTitleForRow(row: ProductRow): string | null {
   if (row.categoryId == null) return null;
-  return loadCategoryMap().get(row.categoryId) ?? null;
+  return loadCategoryTitleMap().get(row.categoryId) ?? null;
 }
 
 export function getAllProducts(): Array<Product & { slug: string }> {
   const rows = db.select().from(schema.products).all() as ProductRow[];
-  return rows.map((r) => rowToProduct(r, catSlugForRow(r)));
+  return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
 
 export function getProductBySlug(slug: string): (Product & { slug: string }) | null {
@@ -61,7 +61,7 @@ export function getProductBySlug(slug: string): (Product & { slug: string }) | n
     .where(eq(schema.products.slug, slug))
     .get() as ProductRow | undefined;
   if (!row) return null;
-  return rowToProduct(row, catSlugForRow(row));
+  return rowToProduct(row, catTitleForRow(row));
 }
 
 export function getProductBySku(sku: string): (Product & { slug: string }) | null {
@@ -71,7 +71,7 @@ export function getProductBySku(sku: string): (Product & { slug: string }) | nul
     .where(eq(schema.products.sku, sku))
     .get() as ProductRow | undefined;
   if (!row) return null;
-  return rowToProduct(row, catSlugForRow(row));
+  return rowToProduct(row, catTitleForRow(row));
 }
 
 export function getProductByExternalId(
@@ -83,7 +83,7 @@ export function getProductByExternalId(
     .where(eq(schema.products.externalId, externalId))
     .get() as ProductRow | undefined;
   if (!row) return null;
-  return rowToProduct(row, catSlugForRow(row));
+  return rowToProduct(row, catTitleForRow(row));
 }
 
 export function getProductsByCategorySlug(
@@ -100,7 +100,7 @@ export function getProductsByCategorySlug(
     .from(schema.products)
     .where(eq(schema.products.categoryId, cat.id))
     .all() as ProductRow[];
-  return rows.map((r) => rowToProduct(r, cat.slug));
+  return rows.map((r) => rowToProduct(r, cat.title));
 }
 
 export function getProductsByBrand(brand: string): Array<Product & { slug: string }> {
@@ -109,7 +109,7 @@ export function getProductsByBrand(brand: string): Array<Product & { slug: strin
     .from(schema.products)
     .where(eq(schema.products.brand, brand))
     .all() as ProductRow[];
-  return rows.map((r) => rowToProduct(r, catSlugForRow(r)));
+  return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
 
 /** Для страниц /zapchasti-opel и т.п. — фильтр по подстроке в `car`. */
@@ -119,7 +119,7 @@ export function getProductsByCarMake(make: string): Array<Product & { slug: stri
     .from(schema.products)
     .where(like(schema.products.car, `%${make}%`))
     .all() as ProductRow[];
-  return rows.map((r) => rowToProduct(r, catSlugForRow(r)));
+  return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
 
 /** Все URL фото карточки (галерея или одно изображение с плейсхолдером). */
@@ -161,5 +161,5 @@ export function searchProducts(query: string): Array<Product & { slug: string }>
       ),
     )
     .all() as ProductRow[];
-  return rows.map((r) => rowToProduct(r, catSlugForRow(r)));
+  return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
