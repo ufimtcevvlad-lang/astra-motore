@@ -123,3 +123,10 @@ export function sortProductsById(a: { id: string }, b: { id: string }): number {
 export function sectionsInGroup(groupSlug: CatalogGroupSlug) {
   return CATALOG_SECTIONS.filter((s) => s.groupSlug === groupSlug);
 }
+
+const SECTION_SLUGS = new Set(CATALOG_SECTIONS.map((s) => s.slug));
+export function assertValidSectionSlug(slug: string): asserts slug is (typeof CATALOG_SECTIONS)[number]["slug"] {
+  if (!SECTION_SLUGS.has(slug as never)) {
+    throw new Error(`Unknown catalog section slug: ${slug}`);
+  }
+}
