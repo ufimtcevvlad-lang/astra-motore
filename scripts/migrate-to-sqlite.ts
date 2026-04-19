@@ -142,6 +142,7 @@ async function main() {
       .insert(schema.products)
       .values({
         externalId: p.id,
+        slug: p.id,
         sku: p.sku,
         name: p.name,
         brand: p.brand,

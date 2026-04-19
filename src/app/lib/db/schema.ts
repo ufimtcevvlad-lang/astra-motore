@@ -49,6 +49,7 @@ export const products = sqliteTable(
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
     externalId: text("external_id").notNull().unique(),
+    slug: text("slug").notNull().default(""),
     sku: text("sku").notNull(),
     name: text("name").notNull(),
     brand: text("brand").notNull(),
@@ -65,6 +66,7 @@ export const products = sqliteTable(
     updatedAt: text("updated_at").notNull(),
   },
   (t) => ({
+    slugUnique: uniqueIndex("products_slug_unique").on(t.slug),
     skuUnique: uniqueIndex("products_sku_unique").on(t.sku),
     brandIdx: index("products_brand_idx").on(t.brand),
     categoryIdx: index("products_category_idx").on(t.categoryId),
