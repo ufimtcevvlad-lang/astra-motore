@@ -8,11 +8,30 @@ type ProductRow = typeof schema.products.$inferSelect;
 type CategoryRow = typeof schema.categories.$inferSelect;
 
 /** Конвертирует строку БД в объект Product, добавляет галерею из файловой системы. */
+function parseDbImages(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.filter((v): v is string => typeof v === "string" && v.length > 0);
+  } catch {}
+  return [];
+}
+
 export function rowToProduct(
   row: ProductRow & { slug?: string },
   categoryTitle: string | null,
 ): Product & { slug: string } {
-  const images = getProductImages(row.sku);
+  const fsImages = getProductImages(row.sku);
+  const hasFsImages = fsImages.length > 0 && fsImages[0] !== "/placeholder-product.svg";
+  const dbImages = parseDbImages(row.images);
+  const fallbackDbImage = typeof row.image === "string" && row.image.length > 0 ? row.image : null;
+  const images = hasFsImages
+    ? fsImages
+    : dbImages.length > 0
+      ? dbImages
+      : fallbackDbImage
+        ? [fallbackDbImage]
+        : ["/placeholder-product.svg"];
   return {
     id: row.externalId,
     sku: row.sku,
