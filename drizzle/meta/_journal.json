@@ -29,6 +29,13 @@
       "when": 1776600000000,
       "tag": "0003_products_indexes_and_cascade",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1776626917496,
+      "tag": "0004_yielding_cargill",
+      "breakpoints": true
     }
   ]
 }
