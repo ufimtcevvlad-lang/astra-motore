@@ -9,6 +9,7 @@ export interface ProductFiltersState {
   inStock: string;
   priceFrom: string;
   priceTo: string;
+  nocat: boolean;
 }
 
 interface ProductFiltersProps {
@@ -115,6 +116,18 @@ export default function ProductFilters({
           className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
+
+      <button
+        type="button"
+        onClick={() => onChange({ ...filters, nocat: !filters.nocat, categoryId: "" })}
+        className={`px-3 py-2 rounded-lg text-sm border transition-colors ${
+          filters.nocat
+            ? "bg-amber-100 border-amber-400 text-amber-800 font-medium"
+            : "border-gray-300 text-gray-600 hover:bg-gray-50"
+        }`}
+      >
+        Без категории
+      </button>
 
       {onReset && (
         <button

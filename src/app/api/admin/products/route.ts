@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
-import { eq, like, and, gte, lte, sql, desc, asc, or } from "drizzle-orm";
+import { eq, like, and, gte, lte, sql, desc, asc, or, isNull } from "drizzle-orm";
 
 const PAGE_SIZE = 20;
 
@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   const inStock = url.searchParams.get("inStock");
   const priceFrom = url.searchParams.get("priceFrom");
   const priceTo = url.searchParams.get("priceTo");
+  const nocat = url.searchParams.get("nocat") === "1";
   const sort = url.searchParams.get("sort") || "updated";
   const dir = url.searchParams.get("dir") === "asc" ? "asc" : "desc";
 
@@ -46,6 +47,9 @@ export async function GET(req: NextRequest) {
   }
   if (priceTo) {
     conditions.push(lte(schema.products.price, Number(priceTo)));
+  }
+  if (nocat) {
+    conditions.push(isNull(schema.products.categoryId));
   }
 
   const where = conditions.length > 0 ? and(...conditions) : undefined;

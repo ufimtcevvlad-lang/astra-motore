@@ -12,6 +12,7 @@ const EMPTY: ProductFiltersState = {
   inStock: "",
   priceFrom: "",
   priceTo: "",
+  nocat: false,
 };
 
 export type SortField = "updated" | "name" | "price" | "inStock" | "brand";
@@ -35,6 +36,7 @@ function readParams(sp: URLSearchParams): {
       inStock: sp.get("inStock") ?? "",
       priceFrom: sp.get("priceFrom") ?? "",
       priceTo: sp.get("priceTo") ?? "",
+      nocat: sp.get("nocat") === "1",
     },
     page: Math.max(1, Number(sp.get("page") ?? "1") || 1),
     sort: {
@@ -52,6 +54,7 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
   if (filters.inStock) p.set("inStock", filters.inStock);
   if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
   if (filters.priceTo) p.set("priceTo", filters.priceTo);
+  if (filters.nocat) p.set("nocat", "1");
   if (page > 1) p.set("page", String(page));
   if (sort.field !== DEFAULT_SORT.field) p.set("sort", sort.field);
   if (sort.dir !== DEFAULT_SORT.dir) p.set("dir", sort.dir);
@@ -60,7 +63,7 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
 
 function isEmpty(f: ProductFiltersState): boolean {
   return (
-    !f.search && !f.categoryId && !f.brand && !f.inStock && !f.priceFrom && !f.priceTo
+    !f.search && !f.categoryId && !f.brand && !f.inStock && !f.priceFrom && !f.priceTo && !f.nocat
   );
 }
 
