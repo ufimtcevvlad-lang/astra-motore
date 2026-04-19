@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../../components/CartContext";
 import { useFavorites } from "../../components/FavoritesContext";
-import type { Product } from "../../data/products";
+import type { Product } from "../../lib/products-types";
 import { CopySkuButton } from "./_components/CopySkuButton";
 
 export function ProductClient({ product }: { product: Product }) {

@@ -121,6 +121,12 @@ export function getProductsByCarMake(make: string): Array<Product & { slug: stri
   return rows.map((r) => rowToProduct(r, catSlugForRow(r)));
 }
 
+/** Все URL фото карточки (галерея или одно изображение с плейсхолдером). */
+export function getProductImageUrls(product: Pick<Product, "images" | "image">): string[] {
+  if (product.images && product.images.length > 0) return product.images;
+  return [product.image];
+}
+
 export function searchProducts(query: string): Array<Product & { slug: string }> {
   const q = `%${query.toLowerCase()}%`;
   const rows = db

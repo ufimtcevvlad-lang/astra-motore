@@ -1,4 +1,4 @@
-import type { Product } from "../data/products";
+import type { Product } from "./products-types";
 
 /** Аналоги только из того же каталога; показываем только с ценой строго ниже текущей. */
 export function getCheaperAnalogs(product: Product, all: Product[]): Product[] {

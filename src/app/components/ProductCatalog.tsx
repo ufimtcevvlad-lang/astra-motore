@@ -7,7 +7,7 @@ import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
 import { RecentlyViewed } from "./RecentlyViewed";
 import { productMatchesTextQuery } from "../lib/catalog-search";
-import { products, type Product } from "../data/products";
+import type { Product } from "../lib/products-types";
 import {
   CATALOG_GROUPS,
   CATALOG_SECTIONS,
@@ -50,9 +50,10 @@ const sectionTitleBySlug: Map<string, string> = new Map(
 
 type ProductCatalogProps = {
   hideHubIntro?: boolean;
+  products: Product[];
 };
 
-function ProductCatalogInner({ hideHubIntro = false }: ProductCatalogProps) {
+function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 

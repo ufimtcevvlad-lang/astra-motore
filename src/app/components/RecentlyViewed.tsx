@@ -2,15 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { getRecentlyViewedIds, trackProductView } from "../lib/recently-viewed";
-import { products, type Product } from "../data/products";
+import type { Product } from "../lib/products-types";
 import { CatalogProductCard } from "./catalog/CatalogProductCard";
 
-const productsById = new Map(products.map((p) => [p.id, p]));
-
-/**
- * Клиентский компонент: вызывается на карточке товара для записи просмотра.
- * Не рендерит ничего.
- */
 export function TrackProductView({ productId }: { productId: string }) {
   useEffect(() => {
     trackProductView(productId);
@@ -18,21 +12,33 @@ export function TrackProductView({ productId }: { productId: string }) {
   return null;
 }
 
-/**
- * Блок «Вы недавно смотрели» — горизонтальная лента из 4-6 карточек.
- * Исключает текущий товар (если передан excludeId).
- */
 export function RecentlyViewed({ excludeId }: { excludeId?: string }) {
   const [items, setItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    const ids = getRecentlyViewedIds();
-    const resolved = ids
+    const ids = getRecentlyViewedIds()
       .filter((id) => id !== excludeId)
-      .map((id) => productsById.get(id))
-      .filter((p): p is Product => p !== undefined)
       .slice(0, 6);
-    setItems(resolved);
+    if (ids.length === 0) {
+      setItems([]);
+      return;
+    }
+    const url = `/api/public/products/by-ids?ids=${encodeURIComponent(ids.join(","))}`;
+    let cancelled = false;
+    fetch(url)
+      .then((r) => r.json())
+      .then((data: { items: Product[] }) => {
+        if (cancelled) return;
+        const byId = new Map(data.items.map((p) => [p.id, p]));
+        const ordered = ids.map((id) => byId.get(id)).filter((p): p is Product => !!p);
+        setItems(ordered);
+      })
+      .catch(() => {
+        if (!cancelled) setItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [excludeId]);
 
   if (items.length === 0) return null;

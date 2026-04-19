@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../components/CartContext";
-import { products } from "../data/products";
+import type { Product } from "../lib/products-types";
 import { isValidRuPhone, normalizeRuPhone } from "../lib/phone";
 import { CartItemRow } from "./_components/CartItemRow";
 import { CartRecommendations } from "./_components/CartRecommendations";
@@ -45,18 +45,20 @@ export default function CartPage() {
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
-  const recommendations = useMemo(() => {
-    const cartIds = new Set(items.map((i) => i.product.id));
-    const cartCategories = new Set(items.map((i) => i.product.category));
-    return products
-      .filter((p) => !cartIds.has(p.id))
-      .sort((a, b) => {
-        const aScore = cartCategories.has(a.category) ? 0 : 1;
-        const bScore = cartCategories.has(b.category) ? 0 : 1;
-        if (aScore !== bScore) return aScore - bScore;
-        return a.price - b.price;
-      })
-      .slice(0, 6);
+  const [recommendations, setRecommendations] = useState<Product[]>([]);
+  useEffect(() => {
+    const excludeIds = items.map((i) => i.product.id).filter(Boolean).join(",");
+    const preferCategories = Array.from(new Set(items.map((i) => i.product.category).filter(Boolean))).join(",");
+    const params = new URLSearchParams();
+    if (excludeIds) params.set("excludeIds", excludeIds);
+    if (preferCategories) params.set("preferCategories", preferCategories);
+    params.set("limit", "6");
+    let cancelled = false;
+    fetch(`/api/public/products/recommendations?${params.toString()}`)
+      .then((r) => r.json())
+      .then((data: { items: Product[] }) => { if (!cancelled) setRecommendations(data.items); })
+      .catch(() => { if (!cancelled) setRecommendations([]); });
+    return () => { cancelled = true; };
   }, [items]);
   const deliveryCost = deliveryMethod === "pickup" ? 0 : deliveryQuote?.deliverySum ?? 0;
   const totalWithDelivery = total + deliveryCost;

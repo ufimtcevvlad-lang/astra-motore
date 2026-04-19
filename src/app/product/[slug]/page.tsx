@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CatalogChrome } from "../../components/catalog/CatalogChrome";
 import { ProductImageGallery } from "../../components/ProductImageGallery";
-import { getProductImageUrls, products } from "../../data/products";
-import { getProductBySlug, getProductSlug, productPath } from "../../lib/product-slug";
+import { getAllProducts, getProductImageUrls, getProductBySlug } from "../../lib/products-db";
+import { getProductSlug, productPath } from "../../lib/product-slug";
 import { ProductClient } from "./ProductClient";
 import { ProductDescription } from "../../components/ProductDescription";
 import { ProductSpecs } from "./_components/ProductSpecs";
@@ -30,7 +30,7 @@ import {
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return products.map((p) => ({ slug: getProductSlug(p) }));
+  return getAllProducts().map((p) => ({ slug: getProductSlug(p) }));
 }
 
 export async function generateMetadata({
@@ -107,7 +107,7 @@ export default function ProductPage({
   const canonicalPath = productPath(product);
 
   /* Рекомендуемые: та же категория, исключая текущий, макс 6 */
-  const recommended = products
+  const recommended = getAllProducts()
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 6);
 

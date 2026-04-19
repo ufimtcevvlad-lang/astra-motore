@@ -1,4 +1,4 @@
-import type { ProductLongDescription as TLongDescription } from "../../../data/products";
+import type { ProductLongDescription as TLongDescription } from "../../../lib/products-types";
 
 type Props = {
   longDescription: TLongDescription;

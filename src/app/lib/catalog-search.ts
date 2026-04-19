@@ -1,11 +1,11 @@
-import { products, type Product } from "../data/products";
+import type { Product } from "./products-types";
+import { getAllProducts } from "./products-db";
 import { sortProductsById } from "../data/catalog-sections";
 import { getProductSlug } from "./product-slug";
 
 /** Лёгкий объект для API и подсказок (без длинного description) */
 export type SearchResultItem = {
   id: string;
-  /** Канонический сегмент URL карточки */
   slug: string;
   sku: string;
   name: string;
@@ -20,7 +20,6 @@ export function normalizeCatalogQuery(q: string): string {
   return q.trim().toLowerCase();
 }
 
-/** Та же логика «текст попал в поле», что и в каталоге (без фильтра марки/раздела). */
 export function productMatchesTextQuery(p: Product, queryNorm: string): boolean {
   if (!queryNorm) return true;
   return (
@@ -33,7 +32,7 @@ export function productMatchesTextQuery(p: Product, queryNorm: string): boolean 
 }
 
 type IndexedProduct = {
-  product: Product;
+  product: Product & { slug?: string };
   skuNorm: string;
   nameNorm: string;
   brandNorm: string;
@@ -41,14 +40,24 @@ type IndexedProduct = {
   categoryNorm: string;
 };
 
-const indexedProducts: IndexedProduct[] = products.map((product) => ({
-  product,
-  skuNorm: product.sku.toLowerCase(),
-  nameNorm: product.name.toLowerCase(),
-  brandNorm: product.brand.toLowerCase(),
-  carNorm: product.car.toLowerCase(),
-  categoryNorm: product.category.toLowerCase(),
-}));
+let cachedIndex: IndexedProduct[] | null = null;
+function getIndexedProducts(): IndexedProduct[] {
+  if (!cachedIndex) {
+    cachedIndex = getAllProducts().map((product) => ({
+      product,
+      skuNorm: product.sku.toLowerCase(),
+      nameNorm: product.name.toLowerCase(),
+      brandNorm: product.brand.toLowerCase(),
+      carNorm: product.car.toLowerCase(),
+      categoryNorm: product.category.toLowerCase(),
+    }));
+  }
+  return cachedIndex;
+}
+
+export function invalidateSearchIndex(): void {
+  cachedIndex = null;
+}
 
 function indexedProductMatchesTextQuery(p: IndexedProduct, queryNorm: string): boolean {
   if (!queryNorm) return true;
@@ -73,7 +82,7 @@ function relevanceScore(p: IndexedProduct, q: string): number {
   return s;
 }
 
-function toSearchResultItem(p: Product): SearchResultItem {
+function toSearchResultItem(p: Product & { slug?: string }): SearchResultItem {
   return {
     id: p.id,
     slug: getProductSlug(p),
@@ -87,14 +96,11 @@ function toSearchResultItem(p: Product): SearchResultItem {
   };
 }
 
-/**
- * Подсказки для поиска: отсортированы по релевантности (артикул — выше).
- */
 export function searchCatalogProducts(query: string, limit: number): SearchResultItem[] {
   const q = normalizeCatalogQuery(query);
   if (!q || q.length < 1) return [];
 
-  const candidates = indexedProducts.filter((p) => indexedProductMatchesTextQuery(p, q));
+  const candidates = getIndexedProducts().filter((p) => indexedProductMatchesTextQuery(p, q));
   return candidates
     .map((p) => ({ p, score: relevanceScore(p, q) }))
     .sort((a, b) => {

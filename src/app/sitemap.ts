@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { products } from "./data/products";
+import { getAllProducts } from "./lib/products-db";
 import { productPath } from "./lib/product-slug";
 import { SITE_URL } from "./lib/site";
 
@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/vin-request`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = products.map((p) => ({
+  const productRoutes: MetadataRoute.Sitemap = getAllProducts().map((p) => ({
     url: `${SITE_URL}${productPath(p)}`,
     lastModified: now,
     changeFrequency: "weekly",
