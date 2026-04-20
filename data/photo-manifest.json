@@ -1,0 +1,28 @@
+{
+  "2607100": {
+    "image": "/images/catalog/opel-155/01.webp",
+    "images": [
+      "/images/catalog/opel-155/01.webp",
+      "/images/catalog/opel-155/02.webp",
+      "/images/catalog/opel-155/03.webp",
+      "/images/catalog/opel-155/04.webp",
+      "/images/catalog/opel-155/05.webp",
+      "/images/catalog/opel-155/06.webp",
+      "/images/catalog/opel-155/07.webp",
+      "/images/catalog/opel-155/08.webp"
+    ]
+  },
+  "13441134": {
+    "image": "/images/catalog/opel-156/01.webp",
+    "images": [
+      "/images/catalog/opel-156/01.webp"
+    ]
+  },
+  "FG702": {
+    "image": "/images/catalog/opel-154/01.webp",
+    "images": [
+      "/images/catalog/opel-154/01.webp",
+      "/images/catalog/opel-154/02.webp"
+    ]
+  }
+}
