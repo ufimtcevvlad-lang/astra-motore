@@ -92,7 +92,7 @@ export default function ProductsPage() {
     });
   }
 
-  async function inlineUpdate(id: number, patch: { price?: number; inStock?: number }) {
+  async function inlineUpdate(id: number, patch: { price?: number; inStock?: number; hidden?: boolean }) {
     const res = await fetch(`/api/admin/products/${id}/quick`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -229,6 +229,7 @@ export default function ProductsPage() {
         onSetInStock={(value) => bulkPatch({ type: "setInStock", value })}
         onSetCategory={(categoryId) => bulkPatch({ type: "setCategory", categoryId })}
         onPriceDelta={(percent) => bulkPatch({ type: "priceDelta", percent })}
+        onSetHidden={(value) => bulkPatch({ type: "setHidden", value })}
       />
 
       {showBulkCategoryModal && (

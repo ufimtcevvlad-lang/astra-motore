@@ -123,6 +123,7 @@ export async function PUT(
         description: typeof body.description === "string" ? body.description : undefined,
         longDescription:
           body.longDescription === undefined ? undefined : body.longDescription,
+        hidden: typeof body.hidden === "boolean" ? body.hidden : undefined,
         updatedAt: now,
       })
       .where(eq(schema.products.id, numId));

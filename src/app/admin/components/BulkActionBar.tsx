@@ -16,6 +16,7 @@ interface BulkActionBarProps {
   onSetInStock: (value: number) => Promise<void>;
   onSetCategory: (categoryId: number | null) => Promise<void>;
   onPriceDelta: (percent: number) => Promise<void>;
+  onSetHidden?: (value: boolean) => Promise<void>;
 }
 
 export default function BulkActionBar({
@@ -26,6 +27,7 @@ export default function BulkActionBar({
   onSetInStock,
   onSetCategory,
   onPriceDelta,
+  onSetHidden,
 }: BulkActionBarProps) {
   const [busy, setBusy] = useState(false);
   const [menu, setMenu] = useState<"price" | "category" | null>(null);
@@ -153,6 +155,28 @@ export default function BulkActionBar({
           </div>
         )}
       </div>
+
+      {onSetHidden && (
+        <>
+          <div className="h-5 w-px bg-gray-700 hidden sm:block" />
+          <button
+            disabled={busy}
+            onClick={() => run(() => onSetHidden(true))}
+            className="text-sm px-3 py-1.5 rounded hover:bg-gray-800 disabled:opacity-50"
+            title="Скрыть с сайта"
+          >
+            Скрыть
+          </button>
+          <button
+            disabled={busy}
+            onClick={() => run(() => onSetHidden(false))}
+            className="text-sm px-3 py-1.5 rounded hover:bg-gray-800 disabled:opacity-50"
+            title="Показать на сайте"
+          >
+            Показать
+          </button>
+        </>
+      )}
 
       <div className="h-5 w-px bg-gray-700 hidden sm:block" />
       <button
