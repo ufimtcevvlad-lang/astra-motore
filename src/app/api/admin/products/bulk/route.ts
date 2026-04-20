@@ -15,7 +15,8 @@ interface BulkPatchBody {
     | { type: "setInStock"; value: number }
     | { type: "setCategory"; categoryId: number | null }
     | { type: "priceDelta"; percent: number }
-    | { type: "priceSet"; value: number };
+    | { type: "priceSet"; value: number }
+    | { type: "setHidden"; value: boolean };
 }
 
 export async function PATCH(req: NextRequest) {
@@ -59,6 +60,13 @@ export async function PATCH(req: NextRequest) {
       await db
         .update(schema.products)
         .set({ price: Math.round(v), updatedAt: now })
+        .where(inArray(schema.products.id, ids));
+      break;
+    }
+    case "setHidden": {
+      await db
+        .update(schema.products)
+        .set({ hidden: Boolean(body.action.value), updatedAt: now })
         .where(inArray(schema.products.id, ids));
       break;
     }

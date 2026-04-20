@@ -35,6 +35,7 @@ interface Product {
   inStock: number;
   description: string | null;
   longDescription: string | null;
+  hidden?: boolean;
   categoryId: number | null;
   image: string | null;
   images: string[];
@@ -59,6 +60,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [inStock, setInStock] = useState(product?.inStock?.toString() ?? "0");
   const [description, setDescription] = useState(product?.description ?? "");
   const [longDescription, setLongDescription] = useState(product?.longDescription ?? "");
+  const [hidden, setHidden] = useState(!!product?.hidden);
   const [categoryId, setCategoryId] = useState(product?.categoryId?.toString() ?? "");
   const [image, setImage] = useState<string>(product?.image ?? "");
   const [images, setImages] = useState<string[]>(product?.images ?? []);
@@ -92,6 +94,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     inStock,
     description,
     longDescription,
+    hidden,
     categoryId,
     image,
     images,
@@ -140,6 +143,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       inStock: Number(inStock) || 0,
       description: description.trim() || null,
       longDescription: longDescription.trim() || null,
+      hidden,
       categoryId: categoryId ? Number(categoryId) : null,
       image: image || null,
       images,
@@ -188,7 +192,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saving, name, sku, brand, car, price, inStock, description, longDescription, categoryId, image, images, specs, analogs]);
+  }, [saving, name, sku, brand, car, price, inStock, description, longDescription, hidden, categoryId, image, images, specs, analogs]);
 
   async function handleDuplicate() {
     if (!product) return;
@@ -373,6 +377,15 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
               />
             </div>
           </div>
+          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={hidden}
+              onChange={(e) => setHidden(e.target.checked)}
+              className="rounded border-gray-400"
+            />
+            Скрыть с сайта (товар останется в админке, но не будет виден покупателям)
+          </label>
         </div>
       </div>
 

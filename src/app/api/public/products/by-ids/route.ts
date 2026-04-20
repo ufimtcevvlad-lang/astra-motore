@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { inArray } from "drizzle-orm";
+import { inArray, and, eq } from "drizzle-orm";
 import { db, schema } from "../../../../lib/db";
 import { rowToProduct } from "../../../../lib/products-db";
 
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const rows = db
     .select()
     .from(schema.products)
-    .where(inArray(schema.products.externalId, ids))
+    .where(and(inArray(schema.products.externalId, ids), eq(schema.products.hidden, false)))
     .all();
   const cats = db.select().from(schema.categories).all();
   const catMap = new Map(cats.map((c) => [c.id, c.title]));

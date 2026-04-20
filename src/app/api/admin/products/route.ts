@@ -92,6 +92,7 @@ export async function GET(req: NextRequest) {
       price: schema.products.price,
       inStock: schema.products.inStock,
       image: schema.products.image,
+      hidden: schema.products.hidden,
       createdAt: schema.products.createdAt,
       updatedAt: schema.products.updatedAt,
     })

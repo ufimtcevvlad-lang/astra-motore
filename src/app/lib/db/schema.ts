@@ -62,6 +62,7 @@ export const products = sqliteTable(
     images: text("images").notNull().default("[]"),
     description: text("description").notNull().default(""),
     longDescription: text("long_description"),
+    hidden: integer("hidden", { mode: "boolean" }).notNull().default(false),
     createdAt: text("created_at").notNull(),
     updatedAt: text("updated_at").notNull(),
   },
@@ -71,6 +72,7 @@ export const products = sqliteTable(
     brandIdx: index("products_brand_idx").on(t.brand),
     categoryIdx: index("products_category_idx").on(t.categoryId),
     updatedIdx: index("products_updated_idx").on(t.updatedAt),
+    hiddenIdx: index("products_hidden_idx").on(t.hidden),
   })
 );
 

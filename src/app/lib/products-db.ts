@@ -1,5 +1,7 @@
 import { db, schema } from "./db";
-import { eq, like, or } from "drizzle-orm";
+import { eq, like, or, and } from "drizzle-orm";
+
+const notHidden = () => eq(schema.products.hidden, false);
 import type { Product } from "./products-types";
 import { getProductImages } from "./product-images";
 import { baseProductSlug } from "./product-slug";
@@ -69,7 +71,11 @@ function catTitleForRow(row: ProductRow): string | null {
 }
 
 export function getAllProducts(): Array<Product & { slug: string }> {
-  const rows = db.select().from(schema.products).all() as ProductRow[];
+  const rows = db
+    .select()
+    .from(schema.products)
+    .where(notHidden())
+    .all() as ProductRow[];
   return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
 
@@ -77,7 +83,7 @@ export function getProductBySlug(slug: string): (Product & { slug: string }) | n
   const row = db
     .select()
     .from(schema.products)
-    .where(eq(schema.products.slug, slug))
+    .where(and(eq(schema.products.slug, slug), notHidden()))
     .get() as ProductRow | undefined;
   if (!row) return null;
   return rowToProduct(row, catTitleForRow(row));
@@ -87,7 +93,7 @@ export function getProductBySku(sku: string): (Product & { slug: string }) | nul
   const row = db
     .select()
     .from(schema.products)
-    .where(eq(schema.products.sku, sku))
+    .where(and(eq(schema.products.sku, sku), notHidden()))
     .get() as ProductRow | undefined;
   if (!row) return null;
   return rowToProduct(row, catTitleForRow(row));
@@ -99,7 +105,7 @@ export function getProductByExternalId(
   const row = db
     .select()
     .from(schema.products)
-    .where(eq(schema.products.externalId, externalId))
+    .where(and(eq(schema.products.externalId, externalId), notHidden()))
     .get() as ProductRow | undefined;
   if (!row) return null;
   return rowToProduct(row, catTitleForRow(row));
@@ -117,7 +123,7 @@ export function getProductsByCategorySlug(
   const rows = db
     .select()
     .from(schema.products)
-    .where(eq(schema.products.categoryId, cat.id))
+    .where(and(eq(schema.products.categoryId, cat.id), notHidden()))
     .all() as ProductRow[];
   return rows.map((r) => rowToProduct(r, cat.title));
 }
@@ -126,7 +132,7 @@ export function getProductsByBrand(brand: string): Array<Product & { slug: strin
   const rows = db
     .select()
     .from(schema.products)
-    .where(eq(schema.products.brand, brand))
+    .where(and(eq(schema.products.brand, brand), notHidden()))
     .all() as ProductRow[];
   return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
@@ -136,7 +142,7 @@ export function getProductsByCarMake(make: string): Array<Product & { slug: stri
   const rows = db
     .select()
     .from(schema.products)
-    .where(like(schema.products.car, `%${make}%`))
+    .where(and(like(schema.products.car, `%${make}%`), notHidden()))
     .all() as ProductRow[];
   return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
@@ -172,11 +178,14 @@ export function searchProducts(query: string): Array<Product & { slug: string }>
     .select()
     .from(schema.products)
     .where(
-      or(
-        like(schema.products.name, q),
-        like(schema.products.brand, q),
-        like(schema.products.sku, q),
-        like(schema.products.car, q),
+      and(
+        or(
+          like(schema.products.name, q),
+          like(schema.products.brand, q),
+          like(schema.products.sku, q),
+          like(schema.products.car, q),
+        ),
+        notHidden(),
       ),
     )
     .all() as ProductRow[];

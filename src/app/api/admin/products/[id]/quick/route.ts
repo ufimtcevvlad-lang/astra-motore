@@ -7,6 +7,7 @@ import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 interface QuickPatchBody {
   price?: number;
   inStock?: number;
+  hidden?: boolean;
 }
 
 export async function PATCH(
@@ -35,6 +36,9 @@ export async function PATCH(
     }
     patch.inStock = s;
   }
+  if (typeof body.hidden === "boolean") {
+    patch.hidden = body.hidden;
+  }
 
   if (Object.keys(patch).length === 1) {
     return NextResponse.json({ error: "Нет данных для обновления" }, { status: 400 });
@@ -43,7 +47,7 @@ export async function PATCH(
   await db.update(schema.products).set(patch).where(eq(schema.products.id, numId));
 
   const [updated] = await db
-    .select({ id: schema.products.id, slug: schema.products.slug, price: schema.products.price, inStock: schema.products.inStock })
+    .select({ id: schema.products.id, slug: schema.products.slug, price: schema.products.price, inStock: schema.products.inStock, hidden: schema.products.hidden })
     .from(schema.products)
     .where(eq(schema.products.id, numId));
 
