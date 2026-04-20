@@ -24,5 +24,12 @@
       "/images/catalog/opel-154/01.webp",
       "/images/catalog/opel-154/02.webp"
     ]
+  },
+  "PE982": {
+    "image": "/images/catalog/opel-153/01.webp",
+    "images": [
+      "/images/catalog/opel-153/01.webp",
+      "/images/catalog/opel-153/02.webp"
+    ]
   }
 }
