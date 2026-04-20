@@ -79,6 +79,20 @@ export function getAllProducts(): Array<Product & { slug: string }> {
   return rows.map((r) => rowToProduct(r, catTitleForRow(r)));
 }
 
+export function getAllProductsForSitemap(): Array<
+  Product & { slug: string; updatedAt: string }
+> {
+  const rows = db
+    .select()
+    .from(schema.products)
+    .where(notHidden())
+    .all() as ProductRow[];
+  return rows.map((r) => ({
+    ...rowToProduct(r, catTitleForRow(r)),
+    updatedAt: r.updatedAt,
+  }));
+}
+
 export function getProductBySlug(slug: string): (Product & { slug: string }) | null {
   const row = db
     .select()

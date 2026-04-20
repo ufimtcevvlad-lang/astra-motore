@@ -26,12 +26,6 @@ export function getOrganizationJsonLd() {
       latitude: 56.850673,
       longitude: 60.568755,
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.5",
-      reviewCount: "39",
-      bestRating: "5",
-    },
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

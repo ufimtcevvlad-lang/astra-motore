@@ -5,19 +5,37 @@ import { ProductCatalog } from "../components/ProductCatalog";
 import { getAllProducts } from "../lib/products-db";
 import { SITE_BRAND, SITE_URL } from "../lib/site";
 import { socialShareMetadata } from "../lib/seo";
+import { buildCatalogCanonical, buildCatalogSeoFromParams } from "../lib/catalog-canonical";
 
-export const metadata: Metadata = {
-  title: "Каталог запчастей",
-  description:
-    "Каталог GM Shop: автозапчасти GM — Opel и Chevrolet. Поиск по артикулу, группы и витрина по типу детали. Оригинал и аналоги.",
-  alternates: { canonical: "/catalog" },
-  ...socialShareMetadata({
-    title: `Каталог запчастей — ${SITE_BRAND}`,
-    description:
-      "Opel и Chevrolet: фильтры, свечи, расходники и другое. Поиск по номеру детали. Екатеринбург.",
-    path: "/catalog",
-  }),
-};
+type CatalogSearchParams = Record<string, string | string[] | undefined>;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<CatalogSearchParams>;
+}): Promise<Metadata> {
+  const params = (await searchParams) ?? {};
+  const canonical = buildCatalogCanonical(params);
+  const seo = buildCatalogSeoFromParams(params);
+
+  const title = seo ? seo.title : "Каталог запчастей";
+  const description = seo
+    ? seo.description
+    : "Каталог GM Shop: автозапчасти GM — Opel и Chevrolet. Поиск по артикулу, группы и витрина по типу детали. Оригинал и аналоги.";
+
+  const pathForOg = (canonical.replace(SITE_URL, "") || "/catalog") as `/${string}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    ...socialShareMetadata({
+      title: `${title} — ${SITE_BRAND}`,
+      description,
+      path: pathForOg,
+    }),
+  };
+}
 
 export default function CatalogPage() {
   const breadcrumbLd = {

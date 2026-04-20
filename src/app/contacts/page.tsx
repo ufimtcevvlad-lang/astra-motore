@@ -29,6 +29,15 @@ export const metadata: Metadata = {
 };
 
 export default function ContactsPage() {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Контакты", item: `${SITE_URL}/contacts` },
+    ],
+  };
+
   const contactPointLd = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
@@ -85,7 +94,12 @@ export default function ContactsPage() {
     <div className="space-y-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [breadcrumbLd, contactPointLd],
+          }),
+        }}
       />
       <h1 className="text-2xl font-bold text-amber-900">Контакты</h1>
       <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">GM Shop</span> — ответим и подберём запчасти.</p>

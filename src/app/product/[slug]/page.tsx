@@ -175,12 +175,6 @@ export default function ProductPage({
     itemCondition: "https://schema.org/NewCondition",
     inLanguage: SITE_LANGUAGE,
     additionalProperty,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.5",
-      reviewCount: "39",
-      bestRating: "5",
-    },
     offers: {
       "@type": "Offer",
       priceCurrency: "RUB",
