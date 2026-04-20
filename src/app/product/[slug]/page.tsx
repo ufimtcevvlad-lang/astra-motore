@@ -28,7 +28,7 @@ import {
   generateProductDescription,
 } from "../../lib/product-description-gen";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 export function generateStaticParams() {
   return getAllProducts().map((p) => ({ slug: getProductSlug(p) }));
 }
