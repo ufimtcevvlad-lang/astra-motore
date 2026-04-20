@@ -30,12 +30,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/vin-request`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = getAllProducts().map((p) => ({
-    url: `${SITE_URL}${productPath(p)}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
+  const productRoutes: MetadataRoute.Sitemap = getAllProducts().map((p) => {
+    const images = (p.images ?? [])
+      .filter((src) => src && src !== "/placeholder-product.svg")
+      .map((src) => (src.startsWith("http") ? src : `${SITE_URL}${src}`));
+    return {
+      url: `${SITE_URL}${productPath(p)}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+      images: images.length > 0 ? images : undefined,
+    };
+  });
 
   return [...staticRoutes, ...productRoutes];
 }
