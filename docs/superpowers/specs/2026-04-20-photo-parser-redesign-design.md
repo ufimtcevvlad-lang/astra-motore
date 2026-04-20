@@ -49,7 +49,11 @@
 
 ### №5. Вайтлист — единственный источник истины
 - SKU в вайтлисте → сортируется, импортируется на сайт.
-- SKU не в вайтлисте ИЛИ OCR не распознал → кладётся в `~/Pictures/сортивка/не-распознано/<batch-id>/<group-id>/`.
+- SKU не в вайтлисте ИЛИ OCR не распознал → кладётся в **`~/Desktop/не-распознано/<batch-id>/<group-id>/`** с сохранением **исходной последовательности QR → фото → QR**.
+  - Внутри группы файлы перенумеровываются `01_…`, `02_…`, сохраняя исходный порядок съёмки (включая QR-кадры как разделители).
+  - Рядом кладётся `reason.txt` с причиной: `ocr_failed` / `not_in_whitelist` / `conflict:12345,67890` / `qr_missing`.
+  - `batch-id` формат `YYYY-MM-DD_HH-MM-SS`.
+  - Путь переопределяется через `GM_SHOP_UNKNOWN`.
 - Нет авто-создания черновиков товара, нет заготовок по SKU.
 - Вайтлист синхронизируется с прод-БД скриптом `sync_whitelist_from_prod.sh` (уже есть), раз в 10 минут.
 
@@ -235,7 +239,7 @@ FSEvents (watcher)
 ```
 GM_SHOP_INBOX          = ~/Pictures/фото gmshop 66
 GM_SHOP_OUTPUT         = ~/Pictures/сортивка
-GM_SHOP_UNKNOWN        = ~/Pictures/сортивка/не-распознано
+GM_SHOP_UNKNOWN        = ~/Desktop/не-распознано
 GM_SHOP_CATALOG        = autoparts-shop/public/images/catalog
 GM_SHOP_DB             = autoparts-shop/data/shop.db
 GM_SHOP_WHITELIST      = part-photo-sorter/whitelist.txt
