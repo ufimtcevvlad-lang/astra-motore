@@ -11,7 +11,9 @@ import { DEFAULT_META_DESCRIPTION, SEO_LOCALE, defaultOgImages } from "./lib/seo
 import { SITE_BRAND, SITE_URL } from "./lib/site";
 
 export const metadata: Metadata = {
-  title: "Главная",
+  title: {
+    absolute: `Запчасти Opel и Chevrolet в Екатеринбурге — ${SITE_BRAND}`,
+  },
   description: `Запчасти Opel и Chevrolet в Екатеринбурге. Оригинал и проверенные бренды. Подбор по VIN, редкие позиции. ${SITE_BRAND} — самовывоз и доставка по Екб.`,
   alternates: { canonical: "/" },
   openGraph: {
