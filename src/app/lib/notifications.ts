@@ -37,7 +37,7 @@ export async function sendPushToAllAdmins(
   const webpush = (await import("web-push")).default;
 
   webpush.setVapidDetails(
-    "mailto:admin@astra-motors.ru",
+    "mailto:admin@gmshop66.ru",
     vapidPublicKey,
     vapidPrivateKey
   );

@@ -39,7 +39,7 @@ export default function SettingsCompanyPage() {
             label="Название компании"
             value={data.company_name ?? ""}
             onChange={(v) => handleChange("company_name", v)}
-            placeholder="Astra Motors"
+            placeholder="GM Shop 66"
           />
           <Field
             label="ИНН"

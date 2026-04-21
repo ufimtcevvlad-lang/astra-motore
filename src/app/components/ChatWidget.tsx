@@ -218,7 +218,7 @@ export default function ChatWidget() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-indigo-600 shrink-0">
               <div>
-                <p className="text-sm font-semibold text-white">Astra Motors</p>
+                <p className="text-sm font-semibold text-white">GM Shop 66</p>
                 <p className="text-xs text-indigo-200">Онлайн</p>
               </div>
               <button

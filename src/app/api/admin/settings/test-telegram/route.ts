@@ -39,7 +39,7 @@ export async function POST() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
-          text: "Тестовое сообщение от Astra Motors Admin",
+          text: "Тестовое сообщение от GM Shop 66 Admin",
         }),
       }
     );
