@@ -217,12 +217,12 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const FilterPanel = (
     <div className="space-y-5">
       {/* Раздел */}
-      <div>
-        <label htmlFor="sidebar-section" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <label className="block">
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           Раздел
-        </label>
+        </span>
         <select
-          id="sidebar-section"
+          name="section"
           value={activeSlug}
           onChange={(e) =>
             setActiveSlug(e.target.value === "all" ? "all" : (e.target.value as CatalogSectionSlug))
@@ -239,7 +239,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
             );
           })}
         </select>
-      </div>
+      </label>
 
       {/* Бренд производителя */}
       {sortedBrands.length > 1 && (
