@@ -253,6 +253,8 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
               >
                 <input
                   type="checkbox"
+                  name="brand"
+                  value={brand}
                   checked={selectedBrands.has(brand)}
                   onChange={() => toggleBrand(brand)}
                   className="h-4 w-4 rounded border-slate-300 accent-amber-500"
@@ -272,6 +274,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
           <input
             ref={priceFromRef}
             type="number"
+            name="priceFrom"
             placeholder={`от ${priceRange.min}`}
             defaultValue={priceFrom ?? ""}
             onBlur={applyPriceFilter}
@@ -282,6 +285,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
           <input
             ref={priceToRef}
             type="number"
+            name="priceTo"
             placeholder={`до ${priceRange.max}`}
             defaultValue={priceTo ?? ""}
             onBlur={applyPriceFilter}
@@ -334,6 +338,8 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="search"
+            name="q"
+            aria-label="Поиск по каталогу"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Название, артикул или модель авто…"
@@ -341,6 +347,8 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
           />
           <div className="flex items-center gap-2">
             <select
+              name="sort"
+              aria-label="Сортировка"
               value={sort}
               onChange={(e) => setSort(e.target.value as SortMode)}
               className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-700 outline-none focus:border-amber-400 sm:w-52"
