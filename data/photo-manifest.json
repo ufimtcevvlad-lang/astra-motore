@@ -1,4 +1,20 @@
 {
+  "1700": {
+    "image": "/images/catalog/import-1776624616870-jdrrvy/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616870-jdrrvy/01.webp",
+      "/images/catalog/import-1776624616870-jdrrvy/02.webp",
+      "/images/catalog/import-1776624616870-jdrrvy/03.webp"
+    ]
+  },
+  "1913": {
+    "image": "/images/catalog/import-1776624616865-has9ha/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616865-has9ha/01.webp",
+      "/images/catalog/import-1776624616865-has9ha/02.webp",
+      "/images/catalog/import-1776624616865-has9ha/03.webp"
+    ]
+  },
   "28499": {
     "image": "/images/catalog/opel-141/01.webp",
     "images": [
@@ -130,6 +146,16 @@
     "images": [
       "/images/catalog/import-1776624616558-drihoz/01.webp",
       "/images/catalog/import-1776624616558-drihoz/02.webp"
+    ]
+  },
+  "25200455": {
+    "image": "/images/catalog/import-1776624616933-cdzpr8/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616933-cdzpr8/01.webp",
+      "/images/catalog/import-1776624616933-cdzpr8/02.webp",
+      "/images/catalog/import-1776624616933-cdzpr8/03.webp",
+      "/images/catalog/import-1776624616933-cdzpr8/04.webp",
+      "/images/catalog/import-1776624616933-cdzpr8/05.webp"
     ]
   },
   "40009039": {
@@ -712,6 +738,54 @@
     "images": [
       "/images/catalog/import-1776705221088-7qmfci/01.webp",
       "/images/catalog/import-1776705221088-7qmfci/02.webp"
+    ]
+  },
+  "D211": {
+    "image": "/images/catalog/import-1776624616873-3htcw2/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616873-3htcw2/01.webp",
+      "/images/catalog/import-1776624616873-3htcw2/02.webp",
+      "/images/catalog/import-1776624616873-3htcw2/03.webp"
+    ]
+  },
+  "TH45588G1": {
+    "image": "/images/catalog/import-1776624616920-pmbq14/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616920-pmbq14/01.webp",
+      "/images/catalog/import-1776624616920-pmbq14/02.webp",
+      "/images/catalog/import-1776624616920-pmbq14/03.webp"
+    ]
+  },
+  "PE21092": {
+    "image": "/images/catalog/import-1776705221089-kfb6fn/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221089-kfb6fn/01.webp",
+      "/images/catalog/import-1776705221089-kfb6fn/02.webp",
+      "/images/catalog/import-1776705221089-kfb6fn/03.webp"
+    ]
+  },
+  "TE7246.103J": {
+    "image": "/images/catalog/import-1776705221091-ytei75/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221091-ytei75/01.webp",
+      "/images/catalog/import-1776705221091-ytei75/02.webp",
+      "/images/catalog/import-1776705221091-ytei75/03.webp"
+    ]
+  },
+  "LT2166": {
+    "image": "/images/catalog/import-1776705221092-72f35o/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221092-72f35o/01.webp",
+      "/images/catalog/import-1776705221092-72f35o/02.webp",
+      "/images/catalog/import-1776705221092-72f35o/03.webp"
+    ]
+  },
+  "23-40090-SX": {
+    "image": "/images/catalog/import-1776705221092-5x75mj/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221092-5x75mj/01.webp",
+      "/images/catalog/import-1776705221092-5x75mj/02.webp",
+      "/images/catalog/import-1776705221092-5x75mj/03.webp"
     ]
   }
 }
