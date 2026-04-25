@@ -48,6 +48,14 @@
       "/images/catalog/opel-156/01.webp"
     ]
   },
+  "13465094": {
+    "image": "/images/catalog/import-1776624616541-j541j1/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616541-j541j1/01.webp",
+      "/images/catalog/import-1776624616541-j541j1/02.webp",
+      "/images/catalog/import-1776624616541-j541j1/03.webp"
+    ]
+  },
   "25195555": {
     "image": "/images/catalog/import-1776624616558-drihoz/01.webp",
     "images": [
@@ -91,6 +99,14 @@
       "/images/catalog/opel-138/02.webp"
     ]
   },
+  "95380033": {
+    "image": "/images/catalog/import-1776624616540-nqx0ag/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616540-nqx0ag/01.webp",
+      "/images/catalog/import-1776624616540-nqx0ag/02.webp",
+      "/images/catalog/import-1776624616540-nqx0ag/03.webp"
+    ]
+  },
   "96464000": {
     "image": "/images/catalog/import-1776624616880-m5vpzy/01.webp",
     "images": [
@@ -112,6 +128,26 @@
       "/images/catalog/opel-142/01.webp",
       "/images/catalog/opel-142/02.webp",
       "/images/catalog/opel-142/03.webp"
+    ]
+  },
+  "160095310": {
+    "image": "/images/catalog/import-1776624616543-xw6p9q/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616543-xw6p9q/01.webp",
+      "/images/catalog/import-1776624616543-xw6p9q/02.webp"
+    ]
+  },
+  "1682640780": {
+    "image": "/images/catalog/import-1776624616539-fpgrs1/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616539-fpgrs1/01.webp"
+    ]
+  },
+  "1682641080": {
+    "image": "/images/catalog/import-1776624616541-1n71zn/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616541-1n71zn/01.webp",
+      "/images/catalog/import-1776624616541-1n71zn/02.webp"
     ]
   },
   "FG702": {
@@ -351,6 +387,14 @@
       "/images/catalog/import-1776705221079-chspzz/01.webp",
       "/images/catalog/import-1776705221079-chspzz/02.webp",
       "/images/catalog/import-1776705221079-chspzz/03.webp"
+    ]
+  },
+  "P10-0070": {
+    "image": "/images/catalog/import-1776705221080-tomoaq/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221080-tomoaq/01.webp",
+      "/images/catalog/import-1776705221080-tomoaq/02.webp",
+      "/images/catalog/import-1776705221080-tomoaq/03.webp"
     ]
   }
 }
