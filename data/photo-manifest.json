@@ -83,6 +83,13 @@
       "/images/catalog/import-1776705221083-i9nmy2/02.webp"
     ]
   },
+  "25192985": {
+    "image": "/images/catalog/import-1776624616937-dzciyb/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616937-dzciyb/01.webp",
+      "/images/catalog/import-1776624616937-dzciyb/02.webp"
+    ]
+  },
   "25195555": {
     "image": "/images/catalog/import-1776624616558-drihoz/01.webp",
     "images": [
@@ -450,6 +457,36 @@
       "/images/catalog/import-1776705221080-tomoaq/01.webp",
       "/images/catalog/import-1776705221080-tomoaq/02.webp",
       "/images/catalog/import-1776705221080-tomoaq/03.webp"
+    ]
+  },
+  "50A-121-TM18": {
+    "image": "/images/catalog/import-1776624616727-wpx7x3/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616727-wpx7x3/01.webp",
+      "/images/catalog/import-1776624616727-wpx7x3/02.webp",
+      "/images/catalog/import-1776624616727-wpx7x3/03.webp"
+    ]
+  },
+  "P16-0014": {
+    "image": "/images/catalog/import-1776624616775-3xf48v/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616775-3xf48v/01.webp",
+      "/images/catalog/import-1776624616775-3xf48v/02.webp"
+    ]
+  },
+  "TH507103G1": {
+    "image": "/images/catalog/import-1776705221084-qcpa09/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221084-qcpa09/01.webp",
+      "/images/catalog/import-1776705221084-qcpa09/02.webp"
+    ]
+  },
+  "P29-0052": {
+    "image": "/images/catalog/import-1776705221085-d49ot6/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221085-d49ot6/01.webp",
+      "/images/catalog/import-1776705221085-d49ot6/02.webp",
+      "/images/catalog/import-1776705221085-d49ot6/03.webp"
     ]
   }
 }
