@@ -38,6 +38,8 @@ interface PreviewData {
 interface ConfirmResult {
   added: number;
   updated: number;
+  nonGmAdded: number;
+  nonGmSkipped: number;
   errors: string[];
 }
 
@@ -214,10 +216,23 @@ export default function ExcelImport() {
         sectionSlug: item.sectionSlug || null,
       }));
 
+      // Не-GM позиции уходят в отдельную БД shop-non-gm.db. На сайте их не видно;
+      // нужны только парсеру фото для маршрутизации в ~/Pictures/сортировка не gm/.
+      const nonGmItemsPayload = (preview.rejected ?? []).map((row) => ({
+        sku: row.sku,
+        rawName: row.rawName,
+        brand: row.brand,
+        price: Number(row.price),
+      }));
+
       const res = await fetch("/api/admin/products/import/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newItems: newItemsPayload, updateIds: updateItems }),
+        body: JSON.stringify({
+          newItems: newItemsPayload,
+          updateIds: updateItems,
+          nonGmItems: nonGmItemsPayload,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -470,13 +485,17 @@ export default function ExcelImport() {
           </div>
         )}
 
-        {/* Rejected — read-only */}
+        {/* Не-GM — read-only, уйдёт в shop-non-gm.db для парсера фото */}
         {preview.rejected.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="bg-red-50 px-6 py-3 border-b border-red-100">
-              <h3 className="text-sm font-semibold text-red-700">
-                Отклонено ({preview.rejected.length})
+            <div className="bg-slate-50 px-6 py-3 border-b border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-700">
+                Не-GM ({preview.rejected.length}) — сохраним для парсера фото
               </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                Артикулы попадут в shop-non-gm.db. Парсер фото будет складывать их снимки в
+                {" "}<code className="font-mono">~/Pictures/сортировка не gm/&lt;артикул&gt;/</code>.
+              </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -499,7 +518,7 @@ export default function ExcelImport() {
                         {formatPrice(row.price)}
                       </td>
                       <td className="px-6 py-3">
-                        <span className="inline-block bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                        <span className="inline-block bg-slate-200 text-slate-700 text-xs font-medium px-2 py-0.5 rounded-full">
                           {REASON_LABELS[row.reason] ?? row.reason}
                         </span>
                       </td>
@@ -522,7 +541,7 @@ export default function ExcelImport() {
             <span className="font-semibold text-gray-900">{skipCount}</span>
             {preview.rejected.length > 0 && (
               <>
-                {" | "}Отклонено:{" "}
+                {" | "}Не-GM:{" "}
                 <span className="font-semibold text-gray-900">{preview.rejected.length}</span>
               </>
             )}
@@ -536,7 +555,10 @@ export default function ExcelImport() {
             </button>
             <button
               onClick={handleConfirm}
-              disabled={loading || (newCount === 0 && updateCount === 0)}
+              disabled={
+                loading ||
+                (newCount === 0 && updateCount === 0 && preview.rejected.length === 0)
+              }
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Импорт..." : "Импортировать"}
@@ -587,6 +609,12 @@ export default function ExcelImport() {
             Добавлено: {result.added}, обновлено: {result.updated}, ошибок:{" "}
             {result.errors.length}
           </p>
+          {(result.nonGmAdded > 0 || result.nonGmSkipped > 0) && (
+            <p className="mt-1 text-xs text-slate-500">
+              Не-GM сохранено в shop-non-gm.db: добавлено {result.nonGmAdded}, уже было{" "}
+              {result.nonGmSkipped}
+            </p>
+          )}
           {hasErrors && (
             <div className="mt-4 rounded-lg bg-amber-50 p-3 text-left text-xs text-amber-700 space-y-1">
               {result.errors.map((err, i) => (
