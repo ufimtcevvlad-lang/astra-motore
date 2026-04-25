@@ -35,6 +35,13 @@
       "/images/catalog/opel-155/08.webp"
     ]
   },
+  "13393912": {
+    "image": "/images/catalog/import-1776705221078-sftgp6/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221078-sftgp6/01.webp",
+      "/images/catalog/import-1776705221078-sftgp6/02.webp"
+    ]
+  },
   "13441134": {
     "image": "/images/catalog/opel-156/01.webp",
     "images": [
@@ -330,6 +337,12 @@
       "/images/catalog/import-1776705221074-x29ra5/01.webp",
       "/images/catalog/import-1776705221074-x29ra5/02.webp",
       "/images/catalog/import-1776705221074-x29ra5/03.webp"
+    ]
+  },
+  "AX338": {
+    "image": "/images/catalog/import-1776705221077-0mv67a/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221077-0mv67a/01.webp"
     ]
   }
 }
