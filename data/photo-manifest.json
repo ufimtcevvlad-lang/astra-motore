@@ -220,5 +220,20 @@
       "/images/catalog/import-1776624616905-0i5q05/02.webp",
       "/images/catalog/import-1776624616905-0i5q05/03.webp"
     ]
+  },
+  "6303.2RSR.C3": {
+    "image": "/images/catalog/import-1776705221066-4n24ij/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221066-4n24ij/01.webp",
+      "/images/catalog/import-1776705221066-4n24ij/02.webp"
+    ]
+  },
+  "PT15202": {
+    "image": "/images/catalog/import-1776705221070-t88wgo/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221070-t88wgo/01.webp",
+      "/images/catalog/import-1776705221070-t88wgo/02.webp",
+      "/images/catalog/import-1776705221070-t88wgo/03.webp"
+    ]
   }
 }
