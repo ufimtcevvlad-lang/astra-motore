@@ -35,11 +35,24 @@
       "/images/catalog/opel-155/08.webp"
     ]
   },
+  "13191205": {
+    "image": "/images/catalog/import-1776624616833-neqixg/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616833-neqixg/01.webp",
+      "/images/catalog/import-1776624616833-neqixg/02.webp"
+    ]
+  },
   "13251428": {
     "image": "/images/catalog/import-1776624616982-ahrsn4/01.webp",
     "images": [
       "/images/catalog/import-1776624616982-ahrsn4/01.webp",
       "/images/catalog/import-1776624616982-ahrsn4/02.webp"
+    ]
+  },
+  "13291779": {
+    "image": "/images/catalog/import-1776624616973-15y2on/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616973-15y2on/01.webp"
     ]
   },
   "13393912": {
@@ -61,6 +74,13 @@
       "/images/catalog/import-1776624616541-j541j1/01.webp",
       "/images/catalog/import-1776624616541-j541j1/02.webp",
       "/images/catalog/import-1776624616541-j541j1/03.webp"
+    ]
+  },
+  "13484291": {
+    "image": "/images/catalog/import-1776705221083-i9nmy2/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221083-i9nmy2/01.webp",
+      "/images/catalog/import-1776705221083-i9nmy2/02.webp"
     ]
   },
   "25195555": {
