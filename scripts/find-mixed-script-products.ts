@@ -113,14 +113,26 @@ if (!apply) {
 
 let updated = 0;
 const now = new Date().toISOString();
-const updateStmts: Record<string, ReturnType<typeof sqlite.prepare>> = {
-  sku: sqlite.prepare("UPDATE products SET sku = ?, updated_at = ? WHERE id = ?"),
-  brand: sqlite.prepare("UPDATE products SET brand = ?, updated_at = ? WHERE id = ?"),
-  name: sqlite.prepare("UPDATE products SET name = ?, updated_at = ? WHERE id = ?"),
+// Именованные параметры (@value/@now/@id) — better-sqlite3 принимает один
+// объект, и тогда TS-типизация не упирается в variadic-сигнатуру .run().
+const updateStmts = {
+  sku: sqlite.prepare(
+    "UPDATE products SET sku = @value, updated_at = @now WHERE id = @id",
+  ),
+  brand: sqlite.prepare(
+    "UPDATE products SET brand = @value, updated_at = @now WHERE id = @id",
+  ),
+  name: sqlite.prepare(
+    "UPDATE products SET name = @value, updated_at = @now WHERE id = @id",
+  ),
 };
 for (const h of hits) {
   if (h.before === h.after) continue;
-  updateStmts[h.field].run(h.after, now, h.id);
+  updateStmts[h.field as "sku" | "brand" | "name"].run({
+    value: h.after,
+    now,
+    id: h.id,
+  });
   updated++;
 }
 console.log(`Обновлено ${updated} полей.`);
