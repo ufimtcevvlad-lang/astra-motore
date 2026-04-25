@@ -66,6 +66,14 @@
       "/images/catalog/import-1776624616814-i79i2f/02.webp"
     ]
   },
+  "880337": {
+    "image": "/images/catalog/import-1776624616787-zr9jdb/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616787-zr9jdb/01.webp",
+      "/images/catalog/import-1776624616787-zr9jdb/02.webp",
+      "/images/catalog/import-1776624616787-zr9jdb/03.webp"
+    ]
+  },
   "2607100": {
     "image": "/images/catalog/opel-155/01.webp",
     "images": [
@@ -786,6 +794,38 @@
       "/images/catalog/import-1776705221092-5x75mj/01.webp",
       "/images/catalog/import-1776705221092-5x75mj/02.webp",
       "/images/catalog/import-1776705221092-5x75mj/03.webp"
+    ]
+  },
+  "GN10494-12B1": {
+    "image": "/images/catalog/import-1776624616584-5ti0d5/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616584-5ti0d5/01.webp",
+      "/images/catalog/import-1776624616584-5ti0d5/02.webp",
+      "/images/catalog/import-1776624616584-5ti0d5/03.webp"
+    ]
+  },
+  "GN10401-12B1": {
+    "image": "/images/catalog/import-1776624616780-bwmnrf/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616780-bwmnrf/01.webp",
+      "/images/catalog/import-1776624616780-bwmnrf/02.webp",
+      "/images/catalog/import-1776624616780-bwmnrf/03.webp"
+    ]
+  },
+  "AL08077": {
+    "image": "/images/catalog/import-1776624616795-2l807k/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616795-2l807k/01.webp",
+      "/images/catalog/import-1776624616795-2l807k/02.webp",
+      "/images/catalog/import-1776624616795-2l807k/03.webp"
+    ]
+  },
+  "AL08048": {
+    "image": "/images/catalog/import-1776624616803-a4l191/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616803-a4l191/01.webp",
+      "/images/catalog/import-1776624616803-a4l191/02.webp",
+      "/images/catalog/import-1776624616803-a4l191/03.webp"
     ]
   }
 }
