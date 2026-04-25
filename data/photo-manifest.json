@@ -287,5 +287,26 @@
       "/images/catalog/import-1777132276655-3hnztr/02.webp",
       "/images/catalog/import-1777132276655-3hnztr/03.webp"
     ]
+  },
+  "FE-0071SET": {
+    "image": "/images/catalog/import-1776705221072-h119t3/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221072-h119t3/01.webp",
+      "/images/catalog/import-1776705221072-h119t3/02.webp"
+    ]
+  },
+  "GB-3198": {
+    "image": "/images/catalog/import-1776705221073-ppj9a3/01.webp",
+    "images": [
+      "/images/catalog/import-1776705221073-ppj9a3/01.webp",
+      "/images/catalog/import-1776705221073-ppj9a3/02.webp"
+    ]
+  },
+  "PP836/3": {
+    "image": "/images/catalog/import-1777132276662-56qbxf/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276662-56qbxf/01.webp",
+      "/images/catalog/import-1777132276662-56qbxf/02.webp"
+    ]
   }
 }
