@@ -235,5 +235,33 @@
       "/images/catalog/import-1776705221070-t88wgo/02.webp",
       "/images/catalog/import-1776705221070-t88wgo/03.webp"
     ]
+  },
+  "GA357.25": {
+    "image": "/images/catalog/import-1777132276625-yb3s7c/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276625-yb3s7c/01.webp",
+      "/images/catalog/import-1777132276625-yb3s7c/02.webp"
+    ]
+  },
+  "PB-5248": {
+    "image": "/images/catalog/import-1777132276632-k8r3t5/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276632-k8r3t5/01.webp",
+      "/images/catalog/import-1777132276632-k8r3t5/02.webp"
+    ]
+  },
+  "GBED-008": {
+    "image": "/images/catalog/import-1777132276634-8nedtz/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276634-8nedtz/01.webp",
+      "/images/catalog/import-1777132276634-8nedtz/02.webp"
+    ]
+  },
+  "AG03350": {
+    "image": "/images/catalog/import-1777132276635-fhkosm/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276635-fhkosm/01.webp",
+      "/images/catalog/import-1777132276635-fhkosm/02.webp"
+    ]
   }
 }
