@@ -263,5 +263,29 @@
       "/images/catalog/import-1777132276635-fhkosm/01.webp",
       "/images/catalog/import-1777132276635-fhkosm/02.webp"
     ]
+  },
+  "GA357.31": {
+    "image": "/images/catalog/import-1777132276636-etz6z5/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276636-etz6z5/01.webp",
+      "/images/catalog/import-1777132276636-etz6z5/02.webp",
+      "/images/catalog/import-1777132276636-etz6z5/03.webp"
+    ]
+  },
+  "FP-2547": {
+    "image": "/images/catalog/import-1777132276649-vgqzxw/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276649-vgqzxw/01.webp",
+      "/images/catalog/import-1777132276649-vgqzxw/02.webp",
+      "/images/catalog/import-1777132276649-vgqzxw/03.webp"
+    ]
+  },
+  "PB-5384": {
+    "image": "/images/catalog/import-1777132276655-3hnztr/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276655-3hnztr/01.webp",
+      "/images/catalog/import-1777132276655-3hnztr/02.webp",
+      "/images/catalog/import-1777132276655-3hnztr/03.webp"
+    ]
   }
 }
