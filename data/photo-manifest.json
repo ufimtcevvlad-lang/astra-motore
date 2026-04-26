@@ -296,6 +296,14 @@
       "/images/catalog/import-1776624616543-xw6p9q/02.webp"
     ]
   },
+  "534033310": {
+    "image": "/images/catalog/import-1777137872161-xbzgus/01.webp",
+    "images": [
+      "/images/catalog/import-1777137872161-xbzgus/01.webp",
+      "/images/catalog/import-1777137872161-xbzgus/02.webp",
+      "/images/catalog/import-1777137872161-xbzgus/03.webp"
+    ]
+  },
   "1682640780": {
     "image": "/images/catalog/import-1776624616539-fpgrs1/01.webp",
     "images": [
@@ -826,6 +834,37 @@
       "/images/catalog/import-1776624616803-a4l191/01.webp",
       "/images/catalog/import-1776624616803-a4l191/02.webp",
       "/images/catalog/import-1776624616803-a4l191/03.webp"
+    ]
+  },
+  "T38054": {
+    "image": "/images/catalog/import-1777132276704-4qm07g/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276704-4qm07g/01.webp",
+      "/images/catalog/import-1777132276704-4qm07g/02.webp"
+    ]
+  },
+  "T38345": {
+    "image": "/images/catalog/import-1777132276705-wn1kl1/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276705-wn1kl1/01.webp",
+      "/images/catalog/import-1777132276705-wn1kl1/02.webp",
+      "/images/catalog/import-1777132276705-wn1kl1/03.webp"
+    ]
+  },
+  "T39272": {
+    "image": "/images/catalog/import-1777137872155-wsbtuj/01.webp",
+    "images": [
+      "/images/catalog/import-1777137872155-wsbtuj/01.webp",
+      "/images/catalog/import-1777137872155-wsbtuj/02.webp",
+      "/images/catalog/import-1777137872155-wsbtuj/03.webp"
+    ]
+  },
+  "T39087": {
+    "image": "/images/catalog/import-1777137872159-101wkw/01.webp",
+    "images": [
+      "/images/catalog/import-1777137872159-101wkw/01.webp",
+      "/images/catalog/import-1777137872159-101wkw/02.webp",
+      "/images/catalog/import-1777137872159-101wkw/03.webp"
     ]
   }
 }
