@@ -6,6 +6,16 @@ import { classify, type RejectReason } from "@/app/lib/import/classify";
 import { rewriteName } from "@/app/lib/import/rewrite-name";
 import { detectCategory } from "@/app/lib/import/detect-category";
 
+/**
+ * Удаляет пробелы/тире/слеши/точки/подчёркивания и приводит к верхнему
+ * регистру. Дедуп при Excel-импорте: «GB-6116», «GB6116», «gb 6116» —
+ * один товар. Без этого парные карточки `PE9821`/`PE982/1` плодились
+ * как «новые», хотя это тот же артикул.
+ */
+function normCompactSku(s: string): string {
+  return (s ?? "").replace(/[\s\-_./]+/g, "").toUpperCase();
+}
+
 export interface ParsedRow {
   sku: string;
   name: string;          // финальное (переписанное)
@@ -80,7 +90,11 @@ export async function POST(req: NextRequest) {
         sectionSlug,
       };
 
-      const existing = db.select().from(schema.products).all().find((p) => p.sku === sku);
+      const existing = db
+        .select()
+        .from(schema.products)
+        .all()
+        .find((p) => normCompactSku(p.sku) === normCompactSku(sku));
       if (existing) {
         duplicates.push({
           ...parsed,

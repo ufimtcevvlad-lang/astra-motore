@@ -7,6 +7,16 @@ import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
+/**
+ * Нормализованный SKU для дедупа: «GB-6116» и «GB6116» — один товар.
+ * Без этого повторный импорт того же артикула с другим написанием
+ * создавал бы вторую карточку (видели на сайте `PE9821` и `PE982/1`
+ * как два разных товара).
+ */
+function normCompactSku(s: string): string {
+  return (s ?? "").replace(/[\s\-_./]+/g, "").toUpperCase();
+}
+
 interface ImportItem {
   sku: string;
   name: string;
@@ -46,6 +56,17 @@ export async function POST(req: NextRequest) {
   const cats = db.select().from(schema.categories).all();
   const slugToId = new Map(cats.map((c) => [c.slug, c.id]));
 
+  // Карта «нормализованный SKU → существующий товар» — defense in depth:
+  // если preview по какой-то причине не отметил это как duplicate, мы
+  // всё равно не создадим вторую карточку. Перед каждым insert ищем
+  // существующего по norm-key, и если есть — делаем update вместо insert.
+  const allProducts = db.select().from(schema.products).all();
+  const normToExisting = new Map<string, (typeof allProducts)[number]>();
+  for (const p of allProducts) {
+    const k = normCompactSku(p.sku);
+    if (k) normToExisting.set(k, p);
+  }
+
   for (const item of newItems) {
     const sku = item.sku.trim();
     const name = item.name.trim();
@@ -56,10 +77,27 @@ export async function POST(req: NextRequest) {
       continue;
     }
     const categoryId = item.sectionSlug ? slugToId.get(item.sectionSlug) ?? null : null;
+    // Если в БД уже есть товар с эквивалентным sku (после нормализации),
+    // обновляем его, не создаём дубль. Это страхует на случай если в
+    // одном батче пришли два варианта одного артикула («GB6116» и
+    // «GB-6116»): первый запишется, второй обновит первого.
+    const existingByNorm = normToExisting.get(normCompactSku(sku));
+    if (existingByNorm) {
+      try {
+        db.update(schema.products).set({
+          name, brand, price: Math.round(price),
+          car: item.car, categoryId, updatedAt: now,
+        }).where(eq(schema.products.id, existingByNorm.id)).run();
+        updated++;
+      } catch (e) {
+        errors.push(`Ошибка обновления (норм-дубль) ${sku}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      continue;
+    }
     try {
       const externalId = `import-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const slug = generateUniqueProductSlug({ name, brand, sku });
-      db.insert(schema.products).values({
+      const inserted = db.insert(schema.products).values({
         externalId, slug, sku, name, brand,
         price: Math.round(price),
         inStock: 1,
@@ -67,7 +105,11 @@ export async function POST(req: NextRequest) {
         categoryId,
         createdAt: now,
         updatedAt: now,
-      }).run();
+      }).returning({ id: schema.products.id, sku: schema.products.sku }).all();
+      if (inserted.length > 0) {
+        const k = normCompactSku(inserted[0].sku);
+        if (k) normToExisting.set(k, { ...inserted[0] } as (typeof allProducts)[number]);
+      }
       ensureProductDir(sku);
       added++;
     } catch (e) {
@@ -93,7 +135,10 @@ export async function POST(req: NextRequest) {
 
   // Не-GM позиции — отдельная БД shop-non-gm.db. На сайте gmshop66.ru они
   // не светятся; нужны парсеру фото для маршрутизации в ~/Pictures/сортировка не gm/.
-  // Дедуп по sku через onConflictDoNothing — повторный импорт того же файла безопасен.
+  // Дедуп: проверяем не только точное совпадение sku, но и нормализованное —
+  // чтобы «PE973/3» и «PE9733» считались одним товаром.
+  const allNonGm = nonGmDb.select().from(schema.products).all();
+  const nonGmNormSet = new Set(allNonGm.map((p) => normCompactSku(p.sku)).filter(Boolean));
   for (const item of nonGmItems) {
     const sku = item.sku.trim();
     const rawName = item.rawName.trim();
@@ -101,6 +146,11 @@ export async function POST(req: NextRequest) {
     const price = Number(item.price);
     if (!sku || !rawName || !Number.isFinite(price) || price < 0) {
       errors.push(`Не-GM пропущено: некорректные данные для "${item.sku}"`);
+      continue;
+    }
+    const nk = normCompactSku(sku);
+    if (nk && nonGmNormSet.has(nk)) {
+      nonGmSkipped++;
       continue;
     }
     try {
@@ -121,8 +171,12 @@ export async function POST(req: NextRequest) {
         })
         .onConflictDoNothing({ target: schema.products.sku })
         .run();
-      if (result.changes > 0) nonGmAdded++;
-      else nonGmSkipped++;
+      if (result.changes > 0) {
+        nonGmAdded++;
+        if (nk) nonGmNormSet.add(nk);
+      } else {
+        nonGmSkipped++;
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       errors.push(`Не-GM ошибка ${sku}: ${msg}`);
