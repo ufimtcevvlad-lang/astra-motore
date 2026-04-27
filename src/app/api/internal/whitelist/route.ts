@@ -30,9 +30,12 @@ function readSkus(database: typeof db): WhitelistRow[] {
     .select({ sku: schema.products.sku, image: schema.products.image })
     .from(schema.products)
     .all();
-  return rows
-    .filter((r): r is { sku: string; image: string | null } => Boolean(r.sku))
-    .map((r) => ({ sku: r.sku, image: r.image ?? null }));
+  const out: WhitelistRow[] = [];
+  for (const r of rows) {
+    if (!r.sku) continue;
+    out.push({ sku: r.sku, image: r.image ?? null });
+  }
+  return out;
 }
 
 export async function GET() {
