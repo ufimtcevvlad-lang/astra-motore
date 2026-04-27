@@ -866,5 +866,19 @@
       "/images/catalog/import-1777137872159-101wkw/02.webp",
       "/images/catalog/import-1777137872159-101wkw/03.webp"
     ]
+  },
+  "PE982/1": {
+    "image": "/images/catalog/import-1776624616952-0c59rf/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616952-0c59rf/01.webp",
+      "/images/catalog/import-1776624616952-0c59rf/02.webp"
+    ]
+  },
+  "PE973/6": {
+    "image": "/images/catalog/import-1777132276671-ase6tb/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276671-ase6tb/01.webp",
+      "/images/catalog/import-1777132276671-ase6tb/02.webp"
+    ]
   }
 }
