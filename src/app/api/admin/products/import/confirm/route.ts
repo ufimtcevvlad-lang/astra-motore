@@ -6,6 +6,17 @@ import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
+/**
+ * Удаляет пробелы/тире/слеши/точки/подчёркивания, приводит к верхнему
+ * регистру. Импорт сверяется по нормализованному SKU, чтобы повторная
+ * загрузка того же артикула с другим написанием обновила существующую
+ * карточку, а не создала дубль (пользователь видит на сайте «PE9821» и
+ * «PE982/1» как два отдельных товара).
+ */
+function normCompactSku(s: string): string {
+  return (s ?? "").replace(/[\s\-_./]+/g, "").toUpperCase();
+}
+
 interface ImportItem {
   sku: string;
   name: string;
@@ -37,6 +48,17 @@ export async function POST(req: NextRequest) {
   const cats = db.select().from(schema.categories).all();
   const slugToId = new Map(cats.map((c) => [c.slug, c.id]));
 
+  // Карта «нормализованный SKU → существующий товар». Защита от
+  // дублей второго уровня: если preview по какой-то причине не
+  // распознал совпадение (например, импорт через прямой POST), мы
+  // всё равно не создадим вторую карточку.
+  const allProducts = db.select().from(schema.products).all();
+  const normToExisting = new Map<string, (typeof allProducts)[number]>();
+  for (const p of allProducts) {
+    const k = normCompactSku(p.sku);
+    if (k) normToExisting.set(k, p);
+  }
+
   for (const item of newItems) {
     const sku = item.sku.trim();
     const name = item.name.trim();
@@ -47,10 +69,26 @@ export async function POST(req: NextRequest) {
       continue;
     }
     const categoryId = item.sectionSlug ? slugToId.get(item.sectionSlug) ?? null : null;
+    // Defense-in-depth: даже если preview принял это как «новый», но
+    // в БД уже есть товар с эквивалентным sku — обновляем его, не
+    // создаём дубль.
+    const existingByNorm = normToExisting.get(normCompactSku(sku));
+    if (existingByNorm) {
+      try {
+        db.update(schema.products).set({
+          name, brand, price: Math.round(price),
+          car: item.car, categoryId, updatedAt: now,
+        }).where(eq(schema.products.id, existingByNorm.id)).run();
+        updated++;
+      } catch (e) {
+        errors.push(`Ошибка обновления (норм-дубль) ${sku}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      continue;
+    }
     try {
       const externalId = `import-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const slug = generateUniqueProductSlug({ name, brand, sku });
-      db.insert(schema.products).values({
+      const inserted = db.insert(schema.products).values({
         externalId, slug, sku, name, brand,
         price: Math.round(price),
         inStock: 1,
@@ -58,7 +96,14 @@ export async function POST(req: NextRequest) {
         categoryId,
         createdAt: now,
         updatedAt: now,
-      }).run();
+      }).returning({ id: schema.products.id, sku: schema.products.sku }).all();
+      // Кэшируем только что вставленный товар: если в одном батче
+      // приходят два варианта одного SKU (`GB6116` и `GB-6116`), второй
+      // должен попасть в ветку «обновляем», а не создать второй insert.
+      if (inserted.length > 0) {
+        const k = normCompactSku(inserted[0].sku);
+        if (k) normToExisting.set(k, { ...inserted[0] } as (typeof allProducts)[number]);
+      }
       ensureProductDir(sku);
       added++;
     } catch (e) {
