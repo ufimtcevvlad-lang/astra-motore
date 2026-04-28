@@ -1116,5 +1116,21 @@
       "/images/catalog/import-1777132276723-ww4m3t/01.webp",
       "/images/catalog/import-1777132276723-ww4m3t/02.webp"
     ]
+  },
+  "880153A": {
+    "image": "/images/catalog/import-1777132276725-6ablyi/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276725-6ablyi/01.webp",
+      "/images/catalog/import-1777132276725-6ablyi/02.webp",
+      "/images/catalog/import-1777132276725-6ablyi/03.webp"
+    ]
+  },
+  "880376A": {
+    "image": "/images/catalog/import-1777132276726-buc8v0/01.webp",
+    "images": [
+      "/images/catalog/import-1777132276726-buc8v0/01.webp",
+      "/images/catalog/import-1777132276726-buc8v0/02.webp",
+      "/images/catalog/import-1777132276726-buc8v0/03.webp"
+    ]
   }
 }
