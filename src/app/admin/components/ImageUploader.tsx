@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 interface ImageUploaderProps {
   value: string | string[];
@@ -10,6 +10,7 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({ value, onChange, multiple = false }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
   const [uploading, setUploading] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState("");
@@ -39,10 +40,12 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
         }
       }
 
+      if (uploaded.length === 0) return;
+
       if (multiple) {
         onChange([...urls, ...uploaded]);
       } else {
-        onChange(uploaded[0] ?? "");
+        onChange(uploaded[0]);
       }
     } finally {
       setUploading(false);
@@ -149,8 +152,8 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
       )}
 
       {/* Drop zone */}
-      <div
-        onClick={() => inputRef.current?.click()}
+      <label
+        htmlFor={inputId}
         onDragOver={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -160,16 +163,25 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
           e.stopPropagation();
           handleFiles(e.dataTransfer.files);
         }}
-        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition"
+        className="block border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition"
       >
         {uploading ? (
           <div className="text-sm text-indigo-600">Загрузка...</div>
         ) : (
-          <div className="text-sm text-gray-500">
-            Нажмите или перетащите {multiple ? "изображения" : "изображение"}
+          <div className="space-y-2">
+            <div className="text-sm text-gray-500">
+              Перетащите {multiple ? "изображения" : "изображение"} сюда
+            </div>
+            <span className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm">
+              Выбрать фото с компьютера
+            </span>
+            <div className="text-xs text-gray-400">
+              JPG, PNG, WebP, HEIC до 20 МБ. Сайт сожмёт в WebP автоматически.
+            </div>
           </div>
         )}
         <input
+          id={inputId}
           ref={inputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif"
@@ -177,8 +189,13 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
           onChange={(e) => handleFiles(e.target.files)}
           className="hidden"
         />
-      </div>
+      </label>
       {uploadError && <div className="mt-2 text-sm text-red-600">{uploadError}</div>}
+      {urls.length > 0 && (
+        <div className="mt-2 text-xs text-amber-700">
+          Фото загружено. Чтобы оно появилось на сайте, нажмите «Сохранить изменения».
+        </div>
+      )}
     </div>
   );
 }

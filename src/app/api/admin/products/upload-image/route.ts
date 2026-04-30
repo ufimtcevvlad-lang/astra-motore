@@ -61,8 +61,8 @@ export async function POST(req: NextRequest) {
   try {
     out = await sharp(buffer)
       .rotate()
-      .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 86 })
+      .resize(1400, 1400, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 82, effort: 4 })
       .toBuffer();
   } catch {
     return NextResponse.json(
