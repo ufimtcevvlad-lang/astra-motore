@@ -125,6 +125,10 @@ async function sendMessage(chatId, text, extra = {}) {
   });
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function sendDocument(chatId, filePath, caption = "") {
   const buffer = await fs.readFile(filePath);
   const blob = new Blob([buffer], {
@@ -291,11 +295,18 @@ async function handleCommand(chatId, text) {
 async function poll() {
   let offset = Number(process.env.TG_OFFSET || 0);
   for (;;) {
-    const updates = await tg("getUpdates", {
-      offset,
-      timeout: 50,
-      allowed_updates: ["message"],
-    });
+    let updates;
+    try {
+      updates = await tg("getUpdates", {
+        offset,
+        timeout: 50,
+        allowed_updates: ["message"],
+      });
+    } catch (err) {
+      console.error("Telegram polling error:", err);
+      await sleep(5000);
+      continue;
+    }
 
     for (const u of updates) {
       offset = Math.max(offset, (u.update_id || 0) + 1);
