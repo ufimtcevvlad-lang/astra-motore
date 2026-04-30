@@ -133,6 +133,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
     setSaving(true);
     setError("");
+    const orderedImages = images.filter((url) => typeof url === "string" && url.trim().length > 0);
+    const coverImage = orderedImages[0] ?? (image || null);
 
     const body = {
       name: name.trim(),
@@ -145,8 +147,8 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       longDescription: longDescription.trim() || null,
       hidden,
       categoryId: categoryId ? Number(categoryId) : null,
-      image: image || null,
-      images,
+      image: coverImage,
+      images: orderedImages,
       specs,
       analogs: analogs.map((a) => a.analogId),
     };
@@ -409,7 +411,10 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
             <ImageUploader value={image} onChange={(v) => setImage(v as string)} />
           </div>
           <div>
-            <label className={labelClass}>Дополнительные изображения</label>
+            <label className={labelClass}>Галерея товара</label>
+            <p className="mb-2 text-xs text-gray-500">
+              Перетащите фото мышью, чтобы изменить порядок. Первое фото станет главным на сайте после сохранения.
+            </p>
             <ImageUploader value={images} onChange={(v) => setImages(v as string[])} multiple />
           </div>
         </div>

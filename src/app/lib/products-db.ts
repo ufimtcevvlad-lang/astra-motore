@@ -27,10 +27,10 @@ export function rowToProduct(
   const hasFsImages = fsImages.length > 0 && fsImages[0] !== "/placeholder-product.svg";
   const dbImages = parseDbImages(row.images);
   const fallbackDbImage = typeof row.image === "string" && row.image.length > 0 ? row.image : null;
-  const images = hasFsImages
-    ? fsImages
-    : dbImages.length > 0
-      ? dbImages
+  const images = dbImages.length > 0
+    ? dbImages
+    : hasFsImages
+      ? fsImages
       : fallbackDbImage
         ? [fallbackDbImage]
         : ["/placeholder-product.svg"];

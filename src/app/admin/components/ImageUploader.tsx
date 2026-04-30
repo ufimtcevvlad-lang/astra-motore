@@ -11,6 +11,7 @@ interface ImageUploaderProps {
 export default function ImageUploader({ value, onChange, multiple = false }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const urls: string[] = Array.isArray(value) ? value : value ? [value] : [];
 
@@ -52,18 +53,84 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
     }
   }
 
+  function moveImage(from: number, to: number) {
+    if (!multiple || from === to || from < 0 || to < 0) return;
+    const next = [...urls];
+    const [moved] = next.splice(from, 1);
+    if (!moved) return;
+    next.splice(to, 0, moved);
+    onChange(next);
+  }
+
   return (
     <div>
       {/* Thumbnails */}
       {urls.length > 0 && (
         <div className="flex flex-wrap gap-3 mb-3">
           {urls.map((url, i) => (
-            <div key={`${url}-${i}`} className="relative group">
+            <div
+              key={`${url}-${i}`}
+              draggable={multiple}
+              onDragStart={(e) => {
+                if (!multiple) return;
+                setDragIndex(i);
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", String(i));
+              }}
+              onDragOver={(e) => {
+                if (!multiple) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+              }}
+              onDrop={(e) => {
+                if (!multiple) return;
+                e.preventDefault();
+                const from = dragIndex ?? Number(e.dataTransfer.getData("text/plain"));
+                moveImage(from, i);
+                setDragIndex(null);
+              }}
+              onDragEnd={() => setDragIndex(null)}
+              className={[
+                "relative group rounded-lg",
+                multiple ? "cursor-grab active:cursor-grabbing" : "",
+                dragIndex === i ? "opacity-50 ring-2 ring-indigo-500" : "",
+              ].join(" ")}
+              title={multiple ? "Перетащите, чтобы изменить порядок" : undefined}
+            >
               <img
                 src={url}
                 alt=""
                 className="w-20 h-20 rounded-lg object-cover border border-gray-200"
               />
+              {multiple && (
+                <div className="absolute left-1 top-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  {i === 0 ? "Главное" : i + 1}
+                </div>
+              )}
+              {multiple && urls.length > 1 && (
+                <div className="absolute bottom-1 left-1 flex gap-1 opacity-0 transition group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, i - 1)}
+                    disabled={i === 0}
+                    className="flex h-6 w-6 items-center justify-center rounded bg-white/95 text-xs font-semibold text-gray-700 shadow disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Переместить фото левее"
+                    title="Переместить левее"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, i + 1)}
+                    disabled={i === urls.length - 1}
+                    className="flex h-6 w-6 items-center justify-center rounded bg-white/95 text-xs font-semibold text-gray-700 shadow disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Переместить фото правее"
+                    title="Переместить правее"
+                  >
+                    →
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => removeImage(i)}
