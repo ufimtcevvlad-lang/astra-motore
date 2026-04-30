@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 type WhitelistProduct = {
   sku: string;
+  externalId: string;
   image: string;
 };
 
@@ -17,14 +18,15 @@ function readProducts(dbPath: string): WhitelistProduct[] {
     return db
       .prepare(
         `SELECT sku, image
+              , external_id as externalId
          FROM products
          WHERE sku IS NOT NULL AND sku != ''
          ORDER BY sku COLLATE NOCASE`
       )
       .all()
       .map((row) => {
-        const r = row as { sku: string; image: string | null };
-        return { sku: r.sku, image: r.image ?? "" };
+        const r = row as { sku: string; externalId: string; image: string | null };
+        return { sku: r.sku, externalId: r.externalId, image: r.image ?? "" };
       });
   } finally {
     db.close();
