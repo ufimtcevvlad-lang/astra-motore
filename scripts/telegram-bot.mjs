@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { loadDotEnvLocalFromCwd, requireEnv } from "./lib/env.mjs";
+import { parseSkuList, writeImportWorkbook } from "./lib/stock-import.mjs";
 import {
   fetchMetrikaSummary,
   formatDateInTZ,
@@ -18,6 +19,9 @@ const COUNTER_ID = process.env.YANDEX_METRIKA_COUNTER_ID || "108384071";
 const TZ = process.env.REPORT_TIMEZONE || "Asia/Yekaterinburg";
 
 const ORDERS_FILE = path.join(process.cwd(), "data", "orders.ndjson");
+const STOCK_DIR = path.join(process.cwd(), "data", "import-stock");
+const STOCK_FILE = path.join(STOCK_DIR, "latest-stock.xlsx");
+const IMPORT_OUTPUT_DIR = path.join(STOCK_DIR, "outputs");
 
 function escapeHtml(text) {
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -78,6 +82,7 @@ function mainMenuKeyboard() {
     keyboard: [
       [{ text: "📊 Статистика сегодня" }, { text: "📊 Статистика вчера" }],
       [{ text: "🛒 Заказы сегодня" }, { text: "🛒 Заказы вчера" }],
+      [{ text: "📦 Excel по артикулам" }],
       [{ text: "🧾 Последние 5 заказов" }],
     ],
     resize_keyboard: true,
@@ -98,6 +103,18 @@ async function tg(method, payload) {
   return data.result;
 }
 
+async function tgForm(method, form) {
+  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
+    method: "POST",
+    body: form,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.ok) {
+    throw new Error(`Telegram API error ${method}: ${data?.description || res.status}`);
+  }
+  return data.result;
+}
+
 async function sendMessage(chatId, text, extra = {}) {
   return tg("sendMessage", {
     chat_id: chatId,
@@ -108,6 +125,72 @@ async function sendMessage(chatId, text, extra = {}) {
   });
 }
 
+async function sendDocument(chatId, filePath, caption = "") {
+  const buffer = await fs.readFile(filePath);
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const form = new FormData();
+  form.append("chat_id", String(chatId));
+  form.append("document", blob, path.basename(filePath));
+  if (caption) form.append("caption", caption);
+  return tgForm("sendDocument", form);
+}
+
+async function saveStockDocument(document) {
+  if (!document?.file_id) throw new Error("Не получил файл");
+  const name = String(document.file_name ?? "").toLowerCase();
+  if (!name.endsWith(".xlsx") && !name.endsWith(".xls")) {
+    throw new Error("Нужен Excel-файл .xlsx или .xls");
+  }
+
+  const file = await tg("getFile", { file_id: document.file_id });
+  const url = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.file_path}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Не смог скачать файл из Telegram: HTTP ${res.status}`);
+
+  await fs.mkdir(STOCK_DIR, { recursive: true });
+  const bytes = Buffer.from(await res.arrayBuffer());
+  await fs.writeFile(STOCK_FILE, bytes);
+  return { bytes: bytes.length };
+}
+
+async function stockExists() {
+  try {
+    const st = await fs.stat(STOCK_FILE);
+    return st.isFile();
+  } catch {
+    return false;
+  }
+}
+
+async function makeImportFromText(chatId, text) {
+  const requested = parseSkuList(text);
+  if (requested.length < 1) return false;
+  if (!(await stockExists())) {
+    await sendMessage(
+      chatId,
+      [
+        "Сначала пришли мне Excel-файл остатков 1С (.xlsx).",
+        "После этого просто отправляй список артикулов сообщением, каждый артикул с новой строки.",
+      ].join("\n")
+    );
+    return true;
+  }
+
+  await fs.mkdir(IMPORT_OUTPUT_DIR, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  const outPath = path.join(IMPORT_OUTPUT_DIR, `import-${stamp}.xlsx`);
+  const result = writeImportWorkbook({ requested, stockPath: STOCK_FILE, outPath });
+
+  await sendDocument(
+    chatId,
+    outPath,
+    `Готово: найдено ${result.matches.length} из ${requested.length}, не найдено ${result.missing.length}.`
+  );
+  return true;
+}
+
 async function handleCommand(chatId, text) {
   const today = formatDateInTZ(new Date(), TZ);
   const yesterday = getYesterdayDateString(TZ);
@@ -116,6 +199,23 @@ async function handleCommand(chatId, text) {
     await sendMessage(
       chatId,
       "Выбери действие кнопками ниже.",
+      { reply_markup: mainMenuKeyboard() }
+    );
+    return;
+  }
+
+  if (text === "/import" || text === "📦 Excel по артикулам") {
+    await sendMessage(
+      chatId,
+      [
+        "Как пользоваться импортом:",
+        "",
+        "1. Пришли сюда свежий Excel-файл остатков 1С (.xlsx).",
+        "2. Потом пришли список артикулов обычным сообщением.",
+        "3. Я верну готовый Excel для импорта на сайт.",
+        "",
+        "Артикулы можно писать с пробелами, точками, тире — я ищу без них.",
+      ].join("\n"),
       { reply_markup: mainMenuKeyboard() }
     );
     return;
@@ -183,6 +283,8 @@ async function handleCommand(chatId, text) {
     return;
   }
 
+  if (await makeImportFromText(chatId, text)) return;
+
   await sendMessage(chatId, "Не понял команду. Нажми /menu.", { reply_markup: mainMenuKeyboard() });
 }
 
@@ -198,17 +300,27 @@ async function poll() {
     for (const u of updates) {
       offset = Math.max(offset, (u.update_id || 0) + 1);
       const msg = u.message;
-      if (!msg?.text) continue;
+      if (!msg) continue;
 
       const chatId = msg.chat?.id;
       if (!chatId) continue;
-
-      const text = msg.text.trim();
 
       // Security: other commands respond only to admin chat
       if (ADMIN_CHAT_ID && Number(chatId) !== Number(ADMIN_CHAT_ID)) continue;
 
       try {
+        if (msg.document) {
+          const saved = await saveStockDocument(msg.document);
+          await sendMessage(
+            chatId,
+            `Остатки 1С сохранены. Размер: ${(saved.bytes / 1024 / 1024).toFixed(1)} МБ.\nТеперь пришли список артикулов.`,
+            { reply_markup: mainMenuKeyboard() }
+          );
+          continue;
+        }
+
+        if (!msg.text) continue;
+        const text = msg.text.trim();
         await handleCommand(chatId, text);
       } catch (e) {
         await sendMessage(
@@ -225,4 +337,3 @@ poll().catch((e) => {
   console.error(e);
   process.exitCode = 1;
 });
-
