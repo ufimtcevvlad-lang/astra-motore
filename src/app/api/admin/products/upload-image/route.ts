@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { createRequire } from "module";
 import sharp from "sharp";
+
+export const runtime = "nodejs";
+
+const require = createRequire(import.meta.url);
+const heicConvert = require("heic-convert") as (input: {
+  buffer: Buffer;
+  format: "JPEG";
+  quality: number;
+}) => Promise<ArrayBuffer>;
 
 function detectImageKind(buf: Buffer): "jpeg" | "png" | "webp" | "heic" | null {
   if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "jpeg";
@@ -59,14 +69,20 @@ export async function POST(req: NextRequest) {
 
   let out: Buffer;
   try {
-    out = await sharp(buffer)
+    const imageBuffer =
+      detected === "heic"
+        ? Buffer.from(await heicConvert({ buffer, format: "JPEG", quality: 0.92 }))
+        : buffer;
+
+    out = await sharp(imageBuffer)
       .rotate()
       .resize(1400, 1400, { fit: "inside", withoutEnlargement: true })
       .webp({ quality: 82, effort: 4 })
       .toBuffer();
-  } catch {
+  } catch (err) {
+    console.error("Admin image upload failed:", err);
     return NextResponse.json(
-      { error: "Не удалось обработать изображение. Попробуйте JPEG/PNG/WebP или другой HEIC-файл." },
+      { error: "Не удалось обработать изображение. Попробуйте другой файл или сохраните фото как JPEG." },
       { status: 400 },
     );
   }
