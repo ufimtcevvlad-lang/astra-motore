@@ -38,6 +38,7 @@ interface PreviewData {
 interface ConfirmResult {
   added: number;
   updated: number;
+  nonGmSaved?: number;
   errors: string[];
 }
 
@@ -217,7 +218,11 @@ export default function ExcelImport() {
       const res = await fetch("/api/admin/products/import/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newItems: newItemsPayload, updateIds: updateItems }),
+        body: JSON.stringify({
+          newItems: newItemsPayload,
+          updateIds: updateItems,
+          rejected: preview.rejected,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -584,7 +589,8 @@ export default function ExcelImport() {
           )}
           <p className="text-lg font-semibold text-gray-900 mb-1">Импорт завершён</p>
           <p className="text-sm text-gray-600">
-            Добавлено: {result.added}, обновлено: {result.updated}, ошибок:{" "}
+            Добавлено: {result.added}, обновлено: {result.updated}, Не-GM сохранено:{" "}
+            {result.nonGmSaved ?? 0}, ошибок:{" "}
             {result.errors.length}
           </p>
           {hasErrors && (

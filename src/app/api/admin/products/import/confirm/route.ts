@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
+import Database from "better-sqlite3";
+import path from "node:path";
 import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
@@ -26,12 +28,131 @@ interface ImportItem {
   sectionSlug: string | null;
 }
 interface UpdateItem extends ImportItem { id: number; }
+interface RejectedItem {
+  sku: string;
+  rawName: string;
+  brand: string;
+  price: number;
+  reason: "non-gm";
+}
+
+function openNonGmDb() {
+  const sqlite = new Database(path.join(process.cwd(), "data", "shop-non-gm.db"));
+  sqlite.pragma("journal_mode = WAL");
+  sqlite.exec(`
+    CREATE TABLE IF NOT EXISTS products (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      external_id TEXT NOT NULL UNIQUE,
+      slug TEXT NOT NULL DEFAULT '',
+      sku TEXT NOT NULL,
+      name TEXT NOT NULL,
+      brand TEXT NOT NULL,
+      country TEXT NOT NULL DEFAULT '',
+      category_id INTEGER,
+      car TEXT NOT NULL DEFAULT '',
+      price INTEGER NOT NULL,
+      in_stock INTEGER NOT NULL DEFAULT 0,
+      image TEXT NOT NULL DEFAULT '',
+      images TEXT NOT NULL DEFAULT '[]',
+      description TEXT NOT NULL DEFAULT '',
+      long_description TEXT,
+      hidden INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS products_sku_unique ON products (sku);
+    CREATE UNIQUE INDEX IF NOT EXISTS products_slug_unique ON products (slug);
+  `);
+  return sqlite;
+}
+
+function upsertNonGmProducts(items: RejectedItem[], now: string): { saved: number; errors: string[] } {
+  if (items.length === 0) return { saved: 0, errors: [] };
+
+  const sqlite = openNonGmDb();
+  const errors: string[] = [];
+  let saved = 0;
+
+  try {
+    const all = sqlite.prepare("SELECT id, sku FROM products").all() as { id: number; sku: string }[];
+    const existingSlugs = sqlite.prepare("SELECT slug FROM products").all() as { slug: string }[];
+    const normToExisting = new Map<string, { id: number; sku: string }>();
+    for (const p of all) {
+      const k = normCompactSku(p.sku);
+      if (k) normToExisting.set(k, p);
+    }
+    const takenSlugs = new Set(existingSlugs.map((r) => r.slug).filter(Boolean));
+    const uniqueNonGmSlug = (base: string) => {
+      if (!takenSlugs.has(base)) {
+        takenSlugs.add(base);
+        return base;
+      }
+      let n = 2;
+      while (takenSlugs.has(`${base}-${n}`)) n += 1;
+      const slug = `${base}-${n}`;
+      takenSlugs.add(slug);
+      return slug;
+    };
+
+    const insert = sqlite.prepare(`
+      INSERT INTO products (
+        external_id, slug, sku, name, brand, price, in_stock, created_at, updated_at
+      ) VALUES (
+        @externalId, @slug, @sku, @name, @brand, @price, 1, @now, @now
+      )
+    `);
+    const update = sqlite.prepare(`
+      UPDATE products
+      SET name = @name, brand = @brand, price = @price, updated_at = @now
+      WHERE id = @id
+    `);
+
+    const tx = sqlite.transaction((rows: RejectedItem[]) => {
+      for (const item of rows) {
+        const sku = item.sku.trim();
+        const name = item.rawName.trim();
+        const brand = item.brand.trim();
+        const price = Number(item.price);
+        if (!sku || !name || !Number.isFinite(price) || price < 0) {
+          errors.push(`Не-GM пропущен: некорректные данные для "${item.sku}"`);
+          continue;
+        }
+
+        const existing = normToExisting.get(normCompactSku(sku));
+        if (existing) {
+          update.run({ id: existing.id, name, brand, price: Math.round(price), now });
+          saved++;
+          continue;
+        }
+
+        const slug = uniqueNonGmSlug(generateUniqueProductSlug({ name, brand, sku }));
+        insert.run({
+          externalId: `non-gm-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          slug,
+          sku,
+          name,
+          brand,
+          price: Math.round(price),
+          now,
+        });
+        saved++;
+      }
+    });
+    tx(items);
+  } catch (e) {
+    errors.push(`Ошибка сохранения Не-GM: ${e instanceof Error ? e.message : String(e)}`);
+  } finally {
+    sqlite.close();
+  }
+
+  return { saved, errors };
+}
 
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (!auth.authorized) return auth.response;
 
-  let body: { newItems?: ImportItem[]; updateIds?: UpdateItem[] };
+  let body: { newItems?: ImportItem[]; updateIds?: UpdateItem[]; rejected?: RejectedItem[] };
   try {
     body = await req.json();
   } catch {
@@ -40,6 +161,7 @@ export async function POST(req: NextRequest) {
 
   const newItems = body.newItems ?? [];
   const updateIds = body.updateIds ?? [];
+  const rejected = body.rejected ?? [];
   const now = new Date().toISOString();
   const errors: string[] = [];
   let added = 0, updated = 0;
@@ -131,5 +253,8 @@ export async function POST(req: NextRequest) {
     revalidatePublicProductPages();
   }
 
-  return NextResponse.json({ added, updated, errors });
+  const nonGm = upsertNonGmProducts(rejected, now);
+  errors.push(...nonGm.errors);
+
+  return NextResponse.json({ added, updated, nonGmSaved: nonGm.saved, errors });
 }
