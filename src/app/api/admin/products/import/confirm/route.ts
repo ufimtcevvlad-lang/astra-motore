@@ -60,8 +60,6 @@ function openNonGmDb() {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
-    CREATE UNIQUE INDEX IF NOT EXISTS products_sku_unique ON products (sku);
-    CREATE UNIQUE INDEX IF NOT EXISTS products_slug_unique ON products (slug);
   `);
   return sqlite;
 }
