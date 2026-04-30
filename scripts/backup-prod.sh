@@ -12,7 +12,6 @@ KEEP_DAYS="${ASTRA_BACKUP_KEEP_DAYS:-30}"
 DOWNLOAD=0
 PRUNE="${ASTRA_BACKUP_PRUNE:-0}"
 TELEGRAM="${ASTRA_BACKUP_TELEGRAM:-0}"
-TELEGRAM_MAX_MB="${ASTRA_BACKUP_TELEGRAM_MAX_MB:-45}"
 
 usage() {
   cat <<'USAGE'
@@ -28,8 +27,7 @@ Options:
   --label NAME      backup group: manual, daily, weekly
   --keep-days N     retention window for --prune
   --download        copy created backup to ~/Documents/astra-motors-backups
-  --telegram        send backup archive to Telegram if it is small enough
-  --telegram-max-mb maximum Telegram archive size (default: 45)
+  --telegram        send a Telegram notification with backup path and size
   --prune           delete remote backups older than --keep-days in this label
 USAGE
 }
@@ -55,10 +53,6 @@ while [[ $# -gt 0 ]]; do
     --telegram)
       TELEGRAM=1
       shift
-      ;;
-    --telegram-max-mb)
-      TELEGRAM_MAX_MB="${2:-}"
-      shift 2
       ;;
     --prune)
       PRUNE=1
@@ -90,9 +84,8 @@ load_remote_env() {
   fi
 }
 
-send_telegram_backup() {
+send_telegram_notification() {
   local backup_dir="$1"
-  local archive="$backup_dir.tar.gz"
   local token="${TELEGRAM_BOT_TOKEN:-}"
   local chat_id="${TELEGRAM_BACKUP_CHAT_ID:-${TELEGRAM_ADMIN_CHAT_ID:-${TELEGRAM_CHAT_ID:-}}}"
 
@@ -105,24 +98,25 @@ send_telegram_backup() {
     return 0
   fi
 
-  tar -czf "$archive" -C "$(dirname "$backup_dir")" "$(basename "$backup_dir")"
-  local size_bytes
-  size_bytes="$(stat -c %s "$archive")"
-  local max_bytes=$((TELEGRAM_MAX_MB * 1024 * 1024))
+  local size
+  size="$(du -sh "$backup_dir" | awk '{print $1}')"
+  local text
+  text="$(cat <<TEXT
+Astra Motors backup created
 
-  if (( size_bytes > max_bytes )); then
-    echo "Telegram skipped: archive is larger than ${TELEGRAM_MAX_MB}MB"
-    return 0
-  fi
+Label: $LABEL
+Scope: $SCOPE
+Size: $size
+Path: $backup_dir
 
-  local caption
-  caption="Astra Motors backup: $LABEL / $SCOPE / $(basename "$backup_dir")"
+Files stay on VPS. DB is not sent to Telegram because it contains private customer/order data.
+TEXT
+)"
   curl -fsS \
-    -F "chat_id=$chat_id" \
-    -F "caption=$caption" \
-    -F "document=@$archive" \
-    "https://api.telegram.org/bot${token}/sendDocument" >/dev/null
-  echo "Telegram sent: $archive"
+    -H "Content-Type: application/json" \
+    -d "$(node -e 'const data={chat_id:process.argv[1],text:process.argv[2]}; process.stdout.write(JSON.stringify(data));' "$chat_id" "$text")" \
+    "https://api.telegram.org/bot${token}/sendMessage" >/dev/null
+  echo "Telegram notification sent"
 }
 
 remote_run() {
@@ -194,7 +188,7 @@ remote_run() {
   fi
 
   if [[ "$TELEGRAM" == "1" ]]; then
-    send_telegram_backup "$backup_dir"
+    send_telegram_notification "$backup_dir"
   fi
 
   echo "BACKUP_DIR=$backup_dir"
@@ -214,7 +208,6 @@ ssh_cmd=(
   "ASTRA_BACKUP_KEEP_DAYS='$KEEP_DAYS'"
   "ASTRA_BACKUP_PRUNE='$PRUNE'"
   "ASTRA_BACKUP_TELEGRAM='$TELEGRAM'"
-  "ASTRA_BACKUP_TELEGRAM_MAX_MB='$TELEGRAM_MAX_MB'"
   "bash scripts/backup-prod.sh"
 )
 

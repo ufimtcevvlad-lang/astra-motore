@@ -8,7 +8,7 @@ Production VPS:
 - Main DB: `/var/www/astra-motors/data/shop.db`
 - Backups: `/var/backups/astra-motors`
 - Backup log: `/var/log/astra-motors-backup.log`
-- Telegram copy: runtime backups can be sent to the admin chat
+- Telegram notice: backup result can be sent to the admin chat
 
 Local Mac, only when started with `--download`:
 
@@ -56,7 +56,7 @@ Full backup and copy it to the Mac:
 bash scripts/backup-prod.sh --scope full --label manual --download
 ```
 
-Runtime backup and send it to Telegram:
+Runtime backup and send a Telegram notification:
 
 ```bash
 bash scripts/backup-prod.sh --scope runtime --label manual --telegram
@@ -68,8 +68,8 @@ Recommended production schedule:
 
 - daily `runtime` at 03:20 Asia/Yekaterinburg, keep 30 days
 - weekly `full` on Monday at 03:30 Asia/Yekaterinburg, keep 90 days
-- daily `runtime` is also sent to Telegram
-- weekly `full` is not sent to Telegram by default because image archives can become large
+- daily `runtime` sends a Telegram notification
+- backup files are not sent to Telegram because `shop.db` contains private customer/order data
 
 Cron file:
 
