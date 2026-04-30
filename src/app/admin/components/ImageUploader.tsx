@@ -12,12 +12,14 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [uploadError, setUploadError] = useState("");
 
   const urls: string[] = Array.isArray(value) ? value : value ? [value] : [];
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     setUploading(true);
+    setUploadError("");
 
     try {
       const uploaded: string[] = [];
@@ -31,6 +33,9 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
         if (res.ok) {
           const data = await res.json();
           uploaded.push(data.url);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          setUploadError(data.error || `Не удалось загрузить файл ${file.name}`);
         }
       }
 
@@ -167,12 +172,13 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
         <input
           ref={inputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif"
           multiple={multiple}
           onChange={(e) => handleFiles(e.target.files)}
           className="hidden"
         />
       </div>
+      {uploadError && <div className="mt-2 text-sm text-red-600">{uploadError}</div>}
     </div>
   );
 }
