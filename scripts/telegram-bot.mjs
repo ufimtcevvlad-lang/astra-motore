@@ -117,8 +117,37 @@ function importHelpText() {
   ].join("\n");
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function userErrorMessage(err) {
+  const message = err instanceof Error ? err.message : String(err);
+  if (/fetch failed|Connect Timeout|UND_ERR|network|timeout/i.test(message)) {
+    return [
+      "Telegram временно не отвечает.",
+      "Попробуйте нажать кнопку или отправить файл ещё раз через 1-2 минуты.",
+    ].join("\n");
+  }
+  return message;
+}
+
+async function fetchWithRetry(url, options = {}, attempts = 4) {
+  let lastError;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await fetch(url, options);
+    } catch (err) {
+      lastError = err;
+      console.error(`Fetch failed (${i}/${attempts}):`, err);
+      if (i < attempts) await sleep(1500 * i);
+    }
+  }
+  throw lastError;
+}
+
 async function tg(method, payload) {
-  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
+  const res = await fetchWithRetry(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -131,7 +160,7 @@ async function tg(method, payload) {
 }
 
 async function tgForm(method, form) {
-  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
+  const res = await fetchWithRetry(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
     method: "POST",
     body: form,
   });
@@ -150,10 +179,6 @@ async function sendMessage(chatId, text, extra = {}) {
     disable_web_page_preview: true,
     ...extra,
   });
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function sendDocument(chatId, filePath, caption = "") {
@@ -177,7 +202,7 @@ async function saveStockDocument(document) {
 
   const file = await tg("getFile", { file_id: document.file_id });
   const url = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.file_path}`;
-  const res = await fetch(url);
+  const res = await fetchWithRetry(url);
   if (!res.ok) throw new Error(`Не смог скачать файл из Telegram: HTTP ${res.status}`);
 
   await fs.mkdir(STOCK_DIR, { recursive: true });
@@ -452,11 +477,15 @@ async function poll() {
         const text = msg.text.trim();
         await handleCommand(chatId, text);
       } catch (e) {
-        await sendMessage(
-          chatId,
-          "Ошибка: " + escapeHtml(e instanceof Error ? e.message : String(e)),
-          { reply_markup: mainMenuKeyboard() }
-        );
+        try {
+          await sendMessage(
+            chatId,
+            "Ошибка: " + escapeHtml(userErrorMessage(e)),
+            { reply_markup: mainMenuKeyboard() }
+          );
+        } catch (sendErr) {
+          console.error("Failed to send error message:", sendErr);
+        }
       }
     }
   }
