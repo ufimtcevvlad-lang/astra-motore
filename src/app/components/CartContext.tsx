@@ -91,14 +91,28 @@ function CartToast({ productName, onDone }: { productName: string; onDone: () =>
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => readCartFromStorage());
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const [toastProduct, setToastProduct] = useState<string | null>(null);
   const [toastKey, setToastKey] = useState(0);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setItems(readCartFromStorage());
+      setHydrated(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+  }, [hydrated, items]);
 
   const addToCart = useCallback((product: Product) => {
     setItems((prev) => {

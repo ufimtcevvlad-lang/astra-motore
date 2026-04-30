@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { highlightQuery } from "../../lib/highlight-query";
 import { ProductImage } from "../ProductImage";
@@ -38,7 +38,6 @@ function SearchIcon({ className }: { className?: string }) {
 }
 
 export function HeaderSearchAutocomplete() {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const qFromCatalog = pathname === "/catalog" ? (searchParams.get("q") ?? "") : "";
@@ -116,11 +115,8 @@ export function HeaderSearchAutocomplete() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = () => {
     setOpen(false);
-    const q = value.trim();
-    router.push(q ? `/catalog?q=${encodeURIComponent(q)}` : "/catalog");
   };
 
   const clearInput = () => {
@@ -137,7 +133,7 @@ export function HeaderSearchAutocomplete() {
 
   return (
     <div ref={wrapRef} className="relative w-full min-w-0 flex-1 lg:max-w-none">
-      <form onSubmit={onSubmit} className="flex w-full min-w-0 items-stretch gap-1.5 sm:gap-2" role="search">
+      <form action="/catalog" method="get" onSubmit={onSubmit} className="flex w-full min-w-0 items-stretch gap-1.5 sm:gap-2" role="search">
         <label htmlFor="header-catalog-q" className="sr-only">
           Поиск по номеру или названию детали
         </label>
@@ -147,6 +143,7 @@ export function HeaderSearchAutocomplete() {
           </span>
           <input
             id="header-catalog-q"
+            name="q"
             type="text"
             value={value}
             onChange={(e) => {
