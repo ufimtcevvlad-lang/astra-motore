@@ -22,6 +22,11 @@ const ORDERS_FILE = path.join(process.cwd(), "data", "orders.ndjson");
 const STOCK_DIR = path.join(process.cwd(), "data", "import-stock");
 const STOCK_FILE = path.join(STOCK_DIR, "latest-stock.xlsx");
 const IMPORT_OUTPUT_DIR = path.join(STOCK_DIR, "outputs");
+const BTN_UPLOAD_STOCK = "1. Загрузить остатки 1С";
+const BTN_MAKE_IMPORT = "2. Сделать Excel по артикулам";
+const BTN_STOCK_STATUS = "Проверить файл остатков";
+const BTN_HELP = "Как пользоваться";
+const BTN_MENU = "Главное меню";
 
 function escapeHtml(text) {
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -80,14 +85,36 @@ async function getStatsTextForDate(dateStr) {
 function mainMenuKeyboard() {
   return {
     keyboard: [
-      [{ text: "📊 Статистика сегодня" }, { text: "📊 Статистика вчера" }],
-      [{ text: "🛒 Заказы сегодня" }, { text: "🛒 Заказы вчера" }],
-      [{ text: "📦 Excel по артикулам" }],
-      [{ text: "🧾 Последние 5 заказов" }],
+      [{ text: BTN_UPLOAD_STOCK }],
+      [{ text: BTN_MAKE_IMPORT }],
+      [{ text: BTN_STOCK_STATUS }, { text: BTN_HELP }],
+      [{ text: "Статистика сегодня" }, { text: "Заказы сегодня" }],
+      [{ text: "Последние 5 заказов" }],
     ],
     resize_keyboard: true,
     one_time_keyboard: false,
   };
+}
+
+function importHelpText() {
+  return [
+    "<b>Подготовка Excel для импорта товаров</b>",
+    "",
+    "<b>Шаг 1.</b> Нажмите кнопку «1. Загрузить остатки 1С».",
+    "Потом отправьте сюда Excel-файл остатков из 1С.",
+    "",
+    "<b>Шаг 2.</b> Нажмите кнопку «2. Сделать Excel по артикулам».",
+    "Потом отправьте список артикулов обычным сообщением.",
+    "",
+    "<b>Пример списка:</b>",
+    "<code>13257840",
+    "PPK10595",
+    "13 171 805",
+    "801-833-XQ17</code>",
+    "",
+    "Бот сам найдёт товары в остатках и пришлёт готовый Excel для сайта.",
+    "Пробелы, точки, тире и слэши в артикулах можно не вычищать.",
+  ].join("\n");
 }
 
 async function tg(method, payload) {
@@ -168,6 +195,28 @@ async function stockExists() {
   }
 }
 
+async function stockStatusText() {
+  try {
+    const st = await fs.stat(STOCK_FILE);
+    if (!st.isFile()) throw new Error("not file");
+    const sizeMb = (st.size / 1024 / 1024).toFixed(1);
+    const updated = formatDateInTZ(st.mtime, TZ);
+    return [
+      "Файл остатков загружен.",
+      `Размер: ${sizeMb} МБ.`,
+      `Дата файла на сервере: ${updated}.`,
+      "",
+      "Можно нажимать «2. Сделать Excel по артикулам».",
+    ].join("\n");
+  } catch {
+    return [
+      "Файл остатков ещё не загружен.",
+      "",
+      "Нажмите «1. Загрузить остатки 1С» и отправьте Excel-файл из 1С.",
+    ].join("\n");
+  }
+}
+
 async function makeImportFromText(chatId, text) {
   const requested = parseSkuList(text);
   if (requested.length < 1) return false;
@@ -175,9 +224,11 @@ async function makeImportFromText(chatId, text) {
     await sendMessage(
       chatId,
       [
-        "Сначала пришли мне Excel-файл остатков 1С (.xlsx).",
-        "После этого просто отправляй список артикулов сообщением, каждый артикул с новой строки.",
-      ].join("\n")
+        "Не вижу файла остатков 1С.",
+        "",
+        "Сначала нажмите «1. Загрузить остатки 1С» и отправьте Excel-файл.",
+      ].join("\n"),
+      { reply_markup: mainMenuKeyboard() }
     );
     return true;
   }
@@ -190,8 +241,23 @@ async function makeImportFromText(chatId, text) {
   await sendDocument(
     chatId,
     outPath,
-    `Готово: найдено ${result.matches.length} из ${requested.length}, не найдено ${result.missing.length}.`
+    [
+      `Готово: найдено ${result.matches.length} из ${requested.length}.`,
+      `Не найдено: ${result.missing.length}.`,
+      "Файл можно загрузить в импорт товаров на сайте.",
+    ].join("\n")
   );
+  if (result.missing.length > 0) {
+    await sendMessage(
+      chatId,
+      [
+        "Не найденные артикулы есть на втором листе Excel.",
+        "",
+        "Проверьте, есть ли они в остатках 1С, или пришлите другой список.",
+      ].join("\n"),
+      { reply_markup: mainMenuKeyboard() }
+    );
+  }
   return true;
 }
 
@@ -199,33 +265,71 @@ async function handleCommand(chatId, text) {
   const today = formatDateInTZ(new Date(), TZ);
   const yesterday = getYesterdayDateString(TZ);
 
-  if (text === "/start" || text === "/menu" || text === "Меню") {
-    await sendMessage(
-      chatId,
-      "Выбери действие кнопками ниже.",
-      { reply_markup: mainMenuKeyboard() }
-    );
-    return;
-  }
-
-  if (text === "/import" || text === "📦 Excel по артикулам") {
+  if (text === "/start" || text === "/menu" || text === "Меню" || text === BTN_MENU) {
     await sendMessage(
       chatId,
       [
-        "Как пользоваться импортом:",
+        "Выберите действие кнопкой ниже.",
         "",
-        "1. Пришли сюда свежий Excel-файл остатков 1С (.xlsx).",
-        "2. Потом пришли список артикулов обычным сообщением.",
-        "3. Я верну готовый Excel для импорта на сайт.",
-        "",
-        "Артикулы можно писать с пробелами, точками, тире — я ищу без них.",
+        "Для Excel-импорта начните с кнопки «1. Загрузить остатки 1С».",
       ].join("\n"),
       { reply_markup: mainMenuKeyboard() }
     );
     return;
   }
 
-  if (text === "📊 Статистика сегодня") {
+  if (text === "/import" || text === BTN_HELP) {
+    await sendMessage(chatId, importHelpText(), { reply_markup: mainMenuKeyboard() });
+    return;
+  }
+
+  if (text === BTN_UPLOAD_STOCK) {
+    await sendMessage(
+      chatId,
+      [
+        "<b>Шаг 1: загрузите остатки 1С</b>",
+        "",
+        "Отправьте сюда Excel-файл остатков из 1С.",
+        "Файл должен быть в формате .xlsx или .xls.",
+        "",
+        "После загрузки бот напишет: «Остатки 1С сохранены».",
+      ].join("\n"),
+      { reply_markup: mainMenuKeyboard() }
+    );
+    return;
+  }
+
+  if (text === BTN_MAKE_IMPORT) {
+    if (!(await stockExists())) {
+      await sendMessage(chatId, await stockStatusText(), { reply_markup: mainMenuKeyboard() });
+      return;
+    }
+    await sendMessage(
+      chatId,
+      [
+        "<b>Шаг 2: пришлите список артикулов</b>",
+        "",
+        "Отправьте артикулы одним сообщением.",
+        "Каждый артикул должен быть с новой строки.",
+        "",
+        "<b>Пример:</b>",
+        "<code>13257840",
+        "PPK10595",
+        "13 171 805</code>",
+        "",
+        "Я пришлю готовый Excel для импорта на сайт.",
+      ].join("\n"),
+      { reply_markup: mainMenuKeyboard() }
+    );
+    return;
+  }
+
+  if (text === BTN_STOCK_STATUS) {
+    await sendMessage(chatId, await stockStatusText(), { reply_markup: mainMenuKeyboard() });
+    return;
+  }
+
+  if (text === "📊 Статистика сегодня" || text === "Статистика сегодня") {
     await sendMessage(chatId, await getStatsTextForDate(today), { reply_markup: mainMenuKeyboard() });
     return;
   }
@@ -235,7 +339,7 @@ async function handleCommand(chatId, text) {
     return;
   }
 
-  if (text === "🛒 Заказы сегодня") {
+  if (text === "🛒 Заказы сегодня" || text === "Заказы сегодня") {
     const s = await summarizeOrdersForDate(today);
     await sendMessage(
       chatId,
@@ -265,7 +369,7 @@ async function handleCommand(chatId, text) {
     return;
   }
 
-  if (text === "🧾 Последние 5 заказов") {
+  if (text === "🧾 Последние 5 заказов" || text === "Последние 5 заказов") {
     const orders = await readOrders();
     const last = orders.slice(-5).reverse();
     if (last.length === 0) {
@@ -289,7 +393,16 @@ async function handleCommand(chatId, text) {
 
   if (await makeImportFromText(chatId, text)) return;
 
-  await sendMessage(chatId, "Не понял команду. Нажми /menu.", { reply_markup: mainMenuKeyboard() });
+  await sendMessage(
+    chatId,
+    [
+      "Не понял сообщение.",
+      "",
+      "Выберите действие кнопкой ниже.",
+      "Если нужно сделать Excel — нажмите «Как пользоваться».",
+    ].join("\n"),
+    { reply_markup: mainMenuKeyboard() }
+  );
 }
 
 async function poll() {
@@ -324,7 +437,12 @@ async function poll() {
           const saved = await saveStockDocument(msg.document);
           await sendMessage(
             chatId,
-            `Остатки 1С сохранены. Размер: ${(saved.bytes / 1024 / 1024).toFixed(1)} МБ.\nТеперь пришли список артикулов.`,
+            [
+              "Остатки 1С сохранены.",
+              `Размер файла: ${(saved.bytes / 1024 / 1024).toFixed(1)} МБ.`,
+              "",
+              "Теперь нажмите «2. Сделать Excel по артикулам».",
+            ].join("\n"),
             { reply_markup: mainMenuKeyboard() }
           );
           continue;
