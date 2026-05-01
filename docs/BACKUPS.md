@@ -2,6 +2,50 @@
 
 Цель: после любой ошибки, поломки VPS или неудачного импорта можно безопасно вернуть сайт, товары, заказы, заявки и фотографии.
 
+## Если Нужно Быстро Вспомнить
+
+Главный файл-инструкция:
+
+- локально в проекте: `/Users/vladislavufimcev/Documents/autoparts-shop/docs/BACKUPS.md`
+- на VPS после деплоя: `/var/www/astra-motors/docs/BACKUPS.md`
+
+Где лежит сайт на VPS:
+
+- код сайта: `/var/www/astra-motors`
+- база товаров/заказов: `/var/www/astra-motors/data/shop.db`
+- дополнительные базы, если есть: `/var/www/astra-motors/data/*.db`
+- загруженные фото: `/var/www/astra-motors/public/uploads`
+- фото каталога: `/var/www/astra-motors/public/images/catalog`
+- фото с водяным знаком: `/var/www/astra-motors/public/images/watermarked`
+
+Где лежат бэкапы:
+
+- на VPS: `/var/backups/astra-motors`
+- на Mac: `/Users/vladislavufimcev/Documents/astra-motors-backups`
+- первый проверенный полный бэкап: `/var/backups/astra-motors/manual/2026-05-01_15-20-42`
+- его копия на Mac: `/Users/vladislavufimcev/Documents/astra-motors-backups/manual/2026-05-01_15-20-42`
+
+Где лежит автоматическое расписание:
+
+- cron-файл на VPS: `/etc/cron.d/astra-motors-backup`
+- лог автоматических бэкапов: `/var/log/astra-motors-backup.log`
+
+Самая полезная ручная команда перед любым рискованным действием:
+
+```bash
+cd /Users/vladislavufimcev/Documents/autoparts-shop
+bash scripts/backup-prod.sh --scope full --label manual --download --telegram
+```
+
+Как понять, что бэкап нормальный:
+
+- в Telegram пришло сообщение об успехе;
+- в папке бэкапа есть `shop.db`, `runtime-data.tar.gz`, `uploads.tar.gz`, `catalog-images.tar.gz`, `watermarked-images.tar.gz`;
+- файл `sqlite-integrity.txt` содержит `ok`;
+- команда `sha256sum -c SHA256SUMS` внутри папки бэкапа показывает `OK`.
+
+Главное правило при аварии: ничего не удалять. Сначала сделать свежий аварийный бэкап, потом восстанавливать.
+
 ## Простая Логика
 
 Держим 3 уровня защиты:
