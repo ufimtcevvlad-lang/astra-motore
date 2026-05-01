@@ -94,41 +94,40 @@ export function CookieConsentBanner() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[120] border-t border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto max-w-7xl space-y-3 px-4 py-3">
-        <p className="text-sm text-slate-700">
-          Мы используем файлы cookies для корректной работы сайта и аналитики. Продолжая пользоваться сайтом, вы
-          можете выбрать режим использования файлов cookies.
+      <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-3">
+        <p className="text-xs leading-snug text-slate-700 sm:text-sm">
+          Используем cookies для работы сайта и аналитики.
           {" "}
           <Link href="/cookie-policy" className="font-medium text-amber-700 underline hover:text-amber-800">
-            Подробнее в политике cookies
+            Подробнее
           </Link>
           .
         </p>
-        <div className="flex flex-wrap shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setConfigureOpen((v) => !v)}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 sm:text-sm"
           >
             Настроить
           </button>
           <button
             type="button"
             onClick={acceptNecessary}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 sm:text-sm"
           >
             Только необходимые
           </button>
           <button
             type="button"
             onClick={acceptAll}
-            className="rounded-md bg-amber-700 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-800"
+            className="rounded-md bg-amber-700 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-800 sm:text-sm"
           >
             Принять все
           </button>
         </div>
         {configureOpen ? (
-          <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-3 sm:absolute sm:bottom-full sm:right-4 sm:mb-2 sm:w-[520px]">
             <div className="grid gap-2 sm:grid-cols-3">
               <label className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white p-2 text-sm">
                 <span>Необходимые</span>

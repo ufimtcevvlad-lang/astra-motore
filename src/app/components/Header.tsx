@@ -88,12 +88,14 @@ export function Header() {
   const [user, setUser] = useState<MeResponse["user"]>(null);
   const [showDesktopQuickBar, setShowDesktopQuickBar] = useState(false);
   const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartPreviewRef = useRef<HTMLDivElement | null>(null);
   const [cartBounce, setCartBounce] = useState(0);
   const prevTotalRef = useRef(totalItems);
 
   useEffect(() => {
     if (totalItems > prevTotalRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- одноразовый сигнал для CSS-анимации корзины
       setCartBounce((c) => c + 1);
     }
     prevTotalRef.current = totalItems;
@@ -148,7 +150,7 @@ export function Header() {
         <div className="flex flex-col gap-2 py-2 sm:gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-2 xl:gap-10">
           <Link
             href="/"
-            className="group flex min-w-0 flex-shrink-0 items-center overflow-visible rounded-lg py-0 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A] lg:-ml-1 xl:-ml-2"
+            className="group flex min-w-0 flex-shrink-0 items-center justify-center overflow-visible rounded-lg py-0 pr-1 outline-none transition hover:opacity-[0.98] focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A] sm:justify-start lg:-ml-1 xl:-ml-2"
             aria-label={`${SITE_BRAND} — на главную`}
           >
             <BrandLogo />
@@ -158,7 +160,7 @@ export function Header() {
             <HeaderSearchAutocomplete />
           </Suspense>
 
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 lg:flex-nowrap lg:pl-2">
+          <div className="flex shrink-0 flex-wrap items-center justify-center gap-2 sm:justify-end lg:flex-nowrap lg:pl-2">
             <Link
               href="/favorites"
               className="relative flex items-center gap-1 rounded-full border border-slate-500/80 px-2.5 py-1.5 text-xs font-medium text-slate-100 transition hover:border-red-400/60 hover:text-red-300 sm:px-3 sm:text-sm"
@@ -192,7 +194,7 @@ export function Header() {
                 )}
               </button>
               {isCartPreviewOpen ? (
-                <div className="absolute right-0 top-[calc(100%+8px)] z-[140] w-[340px] max-w-[calc(100vw-2rem)] rounded-xl border border-slate-700/90 bg-[#0a1018] p-3 shadow-2xl shadow-black/50">
+                <div className="fixed inset-x-3 top-28 z-[140] max-h-[calc(100vh-8rem)] overflow-y-auto rounded-xl border border-slate-700/90 bg-[#0a1018] p-3 shadow-2xl shadow-black/50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-[340px] sm:max-w-[calc(100vw-2rem)]">
                   <div className="mb-2 flex items-center justify-between">
                     <p className="text-sm font-semibold text-white">Товары в корзине</p>
                     <button
@@ -266,7 +268,7 @@ export function Header() {
                 Профиль
               </Link>
             ) : (
-              <div className="flex overflow-hidden rounded-lg border border-slate-500/90 divide-x divide-slate-600/90">
+              <div className="hidden overflow-hidden rounded-lg border border-slate-500/90 divide-x divide-slate-600/90 sm:flex">
                 <Link
                   href="/auth/login"
                   className="px-2 py-1.5 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:px-3 sm:text-sm"
@@ -281,6 +283,14 @@ export function Header() {
                 </Link>
               </div>
             )}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              aria-expanded={isMobileMenuOpen}
+              className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/90 px-3 text-xs font-medium text-slate-100 transition hover:bg-white/5 sm:hidden"
+            >
+              Меню
+            </button>
           </div>
         </div>
       </div>
@@ -290,7 +300,7 @@ export function Header() {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-5">
           {/* Основное меню — на всю ширину контейнера */}
           <nav
-            className="flex w-full items-stretch gap-1 overflow-x-auto py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-nowrap sm:gap-0 sm:overflow-visible"
+            className="hidden w-full items-stretch gap-1 py-1 sm:flex sm:flex-nowrap sm:gap-0 sm:overflow-visible"
             aria-label="Основное меню"
           >
           <Link href="/" className={`${navLink} flex min-w-max flex-none items-center justify-center text-center sm:min-w-0 sm:flex-1`}>
@@ -343,6 +353,44 @@ export function Header() {
             VIN запрос
           </Link>
           </nav>
+          <nav
+            className="grid grid-cols-4 gap-1 py-1 sm:hidden"
+            aria-label="Мобильное меню"
+          >
+            <Link href="/catalog" className={`${navLink} flex items-center justify-center text-center`}>
+              Каталог
+            </Link>
+            <Link href="/vin-request" className={`${navLink} flex items-center justify-center text-center`}>
+              VIN
+            </Link>
+            <Link href="/dostavka-zapchastey-ekaterinburg" className={`${navLink} flex items-center justify-center text-center leading-tight`}>
+              Доставка
+            </Link>
+            <Link href="/contacts" className={`${navLink} flex items-center justify-center text-center`}>
+              Контакты
+            </Link>
+          </nav>
+          {isMobileMenuOpen ? (
+            <div className="grid gap-2 border-t border-slate-800 py-3 sm:hidden">
+              <Link href={user ? "/account" : "/auth/login"} className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-100">
+                {user ? "Профиль" : "Войти"}
+              </Link>
+              {!user ? (
+                <Link href="/auth/register" className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-100">
+                  Регистрация
+                </Link>
+              ) : null}
+              <Link href="/about" className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-100">
+                О компании
+              </Link>
+              <Link href="/how-to-order" className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-100">
+                Как сделать заказ
+              </Link>
+              <Link href="/warranty" className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-100">
+                Гарантия
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 
@@ -13,6 +14,7 @@ import { useCart } from "./CartContext";
  * Позиция: левый нижний угол, чтобы не мешать FloatingContactButtons (правый нижний).
  */
 export function FloatingCartButton() {
+  const pathname = usePathname();
   const { items } = useCart();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const cartTotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
@@ -25,7 +27,7 @@ export function FloatingCartButton() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  if (totalItems === 0 || !visible) return null;
+  if (pathname.startsWith("/product/") || totalItems === 0 || !visible) return null;
 
   return (
     <Link

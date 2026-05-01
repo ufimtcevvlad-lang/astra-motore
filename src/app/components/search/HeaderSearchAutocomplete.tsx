@@ -139,7 +139,7 @@ export function HeaderSearchAutocomplete() {
           Поиск по номеру или названию детали
         </label>
         <div className="relative flex min-w-0 flex-1 items-center rounded-xl border border-slate-600/80 bg-slate-900/50 transition focus-within:border-amber-400/70 focus-within:ring-2 focus-within:ring-amber-400/25">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 sm:left-3">
             <SearchIcon className="h-[18px] w-[18px]" />
           </span>
           <input
@@ -160,13 +160,13 @@ export function HeaderSearchAutocomplete() {
             placeholder="Введите номер или название детали"
             autoComplete="off"
             aria-autocomplete="list"
-            className="min-w-0 flex-1 border-0 bg-transparent py-2 pl-10 pr-9 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:text-sm"
+            className="min-w-0 flex-1 border-0 bg-transparent py-2 pl-9 pr-8 text-xs text-slate-100 placeholder:text-slate-500 outline-none ring-0 sm:pl-10 sm:pr-9 sm:text-sm"
           />
           {value ? (
             <button
               type="button"
               onClick={clearInput}
-              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+              className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-800 hover:text-slate-200 sm:right-2"
               aria-label="Очистить поле"
             >
               <span className="text-lg leading-none" aria-hidden>
@@ -177,7 +177,7 @@ export function HeaderSearchAutocomplete() {
         </div>
         <button
           type="submit"
-            className="shrink-0 rounded-xl bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
+          className="shrink-0 rounded-xl bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-black/20 transition hover:bg-amber-300 sm:px-4 sm:text-sm"
         >
           Найти
         </button>

@@ -20,12 +20,15 @@ type ViewMode = "grid" | "list";
 type CatalogSectionSlug = (typeof CATALOG_SECTIONS)[number]["slug"];
 
 const VIEW_MODE_KEY = "catalog-view-mode";
+const PRODUCTS_PAGE_SIZE = 48;
+const VISIBLE_STATE_INITIAL = { key: "", count: PRODUCTS_PAGE_SIZE };
 
 function useViewMode(): [ViewMode, (mode: ViewMode) => void] {
   const [mode, setModeState] = useState<ViewMode>("grid");
 
   useEffect(() => {
     const stored = localStorage.getItem(VIEW_MODE_KEY);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- восстанавливаем пользовательский режим после hydration
     if (stored === "list" || stored === "grid") setModeState(stored);
   }, []);
 
@@ -64,20 +67,25 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const [priceTo, setPriceTo] = useState<number | null>(null);
   const [sort, setSort] = useState<SortMode>("popular");
   const [viewMode, setViewMode] = useViewMode();
+  const [visibleState, setVisibleState] = useState(VISIBLE_STATE_INITIAL);
 
   // Синхронизация поля поиска с ?q= при переходе из шапки или по ссылке
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация с URL (внешняя система)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация фильтров с URL каталога
     setQuery(searchParams.get("q") ?? "");
     const sectionParam = searchParams.get("section");
     if (sectionParam && sectionTitleBySlug.has(sectionParam)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveSlug(sectionParam as CatalogSectionSlug);
     }
   }, [searchParams]);
 
   const queryNorm = query.trim().toLowerCase();
   const groupedMode = activeSlug === "all" && !queryNorm && selectedBrands.size === 0 && priceFrom === null && priceTo === null;
+  const selectedBrandKey = useMemo(
+    () => [...selectedBrands].sort((a, b) => a.localeCompare(b, "ru")).join("|"),
+    [selectedBrands],
+  );
+  const visibleScopeKey = `${queryNorm}|${activeSlug}|${selectedBrandKey}|${priceFrom ?? ""}|${priceTo ?? ""}|${sort}`;
 
   const sectionBySlug = useMemo(
     () => new Map(CATALOG_SECTIONS.map((section) => [section.slug, section] as const)),
@@ -115,18 +123,28 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
     }
 
     return result;
-  }, [queryNorm, activeSlug, selectedBrands, priceFrom, priceTo, sort, sectionBySlug]);
+  }, [queryNorm, activeSlug, selectedBrands, priceFrom, priceTo, sort, sectionBySlug, products]);
+
+  const effectiveVisibleCount =
+    visibleState.key === visibleScopeKey ? visibleState.count : PRODUCTS_PAGE_SIZE;
+
+  const visibleProducts = useMemo(
+    () => filtered.slice(0, effectiveVisibleCount),
+    [filtered, effectiveVisibleCount],
+  );
+
+  const hasMoreProducts = visibleProducts.length < filtered.length;
 
   // Группировка по разделам для grouped mode
   const itemsBySectionTitle = useMemo(() => {
     const bySection = new Map<string, Product[]>();
-    for (const p of filtered) {
+    for (const p of visibleProducts) {
       const list = bySection.get(p.category);
       if (list) list.push(p);
       else bySection.set(p.category, [p]);
     }
     return bySection;
-  }, [filtered]);
+  }, [visibleProducts]);
 
   // Фасеты: кол-во товаров по каждому бренду (без учёта текущего выбора бренда)
   const brandFacets = useMemo(() => {
@@ -146,7 +164,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
       counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
     }
     return counts;
-  }, [queryNorm, activeSlug, priceFrom, priceTo, sectionBySlug]);
+  }, [queryNorm, activeSlug, priceFrom, priceTo, sectionBySlug, products]);
 
   const sortedBrands = useMemo(
     () =>
@@ -163,14 +181,14 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
       counts.set(p.category, (counts.get(p.category) ?? 0) + 1);
     }
     return counts;
-  }, []);
+  }, [products]);
 
   // Цена мин/макс для плейсхолдеров
   const priceRange = useMemo(() => {
     if (products.length === 0) return { min: 0, max: 0 };
     const prices = products.map((p) => p.price);
     return { min: Math.min(...prices), max: Math.max(...prices) };
-  }, []);
+  }, [products]);
 
   const hasActiveFilters =
     queryNorm.length > 0 ||
@@ -390,7 +408,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
         </div>
 
         <CatalogGroupNav
-          products={filtered}
+          products={visibleProducts}
           visible={groupedMode}
           variant="inline"
         />
@@ -465,6 +483,9 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
       {/* Счётчик результатов */}
       <p className="text-sm text-slate-500">
         Найдено: <span className="font-semibold text-slate-800">{filtered.length}</span> из {products.length}
+        {hasMoreProducts ? (
+          <span className="ml-2 text-slate-400">Показано {visibleProducts.length}</span>
+        ) : null}
       </p>
 
       {/* Основной layout: сайдбар + товары */}
@@ -537,11 +558,27 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
             </div>
           ) : (
             <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"}>
-              {filtered.map((p) => (
+              {visibleProducts.map((p) => (
                 <CatalogProductCard key={p.id} p={p} variant={viewMode} />
               ))}
             </div>
           )}
+          {hasMoreProducts ? (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() =>
+                  setVisibleState({
+                    key: visibleScopeKey,
+                    count: effectiveVisibleCount + PRODUCTS_PAGE_SIZE,
+                  })
+                }
+                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-amber-400 px-6 text-sm font-bold text-slate-950 shadow-md shadow-amber-900/15 transition hover:bg-amber-300"
+              >
+                Показать еще {Math.min(PRODUCTS_PAGE_SIZE, filtered.length - visibleProducts.length)} товаров
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
 

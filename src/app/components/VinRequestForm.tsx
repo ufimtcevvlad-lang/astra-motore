@@ -30,6 +30,9 @@ export function VinRequestForm() {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   const [vinTouched, setVinTouched] = useState(false);
+  const vinNormalized = normalizeVin(vin);
+  const vinHasValue = vin.trim().length > 0;
+  const showVinLengthError = vinTouched && vinHasValue && vinNormalized.length !== 17;
 
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -42,7 +45,7 @@ export function VinRequestForm() {
     e.preventDefault();
     setError("");
 
-    const vinNorm = normalizeVin(vin);
+    const submittedVin = normalizeVin(vin);
     if (!name.trim() || !email.trim()) {
       setError("Заполните имя и email");
       return;
@@ -51,11 +54,11 @@ export function VinRequestForm() {
       setError("Введите корректный email");
       return;
     }
-    if (vinTouched && vinNorm.length !== 17) {
+    if (vinTouched && submittedVin.length !== 17) {
       setError("VIN должен быть 17 символов (буквы/цифры)");
       return;
     }
-    if (vinNorm.length !== 17) {
+    if (submittedVin.length !== 17) {
       setError("VIN должен быть 17 символов (буквы/цифры)");
       return;
     }
@@ -78,7 +81,7 @@ export function VinRequestForm() {
       const fd = new FormData();
       fd.append("name", name.trim());
       fd.append("email", email.trim());
-      fd.append("vin", vinNorm);
+      fd.append("vin", submittedVin);
       fd.append("brand", brand.trim());
       fd.append("model", model.trim());
       fd.append("engine", engine.trim());
@@ -204,7 +207,7 @@ export function VinRequestForm() {
               onChange={(e) => setVin(e.target.value)}
               onBlur={() => setVinTouched(true)}
               className={`w-full rounded-md border px-3 py-2 text-sm bg-white outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                vinTouched && normalizeVin(vin).length !== 17
+                showVinLengthError
                   ? "border-red-500 bg-red-50 text-red-900"
                   : "border-slate-300"
               }`}
@@ -214,9 +217,13 @@ export function VinRequestForm() {
               autoComplete="off"
               required
             />
-            <div className="mt-1 flex items-center gap-3">
-              <p className="text-xs text-slate-500">Поле не должно быть пустым</p>
-              <div className="group relative">
+            <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              {showVinLengthError ? (
+                <p className="text-xs text-red-700">VIN должен быть 17 символов</p>
+              ) : (
+                <p className="text-xs text-slate-500">17 символов: латинские буквы и цифры</p>
+              )}
+              <div className="group relative self-start sm:self-auto">
                 <button
                   type="button"
                   className="text-xs font-medium text-amber-700 underline decoration-dotted underline-offset-2 hover:text-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 rounded"
@@ -480,4 +487,3 @@ export function VinRequestForm() {
     </div>
   );
 }
-

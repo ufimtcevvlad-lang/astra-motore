@@ -29,6 +29,7 @@ export function ProductClient({ product }: { product: Product }) {
   );
 
   return (
+    <>
     <div className="relative space-y-4 rounded-2xl bg-white p-6 shadow-md h-fit md:sticky md:top-24 overflow-hidden">
       {/* Акцентная полоска сверху */}
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-amber-600" />
@@ -298,5 +299,25 @@ export function ProductClient({ product }: { product: Product }) {
         </Link>
       </div>
     </div>
+    {product.inStock > 0 ? (
+      <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-slate-200 bg-white/95 px-4 py-2 shadow-[0_-10px_30px_rgba(15,23,42,0.16)] backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-lg font-bold tabular-nums text-slate-950">
+              {product.price.toLocaleString("ru-RU")} ₽
+            </p>
+            <p className="truncate text-xs text-green-700">В наличии</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="h-12 shrink-0 rounded-xl bg-amber-500 px-6 text-sm font-bold text-slate-950 shadow-md shadow-amber-900/20 active:scale-[0.98]"
+          >
+            В корзину
+          </button>
+        </div>
+      </div>
+    ) : null}
+    </>
   );
 }
