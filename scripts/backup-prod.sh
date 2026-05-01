@@ -86,12 +86,27 @@ if [[ ! "$KEEP_DAYS" =~ ^[0-9]+$ ]]; then
 fi
 
 load_remote_env() {
-  if [[ -f "$PROD_ROOT/.env.local" ]]; then
-    set -a
-    # shellcheck disable=SC1091
-    source "$PROD_ROOT/.env.local"
-    set +a
+  local env_file="$PROD_ROOT/.env.local"
+  local key
+  local value
+
+  if [[ ! -f "$env_file" ]]; then
+    return 0
   fi
+
+  while IFS='=' read -r key value || [[ -n "$key" ]]; do
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    case "$key" in
+      TELEGRAM_BOT_TOKEN|TELEGRAM_BACKUP_CHAT_ID|TELEGRAM_ADMIN_CHAT_ID|TELEGRAM_CHAT_ID)
+        value="${value%$'\r'}"
+        value="${value%\"}"
+        value="${value#\"}"
+        value="${value%\'}"
+        value="${value#\'}"
+        export "$key=$value"
+        ;;
+    esac
+  done < "$env_file"
 }
 
 send_telegram_notification() {
