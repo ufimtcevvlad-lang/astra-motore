@@ -3,14 +3,18 @@ import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { sql, gte, and, lte } from "drizzle-orm";
 
+type MetrikaTotalsResponse = {
+  totals?: number[];
+};
+
 // In-memory cache with 5-minute TTL
-const cache = new Map<string, { data: any; expiresAt: number }>();
-function getCached(key: string) {
+const cache = new Map<string, { data: unknown; expiresAt: number }>();
+function getCached<T>(key: string): T | null {
   const e = cache.get(key);
-  if (e && e.expiresAt > Date.now()) return e.data;
+  if (e && e.expiresAt > Date.now()) return e.data as T;
   return null;
 }
-function setCache(key: string, data: any) {
+function setCache<T>(key: string, data: T) {
   cache.set(key, { data, expiresAt: Date.now() + 5 * 60 * 1000 });
 }
 
@@ -45,9 +49,9 @@ function calcChange(current: number, previous: number): number {
   return Math.round(((current - previous) / previous) * 100);
 }
 
-async function fetchMetrika(token: string, counterId: string, metrics: string, dateFrom: string, dateTo: string) {
+async function fetchMetrika(token: string, counterId: string, metrics: string, dateFrom: string, dateTo: string): Promise<MetrikaTotalsResponse | null> {
   const cacheKey = `metrika:${counterId}:${metrics}:${dateFrom}:${dateTo}`;
-  const cached = getCached(cacheKey);
+  const cached = getCached<MetrikaTotalsResponse>(cacheKey);
   if (cached) return cached;
 
   const params = new URLSearchParams({
@@ -63,7 +67,7 @@ async function fetchMetrika(token: string, counterId: string, metrics: string, d
 
   if (!res.ok) return null;
 
-  const data = await res.json();
+  const data = (await res.json()) as MetrikaTotalsResponse;
   setCache(cacheKey, data);
   return data;
 }

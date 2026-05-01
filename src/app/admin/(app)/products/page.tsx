@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import AdminHeader from "@/app/admin/components/AdminHeader";
-import ProductFilters, { ProductFiltersState } from "@/app/admin/components/ProductFilters";
+import ProductFilters from "@/app/admin/components/ProductFilters";
 import ProductList, { ProductItem } from "@/app/admin/components/ProductList";
 import BulkActionBar from "@/app/admin/components/BulkActionBar";
 import { useProductFilters } from "@/app/admin/components/useProductFilters";

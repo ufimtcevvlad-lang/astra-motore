@@ -219,6 +219,7 @@ export default function ProductList({
       .filter((i) => i.sku && i.brand)
       .map((i) => ({ article: i.sku, brand: i.brand as string }));
     if (payload.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- очищаем рыночные данные, если нечего запрашивать
       setMarket(new Map());
       setMarketLoading(false);
       return;
@@ -375,6 +376,7 @@ export default function ProductList({
                 />
 
                 {item.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- маленькое admin-превью из уже готового URL
                   <img
                     src={item.image}
                     alt=""

@@ -1,5 +1,5 @@
 import { db, schema } from "@/app/lib/db";
-import { eq, gt } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "chat_token";

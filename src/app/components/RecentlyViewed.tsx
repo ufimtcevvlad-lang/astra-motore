@@ -20,6 +20,7 @@ export function RecentlyViewed({ excludeId }: { excludeId?: string }) {
       .filter((id) => id !== excludeId)
       .slice(0, 6);
     if (ids.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- очищаем блок при пустой истории просмотров
       setItems([]);
       return;
     }

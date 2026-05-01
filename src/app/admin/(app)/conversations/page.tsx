@@ -46,6 +46,7 @@ export default function ConversationsPage() {
   }, [filter, search]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- загрузка внешних данных при изменении фильтров
     fetchConversations();
   }, [fetchConversations]);
 
@@ -64,6 +65,7 @@ export default function ConversationsPage() {
     if (openId) {
       const id = Number(openId);
       if (!isNaN(id)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- одноразовая синхронизация выбранного чата с URL
         setSelectedId(id);
         initialOpenApplied.current = true;
       }

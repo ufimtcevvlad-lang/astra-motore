@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
-import { eq, like, and, sql, desc, asc, or } from "drizzle-orm";
+import { eq, like, and, sql, or } from "drizzle-orm";
 
 const PAGE_SIZE = 20;
 

@@ -80,7 +80,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
       if (list.length < 2) return;
       setActive((i) => (i + dir + list.length) % list.length);
     },
-    [list.length],
+    [list.length, setActive],
   );
 
   const onTouchStart = (e: React.TouchEvent) => {

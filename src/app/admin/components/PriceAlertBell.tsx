@@ -223,7 +223,7 @@ export default function PriceAlertBell() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-orange-900">exist.ru: слетел cookie</p>
                   <p className="text-xs text-orange-800 mt-0.5">
-                    Сейчас парсятся оптовые цены вместо розничных. Нужно обновить cookie — скажи "обнови cookie exist.ru" ассистенту.
+                    Сейчас парсятся оптовые цены вместо розничных. Нужно обновить cookie — скажи &quot;обнови cookie exist.ru&quot; ассистенту.
                   </p>
                 </div>
               </div>

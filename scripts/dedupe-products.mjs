@@ -23,7 +23,6 @@
  */
 import path from "node:path";
 import fs from "node:fs";
-import { execFileSync } from "node:child_process";
 import Database from "better-sqlite3";
 
 const ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
@@ -79,7 +78,7 @@ function main() {
     groups.get(k).push(p);
   }
 
-  const dupGroups = [...groups.entries()].filter(([_, v]) => v.length > 1);
+  const dupGroups = [...groups.entries()].filter(([, v]) => v.length > 1);
   console.log(`Групп-дубликатов: ${dupGroups.length}`);
   if (dupGroups.length === 0) {
     db.close();

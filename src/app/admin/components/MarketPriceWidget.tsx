@@ -31,9 +31,11 @@ export default function MarketPriceWidget({ article, brand }: Props) {
   const [data, setData] = useState<SiteResultsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [renderedAt] = useState(() => Date.now());
 
   useEffect(() => {
     if (!article || !brand) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- показываем загрузку перед запросом внешних цен
     setLoading(true);
     fetchSiteResults(article, brand).then((d) => {
       setData(d);
@@ -75,7 +77,7 @@ export default function MarketPriceWidget({ article, brand }: Props) {
   ).length;
 
   const scrapedAt = data?.scraped_at ? new Date(data.scraped_at) : null;
-  const ageHours = scrapedAt ? (Date.now() - scrapedAt.getTime()) / 3_600_000 : null;
+  const ageHours = scrapedAt ? (renderedAt - scrapedAt.getTime()) / 3_600_000 : null;
   const isStale = ageHours !== null && ageHours > 48;
   const scrapedLabel = scrapedAt
     ? scrapedAt.toLocaleString("ru-RU", {

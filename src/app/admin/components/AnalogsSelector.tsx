@@ -31,6 +31,7 @@ export default function AnalogsSelector({ analogs, currentProductId, onChange }:
 
   useEffect(() => {
     if (!query.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- очищаем результаты, когда строка поиска пуста
       setResults([]);
       return;
     }

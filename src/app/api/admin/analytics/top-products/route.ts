@@ -3,14 +3,21 @@ import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
 import { sql, gte, and, lte, desc, eq } from "drizzle-orm";
 
+type MetrikaTopProductsResponse = {
+  data?: Array<{
+    dimensions?: Array<{ name?: string }>;
+    metrics?: number[];
+  }>;
+};
+
 // In-memory cache with 5-minute TTL
-const cache = new Map<string, { data: any; expiresAt: number }>();
-function getCached(key: string) {
+const cache = new Map<string, { data: unknown; expiresAt: number }>();
+function getCached<T>(key: string): T | null {
   const e = cache.get(key);
-  if (e && e.expiresAt > Date.now()) return e.data;
+  if (e && e.expiresAt > Date.now()) return e.data as T;
   return null;
 }
-function setCache(key: string, data: any) {
+function setCache<T>(key: string, data: T) {
   cache.set(key, { data, expiresAt: Date.now() + 5 * 60 * 1000 });
 }
 
@@ -24,9 +31,9 @@ function getPeriodDays(period: string): number {
   }
 }
 
-async function fetchMetrikaTopProducts(token: string, counterId: string, dateFrom: string, dateTo: string) {
+async function fetchMetrikaTopProducts(token: string, counterId: string, dateFrom: string, dateTo: string): Promise<MetrikaTopProductsResponse | null> {
   const cacheKey = `metrika:top:${counterId}:${dateFrom}:${dateTo}`;
-  const cached = getCached(cacheKey);
+  const cached = getCached<MetrikaTopProductsResponse>(cacheKey);
   if (cached) return cached;
 
   const params = new URLSearchParams({
@@ -46,7 +53,7 @@ async function fetchMetrikaTopProducts(token: string, counterId: string, dateFro
 
   if (!res.ok) return null;
 
-  const data = await res.json();
+  const data = (await res.json()) as MetrikaTopProductsResponse;
   setCache(cacheKey, data);
   return data;
 }
@@ -90,7 +97,7 @@ export async function GET(request: NextRequest) {
       );
 
       if (metrikaData?.data) {
-        const products = metrikaData.data.map((row: any) => {
+        const products = metrikaData.data.map((row) => {
           const url: string = row.dimensions?.[0]?.name ?? "";
           // Extract product name from URL or use URL
           const slug = url.split("/product/")[1]?.split("?")[0] ?? url;

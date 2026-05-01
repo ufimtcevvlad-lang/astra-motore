@@ -10,11 +10,14 @@ interface Category {
   title: string;
 }
 
+type ProductFormProps = Parameters<typeof ProductForm>[0];
+type AdminProduct = NonNullable<ProductFormProps["product"]>;
+
 export default function EditProductPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<AdminProduct | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

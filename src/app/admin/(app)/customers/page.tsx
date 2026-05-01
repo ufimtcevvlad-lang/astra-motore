@@ -92,7 +92,7 @@ export default function CustomersPage() {
 
   useEffect(() => {
     fetchCustomers(page, search, status, sort);
-  }, [page, status, sort, fetchCustomers]);
+  }, [page, search, status, sort, fetchCustomers]);
 
   const handleSearch = (val: string) => {
     setSearch(val);

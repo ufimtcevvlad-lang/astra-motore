@@ -34,6 +34,7 @@ export default function ProductFilters({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизируем поле с внешними фильтрами
     setSearchInput(filters.search);
   }, [filters.search]);
 

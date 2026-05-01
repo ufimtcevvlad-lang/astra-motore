@@ -189,6 +189,7 @@ export default function CategoryList() {
         open={!!deleteTarget}
         title="Удалить категорию"
         message={`Вы уверены, что хотите удалить категорию "${deleteTarget?.title}"? Это действие необратимо.`}
+        confirmText={deleting ? "Удаляем..." : "Удалить"}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
       />

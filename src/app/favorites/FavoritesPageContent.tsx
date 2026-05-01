@@ -13,6 +13,7 @@ export function FavoritesPageContent() {
   useEffect(() => {
     const ids = [...favorites];
     if (ids.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- очищаем список, когда избранное пустое
       setItems([]);
       return;
     }

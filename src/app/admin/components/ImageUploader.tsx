@@ -105,6 +105,7 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
               ].join(" ")}
               title={multiple ? "Перетащите, чтобы изменить порядок" : undefined}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element -- превью локальной/admin-картинки без оптимизации */}
               <img
                 src={url}
                 alt=""

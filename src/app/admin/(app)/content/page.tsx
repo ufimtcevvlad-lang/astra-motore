@@ -197,6 +197,7 @@ export default function ContentBannersPage() {
                 {/* Image preview */}
                 <div className="w-40 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                   {banner.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- admin-превью баннера из загруженного URL
                     <img
                       src={banner.image}
                       alt={banner.title}
@@ -371,6 +372,7 @@ export default function ContentBannersPage() {
                 >
                   {formImagePreview ? (
                     <div className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- локальное превью выбранного файла */}
                       <img
                         src={formImagePreview}
                         alt="Preview"

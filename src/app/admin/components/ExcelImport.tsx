@@ -173,18 +173,6 @@ export default function ExcelImport() {
     setUpdateFlags((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  const setDupField = <K extends keyof EditableUpdateItem>(
-    idx: number,
-    field: K,
-    value: EditableUpdateItem[K]
-  ) => {
-    setEditedDups((prev) => {
-      const copy = [...prev];
-      copy[idx] = { ...copy[idx], [field]: value };
-      return copy;
-    });
-  };
-
   const updateCount = Object.values(updateFlags).filter(Boolean).length;
   const skipCount = (preview?.duplicates.length ?? 0) - updateCount;
   const newCount = editedNew.length;
