@@ -14,6 +14,10 @@ loadDotEnvLocalFromCwd();
 
 const BOT_TOKEN = requireEnv("TELEGRAM_BOT_TOKEN");
 const ADMIN_CHAT_ID = Number(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID);
+const ADMIN_CHAT_IDS = String(process.env.TELEGRAM_ADMIN_CHAT_IDS || "")
+  .split(",")
+  .map((id) => Number(id.trim()))
+  .filter((id) => Number.isFinite(id) && id > 0);
 const METRIKA_TOKEN = requireEnv("YANDEX_METRIKA_OAUTH_TOKEN");
 const COUNTER_ID = process.env.YANDEX_METRIKA_COUNTER_ID || "108384071";
 const TZ = process.env.REPORT_TIMEZONE || "Asia/Yekaterinburg";
@@ -94,6 +98,13 @@ function mainMenuKeyboard() {
     resize_keyboard: true,
     one_time_keyboard: false,
   };
+}
+
+function isAdminChat(chatId) {
+  const id = Number(chatId);
+  if (!Number.isFinite(id)) return false;
+  if (ADMIN_CHAT_IDS.length > 0) return ADMIN_CHAT_IDS.includes(id);
+  return !ADMIN_CHAT_ID || id === Number(ADMIN_CHAT_ID);
 }
 
 function importHelpText() {
@@ -454,8 +465,8 @@ async function poll() {
       const chatId = msg.chat?.id;
       if (!chatId) continue;
 
-      // Security: other commands respond only to admin chat
-      if (ADMIN_CHAT_ID && Number(chatId) !== Number(ADMIN_CHAT_ID)) continue;
+      // Security: commands respond only to configured admin chats.
+      if (!isAdminChat(chatId)) continue;
 
       try {
         if (msg.document) {
