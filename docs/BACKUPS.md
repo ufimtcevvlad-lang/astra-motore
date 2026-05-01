@@ -1,100 +1,179 @@
 # Astra Motors Backups
 
-## Where Backups Live
+Цель: после любой ошибки, поломки VPS или неудачного импорта можно безопасно вернуть сайт, товары, заказы, заявки и фотографии.
 
-Production VPS:
+## Простая Логика
 
-- App: `/var/www/astra-motors`
-- Main DB: `/var/www/astra-motors/data/shop.db`
-- Backups: `/var/backups/astra-motors`
-- Backup log: `/var/log/astra-motors-backup.log`
-- Telegram notice: backup result can be sent to the admin chat
+Держим 3 уровня защиты:
 
-Local Mac, only when started with `--download`:
+- `daily` - каждый день, маленький бэкап рабочих данных.
+- `weekly` - раз в неделю, полный бэкап рабочих данных и всех фото.
+- `manual` - вручную перед рискованными действиями: импорт, миграция, чистка фото, обновление логики заказов.
 
-- `~/Documents/astra-motors-backups`
+Храним минимум в 2 местах:
 
-## Backup Types
+- VPS: `/var/backups/astra-motors`
+- Mac при запуске с `--download`: `~/Documents/astra-motors-backups`
 
-`runtime` backup is small and should run every day:
+Важное правило: перед восстановлением всегда сначала сделать свежий `manual`-бэкап текущего состояния. Даже если состояние плохое, это страховка от второй ошибки.
 
-- `shop.db` via SQLite `.backup`
-- `photo-manifest.json`
-- `public/uploads`
-- `README.txt`
-- `SHA256SUMS`
+## Что Попадает В Бэкап
 
-`full` backup is larger and should run weekly:
+`runtime` - ежедневный рабочий бэкап:
 
-- everything from `runtime`
-- `public/images/catalog`
+- все SQLite базы из `data/*.db`, включая `shop.db`, через безопасный SQLite `.backup`;
+- проверка целостности каждой базы: `PRAGMA integrity_check`;
+- `data/*.json`, включая `photo-manifest.json`;
+- runtime-файлы `data/*.ndjson`, если они есть: заказы, VIN-заявки, согласия, сессии, SMS-коды и похожие журналы;
+- `public/uploads`, то есть фото, загруженные через админку/чат/импорт;
+- `README.txt`, `file-sizes.txt`, `sqlite-integrity.txt`, `SHA256SUMS`.
 
-Current size guide:
+`full` - полный недельный бэкап:
 
-- DB: less than 1 MB
-- uploads: about 3.5 MB
-- catalog images: about 43 MB
-- VPS free space: about 41 GB
+- все из `runtime`;
+- `public/images/catalog` - исходные фото каталога;
+- `public/images/watermarked` - готовые фото с водяными знаками.
 
-## Manual Commands
+Водяные знаки технически можно пересоздать из исходных фото, но мы кладем их в `full`, чтобы после аварии поднять сайт быстрее.
 
-Small manual backup on VPS:
+## Где Лежит На Продакшене
 
-```bash
-bash scripts/backup-prod.sh
+- приложение: `/var/www/astra-motors`
+- основная база: `/var/www/astra-motors/data/shop.db`
+- бэкапы: `/var/backups/astra-motors`
+- лог cron-бэкапов: `/var/log/astra-motors-backup.log`
+- cron-файл: `/etc/cron.d/astra-motors-backup`
+
+Структура папок:
+
+```text
+/var/backups/astra-motors/
+  daily/
+    2026-05-01_03-20-00/
+  weekly/
+    2026-05-04_03-30-00/
+  monthly/
+    2026-06-01_03-40-00/
+  manual/
+    2026-05-01_16-10-00/
 ```
 
-Full manual backup on VPS:
+## Расписание
+
+Рекомендуемое расписание для продакшена:
+
+- ежедневно `runtime` в 03:20 по Екатеринбургу, хранить 30 дней;
+- еженедельно `full` по понедельникам в 03:30, хранить 90 дней;
+- ежемесячно `full` первого числа в 03:40, хранить 365 дней;
+- уведомление в Telegram отправлять только со статусом, размером и путем к папке;
+- сами файлы бэкапа в Telegram не отправлять, потому что там могут быть персональные данные клиентов.
+
+## Команды
+
+Маленький ручной бэкап:
+
+```bash
+bash scripts/backup-prod.sh --scope runtime --label manual
+```
+
+Полный ручной бэкап:
 
 ```bash
 bash scripts/backup-prod.sh --scope full --label manual
 ```
 
-Full backup and copy it to the Mac:
+Полный бэкап и копия на Mac:
 
 ```bash
 bash scripts/backup-prod.sh --scope full --label manual --download
 ```
 
-Runtime backup and send a Telegram notification:
+Ежедневный бэкап с чисткой старых копий и Telegram-уведомлением:
 
 ```bash
-bash scripts/backup-prod.sh --scope runtime --label manual --telegram
+bash scripts/backup-prod.sh --scope runtime --label daily --keep-days 30 --prune --telegram
 ```
 
-## Automatic Schedule
+Недельный полный бэкап:
 
-Recommended production schedule:
+```bash
+bash scripts/backup-prod.sh --scope full --label weekly --keep-days 90 --prune --telegram
+```
 
-- daily `runtime` at 03:20 Asia/Yekaterinburg, keep 30 days
-- weekly `full` on Monday at 03:30 Asia/Yekaterinburg, keep 90 days
-- daily `runtime` sends a Telegram notification
-- backup files are not sent to Telegram because `shop.db` contains private customer/order data
+Месячный полный бэкап:
 
-Cron file:
+```bash
+bash scripts/backup-prod.sh --scope full --label monthly --keep-days 365 --prune --telegram
+```
 
-- `/etc/cron.d/astra-motors-backup`
+## Проверка Бэкапа
 
-## Restore Notes
+В каждой папке бэкапа должны быть:
 
-Stop the site before restoring the DB:
+- `shop.db` и, если есть, другие `.db`;
+- `sqlite-integrity.txt` со строками вида `shop.db: ok`;
+- `SHA256SUMS` для проверки, что файлы не повреждены;
+- `README.txt` с составом и примерами восстановления;
+- для `runtime`: `runtime-data.tar.gz`, `uploads.tar.gz`;
+- для `full`: еще `catalog-images.tar.gz`, `watermarked-images.tar.gz`.
+
+Проверить контрольные суммы внутри папки бэкапа:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+## Восстановление
+
+1. Сначала сделать аварийный бэкап текущего состояния:
+
+```bash
+bash scripts/backup-prod.sh --scope full --label emergency
+```
+
+2. Остановить сайт:
 
 ```bash
 pm2 stop astra-motors
-cp /var/backups/astra-motors/manual/<timestamp>/shop.db /var/www/astra-motors/data/shop.db
-pm2 start astra-motors
 ```
 
-Restore uploads:
+3. Вернуть базу:
+
+```bash
+cp /var/backups/astra-motors/manual/<timestamp>/shop.db /var/www/astra-motors/data/shop.db
+```
+
+4. Вернуть runtime-файлы:
+
+```bash
+tar -xzf /var/backups/astra-motors/manual/<timestamp>/runtime-data.tar.gz -C /var/www/astra-motors
+```
+
+5. Вернуть uploads:
 
 ```bash
 tar -xzf /var/backups/astra-motors/manual/<timestamp>/uploads.tar.gz -C /var/www/astra-motors/public
 ```
 
-Restore catalog images from a full backup:
+6. Если это `full`-бэкап, вернуть фото каталога и водяные знаки:
 
 ```bash
 tar -xzf /var/backups/astra-motors/weekly/<timestamp>/catalog-images.tar.gz -C /var/www/astra-motors/public/images
+tar -xzf /var/backups/astra-motors/weekly/<timestamp>/watermarked-images.tar.gz -C /var/www/astra-motors/public/images
 ```
 
-Important: before restoring production data, create a fresh emergency backup first.
+7. Запустить сайт:
+
+```bash
+pm2 start astra-motors
+```
+
+8. Проверить главную, каталог, карточку товара, админку, заказы и загрузку фото.
+
+## Жесткие Правила
+
+- Не удалять старые бэкапы вручную, пока не понятно, что есть рабочая свежая копия.
+- Не хранить единственную копию только на VPS.
+- Не отправлять базы и архивы с заказами в Telegram/мессенджеры.
+- Перед импортом или массовой правкой делать `manual full`.
+- После восстановления сначала проверять сайт, потом уже продолжать новые изменения.

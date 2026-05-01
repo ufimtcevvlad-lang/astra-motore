@@ -22,9 +22,9 @@ Run from local Mac:
   bash scripts/backup-prod.sh --scope full --download
 
 Options:
-  --scope runtime   DB + uploads + manifest (default, small daily backup)
-  --scope full      runtime + public/images/catalog (larger full backup)
-  --label NAME      backup group: manual, daily, weekly
+  --scope runtime   SQLite DBs + runtime data + uploads (default, daily backup)
+  --scope full      runtime + catalog images + watermarked images (weekly backup)
+  --label NAME      backup group: manual, daily, weekly, monthly
   --keep-days N     retention window for --prune
   --download        copy created backup to ~/Documents/astra-motors-backups
   --telegram        send a Telegram notification with backup path and size
@@ -75,6 +75,16 @@ if [[ "$SCOPE" != "runtime" && "$SCOPE" != "full" ]]; then
   exit 2
 fi
 
+if [[ ! "$LABEL" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+  echo "Bad --label: $LABEL (use only letters, numbers, dot, underscore, dash)" >&2
+  exit 2
+fi
+
+if [[ ! "$KEEP_DAYS" =~ ^[0-9]+$ ]]; then
+  echo "Bad --keep-days: $KEEP_DAYS (use a number)" >&2
+  exit 2
+fi
+
 load_remote_env() {
   if [[ -f "$PROD_ROOT/.env.local" ]]; then
     set -a
@@ -119,6 +129,21 @@ TEXT
   echo "Telegram notification sent"
 }
 
+created_at() {
+  date "+%Y-%m-%dT%H:%M:%S%z"
+}
+
+sha256_one() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1"
+  else
+    echo "sha256sum or shasum is required" >&2
+    exit 1
+  fi
+}
+
 remote_run() {
   cd "$PROD_ROOT"
   load_remote_env
@@ -131,6 +156,7 @@ remote_run() {
   timestamp="$(date +%Y-%m-%d_%H-%M-%S)"
   backup_dir="$BACKUP_ROOT/$LABEL/$timestamp"
   mkdir -p "$backup_dir"
+  chmod 700 "$BACKUP_ROOT" "$BACKUP_ROOT/$LABEL" "$backup_dir"
 
   db_path="$PROD_ROOT/data/shop.db"
   if [[ ! -f "$db_path" ]]; then
@@ -138,10 +164,39 @@ remote_run() {
     exit 1
   fi
 
-  sqlite3 "$db_path" ".backup '$backup_dir/shop.db'"
+  : > "$backup_dir/sqlite-integrity.txt"
+  shopt -s nullglob
+  db_files=("$PROD_ROOT"/data/*.db)
+  shopt -u nullglob
+  if [[ "${#db_files[@]}" -eq 0 ]]; then
+    echo "No SQLite DB files found in $PROD_ROOT/data" >&2
+    exit 1
+  fi
+
+  for db_file in "${db_files[@]}"; do
+    db_name="$(basename "$db_file")"
+    sqlite3 "$db_file" ".backup '$backup_dir/$db_name'"
+    integrity="$(sqlite3 "$backup_dir/$db_name" "PRAGMA integrity_check;")"
+    printf "%s: %s\n" "$db_name" "$integrity" >> "$backup_dir/sqlite-integrity.txt"
+    if [[ "$integrity" != "ok" ]]; then
+      echo "SQLite integrity check failed for $db_name: $integrity" >&2
+      exit 1
+    fi
+    rm -f "$backup_dir/$db_name-shm" "$backup_dir/$db_name-wal"
+  done
 
   if [[ -f "$PROD_ROOT/data/photo-manifest.json" ]]; then
     cp "$PROD_ROOT/data/photo-manifest.json" "$backup_dir/photo-manifest.json"
+  fi
+
+  runtime_data_files=()
+  shopt -s nullglob
+  for runtime_file in "$PROD_ROOT"/data/*.json "$PROD_ROOT"/data/*.ndjson; do
+    runtime_data_files+=("data/$(basename "$runtime_file")")
+  done
+  shopt -u nullglob
+  if [[ "${#runtime_data_files[@]}" -gt 0 ]]; then
+    tar -czf "$backup_dir/runtime-data.tar.gz" -C "$PROD_ROOT" "${runtime_data_files[@]}"
   fi
 
   if [[ -d "$PROD_ROOT/public/uploads" ]]; then
@@ -152,9 +207,15 @@ remote_run() {
     tar -czf "$backup_dir/catalog-images.tar.gz" -C "$PROD_ROOT/public/images" catalog
   fi
 
+  if [[ "$SCOPE" == "full" && -d "$PROD_ROOT/public/images/watermarked" ]]; then
+    tar -czf "$backup_dir/watermarked-images.tar.gz" -C "$PROD_ROOT/public/images" watermarked
+  fi
+
+  du -sh "$backup_dir"/* > "$backup_dir/file-sizes.txt" 2>/dev/null || true
+
   {
     echo "Astra Motors backup"
-    echo "Created: $(date -Is)"
+    echo "Created: $(created_at)"
     echo "Label: $LABEL"
     echo "Scope: $SCOPE"
     echo "Server: $(hostname)"
@@ -162,7 +223,10 @@ remote_run() {
     echo "Git: $(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
     echo
     echo "Files:"
-    find "$backup_dir" -maxdepth 1 -type f -printf "  %f\n" | sort
+    find "$backup_dir" -maxdepth 1 -type f -exec basename {} \; | sort | sed 's/^/  /'
+    echo
+    echo "SQLite integrity:"
+    sed 's/^/  /' "$backup_dir/sqlite-integrity.txt"
     echo
     echo "Restore DB example:"
     echo "  pm2 stop astra-motors"
@@ -171,16 +235,24 @@ remote_run() {
     echo
     echo "Restore uploads example:"
     echo "  tar -xzf $backup_dir/uploads.tar.gz -C $PROD_ROOT/public"
+    echo
+    echo "Restore runtime data example:"
+    echo "  tar -xzf $backup_dir/runtime-data.tar.gz -C $PROD_ROOT"
     if [[ "$SCOPE" == "full" ]]; then
       echo
       echo "Restore catalog images example:"
       echo "  tar -xzf $backup_dir/catalog-images.tar.gz -C $PROD_ROOT/public/images"
+      echo
+      echo "Restore watermarked images example:"
+      echo "  tar -xzf $backup_dir/watermarked-images.tar.gz -C $PROD_ROOT/public/images"
     fi
   } > "$backup_dir/README.txt"
 
   (
     cd "$backup_dir"
-    sha256sum * > SHA256SUMS
+    find . -maxdepth 1 -type f ! -name SHA256SUMS -exec basename {} \; | sort | while IFS= read -r file_name; do
+      sha256_one "$file_name"
+    done > SHA256SUMS
   )
 
   if [[ "$PRUNE" == "1" ]]; then
