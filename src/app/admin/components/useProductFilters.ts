@@ -10,6 +10,7 @@ const EMPTY: ProductFiltersState = {
   categoryId: "",
   brand: "",
   inStock: "",
+  hidden: "",
   priceFrom: "",
   priceTo: "",
   nocat: false,
@@ -34,6 +35,7 @@ function readParams(sp: URLSearchParams): {
       categoryId: sp.get("categoryId") ?? "",
       brand: sp.get("brand") ?? "",
       inStock: sp.get("inStock") ?? "",
+      hidden: sp.get("hidden") ?? "",
       priceFrom: sp.get("priceFrom") ?? "",
       priceTo: sp.get("priceTo") ?? "",
       nocat: sp.get("nocat") === "1",
@@ -52,6 +54,7 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
   if (filters.categoryId) p.set("categoryId", filters.categoryId);
   if (filters.brand) p.set("brand", filters.brand);
   if (filters.inStock) p.set("inStock", filters.inStock);
+  if (filters.hidden) p.set("hidden", filters.hidden);
   if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
   if (filters.priceTo) p.set("priceTo", filters.priceTo);
   if (filters.nocat) p.set("nocat", "1");
@@ -63,7 +66,7 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
 
 function isEmpty(f: ProductFiltersState): boolean {
   return (
-    !f.search && !f.categoryId && !f.brand && !f.inStock && !f.priceFrom && !f.priceTo && !f.nocat
+    !f.search && !f.categoryId && !f.brand && !f.inStock && !f.hidden && !f.priceFrom && !f.priceTo && !f.nocat
   );
 }
 

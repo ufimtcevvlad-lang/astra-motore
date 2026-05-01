@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
   const categoryId = url.searchParams.get("categoryId");
   const brand = url.searchParams.get("brand");
   const inStock = url.searchParams.get("inStock");
+  const hidden = url.searchParams.get("hidden");
   const priceFrom = url.searchParams.get("priceFrom");
   const priceTo = url.searchParams.get("priceTo");
   const nocat = url.searchParams.get("nocat") === "1";
@@ -44,6 +45,11 @@ export async function GET(req: NextRequest) {
     conditions.push(gte(schema.products.inStock, 1));
   } else if (inStock === "no") {
     conditions.push(eq(schema.products.inStock, 0));
+  }
+  if (hidden === "hidden") {
+    conditions.push(eq(schema.products.hidden, true));
+  } else if (hidden === "visible") {
+    conditions.push(eq(schema.products.hidden, false));
   }
   if (priceFrom) {
     conditions.push(gte(schema.products.price, Number(priceFrom)));

@@ -46,6 +46,7 @@ export default function ProductsPage() {
     if (filters.categoryId) params.set("categoryId", filters.categoryId);
     if (filters.brand) params.set("brand", filters.brand);
     if (filters.inStock) params.set("inStock", filters.inStock);
+    if (filters.hidden) params.set("hidden", filters.hidden);
     if (filters.priceFrom) params.set("priceFrom", filters.priceFrom);
     if (filters.priceTo) params.set("priceTo", filters.priceTo);
     if (filters.nocat) params.set("nocat", "1");
@@ -148,6 +149,7 @@ export default function ProductsPage() {
     !!filters.categoryId ||
     !!filters.brand ||
     !!filters.inStock ||
+    !!filters.hidden ||
     !!filters.priceFrom ||
     !!filters.priceTo ||
     !!filters.nocat;
@@ -168,6 +170,7 @@ export default function ProductsPage() {
             if (filters.categoryId) p.set("categoryId", filters.categoryId);
             if (filters.brand) p.set("brand", filters.brand);
             if (filters.inStock) p.set("inStock", filters.inStock);
+            if (filters.hidden) p.set("hidden", filters.hidden);
             if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
             if (filters.priceTo) p.set("priceTo", filters.priceTo);
             return p.toString();

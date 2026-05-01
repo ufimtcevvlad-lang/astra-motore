@@ -7,6 +7,7 @@ export interface ProductFiltersState {
   categoryId: string;
   brand: string;
   inStock: string;
+  hidden: string;
   priceFrom: string;
   priceTo: string;
   nocat: boolean;
@@ -94,9 +95,19 @@ export default function ProductFilters({
         onChange={(e) => handleChange("inStock", e.target.value)}
         className={selectClass}
       >
-        <option value="">Все</option>
+        <option value="">Любой остаток</option>
         <option value="yes">В наличии</option>
         <option value="no">Нет в наличии</option>
+      </select>
+
+      <select
+        value={filters.hidden}
+        onChange={(e) => handleChange("hidden", e.target.value)}
+        className={selectClass}
+      >
+        <option value="">Все товары</option>
+        <option value="visible">Видимые</option>
+        <option value="hidden">Скрытые</option>
       </select>
 
       <div className="flex items-center gap-2">
