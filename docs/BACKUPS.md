@@ -6,6 +6,7 @@
 
 Главный файл-инструкция:
 
+- быстрая папка на Рабочем столе: `/Users/vladislavufimcev/Desktop/!!! ОЧЕНЬ ВАЖНО - БЭКАПЫ ASTRA MOTORS`
 - локально в проекте: `/Users/vladislavufimcev/Documents/autoparts-shop/docs/BACKUPS.md`
 - на VPS после деплоя: `/var/www/astra-motors/docs/BACKUPS.md`
 
