@@ -138,11 +138,14 @@ Files stay on VPS. DB is not sent to Telegram because it contains private custom
 Backup was restore-tested automatically.
 TEXT
 )"
-  curl -fsS \
+  if curl -fsS --max-time 20 \
     -H "Content-Type: application/json" \
     -d "$(node -e 'const data={chat_id:process.argv[1],text:process.argv[2]}; process.stdout.write(JSON.stringify(data));' "$chat_id" "$text")" \
-    "https://api.telegram.org/bot${token}/sendMessage" >/dev/null
-  echo "Telegram notification sent"
+    "https://api.telegram.org/bot${token}/sendMessage" >/dev/null; then
+    echo "Telegram notification sent"
+  else
+    echo "Telegram notification failed; backup remains valid"
+  fi
 }
 
 created_at() {
