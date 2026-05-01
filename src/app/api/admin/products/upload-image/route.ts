@@ -13,6 +13,8 @@ const heicConvert = require("heic-convert") as (input: {
   format: "JPEG";
   quality: number;
 }) => Promise<ArrayBuffer>;
+const BRAND_WATERMARK = "GM SHOP 66.RU";
+const WATERMARK_AMBER = "#f5ae23";
 
 function detectImageKind(buf: Buffer): "jpeg" | "png" | "webp" | "heic" | null {
   if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "jpeg";
@@ -41,6 +43,73 @@ function detectImageKind(buf: Buffer): "jpeg" | "png" | "webp" | "heic" | null {
   )
     return "heic";
   return null;
+}
+
+function escapeSvgText(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function cardWatermarkSvg(width: number, height: number): Buffer {
+  const size = Math.max(16, Math.round(Math.min(width, height) * 0.043));
+  const pad = Math.max(12, Math.round(Math.min(width, height) * 0.03));
+  const x = width - pad;
+  const y = height - pad;
+
+  return Buffer.from(`
+<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <text x="${x + 3}" y="${y + 3}" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="${size}" font-weight="700" fill="#181818" fill-opacity="0.46">${escapeSvgText(BRAND_WATERMARK)}</text>
+  <text x="${x}" y="${y}" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="${size}" font-weight="700" fill="${WATERMARK_AMBER}" fill-opacity="0.96">${escapeSvgText(BRAND_WATERMARK)}</text>
+</svg>`);
+}
+
+function fullWatermarkSvg(width: number, height: number): Buffer {
+  const fontSize = Math.max(42, Math.round(Math.min(width, height) * 0.064));
+  const approxTextWidth = fontSize * 7.8;
+  const spacingX = Math.round(approxTextWidth + fontSize * 2.8);
+  const spacingY = Math.round(fontSize * 3.45);
+  const margin = Math.max(width, height);
+  const sw = width + margin * 2;
+  const sh = height + margin * 2;
+  const items: string[] = [];
+  let row = 0;
+
+  for (let y = -spacingY; y < sh + spacingY; y += spacingY) {
+    const offset = row % 2 ? Math.round(spacingX * 0.55) : 0;
+    for (let x = -spacingX - offset; x < sw + spacingX; x += spacingX) {
+      items.push(`<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-size="${fontSize}" font-weight="700" fill="${WATERMARK_AMBER}" fill-opacity="0.31">${escapeSvgText(BRAND_WATERMARK)}</text>`);
+    }
+    row += 1;
+  }
+
+  return Buffer.from(`
+<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(${-margin} ${-margin}) rotate(-38 ${sw / 2} ${sh / 2})">
+    ${items.join("\n")}
+  </g>
+</svg>`);
+}
+
+async function writeWatermarkedUploads(filename: string, source: Buffer): Promise<void> {
+  const meta = await sharp(source).metadata();
+  const width = meta.width ?? 1200;
+  const height = meta.height ?? 1200;
+  const variants = [
+    { name: "card", svg: cardWatermarkSvg(width, height) },
+    { name: "full", svg: fullWatermarkSvg(width, height) },
+  ] as const;
+
+  for (const variant of variants) {
+    const outDir = path.join(process.cwd(), "public", "images", "watermarked", variant.name, "uploads", "products");
+    await mkdir(outDir, { recursive: true });
+    await sharp(source)
+      .composite([{ input: variant.svg, blend: "over" }])
+      .webp({ quality: 84, effort: 4 })
+      .toFile(path.join(outDir, filename));
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -92,6 +161,7 @@ export async function POST(req: NextRequest) {
 
   await mkdir(uploadDir, { recursive: true });
   await writeFile(path.join(uploadDir, filename), out);
+  await writeWatermarkedUploads(filename, out);
 
   const url = `/uploads/products/${filename}`;
   return NextResponse.json({ url });

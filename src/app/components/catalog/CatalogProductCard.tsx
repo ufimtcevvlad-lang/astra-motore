@@ -6,6 +6,7 @@ import { ProductImage } from "../ProductImage";
 import { useFavorites } from "../FavoritesContext";
 import type { Product } from "../../lib/products-types";
 import { productPath } from "../../lib/product-slug";
+import { watermarkedImageUrl } from "../../lib/watermark-images";
 
 function ChevronLeft({ className }: { className?: string }) {
   return (
@@ -38,6 +39,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   const n = urls.length;
   const idx = n > 0 ? active % n : 0;
   const src = urls[idx] ?? p.image;
+  const cardSrc = watermarkedImageUrl(src, "card");
 
   const go = useCallback(
     (dir: -1 | 1) => {
@@ -91,7 +93,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
       >
         <ProductImage
           key={src}
-          src={src}
+          src={cardSrc}
           alt={
             n > 1
               ? `${p.name}, арт. ${p.sku} — фото ${idx + 1} из ${n}`

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useIsClient } from "../lib/use-is-client";
+import { watermarkedImageUrl } from "../lib/watermark-images";
 import { ProductImage } from "./ProductImage";
 
 type Props = {
@@ -46,6 +47,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
   const mounted = useIsClient();
   const slideIndex = list.length === 0 ? 0 : Math.min(active, list.length - 1);
   const current = list[slideIndex];
+  const currentFull = watermarkedImageUrl(current, "full");
   const touchStartX = useRef<number | null>(null);
   const lightboxTouchStartX = useRef<number | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -173,7 +175,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
             >
               <ProductImage
                 key={current}
-                src={current}
+                src={currentFull}
                 alt={list.length > 1 ? `${alt} — фото ${slideIndex + 1} из ${list.length}` : alt}
                 fill
                 className="object-contain object-center"
@@ -229,7 +231,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
         <div className="relative h-full w-full">
           <ProductImage
             key={current}
-            src={current}
+            src={currentFull}
             alt={list.length > 1 ? `${alt} — фото ${slideIndex + 1} из ${list.length}` : alt}
             fill
             className="pointer-events-none object-contain object-center"
@@ -240,7 +242,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
             <div
               className="pointer-events-none absolute inset-0 z-[4] hidden rounded-md md:block"
               style={{
-                backgroundImage: `url(${current})`,
+                backgroundImage: `url(${currentFull})`,
                 backgroundSize: "200%",
                 backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
                 backgroundRepeat: "no-repeat",
@@ -320,7 +322,7 @@ export function ProductImageGallery({ alt, urls }: Props) {
             }`}
           >
             <div className="absolute inset-1">
-              <ProductImage src={src} alt="" fill className="object-contain object-center" sizes="64px" quality={60} />
+              <ProductImage src={watermarkedImageUrl(src, "card")} alt="" fill className="object-contain object-center" sizes="64px" quality={60} />
             </div>
           </button>
         ))}

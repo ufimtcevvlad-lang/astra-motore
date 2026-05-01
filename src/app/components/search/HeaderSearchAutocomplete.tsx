@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { highlightQuery } from "../../lib/highlight-query";
 import { ProductImage } from "../ProductImage";
+import { watermarkedImageUrl } from "../../lib/watermark-images";
 import type { SearchResultItem } from "../../lib/catalog-search";
 
 const DEBOUNCE_MS = 300;
@@ -211,7 +212,7 @@ export function HeaderSearchAutocomplete() {
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-600 bg-white ring-1 ring-slate-700/80">
                       <div className="absolute inset-0.5">
                         <ProductImage
-                          src={p.image}
+                          src={watermarkedImageUrl(p.image, "card")}
                           alt={`${p.name}, арт. ${p.sku}`}
                           fill
                           className="object-contain object-center"

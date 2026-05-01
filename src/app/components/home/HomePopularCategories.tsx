@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAllProducts } from "../../lib/products-db";
+import { watermarkedImageUrl } from "../../lib/watermark-images";
 
 type CategoryDef = {
   title: string;
@@ -99,7 +100,7 @@ export function HomePopularCategories() {
                 <div className="absolute inset-6 flex items-center justify-center">
                   <div className="relative h-full w-full">
                     <Image
-                      src={coverImage}
+                      src={watermarkedImageUrl(coverImage, "card")}
                       alt={title}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
