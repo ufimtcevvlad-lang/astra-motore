@@ -60,6 +60,11 @@ npx tsx scripts/apply-migrations.ts
 echo "→ Применяю photo-manifest..."
 npx tsx scripts/apply-photo-manifest.ts
 
+# Достраиваем водяные версии для фото из каталога и ручных загрузок админки.
+# Скрипт инкрементальный: существующие актуальные файлы пропускает.
+echo "→ Генерирую недостающие watermark-фото..."
+npm run catalog:watermark-images
+
 npm run build
 pm2 restart astra-motors
 pm2 save
