@@ -1,20 +1,19 @@
 #!/usr/bin/env node
 /**
- * Импорт отсортированных парсером фото в каталог сайта.
+ * Импорт отсортированных парсером фото в каталог сайта (SQLite edition).
  *
  * Источник: ~/Pictures/сортивка/<SKU>/*.heic|jpg|png
- * Цель:     public/images/catalog/<product.id>/01.webp, 02.webp, ...
+ * Цель:     public/images/catalog/<external_id>/01.webp, 02.webp, ...
  *
  * Логика:
- *   1. Читаем src/app/data/products.ts, находим товары у которых
- *      image содержит "_pending" (то есть фото ещё нет).
- *   2. Для каждого такого товара ищем папку сортивка/<sku>/.
+ *   1. Читаем данные из data/shop.db (таблица products).
+ *   2. Для товаров у которых image пусто или содержит "_pending" —
+ *      ищем папку сортивка/<sku>/.
  *   3. Если есть — конвертируем все фото в WebP (1600px / q86),
- *      кладём в public/images/catalog/<product.id>/ под именами 01.webp, 02.webp...
- *   4. Патчим products.ts: заменяем image на первый файл,
- *      добавляем images: [...] если фото больше одного.
+ *      кладём в public/images/catalog/<external_id>/ под именами 01.webp, 02.webp...
+ *   4. Обновляем в БД поля image (первое фото) и images (JSON-массив).
  *
- * Товары с уже существующими фото (image НЕ содержит "_pending") НЕ ТРОГАЕТ.
+ * Товары с уже существующими фото (image НЕ пустой и НЕ "_pending") НЕ ТРОГАЕТ.
  *
  * Запуск:
  *   node scripts/import-sorted-photos.mjs --dry-run    (показать что будет сделано)
@@ -26,11 +25,15 @@ import os from "node:os";
 import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
+import Database from "better-sqlite3";
 
 const ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
-const PRODUCTS_TS = path.join(ROOT, "src/app/data/products.ts");
+const DB_PATH = path.join(ROOT, "data/shop.db");
+const MANIFEST_PATH = path.join(ROOT, "data/photo-manifest.json");
 const CATALOG_DIR = path.join(ROOT, "public/images/catalog");
+const WATERMARKED_DIR = path.join(ROOT, "public/images/watermarked");
 const SORT_DIR = path.join(os.homedir(), "Pictures", "сортивка");
+const PROD_WHITELIST_URL = process.env.GM_SHOP_WHITELIST_URL || "https://gmshop66.ru/api/internal/whitelist";
 const SOURCE_EXT = /\.(heic|jpe?g|png|webp)$/i;
 const MAX_EDGE = 1600;
 const WEBP_QUALITY = 86;
@@ -47,49 +50,54 @@ function colorize(text, color) {
   return `\x1b[${codes[color] || 0}m${text}\x1b[0m`;
 }
 
-/** Парсит products.ts и возвращает массив { id, sku, image, blockStart, blockEnd } */
-function parseProducts(ts) {
-  const products = [];
-  // Ищем блоки товаров: каждый начинается с "id:" и содержит sku и image.
-  // Используем простой стейт-машинный подход: ищем "id: \"...\"" → потом следующие sku и image.
-  const idRegex = /id:\s*"([^"]+)"/g;
-  let match;
-  const idPositions = [];
-  while ((match = idRegex.exec(ts)) !== null) {
-    idPositions.push({ id: match[1], start: match.index });
-  }
-  for (let i = 0; i < idPositions.length; i++) {
-    const blockStart = idPositions[i].start;
-    const blockEnd = i + 1 < idPositions.length ? idPositions[i + 1].start : ts.length;
-    const slice = ts.slice(blockStart, blockEnd);
-    const skuMatch = slice.match(/sku:\s*"([^"]+)"/);
-    const imageMatch = slice.match(/image:\s*"([^"]+)"/);
-    if (!skuMatch || !imageMatch) continue;
-    products.push({
-      id: idPositions[i].id,
-      sku: skuMatch[1],
-      image: imageMatch[1],
-      blockStart,
-      blockEnd,
-    });
-  }
-  return products;
-}
-
 function isPending(imagePath) {
+  if (!imagePath) return true;
   return imagePath.includes("_pending");
 }
 
-/** MD5-хеш файла для дедупликации. */
+function hasRealImage(imagePath) {
+  return !isPending(imagePath) && !imagePath.includes("placeholder-product");
+}
+
+function safeFolderName(sku) {
+  return sku.replace(/[/\\]/g, "_");
+}
+
+function readFolderSku(dirPath, fallback) {
+  const skuFile = path.join(dirPath, ".sku");
+  if (!fs.existsSync(skuFile)) return fallback;
+  const raw = fs.readFileSync(skuFile, "utf8").trim();
+  return raw || fallback;
+}
+
+async function loadProdProducts() {
+  try {
+    const res = await fetch(PROD_WHITELIST_URL, {
+      headers: { "User-Agent": "gmshop-photo-import/1.0" },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const items = [...(data.gm ?? []), ...(data.nonGm ?? [])];
+    return items
+      .filter((p) => p?.sku && p?.externalId)
+      .map((p) => ({
+        id: null,
+        external_id: p.externalId,
+        sku: p.sku,
+        image: p.image ?? "",
+        images: "[]",
+        source: "prod-whitelist",
+      }));
+  } catch (err) {
+    log(colorize(`⚠️  Не удалось загрузить whitelist с прода: ${err.message}`, "yellow"));
+    return [];
+  }
+}
+
 function fileHash(filePath) {
   return crypto.createHash("md5").update(fs.readFileSync(filePath)).digest("hex");
 }
 
-/**
- * Список фото в папке, с дедупликацией по MD5.
- * Если два файла идентичны — оставляем только первый (по sort-порядку).
- * Возвращает { files: string[], skippedDupes: string[] }.
- */
 function listSourcePhotos(dir) {
   if (!fs.existsSync(dir)) return { files: [], skippedDupes: [] };
   const all = fs
@@ -100,7 +108,6 @@ function listSourcePhotos(dir) {
   const seen = new Map();
   const files = [];
   const skippedDupes = [];
-
   for (const f of all) {
     const hash = fileHash(path.join(dir, f));
     if (seen.has(hash)) {
@@ -110,18 +117,15 @@ function listSourcePhotos(dir) {
       files.push(f);
     }
   }
-
   return { files, skippedDupes };
 }
 
-/** Конвертирует один файл в WebP. HEIC обрабатываем через sips → JPEG → sharp */
 async function convertToWebp(srcPath, outPath) {
   const ext = path.extname(srcPath).toLowerCase();
   let workPath = srcPath;
   let tmpJpeg = null;
 
   if (ext === ".heic") {
-    // sharp может уметь HEIC, но надёжнее через sips
     tmpJpeg = path.join(os.tmpdir(), `import-${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`);
     try {
       execFileSync("sips", ["-s", "format", "jpeg", "-Z", String(MAX_EDGE), srcPath, "--out", tmpJpeg], {
@@ -145,41 +149,17 @@ async function convertToWebp(srcPath, outPath) {
   }
 }
 
-/** Патч одной записи в products.ts: заменить image и опционально вставить images */
-function patchProductBlock(ts, product, newImage, newImages) {
-  // newImages — массив всех путей включая newImage; если только один — images не нужен.
-  const before = ts.slice(0, product.blockStart);
-  const after = ts.slice(product.blockEnd);
-  let block = ts.slice(product.blockStart, product.blockEnd);
-
-  // Заменяем image: "..."
-  const oldImageRe = /image:\s*"[^"]*"/;
-  if (!oldImageRe.test(block)) {
-    throw new Error(`не нашёл image: в блоке ${product.id}`);
-  }
-  block = block.replace(oldImageRe, `image: "${newImage}"`);
-
-  // Если есть несколько фото — добавляем images: [...] сразу после image:
-  // (если уже есть images: — заменяем; для _pending товаров его обычно нет, но проверим)
-  if (newImages.length > 1) {
-    const imagesArrayLiteral = `[\n      ${newImages.map((p) => `"${p}"`).join(",\n      ")},\n    ]`;
-    const existingImagesRe = /images:\s*\[[\s\S]*?\]/;
-    if (existingImagesRe.test(block)) {
-      block = block.replace(existingImagesRe, `images: ${imagesArrayLiteral}`);
-    } else {
-      // вставляем после image: "..." перед следующей запятой и переводом строки
-      block = block.replace(
-        /(image:\s*"[^"]*",)/,
-        `$1\n    images: ${imagesArrayLiteral},`,
-      );
-    }
-  }
-  return before + block + after;
+function runWatermarkGeneration() {
+  log(colorize(`\n💧 Генерирую watermarked-версии фото…`, "cyan"));
+  execFileSync("node", [path.join(ROOT, "scripts", "generate-watermarked-images.mjs")], {
+    stdio: "inherit",
+    cwd: ROOT,
+  });
 }
 
 async function main() {
-  if (!fs.existsSync(PRODUCTS_TS)) {
-    log(colorize(`Не нашёл ${PRODUCTS_TS}`, "red"));
+  if (!fs.existsSync(DB_PATH)) {
+    log(colorize(`Не нашёл ${DB_PATH}`, "red"));
     process.exit(1);
   }
   if (!fs.existsSync(SORT_DIR)) {
@@ -187,23 +167,43 @@ async function main() {
     process.exit(1);
   }
 
-  log(colorize(`\n📦 Импорт отсортированных фото → каталог`, "cyan"));
+  log(colorize(`\n📦 Импорт отсортированных фото → каталог (SQLite)`, "cyan"));
   log(colorize(`   Режим: ${DRY_RUN ? "DRY-RUN (без записи)" : "APPLY (запись)"}`, "gray"));
   log(colorize(`   Источник: ${SORT_DIR}`, "gray"));
   log(colorize(`   Цель: ${CATALOG_DIR}`, "gray"));
-  log(colorize(`   products.ts: ${PRODUCTS_TS}\n`, "gray"));
+  log(colorize(`   БД: ${DB_PATH}\n`, "gray"));
 
-  let ts = fs.readFileSync(PRODUCTS_TS, "utf8");
-  const products = parseProducts(ts);
+  const db = new Database(DB_PATH);
+  const localProducts = db
+    .prepare("SELECT id, external_id, sku, image, images FROM products")
+    .all()
+    .map((p) => ({ ...p, source: "local-db" }));
+  const prodProducts = await loadProdProducts();
+  const bySku = new Map();
+  for (const p of prodProducts) bySku.set(p.sku, p);
+  for (const p of localProducts) bySku.set(p.sku, p);
+  const products = [...bySku.values()];
   log(`Прочитано товаров: ${products.length}\n`);
 
   const plan = [];
-  for (const p of products) {
-    const sortedDir = path.join(SORT_DIR, p.sku);
-    if (!fs.existsSync(sortedDir)) continue;
+  const skippedNoProduct = [];
+  const sortDirs = fs
+    .readdirSync(SORT_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .sort((a, b) => a.localeCompare(b, "ru"));
+
+  for (const dirName of sortDirs) {
+    const sortedDir = path.join(SORT_DIR, dirName);
+    const sku = readFolderSku(sortedDir, dirName);
+    const p = bySku.get(sku) ?? products.find((candidate) => safeFolderName(candidate.sku) === dirName);
     const { files: sources, skippedDupes } = listSourcePhotos(sortedDir);
     if (sources.length === 0) continue;
-    if (!isPending(p.image)) {
+    if (!p) {
+      skippedNoProduct.push({ sku, dirName, sources: sources.length });
+      continue;
+    }
+    if (hasRealImage(p.image)) {
       plan.push({ ...p, sources, skippedDupes, action: "skip-has-photo", sortedDir });
       continue;
     }
@@ -218,7 +218,7 @@ async function main() {
     const dupeNote = p.skippedDupes.length > 0
       ? colorize(` (пропущено ${p.skippedDupes.length} дублей)`, "yellow")
       : "";
-    log(`   ${colorize(p.sku, "cyan")} → ${p.id}  (${p.sources.length} фото${dupeNote})`);
+    log(`   ${colorize(p.sku, "cyan")} → ${p.external_id}  (${p.sources.length} фото${dupeNote})`);
     for (const d of p.skippedDupes) {
       log(colorize(`      ↳ дубль: ${d}`, "gray"));
     }
@@ -226,30 +226,37 @@ async function main() {
   log("");
   log(colorize(`⏭  Пропускаем (фото уже есть на сайте): ${toSkip.length}`, "yellow"));
   for (const p of toSkip) {
-    log(colorize(`   ${p.sku} → ${p.id}  (есть ${p.sources.length} фото в сортивке, не трогаем)`, "gray"));
+    log(colorize(`   ${p.sku} → ${p.external_id}  (есть ${p.sources.length} фото в сортивке, не трогаем)`, "gray"));
   }
   log("");
 
   if (toImport.length === 0) {
     log("Нечего импортировать. Готово.");
+    db.close();
     return;
   }
 
   if (DRY_RUN) {
     log(colorize(`Это DRY-RUN. Чтобы применить изменения — запусти:`, "yellow"));
     log(colorize(`   node scripts/import-sorted-photos.mjs --apply\n`, "yellow"));
+    db.close();
     return;
   }
 
-  // APPLY режим
   log(colorize(`\n🔧 Применяю изменения…\n`, "cyan"));
-  let updatedTs = ts;
+  const now = new Date().toISOString();
+  const updateStmt = db.prepare(
+    "UPDATE products SET image = ?, images = ?, updated_at = ? WHERE id = ?",
+  );
+  const manifest = fs.existsSync(MANIFEST_PATH)
+    ? JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"))
+    : {};
   let okCount = 0;
   let failCount = 0;
 
   for (const p of toImport) {
-    const targetDir = path.join(CATALOG_DIR, p.id);
-    log(`${colorize(p.sku, "cyan")} → ${p.id}`);
+    const targetDir = path.join(CATALOG_DIR, p.external_id);
+    log(`${colorize(p.sku, "cyan")} → ${p.external_id}`);
     try {
       fs.mkdirSync(targetDir, { recursive: true });
       const newPaths = [];
@@ -259,14 +266,14 @@ async function main() {
         const out = path.join(targetDir, `${num}.webp`);
         await convertToWebp(src, out);
         const sizeKb = (fs.statSync(out).size / 1024).toFixed(0);
-        const webPath = `/images/catalog/${p.id}/${num}.webp`;
+        const webPath = `/images/catalog/${p.external_id}/${num}.webp`;
         newPaths.push(webPath);
         log(colorize(`   ✓ ${p.sources[i]} → ${num}.webp (${sizeKb} КБ)`, "gray"));
       }
-      // Re-parse to get fresh blockStart/blockEnd after previous patches
-      const fresh = parseProducts(updatedTs).find((x) => x.id === p.id);
-      if (!fresh) throw new Error(`товар ${p.id} пропал после re-parse`);
-      updatedTs = patchProductBlock(updatedTs, fresh, newPaths[0], newPaths);
+      if (p.id != null) {
+        updateStmt.run(newPaths[0], JSON.stringify(newPaths), now, p.id);
+      }
+      manifest[p.sku] = { image: newPaths[0], images: newPaths };
       okCount++;
     } catch (err) {
       log(colorize(`   ✗ ОШИБКА: ${err.message}`, "red"));
@@ -274,13 +281,92 @@ async function main() {
     }
   }
 
-  fs.writeFileSync(PRODUCTS_TS, updatedTs, "utf8");
+  db.close();
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n", "utf8");
+  log(colorize(`📄 Манифест обновлён: ${MANIFEST_PATH}`, "gray"));
   log("");
   log(colorize(`🟢 Успех: ${okCount} товаров`, "green"));
   if (failCount > 0) log(colorize(`🔴 Ошибок: ${failCount}`, "red"));
-  log(colorize(`\nproducts.ts обновлён. Проверь diff:`, "cyan"));
-  log(colorize(`   git diff src/app/data/products.ts`, "gray"));
+  log(colorize(`\nБД обновлена. Проверь:`, "cyan"));
   log(colorize(`   git status public/images/catalog/`, "gray"));
+  log(colorize(`   sqlite3 data/shop.db "SELECT sku, image FROM products WHERE updated_at = '${now}'"`, "gray"));
+
+  if (okCount > 0) {
+    try {
+      runWatermarkGeneration();
+    } catch (err) {
+      log(colorize(`⚠️  Генерация водяных знаков упала: ${err.message}`, "yellow"));
+      log(colorize(`   Запусти вручную: npm run catalog:watermark-images`, "gray"));
+      return;
+    }
+  }
+
+  // Полный цикл публикации на прод: git push (чтобы файлы уехали в репо) →
+  // sync image/images в прод-БД (через SSH) → ssh rebuild + pm2 restart
+  // (чтобы Next.js перечитал БД). Пропустить каждый из этапов — получить
+  // "фото на сервере лежат, а карточки всё равно пустые" / "карточки обновились,
+  // а картинка 404".
+  if (okCount > 0 && (process.argv.includes("--apply") || process.argv.includes("--push-prod"))) {
+    const SSH_HOST = process.env.GM_SHOP_PROD_SSH || "root@5.42.117.221";
+    const PROD_ROOT = process.env.GM_SHOP_PROD_ROOT || "/var/www/astra-motors";
+    const sh = (cmd, args, opts = {}) => {
+      execFileSync(cmd, args, { stdio: "inherit", cwd: ROOT, ...opts });
+    };
+
+    const pushedUpdatedSkus = toImport.map((p) => p.sku);
+    const committedPaths = [
+      "data/photo-manifest.json",
+      ...pushedUpdatedSkus.map((sku) => {
+        const r = products.find((x) => x.sku === sku);
+        return r ? `public/images/catalog/${r.external_id}` : null;
+      }).filter(Boolean),
+      ...pushedUpdatedSkus.flatMap((sku) => {
+        const r = products.find((x) => x.sku === sku);
+        if (!r) return [];
+        return [
+          path.relative(ROOT, path.join(WATERMARKED_DIR, "card/images/catalog", r.external_id)),
+          path.relative(ROOT, path.join(WATERMARKED_DIR, "full/images/catalog", r.external_id)),
+        ];
+      }),
+    ];
+
+    try {
+      log(colorize(`\n📦 git commit + push свежих фото…`, "cyan"));
+      sh("git", ["add", "--", ...committedPaths]);
+      // Если ничего нового (например, повторный запуск) — git commit упадёт.
+      try {
+        sh("git", ["commit", "-m", `photos: автоимпорт ${okCount} SKU`]);
+        sh("git", ["push", "origin", "HEAD"]);
+      } catch {
+        log(colorize(`   (нет новых файлов для коммита — пропускаю push)`, "gray"));
+      }
+    } catch (err) {
+      log(colorize(`⚠️  git push упал: ${err.message}. Прерываюсь — без push синк image/images на прод опередит доставку файлов.`, "yellow"));
+      return;
+    }
+
+    try {
+      log(colorize(`\n🔄 Синхронизирую image/images на прод…`, "cyan"));
+      sh("node", [path.join(ROOT, "scripts", "sync-product-images-to-prod.mjs"), "--apply"]);
+    } catch (err) {
+      log(colorize(`⚠️  Синк на прод упал: ${err.message}`, "yellow"));
+      log(colorize(`   Запусти вручную: node scripts/sync-product-images-to-prod.mjs --apply`, "gray"));
+      return;
+    }
+
+    try {
+      log(colorize(`\n🚀 Pull + rebuild + pm2 restart на VPS…`, "cyan"));
+      execFileSync(
+        "ssh",
+        ["-o", "BatchMode=yes", "-o", "ConnectTimeout=15", SSH_HOST,
+         `set -e; cd ${PROD_ROOT} && git pull --ff-only origin main && npx tsx scripts/apply-photo-manifest.ts && npm run build >/tmp/build.log 2>&1 && pm2 restart astra-motors >/dev/null && echo OK`],
+        { stdio: "inherit" },
+      );
+    } catch (err) {
+      log(colorize(`⚠️  Rebuild на проде упал: ${err.message}`, "yellow"));
+      log(colorize(`   Файлы и БД уехали, но Next.js кэш старый. Зайди на VPS и сделай: cd ${PROD_ROOT} && git pull && npm run build && pm2 restart astra-motors`, "gray"));
+    }
+  }
 }
 
 main().catch((err) => {

@@ -55,6 +55,11 @@ fi
 echo "→ Применяю миграции БД..."
 npx tsx scripts/apply-migrations.ts
 
+# Синхронизируем фото товаров: локальный парсер кладёт в data/photo-manifest.json
+# записи sku → image/images, здесь применяем их к боевой БД.
+echo "→ Применяю photo-manifest..."
+npx tsx scripts/apply-photo-manifest.ts
+
 npm run build
 pm2 restart astra-motors
 pm2 save
