@@ -40,6 +40,7 @@ bash scripts/backup-prod.sh --scope full --label manual --download --telegram
 Как понять, что бэкап нормальный:
 
 - в Telegram пришло сообщение об успехе;
+- внутри бэкапа есть `RESTORE_TEST.txt` с автоматической проверкой восстановления;
 - в папке бэкапа есть `shop.db`, `runtime-data.tar.gz`, `uploads.tar.gz`, `catalog-images.tar.gz`, `watermarked-images.tar.gz`;
 - файл `sqlite-integrity.txt` содержит `ok`;
 - команда `sha256sum -c SHA256SUMS` внутри папки бэкапа показывает `OK`.
@@ -71,6 +72,7 @@ bash scripts/backup-prod.sh --scope full --label manual --download --telegram
 - runtime-файлы `data/*.ndjson`, если они есть: заказы, VIN-заявки, согласия, сессии, SMS-коды и похожие журналы;
 - `public/uploads`, то есть фото, загруженные через админку/чат/импорт;
 - `README.txt`, `file-sizes.txt`, `sqlite-integrity.txt`, `SHA256SUMS`.
+- `RESTORE_TEST.txt` - автоматическая проверка, что бэкап можно распаковать и базы открываются.
 
 `full` - полный недельный бэкап:
 
@@ -166,6 +168,15 @@ bash scripts/backup-prod.sh --scope full --label monthly --keep-days 365 --prune
 ```bash
 sha256sum -c SHA256SUMS
 ```
+
+После каждого бэкапа скрипт автоматически делает мини-восстановление во временную папку:
+
+- проверяет `SHA256SUMS`;
+- копирует базы из бэкапа и открывает их через SQLite;
+- распаковывает `runtime-data.tar.gz`, `uploads.tar.gz`, `catalog-images.tar.gz`, `watermarked-images.tar.gz`;
+- записывает результат в `RESTORE_TEST.txt`.
+
+Если автоматическая проверка не проходит, скрипт завершается ошибкой. Такой бэкап нельзя считать рабочим, пока причина не исправлена.
 
 ## Восстановление
 

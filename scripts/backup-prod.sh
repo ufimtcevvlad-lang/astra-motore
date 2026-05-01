@@ -135,6 +135,7 @@ Size: $size
 Path: $backup_dir
 
 Files stay on VPS. DB is not sent to Telegram because it contains private customer/order data.
+Backup was restore-tested automatically.
 TEXT
 )"
   curl -fsS \
@@ -157,6 +158,88 @@ sha256_one() {
     echo "sha256sum or shasum is required" >&2
     exit 1
   fi
+}
+
+verify_sha256s() {
+  local backup_dir="$1"
+
+  (
+    cd "$backup_dir"
+    if command -v sha256sum >/dev/null 2>&1; then
+      sha256sum -c SHA256SUMS
+    elif command -v shasum >/dev/null 2>&1; then
+      shasum -a 256 -c SHA256SUMS
+    else
+      echo "sha256sum or shasum is required" >&2
+      exit 1
+    fi
+  )
+}
+
+verify_backup_restore() {
+  local backup_dir="$1"
+  local verify_dir
+  local restored_root
+  local db_file
+  local db_name
+  local integrity
+  local count
+
+  verify_dir="$(mktemp -d "${TMPDIR:-/tmp}/astra-backup-verify.XXXXXX")"
+  restored_root="$verify_dir/app"
+  mkdir -p "$restored_root/public" "$restored_root/public/images"
+  trap 'rm -rf "$verify_dir"; trap - RETURN' RETURN
+
+  {
+    echo "Astra Motors automatic restore test"
+    echo "Created: $(created_at)"
+    echo "Backup: $backup_dir"
+    echo
+    echo "SHA256:"
+    verify_sha256s "$backup_dir" | sed 's/^/  /'
+    echo
+    echo "SQLite restore:"
+    shopt -s nullglob
+    for db_file in "$backup_dir"/*.db; do
+      db_name="$(basename "$db_file")"
+      cp "$db_file" "$restored_root/$db_name"
+      integrity="$(sqlite3 "$restored_root/$db_name" "PRAGMA integrity_check;")"
+      echo "  $db_name: $integrity"
+      if [[ "$integrity" != "ok" ]]; then
+        echo "SQLite restore test failed for $db_name: $integrity" >&2
+        return 1
+      fi
+    done
+    shopt -u nullglob
+    echo
+    echo "Archive restore:"
+    if [[ -f "$backup_dir/runtime-data.tar.gz" ]]; then
+      tar -tzf "$backup_dir/runtime-data.tar.gz" >/dev/null
+      tar -xzf "$backup_dir/runtime-data.tar.gz" -C "$restored_root"
+      count="$(find "$restored_root/data" -type f 2>/dev/null | wc -l | awk '{print $1}')"
+      echo "  runtime-data.tar.gz: ok ($count files)"
+    fi
+    if [[ -f "$backup_dir/uploads.tar.gz" ]]; then
+      tar -tzf "$backup_dir/uploads.tar.gz" >/dev/null
+      tar -xzf "$backup_dir/uploads.tar.gz" -C "$restored_root/public"
+      count="$(find "$restored_root/public/uploads" -type f 2>/dev/null | wc -l | awk '{print $1}')"
+      echo "  uploads.tar.gz: ok ($count files)"
+    fi
+    if [[ -f "$backup_dir/catalog-images.tar.gz" ]]; then
+      tar -tzf "$backup_dir/catalog-images.tar.gz" >/dev/null
+      tar -xzf "$backup_dir/catalog-images.tar.gz" -C "$restored_root/public/images"
+      count="$(find "$restored_root/public/images/catalog" -type f 2>/dev/null | wc -l | awk '{print $1}')"
+      echo "  catalog-images.tar.gz: ok ($count files)"
+    fi
+    if [[ -f "$backup_dir/watermarked-images.tar.gz" ]]; then
+      tar -tzf "$backup_dir/watermarked-images.tar.gz" >/dev/null
+      tar -xzf "$backup_dir/watermarked-images.tar.gz" -C "$restored_root/public/images"
+      count="$(find "$restored_root/public/images/watermarked" -type f 2>/dev/null | wc -l | awk '{print $1}')"
+      echo "  watermarked-images.tar.gz: ok ($count files)"
+    fi
+    echo
+    echo "Result: ok"
+  } > "$backup_dir/RESTORE_TEST.txt"
 }
 
 remote_run() {
@@ -262,6 +345,15 @@ remote_run() {
       echo "  tar -xzf $backup_dir/watermarked-images.tar.gz -C $PROD_ROOT/public/images"
     fi
   } > "$backup_dir/README.txt"
+
+  (
+    cd "$backup_dir"
+    find . -maxdepth 1 -type f ! -name SHA256SUMS -exec basename {} \; | sort | while IFS= read -r file_name; do
+      sha256_one "$file_name"
+    done > SHA256SUMS
+  )
+
+  verify_backup_restore "$backup_dir"
 
   (
     cd "$backup_dir"
