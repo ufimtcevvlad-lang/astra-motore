@@ -66,14 +66,14 @@ export function recordLoginAttempt(ip: string, success: boolean): void {
 export async function verifyAdminLogin(
   login: string,
   password: string
-): Promise<{ id: number; name: string; telegramChatId: string } | null> {
+): Promise<{ id: number; login: string; name: string; telegramChatId: string } | null> {
   const admin = await db.query.admins.findFirst({
     where: eq(schema.admins.login, login),
   });
   if (!admin) return null;
   const ok = verifyPassword(password, admin.passwordSalt, admin.passwordHash);
   if (!ok) return null;
-  return { id: admin.id, name: admin.name, telegramChatId: admin.telegramChatId };
+  return { id: admin.id, login: admin.login, name: admin.name, telegramChatId: admin.telegramChatId };
 }
 
 // ─── 2FA codes ───
