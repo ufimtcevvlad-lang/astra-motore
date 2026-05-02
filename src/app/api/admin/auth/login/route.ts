@@ -6,25 +6,11 @@ import {
   create2faCode,
 } from "../../../../lib/admin-auth";
 import { getClientIp } from "../../../../lib/rate-limit";
-import { SITE_BRAND } from "../../../../lib/site";
 
 type Body = {
   login: string;
   password: string;
 };
-
-function adminSmsEnvKey(login: string): string {
-  return `ADMIN_2FA_SMS_${login.replace(/[^a-zA-Z0-9]/g, "_").toUpperCase()}`;
-}
-
-function adminSmsPhone(admin: { id: number; login: string }): string | null {
-  return (
-    process.env[`ADMIN_2FA_SMS_ADMIN_${admin.id}`] ||
-    process.env[adminSmsEnvKey(admin.login)] ||
-    process.env.ADMIN_2FA_SMS_PHONE ||
-    null
-  );
-}
 
 async function sendAdminCodeViaTelegram(input: {
   botToken: string;
@@ -44,46 +30,6 @@ async function sendAdminCodeViaTelegram(input: {
   const data = (await res.json().catch(() => ({}))) as { ok?: boolean; description?: string };
   if (!res.ok || data.ok === false) {
     throw new Error(data.description || `Telegram HTTP ${res.status}`);
-  }
-}
-
-async function sendAdminCodeViaSms(input: {
-  phone: string;
-  code: string;
-  request: Request;
-}): Promise<void> {
-  const apiId = process.env.SMSRU_API_ID;
-  if (!apiId) throw new Error("SMS.RU не настроен");
-
-  const params = new URLSearchParams({
-    api_id: apiId,
-    to: input.phone,
-    msg: `${SITE_BRAND}. Код админки: ${input.code}`,
-    json: "1",
-  });
-  const sender = process.env.SMSRU_SENDER;
-  if (sender) params.set("from", sender);
-
-  const ip = getClientIp(input.request);
-  if (ip) params.set("ip", ip);
-
-  const res = await fetch(`https://sms.ru/sms/send?${params.toString()}`, {
-    method: "GET",
-  });
-  const data = (await res.json().catch(() => ({}))) as {
-    status?: string;
-    status_code?: number;
-    status_text?: string;
-    message?: string;
-    sms?: Record<string, { status_text?: string }>;
-  };
-  if (!res.ok || data.status !== "OK" || data.status_code !== 100) {
-    const detail =
-      data.sms?.[input.phone]?.status_text ||
-      data.status_text ||
-      data.message ||
-      `SMS.RU HTTP ${res.status}`;
-    throw new Error(detail);
   }
 }
 
@@ -120,44 +66,27 @@ export async function POST(request: Request) {
   recordLoginAttempt(ip, true);
 
   const code = await create2faCode(admin.id);
-
-  const deliveryErrors: string[] = [];
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  if (botToken && admin.telegramChatId) {
-    try {
-      await sendAdminCodeViaTelegram({
-        botToken,
-        chatId: admin.telegramChatId,
-        code,
-      });
-      return NextResponse.json({ ok: true, adminId: admin.id, delivery: "telegram" });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "неизвестная ошибка";
-      console.error("Admin 2FA Telegram delivery failed:", message);
-      deliveryErrors.push(`Telegram: ${message}`);
-    }
-  } else {
-    deliveryErrors.push("Telegram не настроен");
+  if (!botToken || !admin.telegramChatId) {
+    return NextResponse.json(
+      { error: "Telegram не настроен для отправки кода входа" },
+      { status: 500 },
+    );
   }
 
-  const smsPhone = adminSmsPhone(admin);
-  if (smsPhone) {
-    try {
-      await sendAdminCodeViaSms({ phone: smsPhone, code, request });
-      return NextResponse.json({ ok: true, adminId: admin.id, delivery: "sms" });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "неизвестная ошибка";
-      console.error("Admin 2FA SMS delivery failed:", message);
-      deliveryErrors.push(`SMS: ${message}`);
-    }
-  } else {
-    deliveryErrors.push("SMS fallback не настроен");
+  try {
+    await sendAdminCodeViaTelegram({
+      botToken,
+      chatId: admin.telegramChatId,
+      code,
+    });
+    return NextResponse.json({ ok: true, adminId: admin.id, delivery: "telegram" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "неизвестная ошибка";
+    console.error("Admin 2FA Telegram delivery failed:", message);
+    return NextResponse.json(
+      { error: `Код создан, но Telegram не смог его отправить: ${message}` },
+      { status: 502 },
+    );
   }
-
-  return NextResponse.json(
-    {
-      error: `Код создан, но не удалось отправить: ${deliveryErrors.join("; ")}`,
-    },
-    { status: 502 },
-  );
 }
