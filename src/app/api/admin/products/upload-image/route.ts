@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { createRequire } from "module";
 import sharp from "sharp";
+import { looksLikeQrSeparatorPhoto } from "@/app/lib/qr-image-guard";
 
 export const runtime = "nodejs";
 
@@ -142,6 +143,13 @@ export async function POST(req: NextRequest) {
       detected === "heic"
         ? Buffer.from(await heicConvert({ buffer, format: "JPEG", quality: 0.92 }))
         : buffer;
+
+    if (await looksLikeQrSeparatorPhoto(imageBuffer)) {
+      return NextResponse.json(
+        { error: "Это похоже на QR-разделитель парсера, а не фото товара. Такое фото не загружено." },
+        { status: 400 },
+      );
+    }
 
     out = await sharp(imageBuffer)
       .rotate()

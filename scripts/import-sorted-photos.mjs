@@ -37,6 +37,7 @@ const PROD_WHITELIST_URL = process.env.GM_SHOP_WHITELIST_URL || "https://gmshop6
 const SOURCE_EXT = /\.(heic|jpe?g|png|webp)$/i;
 const MAX_EDGE = 1600;
 const WEBP_QUALITY = 86;
+const LIST_PREVIEW_LIMIT = 30;
 
 const APPLY = process.argv.includes("--apply");
 const DRY_RUN = !APPLY;
@@ -120,6 +121,151 @@ function listSourcePhotos(dir) {
   return { files, skippedDupes };
 }
 
+function otsuThreshold(values) {
+  const hist = new Array(256).fill(0);
+  for (const value of values) hist[value] += 1;
+
+  const total = values.length;
+  let sum = 0;
+  for (let i = 0; i < 256; i++) sum += i * hist[i];
+
+  let sumB = 0;
+  let weightB = 0;
+  let bestVariance = -1;
+  let threshold = 128;
+  for (let i = 0; i < 256; i++) {
+    weightB += hist[i];
+    if (weightB === 0) continue;
+    const weightF = total - weightB;
+    if (weightF === 0) break;
+    sumB += i * hist[i];
+    const meanB = sumB / weightB;
+    const meanF = (sum - sumB) / weightF;
+    const variance = weightB * weightF * (meanB - meanF) ** 2;
+    if (variance > bestVariance) {
+      bestVariance = variance;
+      threshold = i;
+    }
+  }
+  return Math.min(190, Math.max(65, threshold));
+}
+
+async function readQrGuardSample(srcPath) {
+  const ext = path.extname(srcPath).toLowerCase();
+  let workPath = srcPath;
+  let tmpJpeg = null;
+
+  if (ext === ".heic") {
+    tmpJpeg = path.join(os.tmpdir(), `qr-guard-${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`);
+    execFileSync("sips", ["-s", "format", "jpeg", "-Z", "900", srcPath, "--out", tmpJpeg], {
+      stdio: "pipe",
+    });
+    workPath = tmpJpeg;
+  }
+
+  try {
+    const { data, info } = await sharp(workPath)
+      .rotate()
+      .resize(420, 420, { fit: "inside", withoutEnlargement: true })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const gray = new Uint8Array(info.width * info.height);
+    for (let i = 0, p = 0; i < data.length; i += info.channels, p++) {
+      const r = data[i] ?? 0;
+      const g = data[i + 1] ?? r;
+      const b = data[i + 2] ?? g;
+      gray[p] = Math.round(r * 0.299 + g * 0.587 + b * 0.114);
+    }
+    return { width: info.width, height: info.height, gray };
+  } finally {
+    if (tmpJpeg && fs.existsSync(tmpJpeg)) fs.unlinkSync(tmpJpeg);
+  }
+}
+
+function qrTransitionRate(bits, width, height, x, y, size) {
+  const step = Math.max(2, Math.floor(size / 42));
+  let changes = 0;
+  let checks = 0;
+
+  for (let row = y; row < y + size; row += step) {
+    let prev = bits[row * width + x];
+    for (let col = x + step; col < x + size; col += step) {
+      const current = bits[row * width + col];
+      if (current !== prev) changes += 1;
+      prev = current;
+      checks += 1;
+    }
+  }
+  for (let col = x; col < x + size; col += step) {
+    let prev = bits[y * width + col];
+    for (let row = y + step; row < y + size; row += step) {
+      const current = bits[row * width + col];
+      if (current !== prev) changes += 1;
+      prev = current;
+      checks += 1;
+    }
+  }
+
+  return checks === 0 ? 0 : changes / checks;
+}
+
+function qrSquareScore(sample, bits, x, y, size, threshold) {
+  let dark = 0;
+  let nearBlack = 0;
+  let nearWhite = 0;
+  let sum = 0;
+  let sumSq = 0;
+
+  for (let row = y; row < y + size; row++) {
+    const offset = row * sample.width;
+    for (let col = x; col < x + size; col++) {
+      const value = sample.gray[offset + col];
+      sum += value;
+      sumSq += value * value;
+      if (value < threshold) dark += 1;
+      if (value <= 75) nearBlack += 1;
+      if (value >= 178) nearWhite += 1;
+    }
+  }
+
+  const area = size * size;
+  const darkRatio = dark / area;
+  const bwRatio = (nearBlack + nearWhite) / area;
+  const mean = sum / area;
+  const std = Math.sqrt(Math.max(0, sumSq / area - mean * mean));
+  const transitions = qrTransitionRate(bits, sample.width, sample.height, x, y, size);
+
+  if (darkRatio < 0.18 || darkRatio > 0.64) return 0;
+  if (bwRatio < 0.5 || std < 48 || transitions < 0.17) return 0;
+  return bwRatio * 0.35 + Math.min(std / 95, 1) * 0.25 + Math.min(transitions / 0.34, 1) * 0.4;
+}
+
+async function looksLikeQrSeparatorSource(srcPath) {
+  try {
+    const sample = await readQrGuardSample(srcPath);
+    const minSide = Math.min(sample.width, sample.height);
+    if (minSide < 120) return false;
+
+    const threshold = otsuThreshold(sample.gray);
+    const bits = new Uint8Array(sample.width * sample.height);
+    for (let i = 0; i < sample.gray.length; i++) bits[i] = sample.gray[i] < threshold ? 1 : 0;
+
+    for (const ratio of [0.32, 0.4, 0.5, 0.62, 0.74]) {
+      const size = Math.max(96, Math.floor(minSide * ratio));
+      const step = Math.max(16, Math.floor(size / 4));
+      for (let y = 0; y <= sample.height - size; y += step) {
+        for (let x = 0; x <= sample.width - size; x += step) {
+          if (qrSquareScore(sample, bits, x, y, size, threshold) >= 0.78) return true;
+        }
+      }
+    }
+  } catch (err) {
+    log(colorize(`⚠️  QR-защита не смогла проверить ${srcPath}: ${err.message}`, "yellow"));
+  }
+  return false;
+}
+
 async function convertToWebp(srcPath, outPath) {
   const ext = path.extname(srcPath).toLowerCase();
   let workPath = srcPath;
@@ -151,7 +297,7 @@ async function convertToWebp(srcPath, outPath) {
 
 function runWatermarkGeneration() {
   log(colorize(`\n💧 Генерирую watermarked-версии фото…`, "cyan"));
-  execFileSync("node", [path.join(ROOT, "scripts", "generate-watermarked-images.mjs")], {
+  execFileSync(process.execPath, [path.join(ROOT, "scripts", "generate-watermarked-images.mjs")], {
     stdio: "inherit",
     cwd: ROOT,
   });
@@ -173,7 +319,7 @@ async function main() {
   log(colorize(`   Цель: ${CATALOG_DIR}`, "gray"));
   log(colorize(`   БД: ${DB_PATH}\n`, "gray"));
 
-  const db = new Database(DB_PATH);
+  const db = new Database(DB_PATH, DRY_RUN ? { readonly: true, fileMustExist: true } : { fileMustExist: true });
   const localProducts = db
     .prepare("SELECT id, external_id, sku, image, images FROM products")
     .all()
@@ -204,10 +350,27 @@ async function main() {
       continue;
     }
     if (hasRealImage(p.image)) {
-      plan.push({ ...p, sources, skippedDupes, action: "skip-has-photo", sortedDir });
+      plan.push({ ...p, sources, skippedDupes, skippedQr: [], action: "skip-has-photo", sortedDir });
       continue;
     }
-    plan.push({ ...p, sources, skippedDupes, action: "import", sortedDir });
+
+    const safeSources = [];
+    const skippedQr = [];
+    for (const source of sources) {
+      const sourcePath = path.join(sortedDir, source);
+      if (await looksLikeQrSeparatorSource(sourcePath)) {
+        skippedQr.push(source);
+      } else {
+        safeSources.push(source);
+      }
+    }
+    if (safeSources.length === 0) {
+      if (skippedQr.length > 0) {
+        log(colorize(`🚫 ${sku}: пропущены только QR-разделители (${skippedQr.join(", ")})`, "yellow"));
+      }
+      continue;
+    }
+    plan.push({ ...p, sources: safeSources, skippedDupes, skippedQr, action: "import", sortedDir });
   }
 
   const toImport = plan.filter((p) => p.action === "import");
@@ -222,13 +385,33 @@ async function main() {
     for (const d of p.skippedDupes) {
       log(colorize(`      ↳ дубль: ${d}`, "gray"));
     }
+    for (const q of p.skippedQr) {
+      log(colorize(`      ↳ QR-разделитель пропущен: ${q}`, "gray"));
+    }
   }
   log("");
   log(colorize(`⏭  Пропускаем (фото уже есть на сайте): ${toSkip.length}`, "yellow"));
-  for (const p of toSkip) {
+  for (const p of toSkip.slice(0, LIST_PREVIEW_LIMIT)) {
     log(colorize(`   ${p.sku} → ${p.external_id}  (есть ${p.sources.length} фото в сортивке, не трогаем)`, "gray"));
   }
+  if (toSkip.length > LIST_PREVIEW_LIMIT) {
+    log(colorize(`   …и ещё ${toSkip.length - LIST_PREVIEW_LIMIT} товаров с уже загруженными фото`, "gray"));
+  }
   log("");
+
+  if (skippedNoProduct.length > 0) {
+    log(colorize(`❓ Не нашли товар под папку/артикул: ${skippedNoProduct.length}`, "yellow"));
+    for (const p of skippedNoProduct) {
+      log(colorize(`   ${p.dirName} → артикул ${p.sku} (${p.sources} фото)`, "gray"));
+    }
+    log("");
+  }
+
+  if (toImport.length === 0 && toSkip.length > 0) {
+    log(colorize(`ℹ️  Фото в папке есть, но у этих товаров уже стоят фото на сайте. Парсер их специально не заменяет.`, "cyan"));
+    log(colorize(`   Если нужно перезалить/заменить старые фото — нужен отдельный режим замены, чтобы случайно не стереть хорошее.`, "gray"));
+    log("");
+  }
 
   if (toImport.length === 0) {
     log("Нечего импортировать. Готово.");
@@ -347,7 +530,7 @@ async function main() {
 
     try {
       log(colorize(`\n🔄 Синхронизирую image/images на прод…`, "cyan"));
-      sh("node", [path.join(ROOT, "scripts", "sync-product-images-to-prod.mjs"), "--apply"]);
+      sh(process.execPath, [path.join(ROOT, "scripts", "sync-product-images-to-prod.mjs"), "--apply"]);
     } catch (err) {
       log(colorize(`⚠️  Синк на прод упал: ${err.message}`, "yellow"));
       log(colorize(`   Запусти вручную: node scripts/sync-product-images-to-prod.mjs --apply`, "gray"));

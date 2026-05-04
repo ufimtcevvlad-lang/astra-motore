@@ -4,6 +4,7 @@ import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
 import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
+import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
 
 export async function GET(
   _req: NextRequest,
@@ -104,6 +105,16 @@ export async function PUT(
     inStockOut = Math.round(s);
   }
 
+  const bodyImages = Array.isArray(body.images) ? body.images : undefined;
+  const bodyImage = typeof body.image === "string" ? body.image : undefined;
+  const blockedImage = await findQrSeparatorProductImage([bodyImage, ...(bodyImages ?? [])]);
+  if (blockedImage) {
+    return NextResponse.json(
+      { error: "В галерее есть QR-разделитель парсера. Удалите его из фото товара и сохраните снова." },
+      { status: 400 },
+    );
+  }
+
   const now = new Date().toISOString();
 
   try {
@@ -118,8 +129,8 @@ export async function PUT(
         car: typeof body.car === "string" ? body.car : undefined,
         price: priceOut,
         inStock: inStockOut,
-        image: typeof body.image === "string" ? body.image : undefined,
-        images: body.images ? JSON.stringify(body.images) : undefined,
+        image: bodyImage,
+        images: bodyImages ? JSON.stringify(bodyImages) : undefined,
         description: typeof body.description === "string" ? body.description : undefined,
         longDescription:
           body.longDescription === undefined ? undefined : body.longDescription,

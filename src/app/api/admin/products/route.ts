@@ -6,6 +6,7 @@ import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 import { normalizeSkuForSearch } from "@/app/lib/sku-normalize";
+import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
 
 const PAGE_SIZE = 20;
 
@@ -153,6 +154,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
   }
 
+  const bodyImages = Array.isArray(body.images) ? body.images : undefined;
+  const bodyImage = typeof body.image === "string" ? body.image : "";
+  const blockedImage = await findQrSeparatorProductImage([bodyImage, ...(bodyImages ?? [])]);
+  if (blockedImage) {
+    return NextResponse.json(
+      { error: "В галерее есть QR-разделитель парсера. Удалите его из фото товара и сохраните снова." },
+      { status: 400 },
+    );
+  }
+
   const now = new Date().toISOString();
   const externalId = `admin-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const slug = generateUniqueProductSlug({ name, brand, sku });
@@ -172,8 +183,8 @@ export async function POST(req: NextRequest) {
         car: body.car ?? "",
         price: Math.round(priceNum),
         inStock: Math.round(inStockNum),
-        image: body.image ?? "",
-        images: body.images ? JSON.stringify(body.images) : "[]",
+        image: bodyImage,
+        images: bodyImages ? JSON.stringify(bodyImages) : "[]",
         description: body.description ?? "",
         longDescription: body.longDescription ?? null,
         createdAt: now,
