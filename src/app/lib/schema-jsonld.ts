@@ -1,5 +1,6 @@
 import { absoluteUrl } from "./seo";
 import { SITE_BRAND, SITE_URL } from "./site";
+import { YANDEX_BUSINESS, YANDEX_BUSINESS_LINKS } from "./yandex-business";
 
 export function getOrganizationJsonLd() {
   return {
@@ -9,22 +10,22 @@ export function getOrganizationJsonLd() {
     url: SITE_URL,
     image: absoluteUrl("/brand/gm-shop-logo-header.png"),
     logo: absoluteUrl("/brand/gm-shop-logo-header.png"),
-    telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
-    areaServed: "Екатеринбург",
+    telephone: YANDEX_BUSINESS.phones,
+    areaServed: YANDEX_BUSINESS.locality,
     priceRange: "₽₽",
     currenciesAccepted: "RUB",
     paymentAccepted: "Cash, Credit Card, SBP",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Екатеринбург",
-      streetAddress: "ул. Готвальда, 9",
+      addressLocality: YANDEX_BUSINESS.locality,
+      streetAddress: YANDEX_BUSINESS.streetAddress,
       addressCountry: "RU",
-      postalCode: "620100",
+      postalCode: YANDEX_BUSINESS.postalCode,
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 56.850673,
-      longitude: 60.568755,
+      latitude: YANDEX_BUSINESS.lat,
+      longitude: YANDEX_BUSINESS.lon,
     },
     openingHoursSpecification: [
       {
@@ -41,7 +42,8 @@ export function getOrganizationJsonLd() {
       },
     ],
     sameAs: [
-      "https://yandex.ru/maps/org/gm_drive/1299977455/",
+      YANDEX_BUSINESS_LINKS.maps,
+      YANDEX_BUSINESS_LINKS.profile,
     ],
   } as const;
 }
