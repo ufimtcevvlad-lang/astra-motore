@@ -335,6 +335,13 @@
       "/images/catalog/import-1777888271977-nbt2pe/02.webp"
     ]
   },
+  "9290365": {
+    "image": "/images/catalog/import-1777906026270-vuincu/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026270-vuincu/01.webp",
+      "/images/catalog/import-1777906026270-vuincu/02.webp"
+    ]
+  },
   "9290933": {
     "image": "/images/catalog/import-1777569246204-2nr7y4/01.webp",
     "images": [
@@ -2043,6 +2050,49 @@
     "images": [
       "/images/catalog/import-1777905066059-szhkbj/01.webp",
       "/images/catalog/import-1777905066059-szhkbj/02.webp"
+    ]
+  },
+  "PCI1306": {
+    "image": "/images/catalog/import-1776624616594-iobzi3/01.webp",
+    "images": [
+      "/images/catalog/import-1776624616594-iobzi3/01.webp",
+      "/images/catalog/import-1776624616594-iobzi3/02.webp",
+      "/images/catalog/import-1776624616594-iobzi3/03.webp"
+    ]
+  },
+  "SP1362": {
+    "image": "/images/catalog/import-1777906026265-lgp8mu/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026265-lgp8mu/01.webp",
+      "/images/catalog/import-1777906026265-lgp8mu/02.webp"
+    ]
+  },
+  "SP1363": {
+    "image": "/images/catalog/import-1777906026267-25opxx/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026267-25opxx/01.webp",
+      "/images/catalog/import-1777906026267-25opxx/02.webp"
+    ]
+  },
+  "SP1703": {
+    "image": "/images/catalog/import-1777906026264-h8ik31/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026264-h8ik31/01.webp",
+      "/images/catalog/import-1777906026264-h8ik31/02.webp"
+    ]
+  },
+  "TC687": {
+    "image": "/images/catalog/import-1777906026268-w278f2/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026268-w278f2/01.webp",
+      "/images/catalog/import-1777906026268-w278f2/02.webp"
+    ]
+  },
+  "TC879": {
+    "image": "/images/catalog/import-1777906026269-agmq29/01.webp",
+    "images": [
+      "/images/catalog/import-1777906026269-agmq29/01.webp",
+      "/images/catalog/import-1777906026269-agmq29/02.webp"
     ]
   }
 }
