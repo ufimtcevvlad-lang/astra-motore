@@ -42,8 +42,13 @@ export const metadata: Metadata = {
   creator: SITE_BRAND,
   publisher: SITE_BRAND,
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    shortcut: "/favicon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-120.png", type: "image/png", sizes: "120x120" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   title: {
     default: `${SITE_BRAND} — оригинальные запчасти Opel и Chevrolet в Екатеринбурге`,
