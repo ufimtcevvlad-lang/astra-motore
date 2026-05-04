@@ -154,7 +154,9 @@ export default function ProductsPage() {
     !!filters.priceFrom ||
     !!filters.priceTo ||
     !!filters.nocat ||
-    !!filters.recent;
+    !!filters.recent ||
+    sort.field !== "updated" ||
+    sort.dir !== "desc";
 
   return (
     <>
@@ -202,7 +204,9 @@ export default function ProductsPage() {
           categories={categories}
           brands={brands}
           filters={filters}
+          sort={sort}
           onChange={setFilters}
+          onSortChange={setSort}
           onReset={hasFilters ? reset : undefined}
           resultCount={loading ? null : total}
         />

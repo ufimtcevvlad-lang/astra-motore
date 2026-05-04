@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { SortState } from "./useProductFilters";
 
 export interface ProductFiltersState {
   search: string;
@@ -18,16 +19,26 @@ interface ProductFiltersProps {
   categories: { id: number; title: string }[];
   brands: string[];
   filters: ProductFiltersState;
+  sort: SortState;
   onChange: (filters: ProductFiltersState) => void;
+  onSortChange: (sort: SortState) => void;
   onReset?: () => void;
   resultCount?: number | null;
+}
+
+interface ActiveFilter {
+  key: string;
+  label: string;
+  onRemove: () => void;
 }
 
 export default function ProductFilters({
   categories,
   brands,
   filters,
+  sort,
   onChange,
+  onSortChange,
   onReset,
   resultCount,
 }: ProductFiltersProps) {
@@ -51,6 +62,73 @@ export default function ProductFilters({
     onChange({ ...filters, [key]: value });
   }
 
+  function handleSortValue(value: string) {
+    const [field, dir] = value.split(":") as [SortState["field"], SortState["dir"]];
+    onSortChange({ field, dir });
+  }
+
+  const activeFilters: ActiveFilter[] = [];
+  const selectedCategory = categories.find((c) => String(c.id) === filters.categoryId);
+
+  if (filters.search) {
+    activeFilters.push({
+      key: "search",
+      label: `Поиск: ${filters.search}`,
+      onRemove: () => onChange({ ...filters, search: "" }),
+    });
+  }
+  if (filters.recent) {
+    activeFilters.push({
+      key: "recent",
+      label: "Новые",
+      onRemove: () => onChange({ ...filters, recent: false }),
+    });
+  }
+  if (filters.hidden) {
+    activeFilters.push({
+      key: "hidden",
+      label: filters.hidden === "hidden" ? "Скрытые" : "Опубликованные",
+      onRemove: () => onChange({ ...filters, hidden: "" }),
+    });
+  }
+  if (filters.nocat) {
+    activeFilters.push({
+      key: "nocat",
+      label: "Без категории",
+      onRemove: () => onChange({ ...filters, nocat: false }),
+    });
+  }
+  if (filters.categoryId) {
+    activeFilters.push({
+      key: "category",
+      label: `Категория: ${selectedCategory?.title ?? filters.categoryId}`,
+      onRemove: () => onChange({ ...filters, categoryId: "" }),
+    });
+  }
+  if (filters.brand) {
+    activeFilters.push({
+      key: "brand",
+      label: `Бренд: ${filters.brand}`,
+      onRemove: () => onChange({ ...filters, brand: "" }),
+    });
+  }
+  if (filters.inStock) {
+    activeFilters.push({
+      key: "stock",
+      label: filters.inStock === "no" ? "Нет в наличии" : "В наличии",
+      onRemove: () => onChange({ ...filters, inStock: "" }),
+    });
+  }
+  if (filters.priceFrom || filters.priceTo) {
+    activeFilters.push({
+      key: "price",
+      label: `Цена: ${filters.priceFrom || "0"}-${filters.priceTo || "∞"}`,
+      onRemove: () => onChange({ ...filters, priceFrom: "", priceTo: "" }),
+    });
+  }
+
+  const sortValue = `${sort.field}:${sort.dir}`;
+
   const selectClass =
     "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white";
   const inputClass =
@@ -66,23 +144,55 @@ export default function ProductFilters({
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
           <label className="flex min-w-0 flex-1 flex-col gap-1">
-            <span className={labelClass}>Поиск</span>
-            <input
-              type="text"
-              placeholder="Название, артикул или часть номера"
-              value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className={inputClass}
-            />
+            <span className={labelClass}>Поиск товаров</span>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Название, артикул или OEM"
+                value={searchInput}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className={`${inputClass} pr-10`}
+              />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => handleSearchChange("")}
+                  className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                  aria-label="Очистить поиск"
+                >
+                  ×
+                </button>
+              )}
+            </div>
           </label>
 
-          <div className="flex items-center justify-between gap-3 xl:justify-end">
+          <div className="grid gap-3 sm:grid-cols-[minmax(190px,240px)_auto] xl:items-end">
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelClass}>Сортировка</span>
+              <select
+                value={sortValue}
+                onChange={(e) => handleSortValue(e.target.value)}
+                className={selectClass}
+              >
+                <option value="updated:desc">Недавно обновленные</option>
+                <option value="created:desc">Новые сначала</option>
+                <option value="created:asc">Старые сначала</option>
+                <option value="name:asc">Название А-Я</option>
+                <option value="name:desc">Название Я-А</option>
+                <option value="price:asc">Цена по возрастанию</option>
+                <option value="price:desc">Цена по убыванию</option>
+                <option value="inStock:asc">Остаток по возрастанию</option>
+                <option value="inStock:desc">Остаток по убыванию</option>
+              </select>
+            </label>
+
+            <div className="flex items-center justify-between gap-3 self-end xl:justify-end">
             {resultCount !== undefined && (
-              <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-500">
-                Найдено:{" "}
+              <div className="whitespace-nowrap px-1 py-2 text-sm text-gray-500">
                 <span className="font-semibold text-gray-900">
-                  {resultCount === null ? "считаем" : resultCount}
-                </span>
+                  {resultCount === null ? "Считаем" : resultCount.toLocaleString("ru-RU")}
+                </span>{" "}
+                {resultCount === null ? "..." : "товаров"}
               </div>
             )}
 
@@ -90,21 +200,24 @@ export default function ProductFilters({
               <button
                 type="button"
                 onClick={onReset}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                className="whitespace-nowrap rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               >
-                Сбросить
+                Сбросить фильтры
               </button>
             )}
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2" aria-label="Быстрые фильтры">
+        <div className="flex flex-col gap-2">
+          <span className={labelClass}>Быстрые фильтры</span>
+          <div className="flex flex-wrap gap-2" aria-label="Быстрые фильтры">
           <button
             type="button"
             onClick={() => onChange({ ...filters, recent: !filters.recent })}
             className={`${chipBase} ${filters.recent ? activeChip : mutedChip}`}
           >
-            Недавно добавленные
+            Новые
           </button>
           <button
             type="button"
@@ -139,6 +252,7 @@ export default function ProductFilters({
           >
             Нет в наличии
           </button>
+          </div>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -197,14 +311,14 @@ export default function ProductFilters({
               className={selectClass}
             >
               <option value="">Все товары</option>
-              <option value="visible">Видимые</option>
+              <option value="visible">Опубликованные</option>
               <option value="hidden">Скрытые</option>
             </select>
           </label>
         </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid max-w-sm grid-cols-[1fr_auto_1fr] items-end gap-2">
+        <div className="flex flex-col gap-3">
+          <div className="grid max-w-md grid-cols-[1fr_auto_1fr] items-end gap-2">
             <label className="flex min-w-0 flex-col gap-1">
               <span className={labelClass}>Цена от</span>
               <input
@@ -220,7 +334,7 @@ export default function ProductFilters({
               <span className={labelClass}>Цена до</span>
               <input
                 type="number"
-                placeholder="999999"
+                placeholder="Без ограничения"
                 value={filters.priceTo}
                 onChange={(e) => handleChange("priceTo", e.target.value)}
                 className={inputClass}
@@ -228,9 +342,19 @@ export default function ProductFilters({
             </label>
           </div>
 
-          {filters.recent && (
-            <div className="text-sm text-indigo-700">
-              Сортировка: сначала товары, добавленные последними
+          {activeFilters.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3">
+              <span className={labelClass}>Активно:</span>
+              {activeFilters.map((filter) => (
+                <button
+                  key={filter.key}
+                  type="button"
+                  onClick={filter.onRemove}
+                  className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-100"
+                >
+                  {filter.label} ×
+                </button>
+              ))}
             </div>
           )}
         </div>
