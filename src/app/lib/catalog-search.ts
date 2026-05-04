@@ -2,6 +2,7 @@ import type { Product } from "./products-types";
 import { getAllProducts } from "./products-db";
 import { sortProductsById } from "../data/catalog-sections";
 import { getProductSlug } from "./product-slug";
+import { normalizeSkuForSearch } from "./sku-normalize";
 
 /** Лёгкий объект для API и подсказок (без длинного description) */
 export type SearchResultItem = {
@@ -22,11 +23,13 @@ export function normalizeCatalogQuery(q: string): string {
 
 export function productMatchesTextQuery(p: Product, queryNorm: string): boolean {
   if (!queryNorm) return true;
+  const skuQuery = normalizeSkuForSearch(queryNorm);
   return (
     p.name.toLowerCase().includes(queryNorm) ||
     p.brand.toLowerCase().includes(queryNorm) ||
     p.car.toLowerCase().includes(queryNorm) ||
     p.sku.toLowerCase().includes(queryNorm) ||
+    (skuQuery.length > 0 && normalizeSkuForSearch(p.sku).includes(skuQuery)) ||
     p.category.toLowerCase().includes(queryNorm)
   );
 }
@@ -34,6 +37,7 @@ export function productMatchesTextQuery(p: Product, queryNorm: string): boolean 
 type IndexedProduct = {
   product: Product & { slug?: string };
   skuNorm: string;
+  skuCompactNorm: string;
   nameNorm: string;
   brandNorm: string;
   carNorm: string;
@@ -46,6 +50,7 @@ function getIndexedProducts(): IndexedProduct[] {
     cachedIndex = getAllProducts().map((product) => ({
       product,
       skuNorm: product.sku.toLowerCase(),
+      skuCompactNorm: normalizeSkuForSearch(product.sku),
       nameNorm: product.name.toLowerCase(),
       brandNorm: product.brand.toLowerCase(),
       carNorm: product.car.toLowerCase(),
@@ -61,20 +66,26 @@ export function invalidateSearchIndex(): void {
 
 function indexedProductMatchesTextQuery(p: IndexedProduct, queryNorm: string): boolean {
   if (!queryNorm) return true;
+  const skuQuery = normalizeSkuForSearch(queryNorm);
   return (
     p.nameNorm.includes(queryNorm) ||
     p.brandNorm.includes(queryNorm) ||
     p.carNorm.includes(queryNorm) ||
     p.skuNorm.includes(queryNorm) ||
+    (skuQuery.length > 0 && p.skuCompactNorm.includes(skuQuery)) ||
     p.categoryNorm.includes(queryNorm)
   );
 }
 
 function relevanceScore(p: IndexedProduct, q: string): number {
   let s = 0;
+  const skuQuery = normalizeSkuForSearch(q);
   if (p.skuNorm === q) s += 1000;
+  if (skuQuery && p.skuCompactNorm === skuQuery) s += 1000;
   else if (p.skuNorm.startsWith(q)) s += 500;
+  else if (skuQuery && p.skuCompactNorm.startsWith(skuQuery)) s += 500;
   else if (p.skuNorm.includes(q)) s += 400;
+  else if (skuQuery && p.skuCompactNorm.includes(skuQuery)) s += 400;
   if (p.nameNorm.includes(q)) s += 120;
   if (p.brandNorm.includes(q)) s += 40;
   if (p.carNorm.includes(q)) s += 30;

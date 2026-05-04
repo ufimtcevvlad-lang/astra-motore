@@ -1,6 +1,7 @@
 "use client";
 
 import { type Product } from "../../lib/products-types";
+import { normalizeSkuForSearch } from "../../lib/sku-normalize";
 
 // ==================== ТИПЫ ====================
 
@@ -38,11 +39,13 @@ export function matchesCarBrand(p: Product, carBrand: CatalogFilterState["carBra
 
 export function matchesTextQuery(p: Product, q: string): boolean {
   if (!q) return true;
+  const skuQuery = normalizeSkuForSearch(q);
   return (
     p.name.toLowerCase().includes(q) ||
     p.brand.toLowerCase().includes(q) ||
     p.car.toLowerCase().includes(q) ||
     p.sku.toLowerCase().includes(q) ||
+    (skuQuery.length > 0 && normalizeSkuForSearch(p.sku).includes(skuQuery)) ||
     p.category.toLowerCase().includes(q)
   );
 }

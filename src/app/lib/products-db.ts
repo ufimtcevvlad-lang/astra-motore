@@ -1,10 +1,11 @@
 import { db, schema } from "./db";
-import { eq, like, or, and } from "drizzle-orm";
+import { eq, like, or, and, sql } from "drizzle-orm";
 
 const notHidden = () => eq(schema.products.hidden, false);
 import type { Product } from "./products-types";
 import { getProductImages } from "./product-images";
 import { baseProductSlug } from "./product-slug";
+import { normalizeSkuForSearch } from "./sku-normalize";
 
 type ProductRow = typeof schema.products.$inferSelect;
 type CategoryRow = typeof schema.categories.$inferSelect;
@@ -188,6 +189,7 @@ export function generateUniqueProductSlug(
 
 export function searchProducts(query: string): Array<Product & { slug: string }> {
   const q = `%${query.toLowerCase()}%`;
+  const skuQuery = `%${normalizeSkuForSearch(query)}%`;
   const rows = db
     .select()
     .from(schema.products)
@@ -197,6 +199,10 @@ export function searchProducts(query: string): Array<Product & { slug: string }>
           like(schema.products.name, q),
           like(schema.products.brand, q),
           like(schema.products.sku, q),
+          like(
+            sql<string>`upper(replace(replace(replace(replace(replace(replace(replace(${schema.products.sku}, ' ', ''), '-', ''), '_', ''), '.', ''), '/', ''), ',', ''), ':', ''))`,
+            skuQuery,
+          ),
           like(schema.products.car, q),
         ),
         notHidden(),

@@ -5,8 +5,13 @@ import { eq, like, and, gte, lte, sql, desc, asc, or, isNull } from "drizzle-orm
 import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
+import { normalizeSkuForSearch } from "@/app/lib/sku-normalize";
 
 const PAGE_SIZE = 20;
+
+function compactSkuSql() {
+  return sql<string>`upper(replace(replace(replace(replace(replace(replace(replace(${schema.products.sku}, ' ', ''), '-', ''), '_', ''), '.', ''), '/', ''), ',', ''), ':', ''))`;
+}
 
 export async function GET(req: NextRequest) {
   const auth = await requireAdmin();
@@ -29,10 +34,12 @@ export async function GET(req: NextRequest) {
   const conditions = [];
 
   if (search) {
+    const skuSearch = normalizeSkuForSearch(search);
     conditions.push(
       or(
         like(schema.products.name, `%${search}%`),
-        like(schema.products.sku, `%${search}%`)
+        like(schema.products.sku, `%${search}%`),
+        skuSearch ? like(compactSkuSql(), `%${skuSearch}%`) : undefined
       )
     );
   }

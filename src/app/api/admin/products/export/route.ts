@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/app/lib/admin-middleware";
 import { db, schema } from "@/app/lib/db";
-import { eq, like, and, gte, lte, or, desc } from "drizzle-orm";
+import { eq, like, and, gte, lte, or, desc, sql } from "drizzle-orm";
+import { normalizeSkuForSearch } from "@/app/lib/sku-normalize";
 import * as XLSX from "xlsx";
+
+function compactSkuSql() {
+  return sql<string>`upper(replace(replace(replace(replace(replace(replace(replace(${schema.products.sku}, ' ', ''), '-', ''), '_', ''), '.', ''), '/', ''), ',', ''), ':', ''))`;
+}
 
 export async function GET(req: NextRequest) {
   const auth = await requireAdmin();
@@ -18,10 +23,12 @@ export async function GET(req: NextRequest) {
 
   const conditions = [];
   if (search) {
+    const skuSearch = normalizeSkuForSearch(search);
     conditions.push(
       or(
         like(schema.products.name, `%${search}%`),
-        like(schema.products.sku, `%${search}%`)
+        like(schema.products.sku, `%${search}%`),
+        skuSearch ? like(compactSkuSql(), `%${skuSearch}%`) : undefined
       )
     );
   }
