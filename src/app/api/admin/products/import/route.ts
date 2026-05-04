@@ -15,6 +15,30 @@ function normCompactSku(s: string): string {
   return (s ?? "").replace(/[\s\-_./]+/g, "").toUpperCase();
 }
 
+function normHeaderCell(value: unknown): string {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(/[^a-zа-я0-9]+/g, "");
+}
+
+function isHeaderRow(row: Record<string, unknown>): boolean {
+  const name = normHeaderCell(row["C"]);
+  const sku = normHeaderCell(row["D"]);
+  const brand = normHeaderCell(row["E"]);
+  const price = normHeaderCell(row["F"]);
+
+  const nameLabels = new Set(["наименование", "название", "товар", "товары", "номенклатура"]);
+  const skuLabels = new Set(["артикул", "код", "номер", "sku", "partnumber"]);
+  const brandLabels = new Set(["бренд", "производитель", "марка"]);
+  const priceLabels = new Set(["цена", "стоимость", "прайс"]);
+
+  if (nameLabels.has(name) && skuLabels.has(sku)) return true;
+  if (skuLabels.has(sku) && (brandLabels.has(brand) || priceLabels.has(price))) return true;
+  return nameLabels.has(name) && brandLabels.has(brand) && priceLabels.has(price);
+}
+
 export interface ParsedRow {
   sku: string;
   name: string;          // финальное (переписанное)
@@ -61,6 +85,8 @@ export async function POST(req: NextRequest) {
 
     // Колонки C=name, D=sku, E=brand, F=price.
     for (const row of rows) {
+      if (isHeaderRow(row)) continue;
+
       const rawName = String(row["C"] ?? "").trim();
       const sku = String(row["D"] ?? "").trim();
       const brand = String(row["E"] ?? "").trim();
