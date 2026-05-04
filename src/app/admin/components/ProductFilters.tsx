@@ -80,7 +80,7 @@ export default function ProductFilters({
   if (filters.recent) {
     activeFilters.push({
       key: "recent",
-      label: "Новые",
+      label: "Новые сначала",
       onRemove: () => onChange({ ...filters, recent: false }),
     });
   }
@@ -137,7 +137,6 @@ export default function ProductFilters({
   const chipBase =
     "rounded-lg border px-3 py-2 text-sm font-medium transition-colors";
   const mutedChip = "border-gray-300 text-gray-600 hover:bg-gray-50";
-  const activeChip = "border-indigo-300 bg-indigo-50 text-indigo-700";
 
   return (
     <section className="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -174,15 +173,15 @@ export default function ProductFilters({
                 onChange={(e) => handleSortValue(e.target.value)}
                 className={selectClass}
               >
-                <option value="updated:desc">Недавно обновленные</option>
+                <option value="updated:desc">Обновленные</option>
                 <option value="created:desc">Новые сначала</option>
                 <option value="created:asc">Старые сначала</option>
                 <option value="name:asc">Название А-Я</option>
                 <option value="name:desc">Название Я-А</option>
-                <option value="price:asc">Цена по возрастанию</option>
-                <option value="price:desc">Цена по убыванию</option>
-                <option value="inStock:asc">Остаток по возрастанию</option>
-                <option value="inStock:desc">Остаток по убыванию</option>
+                <option value="price:asc">Цена: дешевле</option>
+                <option value="price:desc">Цена: дороже</option>
+                <option value="inStock:asc">Остаток: меньше</option>
+                <option value="inStock:desc">Остаток: больше</option>
               </select>
             </label>
 
@@ -212,13 +211,6 @@ export default function ProductFilters({
         <div className="flex flex-col gap-2">
           <span className={labelClass}>Быстрые фильтры</span>
           <div className="flex flex-wrap gap-2" aria-label="Быстрые фильтры">
-          <button
-            type="button"
-            onClick={() => onChange({ ...filters, recent: !filters.recent })}
-            className={`${chipBase} ${filters.recent ? activeChip : mutedChip}`}
-          >
-            Новые
-          </button>
           <button
             type="button"
             onClick={() => onChange({ ...filters, hidden: filters.hidden === "hidden" ? "" : "hidden" })}
@@ -255,7 +247,7 @@ export default function ProductFilters({
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-3">
           <label className="flex min-w-0 flex-col gap-1">
             <span className={labelClass}>Категория</span>
             <select
@@ -300,19 +292,6 @@ export default function ProductFilters({
               <option value="">Любой остаток</option>
               <option value="yes">В наличии</option>
               <option value="no">Нет в наличии</option>
-            </select>
-          </label>
-
-          <label className="flex min-w-0 flex-col gap-1">
-            <span className={labelClass}>Видимость</span>
-            <select
-              value={filters.hidden}
-              onChange={(e) => handleChange("hidden", e.target.value)}
-              className={selectClass}
-            >
-              <option value="">Все товары</option>
-              <option value="visible">Опубликованные</option>
-              <option value="hidden">Скрытые</option>
             </select>
           </label>
         </div>

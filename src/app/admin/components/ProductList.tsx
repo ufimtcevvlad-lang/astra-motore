@@ -23,6 +23,7 @@ export interface ProductItem {
   price: number;
   inStock: number;
   image: string | null;
+  createdAt?: string | null;
   hidden?: boolean;
 }
 
@@ -194,6 +195,17 @@ function MarketCell({
   );
 }
 
+function formatProductDate(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export default function ProductList({
   items,
   page,
@@ -287,6 +299,7 @@ export default function ProductList({
 
   const allSelected = items.every((i) => selectedIds.has(i.id));
   const someSelected = !allSelected && items.some((i) => selectedIds.has(i.id));
+  const showAddedDate = sort.field === "created";
 
   function openProduct(id: number) {
     saveScroll(`${pathname}?${searchParams.toString()}`);
@@ -357,6 +370,7 @@ export default function ProductList({
           {items.map((item) => {
             const selected = selectedIds.has(item.id);
             const isHidden = !!item.hidden;
+            const addedDate = showAddedDate ? formatProductDate(item.createdAt) : null;
             return (
               <div
                 key={item.id}
@@ -393,6 +407,11 @@ export default function ProductList({
                     {item.categoryTitle && (
                       <span className="truncate" title={item.categoryTitle}>
                         · {item.categoryTitle}
+                      </span>
+                    )}
+                    {addedDate && (
+                      <span className="flex-shrink-0 text-indigo-600">
+                        · добавлен {addedDate}
                       </span>
                     )}
                   </div>
