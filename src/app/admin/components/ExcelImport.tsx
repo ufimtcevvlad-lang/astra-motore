@@ -408,6 +408,10 @@ export default function ExcelImport() {
               <h3 className="text-sm font-semibold text-amber-700">
                 Совпадения ({preview.duplicates.length})
               </h3>
+              <p className="mt-1 text-xs text-amber-700/80">
+                По умолчанию совпадения пропускаются. Выберите обновление только для тех
+                товаров, где нужно заменить старые данные новыми.
+              </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -423,8 +427,14 @@ export default function ExcelImport() {
                   {preview.duplicates.map((dup, i) => {
                     const nameChanged = dup.existing.name !== dup.name;
                     const priceChanged = dup.existing.price !== dup.price;
+                    const willUpdate = !!updateFlags[i];
                     return (
-                      <tr key={i} className="border-b border-gray-100">
+                      <tr
+                        key={i}
+                        className={`border-b border-gray-100 ${
+                          willUpdate ? "bg-indigo-50/40" : ""
+                        }`}
+                      >
                         <td className="px-6 py-3 font-mono text-xs">{dup.sku}</td>
                         <td className="px-6 py-3">
                           <div className="text-gray-500 text-xs line-through">
@@ -443,16 +453,29 @@ export default function ExcelImport() {
                           </div>
                         </td>
                         <td className="px-6 py-3 text-center">
-                          <button
-                            onClick={() => toggleUpdate(i)}
-                            className={`text-xs font-medium px-3 py-1 rounded-full transition ${
-                              updateFlags[i]
-                                ? "bg-indigo-100 text-indigo-700"
-                                : "bg-gray-100 text-gray-500"
-                            }`}
-                          >
-                            {updateFlags[i] ? "Обновить" : "Пропустить"}
-                          </button>
+                          <div className="flex flex-col items-center gap-1.5">
+                            <span
+                              className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                                willUpdate
+                                  ? "bg-indigo-100 text-indigo-700"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {willUpdate ? "Будет обновлён" : "Будет пропущен"}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => toggleUpdate(i)}
+                              aria-pressed={willUpdate}
+                              className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+                                willUpdate
+                                  ? "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                                  : "border-indigo-200 bg-indigo-600 text-white hover:bg-indigo-700"
+                              }`}
+                            >
+                              {willUpdate ? "Оставить старый" : "Обновить товар"}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
