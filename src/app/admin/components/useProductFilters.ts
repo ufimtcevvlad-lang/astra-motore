@@ -14,9 +14,10 @@ const EMPTY: ProductFiltersState = {
   priceFrom: "",
   priceTo: "",
   nocat: false,
+  recent: false,
 };
 
-export type SortField = "updated" | "name" | "price" | "inStock" | "brand";
+export type SortField = "updated" | "created" | "name" | "price" | "inStock" | "brand";
 export type SortDir = "asc" | "desc";
 export interface SortState {
   field: SortField;
@@ -29,6 +30,7 @@ function readParams(sp: URLSearchParams): {
   page: number;
   sort: SortState;
 } {
+  const recent = sp.get("recent") === "1";
   return {
     filters: {
       search: sp.get("search") ?? "",
@@ -39,11 +41,12 @@ function readParams(sp: URLSearchParams): {
       priceFrom: sp.get("priceFrom") ?? "",
       priceTo: sp.get("priceTo") ?? "",
       nocat: sp.get("nocat") === "1",
+      recent,
     },
     page: Math.max(1, Number(sp.get("page") ?? "1") || 1),
     sort: {
-      field: (sp.get("sort") as SortField) || "updated",
-      dir: sp.get("dir") === "asc" ? "asc" : "desc",
+      field: recent ? "created" : (sp.get("sort") as SortField) || "updated",
+      dir: recent ? "desc" : sp.get("dir") === "asc" ? "asc" : "desc",
     },
   };
 }
@@ -58,6 +61,7 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
   if (filters.priceFrom) p.set("priceFrom", filters.priceFrom);
   if (filters.priceTo) p.set("priceTo", filters.priceTo);
   if (filters.nocat) p.set("nocat", "1");
+  if (filters.recent) p.set("recent", "1");
   if (page > 1) p.set("page", String(page));
   if (sort.field !== DEFAULT_SORT.field) p.set("sort", sort.field);
   if (sort.dir !== DEFAULT_SORT.dir) p.set("dir", sort.dir);
@@ -66,7 +70,15 @@ function buildQuery(filters: ProductFiltersState, page: number, sort: SortState)
 
 function isEmpty(f: ProductFiltersState): boolean {
   return (
-    !f.search && !f.categoryId && !f.brand && !f.inStock && !f.hidden && !f.priceFrom && !f.priceTo && !f.nocat
+    !f.search &&
+    !f.categoryId &&
+    !f.brand &&
+    !f.inStock &&
+    !f.hidden &&
+    !f.priceFrom &&
+    !f.priceTo &&
+    !f.nocat &&
+    !f.recent
   );
 }
 
@@ -97,7 +109,10 @@ export function useProductFilters() {
   }, []);
 
   const push = (next: ProductFiltersState, nextPage: number, nextSort: SortState) => {
-    const q = buildQuery(next, nextPage, nextSort);
+    const normalizedSort: SortState = next.recent
+      ? { field: "created", dir: "desc" }
+      : nextSort;
+    const q = buildQuery(next, nextPage, normalizedSort);
     router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
     try {
       if (isEmpty(next)) localStorage.removeItem(STORAGE_KEY);
@@ -113,7 +128,7 @@ export function useProductFilters() {
     sort,
     setFilters: (f: ProductFiltersState) => push(f, 1, sort),
     setPage: (p: number) => push(filters, p, sort),
-    setSort: (s: SortState) => push(filters, 1, s),
+    setSort: (s: SortState) => push({ ...filters, recent: false }, 1, s),
     reset: () => push(EMPTY, 1, DEFAULT_SORT),
   };
 }

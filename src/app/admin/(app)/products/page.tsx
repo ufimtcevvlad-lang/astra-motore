@@ -50,6 +50,7 @@ export default function ProductsPage() {
     if (filters.priceFrom) params.set("priceFrom", filters.priceFrom);
     if (filters.priceTo) params.set("priceTo", filters.priceTo);
     if (filters.nocat) params.set("nocat", "1");
+    if (filters.recent) params.set("recent", "1");
     params.set("sort", sort.field);
     params.set("dir", sort.dir);
     return params.toString();
@@ -152,7 +153,8 @@ export default function ProductsPage() {
     !!filters.hidden ||
     !!filters.priceFrom ||
     !!filters.priceTo ||
-    !!filters.nocat;
+    !!filters.nocat ||
+    !!filters.recent;
 
   return (
     <>

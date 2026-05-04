@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
   const priceFrom = url.searchParams.get("priceFrom");
   const priceTo = url.searchParams.get("priceTo");
   const nocat = url.searchParams.get("nocat") === "1";
+  const recent = url.searchParams.get("recent") === "1";
   const sort = url.searchParams.get("sort") || "updated";
   const dir = url.searchParams.get("dir") === "asc" ? "asc" : "desc";
 
@@ -73,7 +74,9 @@ export async function GET(req: NextRequest) {
   const offset = (page - 1) * PAGE_SIZE;
 
   const sortColumn =
-    sort === "name"
+    recent || sort === "created"
+      ? schema.products.createdAt
+      : sort === "name"
       ? schema.products.name
       : sort === "price"
         ? schema.products.price
@@ -82,7 +85,7 @@ export async function GET(req: NextRequest) {
           : sort === "brand"
             ? schema.products.brand
             : schema.products.updatedAt;
-  const orderBy = dir === "asc" ? asc(sortColumn) : desc(sortColumn);
+  const orderBy = !recent && dir === "asc" ? asc(sortColumn) : desc(sortColumn);
 
   const items = await db
     .select({
