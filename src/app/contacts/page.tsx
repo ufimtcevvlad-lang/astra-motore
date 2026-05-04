@@ -1,7 +1,25 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SITE_URL } from "../lib/site";
-import { YANDEX_BUSINESS, YANDEX_BUSINESS_LINKS } from "../lib/yandex-business";
+
+/** Адрес для карты (как на странице) */
+const ADDRESS_LINE = "г. Екатеринбург, ул. Готвальда, д. 9";
+
+/** Карточка организации в Яндексе (как у вас в личном кабинете / профиле) */
+const YANDEX_ORG_PROFILE =
+  "https://yandex.ru/profile/1299977455?lang=ru";
+
+/** Страница той же организации на Яндекс.Картах (удобно с телефона для маршрута) */
+const YANDEX_MAPS_ORG_PAGE =
+  "https://yandex.ru/maps/org/gm_drive/1299977455/";
+
+/**
+ * Виджет карты: используем тот же org URL, что и в рабочей ссылке.
+ * Так точка всегда совпадает с карточкой компании.
+ */
+const YANDEX_MAP_EMBED_SRC = "https://yandex.ru/map-widget/v1/org/gm_drive/1299977455";
+const MAP_LON = 60.568755;
+const MAP_LAT = 56.850673;
 
 export const metadata: Metadata = {
   title: "Контакты",
@@ -25,21 +43,21 @@ export default function ContactsPage() {
     "@type": "ContactPage",
     mainEntity: {
       "@type": "Organization",
-      name: YANDEX_BUSINESS.displayName,
+      name: "GM Shop",
       url: SITE_URL,
-      sameAs: [YANDEX_BUSINESS_LINKS.profile, YANDEX_BUSINESS_LINKS.maps],
-      telephone: YANDEX_BUSINESS.phones,
+      sameAs: [YANDEX_ORG_PROFILE, YANDEX_MAPS_ORG_PAGE],
+      telephone: ["+7 (902) 254-01-11", "+7 (343) 206-15-35"],
       contactPoint: [
         {
           "@type": "ContactPoint",
-          telephone: YANDEX_BUSINESS.phones[0],
+          telephone: "+7 (902) 254-01-11",
           contactType: "sales",
           areaServed: "RU",
           availableLanguage: ["ru"],
         },
         {
           "@type": "ContactPoint",
-          telephone: YANDEX_BUSINESS.phones[1],
+          telephone: "+7 (343) 206-15-35",
           contactType: "sales",
           areaServed: "RU",
           availableLanguage: ["ru"],
@@ -47,15 +65,13 @@ export default function ContactsPage() {
       ],
       address: {
         "@type": "PostalAddress",
-        addressLocality: YANDEX_BUSINESS.locality,
-        streetAddress: YANDEX_BUSINESS.streetAddress,
-        postalCode: YANDEX_BUSINESS.postalCode,
-        addressCountry: "RU",
+        addressLocality: "Екатеринбург",
+        streetAddress: "ул. Готвальда, 9",
       },
       geo: {
         "@type": "GeoCoordinates",
-        latitude: YANDEX_BUSINESS.lat,
-        longitude: YANDEX_BUSINESS.lon,
+        latitude: MAP_LAT,
+        longitude: MAP_LON,
       },
       openingHoursSpecification: [
         {
@@ -86,54 +102,46 @@ export default function ContactsPage() {
         }}
       />
       <h1 className="text-2xl font-bold text-amber-900">Контакты</h1>
-      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">GM Shop 66</span> — ответим и подберём запчасти.</p>
+      <p className="text-slate-600">Свяжитесь с <span className="font-semibold text-amber-700">GM Shop</span> — ответим и подберём запчасти.</p>
 
       <div className="rounded-xl border border-amber-100 bg-white p-6 shadow-sm space-y-4">
         <div>
           <p className="text-sm font-medium text-slate-500">Телефон</p>
           <p className="text-lg">
             <a
-              href={YANDEX_BUSINESS.phoneLinks[0]}
+              href="tel:+79022540111"
               className="inline-flex min-h-11 items-center rounded px-1 py-1 text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
-              {YANDEX_BUSINESS.phones[0]}
+              +7 (902) 254-01-11
             </a>
             <br />
             <a
-              href={YANDEX_BUSINESS.phoneLinks[1]}
+              href="tel:+73432061535"
               className="inline-flex min-h-11 items-center rounded px-1 py-1 text-amber-600 font-medium hover:text-amber-700 hover:underline"
             >
-              {YANDEX_BUSINESS.phones[1]}
+              +7 (343) 206-15-35
             </a>
           </p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Адрес</p>
-          <p className="text-slate-800">{YANDEX_BUSINESS.addressLine}</p>
+          <p className="text-slate-800">{ADDRESS_LINE}</p>
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <a
-              href={YANDEX_BUSINESS_LINKS.route}
+              href={YANDEX_MAPS_ORG_PAGE}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
             >
-              Построить маршрут
-            </a>
-            <a
-              href={YANDEX_BUSINESS_LINKS.maps}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-amber-600 hover:text-amber-700 hover:underline"
-            >
-              Открыть карточку
+              Простроить маршрут
             </a>
           </p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Режим работы</p>
           <p className="text-slate-800">
-            {YANDEX_BUSINESS.openingHoursText[0]}<br />
-            {YANDEX_BUSINESS.openingHoursText[1]}
+            Пн – Пт: 10:00 – 20:00<br />
+            Сб – Вс: 10:00 – 18:00
           </p>
         </div>
         <p className="text-sm text-slate-600 pt-2">
@@ -144,30 +152,12 @@ export default function ContactsPage() {
       <div className="rounded-xl border border-amber-100 bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-lg font-semibold text-amber-900">Как нас найти</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Карта показывает адрес в Екатеринбурге. Карточка компании, отзывы и маршрут открываются в Яндекс.Картах.
+          Карта показывает адрес в Екатеринбурге. Карточка компании, отзывы и маршрут — по ссылкам над картой.
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <a
-            href={YANDEX_BUSINESS_LINKS.route}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-amber-500 px-4 text-sm font-semibold text-white transition hover:bg-amber-600"
-          >
-            Построить маршрут
-          </a>
-          <a
-            href={YANDEX_BUSINESS_LINKS.reviews}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            Отзывы на Яндексе
-          </a>
-        </div>
         <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           <iframe
-            title="GM Shop 66 на Яндекс.Картах"
-            src={YANDEX_BUSINESS_LINKS.mapWidget}
+            title="GM Shop на Яндекс.Картах"
+            src={YANDEX_MAP_EMBED_SRC}
             className="aspect-[16/10] min-h-[220px] w-full border-0 sm:min-h-[280px] sm:aspect-[16/9]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -178,7 +168,7 @@ export default function ContactsPage() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <a
-          href={YANDEX_BUSINESS.phoneLinks[0]}
+          href="tel:+79022540111"
           className="inline-flex justify-center rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 transition shadow-sm"
         >
           Позвонить

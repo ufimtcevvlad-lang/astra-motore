@@ -1,5 +1,3 @@
-import { YANDEX_BUSINESS_LINKS } from "@/app/lib/yandex-business";
-
 export type DeliveryMethod = "pickup" | "courier";
 
 export type PickupPoint = { id: string; name: string; note: string };
@@ -155,7 +153,7 @@ export function DeliveryBlock({
             <div className="overflow-hidden rounded-xl border border-slate-200">
               <iframe
                 title="Пункты выдачи GM Shop"
-                src={YANDEX_BUSINESS_LINKS.mapWidget}
+                src="https://yandex.ru/map-widget/v1/org/gm_drive/1299977455"
                 className="h-64 w-full border-0"
                 loading="lazy"
               />

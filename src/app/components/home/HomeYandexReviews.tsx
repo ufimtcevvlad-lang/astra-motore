@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { YANDEX_BUSINESS_LINKS } from "@/app/lib/yandex-business";
 
 /**
  * Блок отзывов с Яндекс.Карт.
@@ -9,16 +8,20 @@ import { YANDEX_BUSINESS_LINKS } from "@/app/lib/yandex-business";
  *  - Справа: «карточка доверия» с рейтингом, ключевыми фактами и CTA
  */
 
+const YANDEX_ORG_ID = "1299977455";
+const REVIEWS_EMBED_URL = `https://yandex.ru/maps-reviews-widget/${YANDEX_ORG_ID}?comments`;
+const YANDEX_ORG_PAGE = `https://yandex.ru/maps/org/gm_drive/${YANDEX_ORG_ID}/`;
+
 export function HomeYandexReviews() {
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Отзывы клиентов</h2>
-          <p className="mt-2 text-sm text-slate-600">С карточки GM Shop 66 на Яндекс.Картах</p>
+          <p className="mt-2 text-sm text-slate-600">С карточки GM Shop на Яндекс.Картах</p>
         </div>
         <a
-          href={YANDEX_BUSINESS_LINKS.reviews}
+          href={YANDEX_ORG_PAGE}
           target="_blank"
           rel="noopener noreferrer"
           className="self-start text-sm font-semibold text-amber-700 hover:text-amber-800 hover:underline sm:self-auto"
@@ -32,7 +35,7 @@ export function HomeYandexReviews() {
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <iframe
             title="Отзывы GM Shop на Яндекс.Картах"
-            src={YANDEX_BUSINESS_LINKS.reviewsWidget}
+            src={REVIEWS_EMBED_URL}
             className="block h-[560px] w-full border-0 lg:h-[620px]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -50,7 +53,7 @@ export function HomeYandexReviews() {
               ★★★★★
             </div>
             <p className="mt-2 text-xs text-slate-500">
-              Актуальная оценка и отзывы подтягиваются из Яндекс.Карт
+              Средняя оценка на Яндекс.Картах · 39 отзывов
             </p>
           </div>
 
@@ -63,7 +66,7 @@ export function HomeYandexReviews() {
 
           <div className="mt-auto flex flex-col gap-2 border-t border-amber-200/60 pt-4">
             <a
-              href={YANDEX_BUSINESS_LINKS.reviews}
+              href={YANDEX_ORG_PAGE}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-11 items-center justify-center rounded-lg bg-amber-500 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
