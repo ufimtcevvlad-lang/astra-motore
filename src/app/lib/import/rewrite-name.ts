@@ -12,7 +12,9 @@ export interface RewriteResult {
 }
 
 /**
- * Формула: {name с подставленной маркой перед моделью} | арт. {sku}
+ * Формула: чистое товарное название без хвоста «| арт. XXX».
+ * Артикул хранится отдельным полем sku и отдельно показывается в карточке,
+ * поэтому не дублируем его в name.
  *
  * Мульти-модельные кейсы:
  *   - одна марка, несколько моделей: "Opel Astra H/J" — марка ставится один раз
@@ -33,10 +35,23 @@ export function rewriteName(rawName: string, sku: string): RewriteResult {
     body = insertMakesBeforeFirstModel(normalized, det);
   }
 
-  const name = `${body} | арт. ${sku}`;
+  const name = stripSkuTail(body, sku);
   const unresolved = det.models.length === 0;
 
   return { name, car, unresolved };
+}
+
+function stripSkuTail(value: string, sku: string): string {
+  const escapedSku = sku.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const artPattern = new RegExp(
+    String.raw`(?:\s*[|,;—-]\s*)?(?:арт\.?|артикул)\s*[:№#-]?\s*${escapedSku}`,
+    "gi",
+  );
+  return value
+    .replace(artPattern, "")
+    .replace(/\s+\|+\s*$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function formatCarField(models: { make: CarMake; canonical: string }[]): string {

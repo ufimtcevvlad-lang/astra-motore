@@ -103,7 +103,25 @@ function hashIndex(s: string, len: number): number {
   return ((h % len) + len) % len;
 }
 
+function stripSkuFromName(name: string, sku: string): string {
+  const escapedSku = sku.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const artPattern = new RegExp(
+    String.raw`(?:\s*[|,;—-]\s*)?(?:арт\.?|артикул)\s*[:№#-]?\s*${escapedSku}`,
+    "gi",
+  );
+  return name
+    .replace(artPattern, "")
+    .replace(/\s+\|+\s*$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function displayName(product: Product): string {
+  return stripSkuFromName(product.name, product.sku) || product.name;
+}
+
 export function generateProductDescription(product: Product): string {
+  const name = displayName(product);
   const typPhrase =
     CATEGORY_PHRASE_MAP[product.category] ??
     GENERIC_PHRASES[hashIndex(product.id, GENERIC_PHRASES.length)];
@@ -113,9 +131,9 @@ export function generateProductDescription(product: Product): string {
   const parts: string[] = [];
 
   if (product.brand) {
-    parts.push(`${product.name} (${product.brand}) — ${typPhrase}`);
+    parts.push(`${name} (${product.brand}) — ${typPhrase}`);
   } else {
-    parts.push(`${product.name} — ${typPhrase}`);
+    parts.push(`${name} — ${typPhrase}`);
   }
 
   if (product.car) {
@@ -123,19 +141,19 @@ export function generateProductDescription(product: Product): string {
   }
   parts[0] += ".";
 
-  parts.push(`Артикул ${product.sku}.`);
   parts.push(closing);
 
   return parts.join(" ");
 }
 
 export function generateProductMetaDescription(product: Product): string {
+  const name = displayName(product);
   const parts: string[] = [];
 
   if (product.brand) {
-    parts.push(`${product.brand} ${product.sku} — ${product.name}`);
+    parts.push(`${product.brand} ${product.sku} — ${name}`);
   } else {
-    parts.push(`${product.sku} — ${product.name}`);
+    parts.push(`${product.sku} — ${name}`);
   }
 
   if (product.car) {
@@ -155,13 +173,13 @@ export function generateProductMetaDescription(product: Product): string {
 }
 
 export function generateProductTitle(product: Product): string {
-  return `${product.name} | GM Shop 66`;
+  return `${displayName(product)} | GM Shop 66`;
 }
 
 export function generateProductKeywords(product: Product): string[] {
   const kw: string[] = [product.sku];
   if (product.brand) kw.push(product.brand);
-  let cleanName = product.name.replace(product.sku, "");
+  let cleanName = displayName(product).replace(product.sku, "");
   if (product.brand) cleanName = cleanName.replace(product.brand, "");
   cleanName = cleanName.replace(/\s+/g, " ").trim();
   if (cleanName) kw.push(cleanName);
