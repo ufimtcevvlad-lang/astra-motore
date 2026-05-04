@@ -14,7 +14,7 @@ export default function NewProductPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/categories")
+    fetch("/api/admin/categories", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => setCategories(data.items ?? data))
       .catch(() => {})

@@ -158,6 +158,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       const method = isEdit ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
+        cache: "no-store",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });

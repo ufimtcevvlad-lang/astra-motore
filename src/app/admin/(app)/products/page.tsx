@@ -33,7 +33,7 @@ export default function ProductsPage() {
   useScrollRestore(scrollKey, !loading && items.length > 0);
 
   useEffect(() => {
-    fetch("/api/admin/categories")
+    fetch("/api/admin/categories", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => setCategories(data.items ?? data))
       .catch(() => {});
@@ -59,7 +59,7 @@ export default function ProductsPage() {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/products?${buildQuery()}`);
+      const res = await fetch(`/api/admin/products?${buildQuery()}`, { cache: "no-store" });
       const data = await res.json();
       setItems(data.items ?? []);
       setTotalPages(data.totalPages ?? 1);
@@ -97,6 +97,7 @@ export default function ProductsPage() {
   async function inlineUpdate(id: number, patch: { price?: number; inStock?: number; hidden?: boolean }) {
     const res = await fetch(`/api/admin/products/${id}/quick`, {
       method: "PATCH",
+      cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
@@ -109,6 +110,7 @@ export default function ProductsPage() {
     const ids = [...selectedIds];
     const res = await fetch(`/api/admin/products/bulk`, {
       method: "PATCH",
+      cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids, action }),
     });
@@ -125,6 +127,7 @@ export default function ProductsPage() {
       `/api/admin/products/bulk${force ? "?force=1" : ""}`,
       {
         method: "DELETE",
+        cache: "no-store",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       }

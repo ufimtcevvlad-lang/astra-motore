@@ -8,7 +8,23 @@ import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 import { normalizeSkuForSearch } from "@/app/lib/sku-normalize";
 import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const PAGE_SIZE = 20;
+const NO_STORE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate",
+};
+
+function adminJson<T>(data: T, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      ...NO_STORE_HEADERS,
+      ...(init?.headers ?? {}),
+    },
+  });
+}
 
 function compactSkuSql() {
   return sql<string>`upper(replace(replace(replace(replace(replace(replace(replace(${schema.products.sku}, ' ', ''), '-', ''), '_', ''), '.', ''), '/', ''), ',', ''), ':', ''))`;
@@ -127,7 +143,7 @@ export async function GET(req: NextRequest) {
 
   const brands = brandsResult.map((r) => r.brand);
 
-  return NextResponse.json({ items, total, page, totalPages, brands });
+  return adminJson({ items, total, page, totalPages, brands });
 }
 
 export async function POST(req: NextRequest) {
@@ -142,23 +158,23 @@ export async function POST(req: NextRequest) {
   const inStockNum = body.inStock == null ? 0 : Number(body.inStock);
 
   if (!name || !sku || !brand) {
-    return NextResponse.json(
+    return adminJson(
       { error: "Заполните название, артикул и бренд" },
       { status: 400 }
     );
   }
   if (!Number.isFinite(priceNum) || priceNum < 0) {
-    return NextResponse.json({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
+    return adminJson({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
   }
   if (!Number.isFinite(inStockNum) || inStockNum < 0) {
-    return NextResponse.json({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
+    return adminJson({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
   }
 
   const bodyImages = Array.isArray(body.images) ? body.images : undefined;
   const bodyImage = typeof body.image === "string" ? body.image : "";
   const blockedImage = await findQrSeparatorProductImage([bodyImage, ...(bodyImages ?? [])]);
   if (blockedImage) {
-    return NextResponse.json(
+    return adminJson(
       { error: "В галерее есть QR-разделитель парсера. Удалите его из фото товара и сохраните снова." },
       { status: 400 },
     );
@@ -195,12 +211,12 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (/UNIQUE constraint failed: products\.sku/i.test(msg)) {
-      return NextResponse.json(
+      return adminJson(
         { error: `Артикул "${sku}" уже существует. Артикулы должны быть уникальны.` },
         { status: 409 }
       );
     }
-    return NextResponse.json({ error: "Не удалось сохранить товар" }, { status: 500 });
+    return adminJson({ error: "Не удалось сохранить товар" }, { status: 500 });
   }
 
   if (body.specs && Array.isArray(body.specs) && body.specs.length > 0) {
@@ -217,5 +233,5 @@ export async function POST(req: NextRequest) {
   ensureProductDir(sku);
   revalidatePublicProductPages([slug]);
 
-  return NextResponse.json(product, { status: 201 });
+  return adminJson(product, { status: 201 });
 }

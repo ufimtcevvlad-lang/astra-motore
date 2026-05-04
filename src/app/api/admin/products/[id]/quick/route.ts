@@ -4,6 +4,23 @@ import { db, schema } from "@/app/lib/db";
 import { eq } from "drizzle-orm";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const NO_STORE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate",
+};
+
+function adminJson<T>(data: T, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      ...NO_STORE_HEADERS,
+      ...(init?.headers ?? {}),
+    },
+  });
+}
+
 interface QuickPatchBody {
   price?: number;
   inStock?: number;
@@ -25,14 +42,14 @@ export async function PATCH(
   if (body.price != null) {
     const p = Number(body.price);
     if (!Number.isFinite(p) || p < 0) {
-      return NextResponse.json({ error: "Некорректная цена" }, { status: 400 });
+      return adminJson({ error: "Некорректная цена" }, { status: 400 });
     }
     patch.price = p;
   }
   if (body.inStock != null) {
     const s = Number(body.inStock);
     if (!Number.isFinite(s) || s < 0) {
-      return NextResponse.json({ error: "Некорректный остаток" }, { status: 400 });
+      return adminJson({ error: "Некорректный остаток" }, { status: 400 });
     }
     patch.inStock = s;
   }
@@ -41,7 +58,7 @@ export async function PATCH(
   }
 
   if (Object.keys(patch).length === 1) {
-    return NextResponse.json({ error: "Нет данных для обновления" }, { status: 400 });
+    return adminJson({ error: "Нет данных для обновления" }, { status: 400 });
   }
 
   await db.update(schema.products).set(patch).where(eq(schema.products.id, numId));
@@ -52,10 +69,10 @@ export async function PATCH(
     .where(eq(schema.products.id, numId));
 
   if (!updated) {
-    return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+    return adminJson({ error: "Товар не найден" }, { status: 404 });
   }
 
   revalidatePublicProductPages(updated.slug ? [updated.slug] : []);
 
-  return NextResponse.json(updated);
+  return adminJson(updated);
 }

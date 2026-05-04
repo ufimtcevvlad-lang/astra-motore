@@ -24,11 +24,11 @@ export default function EditProductPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/admin/products/${id}`).then((r) => {
+      fetch(`/api/admin/products/${id}`, { cache: "no-store" }).then((r) => {
         if (!r.ok) throw new Error("Товар не найден");
         return r.json();
       }),
-      fetch("/api/admin/categories")
+      fetch("/api/admin/categories", { cache: "no-store" })
         .then((r) => r.json())
         .then((data) => data.items ?? data),
     ])

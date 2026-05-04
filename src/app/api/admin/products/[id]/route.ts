@@ -6,6 +6,35 @@ import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const NO_STORE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate",
+};
+
+function adminJson<T>(data: T, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      ...NO_STORE_HEADERS,
+      ...(init?.headers ?? {}),
+    },
+  });
+}
+
+function optionalText(value: unknown): string | undefined {
+  if (typeof value === "string") return value;
+  if (value === null) return "";
+  return undefined;
+}
+
+function optionalImage(value: unknown): string | undefined {
+  if (typeof value === "string") return value;
+  if (value === null) return "";
+  return undefined;
+}
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -22,7 +51,7 @@ export async function GET(
     .where(eq(schema.products.id, numId));
 
   if (rows.length === 0) {
-    return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+    return adminJson({ error: "Товар не найден" }, { status: 404 });
   }
 
   const product = rows[0];
@@ -50,7 +79,7 @@ export async function GET(
     images = [];
   }
 
-  return NextResponse.json({
+  return adminJson({
     ...product,
     images,
     specs,
@@ -75,7 +104,7 @@ export async function PUT(
     .where(eq(schema.products.id, numId));
 
   if (existing.length === 0) {
-    return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+    return adminJson({ error: "Товар не найден" }, { status: 404 });
   }
 
   // Валидация обязательных полей и числовых значений
@@ -83,7 +112,7 @@ export async function PUT(
   const skuStr = typeof body.sku === "string" ? body.sku.trim() : "";
   const brandStr = typeof body.brand === "string" ? body.brand.trim() : "";
   if (!nameStr || !skuStr || !brandStr) {
-    return NextResponse.json(
+    return adminJson(
       { error: "Заполните название, артикул и бренд" },
       { status: 400 }
     );
@@ -92,7 +121,7 @@ export async function PUT(
   if (body.price != null) {
     const p = Number(body.price);
     if (!Number.isFinite(p) || p < 0) {
-      return NextResponse.json({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
+      return adminJson({ error: "Цена должна быть числом ≥ 0" }, { status: 400 });
     }
     priceOut = Math.round(p);
   }
@@ -100,16 +129,16 @@ export async function PUT(
   if (body.inStock != null) {
     const s = Number(body.inStock);
     if (!Number.isFinite(s) || s < 0) {
-      return NextResponse.json({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
+      return adminJson({ error: "Остаток должен быть числом ≥ 0" }, { status: 400 });
     }
     inStockOut = Math.round(s);
   }
 
   const bodyImages = Array.isArray(body.images) ? body.images : undefined;
-  const bodyImage = typeof body.image === "string" ? body.image : undefined;
+  const bodyImage = optionalImage(body.image);
   const blockedImage = await findQrSeparatorProductImage([bodyImage, ...(bodyImages ?? [])]);
   if (blockedImage) {
-    return NextResponse.json(
+    return adminJson(
       { error: "В галерее есть QR-разделитель парсера. Удалите его из фото товара и сохраните снова." },
       { status: 400 },
     );
@@ -126,12 +155,12 @@ export async function PUT(
         brand: brandStr,
         country: typeof body.country === "string" ? body.country : undefined,
         categoryId: body.categoryId === undefined ? undefined : body.categoryId,
-        car: typeof body.car === "string" ? body.car : undefined,
+        car: optionalText(body.car),
         price: priceOut,
         inStock: inStockOut,
         image: bodyImage,
         images: bodyImages ? JSON.stringify(bodyImages) : undefined,
-        description: typeof body.description === "string" ? body.description : undefined,
+        description: optionalText(body.description),
         longDescription:
           body.longDescription === undefined ? undefined : body.longDescription,
         hidden: typeof body.hidden === "boolean" ? body.hidden : undefined,
@@ -141,12 +170,12 @@ export async function PUT(
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     if (/UNIQUE constraint failed: products\.sku/i.test(msg)) {
-      return NextResponse.json(
+      return adminJson(
         { error: `Артикул "${skuStr}" уже используется другим товаром.` },
         { status: 409 }
       );
     }
-    return NextResponse.json({ error: "Не удалось сохранить изменения" }, { status: 500 });
+    return adminJson({ error: "Не удалось сохранить изменения" }, { status: 500 });
   }
 
   // Re-insert specs
@@ -187,10 +216,49 @@ export async function PUT(
     .select()
     .from(schema.products)
     .where(eq(schema.products.id, numId));
+  const saved = updated[0];
 
-  revalidatePublicProductPages([updated[0]?.slug].filter(Boolean) as string[]);
+  if (!saved) {
+    return adminJson({ error: "Товар не найден после сохранения" }, { status: 404 });
+  }
 
-  return NextResponse.json(updated[0]);
+  const expectedImages = bodyImages ? JSON.stringify(bodyImages) : undefined;
+  const saveMismatch =
+    saved.name !== nameStr ||
+    saved.sku !== skuStr ||
+    saved.brand !== brandStr ||
+    (priceOut !== undefined && saved.price !== priceOut) ||
+    (inStockOut !== undefined && saved.inStock !== inStockOut) ||
+    (typeof body.hidden === "boolean" && saved.hidden !== body.hidden) ||
+    (body.categoryId !== undefined && saved.categoryId !== body.categoryId) ||
+    (optionalText(body.car) !== undefined && saved.car !== optionalText(body.car)) ||
+    (optionalImage(body.image) !== undefined && saved.image !== optionalImage(body.image)) ||
+    (expectedImages !== undefined && saved.images !== expectedImages) ||
+    (optionalText(body.description) !== undefined && saved.description !== optionalText(body.description)) ||
+    (body.longDescription !== undefined && saved.longDescription !== body.longDescription);
+
+  if (saveMismatch) {
+    console.error("Admin product save mismatch", {
+      id: numId,
+      expected: {
+        sku: skuStr,
+        name: nameStr,
+        brand: brandStr,
+        price: priceOut,
+        inStock: inStockOut,
+        categoryId: body.categoryId,
+      },
+      saved,
+    });
+    return adminJson(
+      { error: "Сервер не подтвердил сохранение товара. Обновите страницу и попробуйте ещё раз." },
+      { status: 500 },
+    );
+  }
+
+  revalidatePublicProductPages([saved.slug].filter(Boolean) as string[]);
+
+  return adminJson(saved);
 }
 
 export async function DELETE(
@@ -210,13 +278,13 @@ export async function DELETE(
     .where(eq(schema.products.id, numId));
 
   if (existing.length === 0) {
-    return NextResponse.json({ error: "Товар не найден" }, { status: 404 });
+    return adminJson({ error: "Товар не найден" }, { status: 404 });
   }
 
   if (!force) {
     const usage = await getOrderUsageByProductIds([numId]);
     if (usage.length > 0) {
-      return NextResponse.json(
+      return adminJson(
         {
           error: "product_used_in_orders",
           ordersCount: usage[0].ordersCount,
@@ -230,5 +298,5 @@ export async function DELETE(
   const deletedSlug = existing[0]?.slug;
   await db.delete(schema.products).where(eq(schema.products.id, numId));
   revalidatePublicProductPages(deletedSlug ? [deletedSlug] : []);
-  return NextResponse.json({ success: true });
+  return adminJson({ success: true });
 }
