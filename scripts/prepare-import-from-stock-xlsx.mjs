@@ -47,10 +47,11 @@ function main() {
   }
 
   const requested = readSkuList(skusPath);
-  const { matches, missing, duplicateMatches } = writeImportWorkbook({ requested, stockPath, outPath });
+  const { matches, missing, duplicateMatches, nonGmMatches } = writeImportWorkbook({ requested, stockPath, outPath });
 
   console.log(`Запрошено: ${requested.length}`);
-  console.log(`Найдено: ${matches.length}`);
+  console.log(`Найдено для GM-импорта: ${matches.length}`);
+  console.log(`Не-GM исключено из импорта: ${nonGmMatches.length}`);
   console.log(`Не найдено: ${missing.length}`);
   if (duplicateMatches.length > 0) {
     console.log(`Есть дубли в остатках: ${duplicateMatches.length}. Взята первая строка.`);

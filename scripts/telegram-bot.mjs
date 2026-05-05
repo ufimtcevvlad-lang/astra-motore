@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { loadDotEnvLocalFromCwd, requireEnv } from "./lib/env.mjs";
 import { parseSkuList, writeImportWorkbook } from "./lib/stock-import.mjs";
+import { upsertNonGmProducts } from "./lib/non-gm-db.mjs";
 import {
   fetchMetrikaSummary,
   formatDateInTZ,
@@ -273,16 +274,42 @@ async function makeImportFromText(chatId, text) {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
   const outPath = path.join(IMPORT_OUTPUT_DIR, `import-${stamp}.xlsx`);
   const result = writeImportWorkbook({ requested, stockPath: STOCK_FILE, outPath });
+  const nonGm = upsertNonGmProducts(result.nonGmMatches.map((item) => ({
+    sku: item.sku,
+    name: item.name,
+    rawName: item.name,
+    brand: item.brand,
+    price: item.price,
+  })));
 
   await sendDocument(
     chatId,
     outPath,
     [
-      `Готово: найдено ${result.matches.length} из ${requested.length}.`,
+      `Готово: в импорт GM попало ${result.matches.length} из ${requested.length}.`,
+      `Не-GM сохранено отдельно: ${nonGm.saved}.`,
       `Не найдено: ${result.missing.length}.`,
       "Файл можно загрузить в импорт товаров на сайте.",
     ].join("\n")
   );
+  if (result.nonGmMatches.length > 0) {
+    const preview = result.nonGmMatches
+      .slice(0, 10)
+      .map((item) => `• ${escapeHtml(item.requestedSku)} → ${escapeHtml(item.stockSection || "Не-GM")}`)
+      .join("\n");
+    await sendMessage(
+      chatId,
+      [
+        "Не-GM позиции не добавлены в Excel для сайта.",
+        "Они сохранены в отдельный whitelist для раскладки фотографий.",
+        "",
+        preview,
+        result.nonGmMatches.length > 10 ? `…и ещё ${result.nonGmMatches.length - 10}` : "",
+        nonGm.errors.length > 0 ? "\nОшибки сохранения:\n" + nonGm.errors.map(escapeHtml).join("\n") : "",
+      ].filter(Boolean).join("\n"),
+      { reply_markup: mainMenuKeyboard() }
+    );
+  }
   if (result.missing.length > 0) {
     await sendMessage(
       chatId,
