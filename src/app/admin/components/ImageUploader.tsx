@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 interface ImageUploaderProps {
   value: string | string[];
@@ -13,9 +13,24 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
   const inputId = useId();
   const [uploading, setUploading] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState("");
 
   const urls: string[] = Array.isArray(value) ? value : value ? [value] : [];
+  const previewUrl = previewIndex !== null ? urls[previewIndex] : null;
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setPreviewIndex(null);
+      if (event.key === "ArrowLeft") setPreviewIndex((current) => movePreview(current, -1));
+      if (event.key === "ArrowRight") setPreviewIndex((current) => movePreview(current, 1));
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [previewIndex, urls.length]);
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -70,6 +85,11 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
     onChange(next);
   }
 
+  function movePreview(current: number | null, direction: -1 | 1) {
+    if (current === null || urls.length < 2) return current;
+    return (current + direction + urls.length) % urls.length;
+  }
+
   return (
     <div>
       {/* Thumbnails */}
@@ -105,12 +125,20 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
               ].join(" ")}
               title={multiple ? "Перетащите, чтобы изменить порядок" : undefined}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- превью локальной/admin-картинки без оптимизации */}
-              <img
-                src={url}
-                alt=""
-                className="w-20 h-20 rounded-lg object-cover border border-gray-200"
-              />
+              <button
+                type="button"
+                onClick={() => setPreviewIndex(i)}
+                className="block rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label="Открыть фото в большом размере"
+                title="Открыть фото"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- превью локальной/admin-картинки без оптимизации */}
+                <img
+                  src={url}
+                  alt=""
+                  className="h-20 w-20 rounded-lg border border-gray-200 object-cover transition group-hover:brightness-95"
+                />
+              </button>
               {multiple && (
                 <div className="absolute left-1 top-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
                   {i === 0 ? "Главное" : i + 1}
@@ -142,8 +170,12 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
               )}
               <button
                 type="button"
-                onClick={() => removeImage(i)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeImage(i);
+                }}
                 className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                aria-label="Удалить фото"
               >
                 &times;
               </button>
@@ -195,6 +227,72 @@ export default function ImageUploader({ value, onChange, multiple = false }: Ima
       {urls.length > 0 && (
         <div className="mt-2 text-xs text-amber-700">
           Фото загружено. Чтобы оно появилось на сайте, нажмите «Сохранить изменения».
+        </div>
+      )}
+      {previewUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Просмотр фото"
+          onClick={() => setPreviewIndex(null)}
+        >
+          <div className="relative flex h-full w-full max-w-6xl items-center justify-center">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreviewIndex(null);
+              }}
+              className="absolute right-0 top-0 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-2xl leading-none text-gray-900 shadow hover:bg-gray-100"
+              aria-label="Закрыть"
+              title="Закрыть"
+            >
+              &times;
+            </button>
+
+            {urls.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewIndex((current) => movePreview(current, -1));
+                  }}
+                  className="absolute left-0 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-2xl text-gray-900 shadow hover:bg-white"
+                  aria-label="Предыдущее фото"
+                  title="Предыдущее фото"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewIndex((current) => movePreview(current, 1));
+                  }}
+                  className="absolute right-0 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-2xl text-gray-900 shadow hover:bg-white"
+                  aria-label="Следующее фото"
+                  title="Следующее фото"
+                >
+                  →
+                </button>
+              </>
+            )}
+
+            {/* eslint-disable-next-line @next/next/no-img-element -- админский просмотр оригинального загруженного файла */}
+            <img
+              src={previewUrl}
+              alt=""
+              className="max-h-[92vh] max-w-full rounded-lg bg-white object-contain shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+            {urls.length > 1 && previewIndex !== null && (
+              <div className="absolute bottom-0 rounded-full bg-black/70 px-3 py-1 text-sm font-medium text-white">
+                {previewIndex + 1} / {urls.length}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
