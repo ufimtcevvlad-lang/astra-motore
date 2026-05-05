@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { getOrderUsageByProductIds } from "@/app/lib/products/order-usage";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
+import { canonicalizeBrand } from "@/app/lib/brand-normalize";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -110,7 +111,7 @@ export async function PUT(
   // Валидация обязательных полей и числовых значений
   const nameStr = typeof body.name === "string" ? body.name.trim() : "";
   const skuStr = typeof body.sku === "string" ? body.sku.trim() : "";
-  const brandStr = typeof body.brand === "string" ? body.brand.trim() : "";
+  const brandStr = typeof body.brand === "string" ? canonicalizeBrand(body.brand) : "";
   if (!nameStr || !skuStr || !brandStr) {
     return adminJson(
       { error: "Заполните название, артикул и бренд" },

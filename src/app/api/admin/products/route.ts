@@ -7,6 +7,7 @@ import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
 import { normalizeSkuForSearch } from "@/app/lib/sku-normalize";
 import { findQrSeparatorProductImage } from "@/app/lib/qr-image-guard";
+import { canonicalizeBrand } from "@/app/lib/brand-normalize";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -153,7 +154,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const sku = typeof body.sku === "string" ? body.sku.trim() : "";
-  const brand = typeof body.brand === "string" ? body.brand.trim() : "";
+  const brand = typeof body.brand === "string" ? canonicalizeBrand(body.brand) : "";
   const priceNum = Number(body.price);
   const inStockNum = body.inStock == null ? 0 : Number(body.inStock);
 

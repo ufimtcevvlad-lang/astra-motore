@@ -4,6 +4,7 @@ import Link from "next/link";
 import { memo, useCallback, useState } from "react";
 import { ProductImage } from "../ProductImage";
 import { useFavorites } from "../FavoritesContext";
+import { useCart } from "../CartContext";
 import type { Product } from "../../lib/products-types";
 import { productPath } from "../../lib/product-slug";
 import { watermarkedImageUrl } from "../../lib/watermark-images";
@@ -33,6 +34,7 @@ export const CatalogProductCard = memo(function CatalogProductCard({
   variant?: "grid" | "list";
 }) {
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
+  const { addToCart } = useCart();
   const liked = isFavorite(p.id);
   const urls = p.images && p.images.length > 0 ? p.images : [p.image];
   const [active, setActive] = useState(0);
@@ -152,13 +154,21 @@ export const CatalogProductCard = memo(function CatalogProductCard({
           <h2 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{p.name}</h2>
           <p className="text-xs text-slate-600">Арт. {p.sku}</p>
           <p className="line-clamp-1 text-xs text-slate-500">{p.car}</p>
-          <div className="mt-auto flex items-center gap-3 pt-1">
+          <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
             <p className="text-lg font-bold text-amber-700 tabular-nums">
               {p.price.toLocaleString("ru-RU")} ₽
             </p>
+            <button
+              type="button"
+              onClick={() => addToCart(p)}
+              disabled={p.inStock <= 0}
+              className="inline-flex rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
+            >
+              {p.inStock > 0 ? "В корзину" : "Нет в наличии"}
+            </button>
             <Link
               href={productPath(p)}
-              className="inline-flex rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300"
+              className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:bg-amber-50"
             >
               Подробнее
             </Link>
@@ -181,10 +191,18 @@ export const CatalogProductCard = memo(function CatalogProductCard({
         </p>
         <p className="line-clamp-1 text-xs text-slate-500">{p.car}</p>
         <p className="text-xs text-slate-600">Арт. {p.sku}</p>
-        <div className="mt-auto pt-1">
+        <div className="mt-auto grid grid-cols-2 gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => addToCart(p)}
+            disabled={p.inStock <= 0}
+            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-amber-400 px-3 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
+          >
+            {p.inStock > 0 ? "В корзину" : "Нет"}
+          </button>
           <Link
             href={productPath(p)}
-            className="inline-flex w-full justify-center rounded-lg bg-amber-400 px-3 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-300"
+            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:bg-amber-50"
           >
             Подробнее
           </Link>

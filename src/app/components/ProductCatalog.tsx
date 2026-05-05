@@ -41,6 +41,19 @@ function useViewMode(): [ViewMode, (mode: ViewMode) => void] {
   return [mode, setMode];
 }
 
+function formatPriceInputValue(value: string): string {
+  const digits = value.replace(/[^\d]/g, "");
+  if (!digits) return "";
+  return Number(digits).toLocaleString("ru-RU");
+}
+
+function parsePriceInputValue(value: string): number | null {
+  const digits = value.replace(/[^\d]/g, "");
+  if (!digits) return null;
+  const n = Number(digits);
+  return Number.isFinite(n) ? n : null;
+}
+
 const SORT_OPTIONS: Array<{ value: SortMode; label: string }> = [
   { value: "popular", label: "По популярности" },
   { value: "price-asc", label: "Сначала дешёвые" },
@@ -221,6 +234,8 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
     setSelectedBrands(new Set());
     setPriceFrom(null);
     setPriceTo(null);
+    if (priceFromRef.current) priceFromRef.current.value = "";
+    if (priceToRef.current) priceToRef.current.value = "";
     setSort("popular");
     router.replace("/catalog");
   };
@@ -242,10 +257,12 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const priceToRef = useRef<HTMLInputElement>(null);
 
   const applyPriceFilter = useCallback(() => {
-    const from = priceFromRef.current?.value ? Number(priceFromRef.current.value) : null;
-    const to = priceToRef.current?.value ? Number(priceToRef.current.value) : null;
-    setPriceFrom(from !== null && !isNaN(from) ? from : null);
-    setPriceTo(to !== null && !isNaN(to) ? to : null);
+    const from = priceFromRef.current?.value ? parsePriceInputValue(priceFromRef.current.value) : null;
+    const to = priceToRef.current?.value ? parsePriceInputValue(priceToRef.current.value) : null;
+    if (priceFromRef.current) priceFromRef.current.value = from === null ? "" : from.toLocaleString("ru-RU");
+    if (priceToRef.current) priceToRef.current.value = to === null ? "" : to.toLocaleString("ru-RU");
+    setPriceFrom(from);
+    setPriceTo(to);
   }, []);
 
   // ========== Sidebar фильтров ==========
@@ -308,10 +325,14 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
         <div className="mt-2 flex items-center gap-2">
           <input
             ref={priceFromRef}
-            type="number"
+            type="text"
+            inputMode="numeric"
             name="priceFrom"
-            placeholder={`от ${priceRange.min}`}
-            defaultValue={priceFrom ?? ""}
+            placeholder={`от ${priceRange.min.toLocaleString("ru-RU")}`}
+            defaultValue={priceFrom?.toLocaleString("ru-RU") ?? ""}
+            onChange={(e) => {
+              e.currentTarget.value = formatPriceInputValue(e.currentTarget.value);
+            }}
             onBlur={applyPriceFilter}
             onKeyDown={(e) => e.key === "Enter" && applyPriceFilter()}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-amber-400"
@@ -319,10 +340,14 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
           <span className="text-slate-400">–</span>
           <input
             ref={priceToRef}
-            type="number"
+            type="text"
+            inputMode="numeric"
             name="priceTo"
-            placeholder={`до ${priceRange.max}`}
-            defaultValue={priceTo ?? ""}
+            placeholder={`до ${priceRange.max.toLocaleString("ru-RU")}`}
+            defaultValue={priceTo?.toLocaleString("ru-RU") ?? ""}
+            onChange={(e) => {
+              e.currentTarget.value = formatPriceInputValue(e.currentTarget.value);
+            }}
             onBlur={applyPriceFilter}
             onKeyDown={(e) => e.key === "Enter" && applyPriceFilter()}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-amber-400"

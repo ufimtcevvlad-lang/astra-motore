@@ -19,7 +19,7 @@ type CategoryDef = {
 const CATEGORIES: CategoryDef[] = [
   {
     title: "Свечи зажигания",
-    sectionTitle: "Свечи и зажигание",
+    sectionTitle: "Свечи зажигания",
     href: "/catalog?section=svechi",
     coverImage: "/images/catalog/opel-1/01-spark.webp",
     badge: "Bosch, NGK, GM OE",
@@ -27,7 +27,7 @@ const CATEGORIES: CategoryDef[] = [
   {
     title: "Масляные фильтры",
     sectionTitle: "Масляные фильтры",
-    href: "/catalog?section=filtry",
+    href: "/catalog?section=filtry-maslyanye",
     coverImage: "/images/catalog/opel-4/03-filter.webp",
     badge: "Hengst, Filtron, Mahle",
   },
@@ -45,15 +45,15 @@ const CATEGORIES: CategoryDef[] = [
   },
   {
     title: "Прокладки и сальники",
-    sectionTitle: "Прокладки, сальники и кольца",
+    sectionTitle: "Прокладки ДВС",
     href: "/catalog?section=prokladki",
     coverImage: "/images/catalog/opel-16/01-packaging.webp",
     badge: "Elring, GM OE",
   },
   {
     title: "Комплект ГРМ",
-    sectionTitle: "Двигатель",
-    href: "/catalog?section=dvigatel",
+    sectionTitle: "Поршневая группа",
+    href: "/catalog?section=porshnevaya",
     coverImage: "/images/catalog/opel-107/04-timing-belt.webp",
     badge: "INA / Schaeffler",
   },

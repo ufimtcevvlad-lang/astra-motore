@@ -7,6 +7,7 @@ import SpecsEditor from "./SpecsEditor";
 import AnalogsSelector from "./AnalogsSelector";
 import ConfirmModal from "./ConfirmModal";
 import MarketPriceWidget from "./MarketPriceWidget";
+import { CANONICAL_BRANDS, canonicalizeBrand } from "@/app/lib/brand-normalize";
 
 interface Category {
   id: number;
@@ -54,7 +55,7 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
   const [name, setName] = useState(product?.name ?? "");
   const [sku, setSku] = useState(product?.sku ?? "");
-  const [brand, setBrand] = useState(product?.brand ?? "");
+  const [brand, setBrand] = useState(canonicalizeBrand(product?.brand ?? ""));
   const [car, setCar] = useState(product?.car ?? "");
   const [price, setPrice] = useState(product?.price?.toString() ?? "");
   const [inStock, setInStock] = useState(product?.inStock?.toString() ?? "0");
@@ -349,7 +350,23 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
               <label className={labelClass}>
                 Бренд <span className="text-red-500">*</span>
               </label>
-              <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} className={inputClass} />
+              <input
+                type="text"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                onBlur={() => setBrand((v) => canonicalizeBrand(v))}
+                className={inputClass}
+                list="admin-product-brand-options"
+                autoComplete="off"
+              />
+              <datalist id="admin-product-brand-options">
+                {CANONICAL_BRANDS.map((brandName) => (
+                  <option key={brandName} value={brandName} />
+                ))}
+              </datalist>
+              <p className="mt-1 text-xs text-gray-500">
+                Можно выбрать из списка или ввести новый бренд. Регистр выровняется при сохранении.
+              </p>
             </div>
           </div>
           <div>

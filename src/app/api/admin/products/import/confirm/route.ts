@@ -7,6 +7,7 @@ import path from "node:path";
 import { generateUniqueProductSlug } from "@/app/lib/products-db";
 import { ensureProductDir } from "@/app/lib/product-images";
 import { revalidatePublicProductPages } from "@/app/lib/revalidate-products";
+import { canonicalizeBrand } from "@/app/lib/brand-normalize";
 
 /**
  * Удаляет пробелы/тире/слеши/точки/подчёркивания, приводит к верхнему
@@ -109,7 +110,7 @@ function upsertNonGmProducts(items: RejectedItem[], now: string): { saved: numbe
       for (const item of rows) {
         const sku = item.sku.trim();
         const name = item.rawName.trim();
-        const brand = item.brand.trim();
+        const brand = canonicalizeBrand(item.brand);
         const price = Number(item.price);
         if (!sku || !name || !Number.isFinite(price) || price < 0) {
           errors.push(`Не-GM пропущен: некорректные данные для "${item.sku}"`);
@@ -182,7 +183,7 @@ export async function POST(req: NextRequest) {
   for (const item of newItems) {
     const sku = item.sku.trim();
     const name = item.name.trim();
-    const brand = item.brand.trim();
+    const brand = canonicalizeBrand(item.brand);
     const price = Number(item.price);
     if (!sku || !name || !Number.isFinite(price) || price < 0) {
       errors.push(`Пропущено: некорректные данные для "${item.sku}"`);
@@ -238,7 +239,7 @@ export async function POST(req: NextRequest) {
     const categoryId = item.sectionSlug ? slugToId.get(item.sectionSlug) ?? null : null;
     try {
       db.update(schema.products).set({
-        name: item.name, brand: item.brand, price: item.price,
+        name: item.name, brand: canonicalizeBrand(item.brand), price: item.price,
         car: item.car, categoryId, updatedAt: now,
       }).where(eq(schema.products.id, item.id)).run();
       updated++;

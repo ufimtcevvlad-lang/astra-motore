@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { classify, type RejectReason } from "@/app/lib/import/classify";
 import { rewriteName } from "@/app/lib/import/rewrite-name";
 import { detectCategory } from "@/app/lib/import/detect-category";
+import { canonicalizeBrand } from "@/app/lib/brand-normalize";
 
 /**
  * Удаляет пробелы/тире/слеши/точки/подчёркивания и приводит к верхнему
@@ -89,7 +90,7 @@ export async function POST(req: NextRequest) {
 
       const rawName = String(row["C"] ?? "").trim();
       const sku = String(row["D"] ?? "").trim();
-      const brand = String(row["E"] ?? "").trim();
+      const brand = canonicalizeBrand(String(row["E"] ?? ""));
       const rawPrice = row["F"];
       if (!rawName || !sku) continue;
       const price =
