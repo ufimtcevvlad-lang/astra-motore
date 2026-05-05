@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint",
+    "metrika:goals": "node scripts/configure-metrika-goals.mjs",
     "metrika:daily": "node scripts/metrika-daily.mjs",
     "bot:telegram": "node scripts/telegram-bot.mjs",
     "logs:rotate": "node scripts/rotate-data-logs.mjs",

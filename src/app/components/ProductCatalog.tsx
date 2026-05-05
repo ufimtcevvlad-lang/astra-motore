@@ -7,6 +7,7 @@ import { CatalogProductCard } from "./catalog/CatalogProductCard";
 import { CatalogGroupNav } from "./catalog/CatalogGroupNav";
 import { RecentlyViewed } from "./RecentlyViewed";
 import { productMatchesTextQuery } from "../lib/catalog-query";
+import { METRIKA_GOALS, reachMetrikaGoal } from "../lib/metrika-goals";
 import type { Product } from "../lib/products-types";
 import {
   CATALOG_GROUPS,
@@ -68,6 +69,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const [sort, setSort] = useState<SortMode>("popular");
   const [viewMode, setViewMode] = useViewMode();
   const [visibleState, setVisibleState] = useState(VISIBLE_STATE_INITIAL);
+  const lastTrackedSearchRef = useRef("");
 
   // Синхронизация поля поиска с ?q= при переходе из шапки или по ссылке
   useEffect(() => {
@@ -80,6 +82,21 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   }, [searchParams]);
 
   const queryNorm = query.trim().toLowerCase();
+
+  useEffect(() => {
+    if (queryNorm.length < 2 || lastTrackedSearchRef.current === queryNorm) return;
+
+    const timer = window.setTimeout(() => {
+      lastTrackedSearchRef.current = queryNorm;
+      reachMetrikaGoal(METRIKA_GOALS.SITE_SEARCH, {
+        query: query.trim(),
+        source: "catalog",
+      });
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, [query, queryNorm]);
+
   const groupedMode = activeSlug === "all" && !queryNorm && selectedBrands.size === 0 && priceFrom === null && priceTo === null;
   const selectedBrandKey = useMemo(
     () => [...selectedBrands].sort((a, b) => a.localeCompare(b, "ru")).join("|"),

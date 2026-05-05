@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useCart } from "../components/CartContext";
+import { METRIKA_GOALS, reachMetrikaGoal } from "../lib/metrika-goals";
 import type { Product } from "../lib/products-types";
 import { isValidRuPhone, normalizeRuPhone } from "../lib/phone";
 import { CartItemRow } from "./_components/CartItemRow";
@@ -178,6 +179,12 @@ export default function CartPage() {
         setError(data.error || "Не удалось отправить заказ");
         return;
       }
+      reachMetrikaGoal(METRIKA_GOALS.ORDER_SENT, {
+        total,
+        items_count: totalItems,
+        delivery_method: deliveryMethod,
+        payment_method: paymentMethod,
+      });
       setSent(true);
       clearCart();
       setName("");

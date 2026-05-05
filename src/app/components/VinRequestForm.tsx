@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { METRIKA_GOALS, reachMetrikaGoal } from "../lib/metrika-goals";
 import { TurnstileField } from "./security/TurnstileField";
 
 function normalizeVin(value: string) {
@@ -107,6 +108,11 @@ export function VinRequestForm() {
         return;
       }
 
+      reachMetrikaGoal(METRIKA_GOALS.VIN_REQUEST_SENT, {
+        brand: brand.trim(),
+        model: model.trim(),
+        has_photo: Boolean(photo),
+      });
       setSent(true);
       setName("");
       setEmail("");

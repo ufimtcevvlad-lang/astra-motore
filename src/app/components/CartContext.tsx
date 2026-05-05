@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
+import { METRIKA_GOALS, reachMetrikaGoal } from "../lib/metrika-goals";
 import type { Product } from "../lib/products-types";
 
 export type CartItem = {
@@ -115,6 +116,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [hydrated, items]);
 
   const addToCart = useCallback((product: Product) => {
+    reachMetrikaGoal(METRIKA_GOALS.ADD_TO_CART, {
+      product_id: product.id,
+      sku: product.sku,
+      price: product.price,
+      category: product.category,
+    });
+
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {

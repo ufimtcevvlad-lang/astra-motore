@@ -10,6 +10,7 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { MaintenanceNotice } from "./components/MaintenanceNotice";
 import { MetrikaDeferred } from "./components/MetrikaDeferred";
+import { MetrikaGoalTracker } from "./components/MetrikaGoalTracker";
 import { getOrganizationJsonLd, getWebSiteJsonLd } from "./lib/schema-jsonld";
 import {
   DEFAULT_META_DESCRIPTION,
@@ -111,6 +112,7 @@ export default function RootLayout({
         />
 
         <MetrikaDeferred />
+        <MetrikaGoalTracker />
 
         <CartProvider>
           <FavoritesProvider>
