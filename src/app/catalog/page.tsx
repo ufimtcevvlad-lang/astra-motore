@@ -9,6 +9,31 @@ import { buildCatalogCanonical, buildCatalogSeoFromParams } from "../lib/catalog
 
 type CatalogSearchParams = Record<string, string | string[] | undefined>;
 
+function firstParam(raw: string | string[] | undefined): string | undefined {
+  return Array.isArray(raw) ? raw[0] : raw;
+}
+
+function initialCatalogFilters(params: CatalogSearchParams): {
+  section?: string;
+  brands: string[];
+  car?: "opel" | "chevrolet";
+  query?: string;
+} {
+  const brandRaw = firstParam(params.brand);
+  const section = firstParam(params.section);
+  const carRaw = firstParam(params.car);
+  const query = firstParam(params.q);
+  const car: "opel" | "chevrolet" | undefined =
+    carRaw === "opel" || carRaw === "chevrolet" ? carRaw : undefined;
+
+  return {
+    section: section || undefined,
+    brands: brandRaw ? brandRaw.split(",").map((b) => b.trim()).filter(Boolean) : [],
+    car,
+    query: query || undefined,
+  };
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
@@ -37,7 +62,12 @@ export async function generateMetadata({
   };
 }
 
-export default function CatalogPage() {
+export default async function CatalogPage({
+  searchParams,
+}: {
+  searchParams: Promise<CatalogSearchParams>;
+}) {
+  const params = (await searchParams) ?? {};
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -71,7 +101,11 @@ export default function CatalogPage() {
         }
       />
 
-      <ProductCatalog hideHubIntro products={getAllProducts()} />
+      <ProductCatalog
+        hideHubIntro
+        products={getAllProducts()}
+        initialFilters={initialCatalogFilters(params)}
+      />
     </div>
   );
 }

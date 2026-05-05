@@ -19,6 +19,7 @@ import {
 type SortMode = "popular" | "price-asc" | "price-desc" | "name";
 type ViewMode = "grid" | "list";
 type CatalogSectionSlug = (typeof CATALOG_SECTIONS)[number]["slug"];
+type CatalogCarFilter = "all" | "opel" | "chevrolet";
 
 const VIEW_MODE_KEY = "catalog-view-mode";
 const PRODUCTS_PAGE_SIZE = 48;
@@ -67,16 +68,54 @@ const sectionTitleBySlug: Map<string, string> = new Map(
 
 type ProductCatalogProps = {
   hideHubIntro?: boolean;
+  initialFilters?: {
+    section?: string;
+    brands?: string[];
+    car?: "opel" | "chevrolet";
+    query?: string;
+  };
   products: Product[];
 };
 
-function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogProps) {
+function normalizeSectionSlug(value: string | null | undefined): CatalogSectionSlug | "all" {
+  if (value && sectionTitleBySlug.has(value)) return value as CatalogSectionSlug;
+  return "all";
+}
+
+function normalizeCarFilter(value: string | null | undefined): CatalogCarFilter {
+  return value === "opel" || value === "chevrolet" ? value : "all";
+}
+
+function parseBrandsParam(value: string | null | undefined): string[] {
+  return value ? value.split(",").map((brand) => brand.trim()).filter(Boolean) : [];
+}
+
+function productMatchesCar(product: Product, car: CatalogCarFilter): boolean {
+  if (car === "all") return true;
+  const haystack = `${product.car} ${product.name}`.toLowerCase();
+  return haystack.includes(car);
+}
+
+function humanCarFilter(car: CatalogCarFilter): string {
+  if (car === "opel") return "Opel";
+  if (car === "chevrolet") return "Chevrolet";
+  return "Все авто";
+}
+
+function ProductCatalogInner({ hideHubIntro = false, initialFilters, products }: ProductCatalogProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [query, setQuery] = useState("");
-  const [activeSlug, setActiveSlug] = useState<CatalogSectionSlug | "all">("all");
-  const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState(initialFilters?.query ?? "");
+  const [activeSlug, setActiveSlug] = useState<CatalogSectionSlug | "all">(
+    normalizeSectionSlug(initialFilters?.section),
+  );
+  const [activeCar, setActiveCar] = useState<CatalogCarFilter>(
+    normalizeCarFilter(initialFilters?.car),
+  );
+  const [selectedBrands, setSelectedBrands] = useState<Set<string>>(
+    () => new Set(initialFilters?.brands ?? []),
+  );
   const [priceFrom, setPriceFrom] = useState<number | null>(null);
   const [priceTo, setPriceTo] = useState<number | null>(null);
   const [sort, setSort] = useState<SortMode>("popular");
@@ -88,10 +127,9 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация фильтров с URL каталога
     setQuery(searchParams.get("q") ?? "");
-    const sectionParam = searchParams.get("section");
-    if (sectionParam && sectionTitleBySlug.has(sectionParam)) {
-      setActiveSlug(sectionParam as CatalogSectionSlug);
-    }
+    setActiveSlug(normalizeSectionSlug(searchParams.get("section")));
+    setActiveCar(normalizeCarFilter(searchParams.get("car")));
+    setSelectedBrands(new Set(parseBrandsParam(searchParams.get("brand"))));
   }, [searchParams]);
 
   const queryNorm = query.trim().toLowerCase();
@@ -110,12 +148,18 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
     return () => window.clearTimeout(timer);
   }, [query, queryNorm]);
 
-  const groupedMode = activeSlug === "all" && !queryNorm && selectedBrands.size === 0 && priceFrom === null && priceTo === null;
+  const groupedMode =
+    activeSlug === "all" &&
+    activeCar === "all" &&
+    !queryNorm &&
+    selectedBrands.size === 0 &&
+    priceFrom === null &&
+    priceTo === null;
   const selectedBrandKey = useMemo(
     () => [...selectedBrands].sort((a, b) => a.localeCompare(b, "ru")).join("|"),
     [selectedBrands],
   );
-  const visibleScopeKey = `${queryNorm}|${activeSlug}|${selectedBrandKey}|${priceFrom ?? ""}|${priceTo ?? ""}|${sort}`;
+  const visibleScopeKey = `${queryNorm}|${activeSlug}|${activeCar}|${selectedBrandKey}|${priceFrom ?? ""}|${priceTo ?? ""}|${sort}`;
 
   const sectionBySlug = useMemo(
     () => new Map(CATALOG_SECTIONS.map((section) => [section.slug, section] as const)),
@@ -129,6 +173,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
 
     const result = products.filter((p) => {
       if (activeSectionTitle && p.category !== activeSectionTitle) return false;
+      if (!productMatchesCar(p, activeCar)) return false;
       if (queryNorm && !productMatchesTextQuery(p, queryNorm)) return false;
       if (selectedBrands.size > 0 && !selectedBrands.has(p.brand)) return false;
       if (priceFrom !== null && p.price < priceFrom) return false;
@@ -153,7 +198,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
     }
 
     return result;
-  }, [queryNorm, activeSlug, selectedBrands, priceFrom, priceTo, sort, sectionBySlug, products]);
+  }, [queryNorm, activeSlug, activeCar, selectedBrands, priceFrom, priceTo, sort, sectionBySlug, products]);
 
   const effectiveVisibleCount =
     visibleState.key === visibleScopeKey ? visibleState.count : PRODUCTS_PAGE_SIZE;
@@ -183,6 +228,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
 
     const base = products.filter((p) => {
       if (activeSectionTitle && p.category !== activeSectionTitle) return false;
+      if (!productMatchesCar(p, activeCar)) return false;
       if (queryNorm && !productMatchesTextQuery(p, queryNorm)) return false;
       if (priceFrom !== null && p.price < priceFrom) return false;
       if (priceTo !== null && p.price > priceTo) return false;
@@ -194,7 +240,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
       counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
     }
     return counts;
-  }, [queryNorm, activeSlug, priceFrom, priceTo, sectionBySlug, products]);
+  }, [queryNorm, activeSlug, activeCar, priceFrom, priceTo, sectionBySlug, products]);
 
   const sortedBrands = useMemo(
     () =>
@@ -223,6 +269,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const hasActiveFilters =
     queryNorm.length > 0 ||
     activeSlug !== "all" ||
+    activeCar !== "all" ||
     selectedBrands.size > 0 ||
     priceFrom !== null ||
     priceTo !== null ||
@@ -231,6 +278,7 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
   const clearFilters = () => {
     setQuery("");
     setActiveSlug("all");
+    setActiveCar("all");
     setSelectedBrands(new Set());
     setPriceFrom(null);
     setPriceTo(null);
@@ -318,6 +366,23 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
           </div>
         </div>
       )}
+
+      {/* Авто */}
+      <label className="block">
+        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Авто
+        </span>
+        <select
+          name="car"
+          value={activeCar}
+          onChange={(e) => setActiveCar(e.target.value as CatalogCarFilter)}
+          className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25"
+        >
+          <option value="all">Все авто</option>
+          <option value="opel">Opel</option>
+          <option value="chevrolet">Chevrolet</option>
+        </select>
+      </label>
 
       {/* Цена */}
       <div>
@@ -465,8 +530,8 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
             <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Фильтры
-          {(selectedBrands.size > 0 || activeSlug !== "all" || priceFrom !== null || priceTo !== null)
-            ? ` (${(selectedBrands.size > 0 ? 1 : 0) + (activeSlug !== "all" ? 1 : 0) + (priceFrom !== null || priceTo !== null ? 1 : 0)})`
+          {(selectedBrands.size > 0 || activeSlug !== "all" || activeCar !== "all" || priceFrom !== null || priceTo !== null)
+            ? ` (${(selectedBrands.size > 0 ? 1 : 0) + (activeSlug !== "all" ? 1 : 0) + (activeCar !== "all" ? 1 : 0) + (priceFrom !== null || priceTo !== null ? 1 : 0)})`
             : ""}
         </button>
       </div>
@@ -481,6 +546,16 @@ function ProductCatalogInner({ hideHubIntro = false, products }: ProductCatalogP
               className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900 transition hover:bg-amber-200"
             >
               {sectionTitleBySlug.get(activeSlug) ?? activeSlug}
+              <span aria-hidden className="ml-0.5 text-amber-600">✕</span>
+            </button>
+          )}
+          {activeCar !== "all" && (
+            <button
+              type="button"
+              onClick={() => setActiveCar("all")}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900 transition hover:bg-amber-200"
+            >
+              {humanCarFilter(activeCar)}
               <span aria-hidden className="ml-0.5 text-amber-600">✕</span>
             </button>
           )}
