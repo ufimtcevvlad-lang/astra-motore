@@ -171,6 +171,7 @@ function main() {
 
   const rows = [];
   const toHide = [];
+  const toUnhide = [];
   const notFound = [];
   const duplicate = [];
 
@@ -191,6 +192,10 @@ function main() {
       toHide.push(product);
     } else if (match?.kind === "gm") {
       action = Number(product.hidden) === 0 ? "keep-gm" : "hidden-gm";
+      if (Number(product.hidden) === 1) {
+        action = "unhide-gm";
+        toUnhide.push(product);
+      }
     } else if (match?.kind === "non-gm") {
       action = "already-hidden-non-gm";
     }
@@ -224,6 +229,15 @@ function main() {
     tx(toHide);
   }
 
+  if (apply && toUnhide.length > 0) {
+    const now = new Date().toISOString();
+    const update = db.prepare("UPDATE products SET hidden = 0, updated_at = ? WHERE id = ?");
+    const tx = db.transaction((items) => {
+      for (const item of items) update.run(now, item.id);
+    });
+    tx(toUnhide);
+  }
+
   db.close();
 
   const byAction = rows.reduce((acc, row) => {
@@ -238,10 +252,12 @@ function main() {
     apply,
     totalProducts: products.length,
     toHide: toHide.length,
+    toUnhide: toUnhide.length,
     notFound: notFound.length,
     duplicateSkusInStock: duplicate.length,
     byAction,
     sampleToHide: rows.filter((row) => row.action === "hide").slice(0, 30),
+    sampleToUnhide: rows.filter((row) => row.action === "unhide-gm").slice(0, 30),
     sampleNotFound: rows.filter((row) => row.action === "not-found").slice(0, 20),
   }, null, 2));
 }
