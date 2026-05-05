@@ -36,7 +36,7 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug?: string } | Promise<{ slug?: string }>;
+  params: Promise<{ slug?: string }>;
 }): Promise<Metadata> {
   const resolved = (await params) || {};
   const slug = resolved?.slug;

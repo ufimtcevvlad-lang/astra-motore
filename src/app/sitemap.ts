@@ -47,12 +47,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.65,
   }));
 
-  const sectionFilterRoutes: MetadataRoute.Sitemap = CATALOG_SECTIONS.map((s) => ({
-    url: `${SITE_URL}/catalog?section=${s.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.6,
-  }));
+  const categoryTitlesWithProducts = new Set(products.map((p) => p.category));
+  const sectionFilterRoutes: MetadataRoute.Sitemap = CATALOG_SECTIONS
+    .filter((s) => categoryTitlesWithProducts.has(s.title))
+    .map((s) => ({
+      url: `${SITE_URL}/catalog/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.68,
+    }));
 
   const uniqueBrands = Array.from(
     new Set(products.map((p) => p.brand).filter((b): b is string => !!b && b.length > 1)),
@@ -85,4 +88,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...productRoutes,
   ];
 }
-

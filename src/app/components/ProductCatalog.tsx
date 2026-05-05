@@ -660,7 +660,15 @@ function ProductCatalogInner({ hideHubIntro = false, initialFilters, products }:
                           id={`catalog-${section.slug}`}
                           className="scroll-mt-28 space-y-4"
                         >
-                          <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
+                            <Link
+                              href={`/catalog/${section.slug}`}
+                              className="text-sm font-medium text-amber-700 underline-offset-2 hover:underline"
+                            >
+                              Открыть раздел
+                            </Link>
+                          </div>
                           <div className={viewMode === "list" ? "flex flex-col gap-3" : "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"}>
                             {items.map((p) => (
                               <CatalogProductCard key={p.id} p={p} variant={viewMode} />

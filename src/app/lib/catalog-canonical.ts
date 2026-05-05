@@ -40,12 +40,17 @@ function humanCar(car: string): string {
  * - мусорные параметры (q, sort, priceFrom/To, inStock, page) отбрасываются.
  */
 export function buildCatalogCanonical(searchParams: ParamBag): string {
+  const section = firstStr(searchParams.section);
+  if (section && isKnownSection(section)) {
+    return `${SITE_URL}/catalog/${section}`;
+  }
+
   const clean = new URLSearchParams();
   for (const key of CLEAN_PARAMS) {
     const val = firstStr(searchParams[key]);
     if (!val) continue;
     if (key === "brand" && val.includes(",")) continue;
-    if (key === "section" && !isKnownSection(val)) continue;
+    if (key === "section") continue;
     clean.set(key, val);
   }
   const qs = clean.toString();
