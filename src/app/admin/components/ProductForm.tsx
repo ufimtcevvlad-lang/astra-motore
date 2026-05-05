@@ -78,11 +78,17 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(false);
+  const syncFromServerRef = useRef(false);
 
   // Mark dirty on any field change. First render registers initial values (clean).
   useEffect(() => {
     if (!mountedRef.current) {
       mountedRef.current = true;
+      return;
+    }
+    if (syncFromServerRef.current) {
+      syncFromServerRef.current = false;
+      setDirty(false);
       return;
     }
     setDirty(true);
@@ -102,6 +108,35 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     specs,
     analogs,
   ]);
+
+  function syncSavedProduct(saved: Record<string, unknown>) {
+    syncFromServerRef.current = true;
+    setName(typeof saved.name === "string" ? saved.name : "");
+    setSku(typeof saved.sku === "string" ? saved.sku : "");
+    setBrand(canonicalizeBrand(typeof saved.brand === "string" ? saved.brand : ""));
+    setCar(typeof saved.car === "string" ? saved.car : "");
+    setPrice(saved.price != null ? String(saved.price) : "");
+    setInStock(saved.inStock != null ? String(saved.inStock) : "0");
+    setDescription(typeof saved.description === "string" ? saved.description : "");
+    setLongDescription(typeof saved.longDescription === "string" ? saved.longDescription : "");
+    setHidden(saved.hidden === true);
+    setCategoryId(saved.categoryId != null ? String(saved.categoryId) : "");
+    setImage(typeof saved.image === "string" ? saved.image : "");
+    if (Array.isArray(saved.images)) {
+      setImages(saved.images.filter((url): url is string => typeof url === "string"));
+    } else if (typeof saved.images === "string") {
+      try {
+        const parsed = JSON.parse(saved.images);
+        setImages(Array.isArray(parsed) ? parsed.filter((url): url is string => typeof url === "string") : []);
+      } catch {
+        setImages([]);
+      }
+    }
+    setDirty(false);
+    window.setTimeout(() => {
+      syncFromServerRef.current = false;
+    }, 100);
+  }
 
   // Warn before leaving if unsaved
   useEffect(() => {
@@ -170,10 +205,16 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       }
 
       const saved = await res.json().catch(() => null);
-      setDirty(false);
+      if (saved && typeof saved === "object") {
+        syncSavedProduct(saved);
+      } else {
+        setDirty(false);
+      }
       if (stayOnPage) {
         if (!isEdit && saved?.id) {
           router.replace(`/admin/products/${saved.id}`);
+        } else {
+          router.refresh();
         }
       } else {
         router.push("/admin/products");

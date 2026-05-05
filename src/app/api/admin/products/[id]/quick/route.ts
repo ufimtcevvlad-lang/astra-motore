@@ -27,6 +27,33 @@ interface QuickPatchBody {
   hidden?: boolean;
 }
 
+async function readAdminProductRow(id: number) {
+  const [row] = await db
+    .select({
+      id: schema.products.id,
+      externalId: schema.products.externalId,
+      sku: schema.products.sku,
+      name: schema.products.name,
+      brand: schema.products.brand,
+      country: schema.products.country,
+      categoryId: schema.products.categoryId,
+      categoryTitle: schema.categories.title,
+      car: schema.products.car,
+      price: schema.products.price,
+      inStock: schema.products.inStock,
+      image: schema.products.image,
+      hidden: schema.products.hidden,
+      createdAt: schema.products.createdAt,
+      updatedAt: schema.products.updatedAt,
+      slug: schema.products.slug,
+    })
+    .from(schema.products)
+    .leftJoin(schema.categories, eq(schema.products.categoryId, schema.categories.id))
+    .where(eq(schema.products.id, id));
+
+  return row ?? null;
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -36,7 +63,15 @@ export async function PATCH(
 
   const { id } = await params;
   const numId = Number(id);
+  if (!Number.isInteger(numId) || numId <= 0) {
+    return adminJson({ error: "Некорректный товар" }, { status: 400 });
+  }
   const body = (await req.json()) as QuickPatchBody;
+
+  const existing = await readAdminProductRow(numId);
+  if (!existing) {
+    return adminJson({ error: "Товар не найден" }, { status: 404 });
+  }
 
   const patch: Record<string, unknown> = { updatedAt: new Date().toISOString() };
   if (body.price != null) {
@@ -44,14 +79,14 @@ export async function PATCH(
     if (!Number.isFinite(p) || p < 0) {
       return adminJson({ error: "Некорректная цена" }, { status: 400 });
     }
-    patch.price = p;
+    patch.price = Math.round(p);
   }
   if (body.inStock != null) {
     const s = Number(body.inStock);
     if (!Number.isFinite(s) || s < 0) {
       return adminJson({ error: "Некорректный остаток" }, { status: 400 });
     }
-    patch.inStock = s;
+    patch.inStock = Math.round(s);
   }
   if (typeof body.hidden === "boolean") {
     patch.hidden = body.hidden;
@@ -63,13 +98,31 @@ export async function PATCH(
 
   await db.update(schema.products).set(patch).where(eq(schema.products.id, numId));
 
-  const [updated] = await db
-    .select({ id: schema.products.id, slug: schema.products.slug, price: schema.products.price, inStock: schema.products.inStock, hidden: schema.products.hidden })
-    .from(schema.products)
-    .where(eq(schema.products.id, numId));
+  const updated = await readAdminProductRow(numId);
 
   if (!updated) {
     return adminJson({ error: "Товар не найден" }, { status: 404 });
+  }
+
+  const saveMismatch =
+    (typeof patch.price === "number" && updated.price !== patch.price) ||
+    (typeof patch.inStock === "number" && updated.inStock !== patch.inStock) ||
+    (typeof patch.hidden === "boolean" && updated.hidden !== patch.hidden);
+
+  if (saveMismatch) {
+    console.error("Admin quick save mismatch", {
+      id: numId,
+      requested: patch,
+      saved: {
+        price: updated.price,
+        inStock: updated.inStock,
+        hidden: updated.hidden,
+      },
+    });
+    return adminJson(
+      { error: "Сервер не подтвердил сохранение. Обновите страницу и попробуйте ещё раз." },
+      { status: 500 }
+    );
   }
 
   revalidatePublicProductPages(updated.slug ? [updated.slug] : []);

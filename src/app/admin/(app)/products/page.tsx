@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import AdminHeader from "@/app/admin/components/AdminHeader";
@@ -28,6 +28,8 @@ export default function ProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [pendingQuickIds, setPendingQuickIds] = useState<Set<number>>(new Set());
+  const pendingQuickRef = useRef<Set<number>>(new Set());
   const [showBulkCategoryModal, setShowBulkCategoryModal] = useState(false);
 
   useScrollRestore(scrollKey, !loading && items.length > 0);
@@ -95,15 +97,43 @@ export default function ProductsPage() {
   }
 
   async function inlineUpdate(id: number, patch: { price?: number; inStock?: number; hidden?: boolean }) {
-    const res = await fetch(`/api/admin/products/${id}/quick`, {
-      method: "PATCH",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    });
-    if (!res.ok) throw new Error("fail");
-    const updated = await res.json();
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)));
+    if (pendingQuickRef.current.has(id)) {
+      throw new Error("Предыдущее изменение этого товара ещё сохраняется");
+    }
+    const markPending = (pending: boolean) => {
+      const next = new Set(pendingQuickRef.current);
+      if (pending) next.add(id);
+      else next.delete(id);
+      pendingQuickRef.current = next;
+      setPendingQuickIds(new Set(next));
+    };
+
+    markPending(true);
+    try {
+      const res = await fetch(`/api/admin/products/${id}/quick`, {
+        method: "PATCH",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      const updated = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(updated.error || "Не удалось сохранить изменение");
+      }
+
+      const mismatch =
+        (patch.price !== undefined && Number(updated.price) !== Math.round(Number(patch.price))) ||
+        (patch.inStock !== undefined && Number(updated.inStock) !== Math.round(Number(patch.inStock))) ||
+        (patch.hidden !== undefined && Boolean(updated.hidden) !== patch.hidden);
+
+      if (mismatch) {
+        throw new Error("Сервер вернул другое значение. Обновите страницу и проверьте товар.");
+      }
+
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)));
+    } finally {
+      markPending(false);
+    }
   }
 
   async function bulkPatch(action: unknown) {
@@ -229,6 +259,7 @@ export default function ProductsPage() {
             onToggleSelect={toggleSelect}
             onToggleSelectAll={toggleSelectAll}
             onInlineUpdate={inlineUpdate}
+            pendingQuickIds={pendingQuickIds}
           />
         )}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./Pagination";
 import { saveScroll } from "./useScrollRestore";
@@ -39,6 +39,7 @@ interface ProductListProps {
   onToggleSelect: (id: number) => void;
   onToggleSelectAll: (select: boolean) => void;
   onInlineUpdate: (id: number, patch: { price?: number; inStock?: number; hidden?: boolean }) => Promise<void>;
+  pendingQuickIds: Set<number>;
 }
 
 const ZONE_DOT: Record<string, string> = {
@@ -87,30 +88,35 @@ function InlineNumber({
   onSave,
   onError,
   suffix,
+  disabled = false,
   className = "",
 }: {
   value: number;
   onSave: (n: number) => Promise<void>;
   onError?: (msg: string) => void;
   suffix?: string;
+  disabled?: boolean;
   className?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [input, setInput] = useState(String(value));
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const busyRef = useRef(false);
 
   useEffect(() => {
     if (!editing) setInput(String(value));
   }, [value, editing]);
 
   async function commit() {
+    if (busyRef.current) return;
     const n = Number(input);
-    if (!Number.isFinite(n) || n < 0 || n === value) {
+    if (disabled || !Number.isFinite(n) || n < 0 || n === value) {
       setEditing(false);
       setInput(String(value));
       return;
     }
+    busyRef.current = true;
     setBusy(true);
     try {
       await onSave(n);
@@ -121,6 +127,7 @@ function InlineNumber({
       onError?.(err instanceof Error ? err.message : "Не удалось сохранить");
       setTimeout(() => setFailed(false), 2500);
     } finally {
+      busyRef.current = false;
       setBusy(false);
       setEditing(false);
     }
@@ -133,12 +140,14 @@ function InlineNumber({
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
+          if (disabled) return;
           setEditing(true);
         }}
+        disabled={disabled}
         className={`text-right px-2 py-1 rounded ${
           failed ? "bg-red-50 ring-1 ring-red-300" : "hover:bg-indigo-50"
-        } ${className}`}
-        title={failed ? "Не удалось сохранить — попробуйте снова" : undefined}
+        } ${disabled ? "cursor-wait opacity-60 hover:bg-transparent" : ""} ${className}`}
+        title={failed ? "Не удалось сохранить — попробуйте снова" : disabled ? "Сохраняется..." : undefined}
       >
         {value.toLocaleString("ru-RU")}
         {suffix}
@@ -151,7 +160,7 @@ function InlineNumber({
       type="number"
       min={0}
       autoFocus
-      disabled={busy}
+      disabled={busy || disabled}
       value={input}
       onChange={(e) => setInput(e.target.value)}
       onClick={(e) => e.stopPropagation()}
@@ -218,6 +227,7 @@ export default function ProductList({
   onToggleSelect,
   onToggleSelectAll,
   onInlineUpdate,
+  pendingQuickIds,
 }: ProductListProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -370,6 +380,7 @@ export default function ProductList({
           {items.map((item, index) => {
             const selected = selectedIds.has(item.id);
             const isHidden = !!item.hidden;
+            const isQuickPending = pendingQuickIds.has(item.id);
             const addedDate = showAddedDate
               ? formatProductDate(item.createdAt) ?? "Без даты добавления"
               : null;
@@ -433,6 +444,7 @@ export default function ProductList({
                       onSave={(n) => onInlineUpdate(item.id, { price: n })}
                       onError={(msg) => setToast(`Цена не сохранена: ${msg}`)}
                       suffix=" ₽"
+                      disabled={isQuickPending}
                       className="text-sm font-semibold text-gray-900"
                     />
                   </div>
@@ -442,6 +454,7 @@ export default function ProductList({
                       value={Number(item.inStock)}
                       onSave={(n) => onInlineUpdate(item.id, { inStock: n })}
                       onError={(msg) => setToast(`Остаток не сохранён: ${msg}`)}
+                      disabled={isQuickPending}
                       className={`text-sm ${
                         item.inStock > 0 ? "text-green-700" : "text-red-600"
                       }`}
@@ -458,8 +471,10 @@ export default function ProductList({
 
                   <button
                     type="button"
+                    disabled={isQuickPending}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (isQuickPending) return;
                       onInlineUpdate(item.id, { hidden: !isHidden }).catch((err) =>
                         setToast(
                           `Не удалось ${isHidden ? "показать" : "скрыть"}: ${
@@ -472,8 +487,8 @@ export default function ProductList({
                       isHidden
                         ? "text-gray-400 hover:text-indigo-600"
                         : "text-gray-500 hover:text-indigo-600"
-                    }`}
-                    title={isHidden ? "Показать на сайте" : "Скрыть с сайта"}
+                    } ${isQuickPending ? "cursor-wait opacity-50 hover:text-gray-400" : ""}`}
+                    title={isQuickPending ? "Сохраняется..." : isHidden ? "Показать на сайте" : "Скрыть с сайта"}
                     aria-label={isHidden ? "Показать на сайте" : "Скрыть с сайта"}
                   >
                     {isHidden ? (
