@@ -49,6 +49,18 @@ interface ProductFormProps {
   categories: Category[];
 }
 
+type AdminToast = {
+  kind: "success" | "error";
+  title: string;
+  message: string;
+};
+
+const ADMIN_TOAST_STORAGE_KEY = "admin_product_toast_v1";
+
+function formatAdminNumber(value: number): string {
+  return Math.round(value).toLocaleString("ru-RU");
+}
+
 export default function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter();
   const isEdit = !!product;
@@ -76,9 +88,22 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [toast, setToast] = useState<AdminToast | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(false);
   const syncFromServerRef = useRef(false);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(ADMIN_TOAST_STORAGE_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(ADMIN_TOAST_STORAGE_KEY);
+      const saved = JSON.parse(raw) as AdminToast;
+      if (saved?.title && saved?.message) {
+        setToast(saved);
+      }
+    } catch {}
+  }, []);
 
   // Mark dirty on any field change. First render registers initial values (clean).
   useEffect(() => {
@@ -136,6 +161,24 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     window.setTimeout(() => {
       syncFromServerRef.current = false;
     }, 100);
+  }
+
+  function buildSaveToast(
+    saved: Record<string, unknown> | null,
+    fallback: { sku: string; price: number; brand: string; hidden: boolean }
+  ): AdminToast {
+    const savedSku = typeof saved?.sku === "string" ? saved.sku : fallback.sku;
+    const savedBrand = typeof saved?.brand === "string" ? saved.brand : fallback.brand;
+    const savedPrice = Number(saved?.price ?? fallback.price);
+    const savedHidden = typeof saved?.hidden === "boolean" ? saved.hidden : fallback.hidden;
+
+    return {
+      kind: "success",
+      title: "Карточка сохранена",
+      message: `${savedSku}: ${savedBrand}, ${formatAdminNumber(savedPrice)} ₽, ${
+        savedHidden ? "скрыт с сайта" : "показан на сайте"
+      }`,
+    };
   }
 
   // Warn before leaving if unsaved
@@ -205,18 +248,23 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
       }
 
       const saved = await res.json().catch(() => null);
+      const savedRecord = saved && typeof saved === "object" ? (saved as Record<string, unknown>) : null;
+      const successToast = buildSaveToast(savedRecord, body);
       if (saved && typeof saved === "object") {
-        syncSavedProduct(saved);
+        syncSavedProduct(savedRecord ?? {});
       } else {
         setDirty(false);
       }
       if (stayOnPage) {
         if (!isEdit && saved?.id) {
+          sessionStorage.setItem(ADMIN_TOAST_STORAGE_KEY, JSON.stringify(successToast));
           router.replace(`/admin/products/${saved.id}`);
         } else {
+          setToast(successToast);
           router.refresh();
         }
       } else {
+        sessionStorage.setItem(ADMIN_TOAST_STORAGE_KEY, JSON.stringify(successToast));
         router.push("/admin/products");
       }
     } catch (err) {
@@ -238,6 +286,12 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saving, name, sku, brand, car, price, inStock, description, longDescription, hidden, categoryId, image, images, specs, analogs]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 3500);
+    return () => window.clearTimeout(t);
+  }, [toast]);
 
   async function handleDuplicate() {
     if (!product) return;
@@ -291,6 +345,20 @@ export default function ProductForm({ product, categories }: ProductFormProps) {
 
   return (
     <div className="max-w-4xl">
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed top-4 right-4 z-50 max-w-sm rounded-lg border px-4 py-3 shadow-lg text-sm ${
+            toast.kind === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border-red-200 bg-red-50 text-red-800"
+          }`}
+        >
+          <div className="font-semibold">{toast.title}</div>
+          <div className="mt-0.5">{toast.message}</div>
+        </div>
+      )}
       {/* Sticky action bar */}
       <div className="sticky top-0 z-10 bg-gray-50/95 backdrop-blur border-b border-gray-200 px-6 py-3 flex items-center gap-3">
         <button

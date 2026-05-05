@@ -27,6 +27,12 @@ export interface ProductItem {
   hidden?: boolean;
 }
 
+type AdminToast = {
+  kind: "success" | "error";
+  title: string;
+  message: string;
+};
+
 interface ProductListProps {
   items: ProductItem[];
   page: number;
@@ -48,6 +54,12 @@ const ZONE_DOT: Record<string, string> = {
   yellow: "bg-yellow-400",
   no_data: "bg-gray-300",
 };
+
+const ADMIN_TOAST_STORAGE_KEY = "admin_product_toast_v1";
+
+function formatAdminNumber(value: number): string {
+  return Math.round(value).toLocaleString("ru-RU");
+}
 
 function SortableHeader({
   label,
@@ -234,7 +246,19 @@ export default function ProductList({
   const searchParams = useSearchParams();
   const [market, setMarket] = useState<Map<string, BulkEntry>>(new Map());
   const [marketLoading, setMarketLoading] = useState(true);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<AdminToast | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(ADMIN_TOAST_STORAGE_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(ADMIN_TOAST_STORAGE_KEY);
+      const saved = JSON.parse(raw) as AdminToast;
+      if (saved?.title && saved?.message) {
+        setToast(saved);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const payload = items
@@ -322,9 +346,14 @@ export default function ProductList({
         <div
           role="status"
           aria-live="polite"
-          className="fixed top-4 right-4 z-50 max-w-sm rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 shadow-lg text-sm"
+          className={`fixed top-4 right-4 z-50 max-w-sm rounded-lg border px-4 py-3 shadow-lg text-sm ${
+            toast.kind === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border-red-200 bg-red-50 text-red-800"
+          }`}
         >
-          {toast}
+          <div className="font-semibold">{toast.title}</div>
+          <div className="mt-0.5">{toast.message}</div>
         </div>
       )}
       <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
@@ -441,8 +470,21 @@ export default function ProductList({
                   <div className="w-28 flex justify-end">
                     <InlineNumber
                       value={Number(item.price)}
-                      onSave={(n) => onInlineUpdate(item.id, { price: n })}
-                      onError={(msg) => setToast(`Цена не сохранена: ${msg}`)}
+                      onSave={async (n) => {
+                        await onInlineUpdate(item.id, { price: n });
+                        setToast({
+                          kind: "success",
+                          title: "Сохранено",
+                          message: `${item.sku}: цена ${formatAdminNumber(n)} ₽`,
+                        });
+                      }}
+                      onError={(msg) =>
+                        setToast({
+                          kind: "error",
+                          title: "Цена не сохранена",
+                          message: `${item.sku}: ${msg}`,
+                        })
+                      }
                       suffix=" ₽"
                       disabled={isQuickPending}
                       className="text-sm font-semibold text-gray-900"
@@ -452,8 +494,21 @@ export default function ProductList({
                   <div className="w-20 flex justify-end">
                     <InlineNumber
                       value={Number(item.inStock)}
-                      onSave={(n) => onInlineUpdate(item.id, { inStock: n })}
-                      onError={(msg) => setToast(`Остаток не сохранён: ${msg}`)}
+                      onSave={async (n) => {
+                        await onInlineUpdate(item.id, { inStock: n });
+                        setToast({
+                          kind: "success",
+                          title: "Сохранено",
+                          message: `${item.sku}: остаток ${formatAdminNumber(n)} шт.`,
+                        });
+                      }}
+                      onError={(msg) =>
+                        setToast({
+                          kind: "error",
+                          title: "Остаток не сохранён",
+                          message: `${item.sku}: ${msg}`,
+                        })
+                      }
                       disabled={isQuickPending}
                       className={`text-sm ${
                         item.inStock > 0 ? "text-green-700" : "text-red-600"
@@ -475,13 +530,22 @@ export default function ProductList({
                     onClick={(e) => {
                       e.stopPropagation();
                       if (isQuickPending) return;
-                      onInlineUpdate(item.id, { hidden: !isHidden }).catch((err) =>
-                        setToast(
-                          `Не удалось ${isHidden ? "показать" : "скрыть"}: ${
-                            err instanceof Error ? err.message : ""
-                          }`
+                      const nextHidden = !isHidden;
+                      onInlineUpdate(item.id, { hidden: nextHidden })
+                        .then(() =>
+                          setToast({
+                            kind: "success",
+                            title: "Сохранено",
+                            message: `${item.sku}: товар ${nextHidden ? "скрыт с сайта" : "показан на сайте"}`,
+                          })
                         )
-                      );
+                        .catch((err) =>
+                          setToast({
+                            kind: "error",
+                            title: `Не удалось ${isHidden ? "показать" : "скрыть"}`,
+                            message: `${item.sku}: ${err instanceof Error ? err.message : ""}`,
+                          })
+                        );
                     }}
                     className={`w-8 h-8 flex items-center justify-center rounded ${
                       isHidden
