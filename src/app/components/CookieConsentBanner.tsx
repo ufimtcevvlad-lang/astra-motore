@@ -93,41 +93,45 @@ export function CookieConsentBanner() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[120] border-t border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-3">
-        <p className="text-xs leading-snug text-slate-700 sm:text-sm">
-          Используем cookies для работы сайта и аналитики.
-          {" "}
-          <Link href="/cookie-policy" className="font-medium text-amber-700 underline hover:text-amber-800">
-            Подробнее
-          </Link>
-          .
-        </p>
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
+    <div className="fixed inset-x-0 bottom-0 z-[120] border-t border-slate-200 bg-white/95 shadow-[0_-12px_30px_rgba(15,23,42,0.10)] backdrop-blur">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:py-4">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold text-slate-900">Помогите нам сделать сайт удобнее</p>
+          <p className="mt-1 text-xs leading-snug text-slate-600 sm:text-sm">
+            Используем cookies для работы сайта и аналитики: так мы видим, какие товары ищут,
+            где теряются заказы и какие кнопки реально помогают покупателям.
+            {" "}
+            <Link href="/cookie-policy" className="font-medium text-amber-700 underline hover:text-amber-800">
+              Подробнее
+            </Link>
+            .
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+          <button
+            type="button"
+            onClick={acceptAll}
+            className="rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-sm shadow-amber-500/30 transition hover:bg-amber-400"
+          >
+            Принять все
+          </button>
           <button
             type="button"
             onClick={() => setConfigureOpen((v) => !v)}
-            className="rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 sm:text-sm"
+            className="rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50"
           >
             Настроить
           </button>
           <button
             type="button"
             onClick={acceptNecessary}
-            className="rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 sm:text-sm"
+            className="rounded-lg px-3 py-2.5 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
           >
             Только необходимые
           </button>
-          <button
-            type="button"
-            onClick={acceptAll}
-            className="rounded-md bg-amber-700 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-800 sm:text-sm"
-          >
-            Принять все
-          </button>
         </div>
         {configureOpen ? (
-          <div className="rounded-md border border-slate-200 bg-slate-50 p-3 sm:absolute sm:bottom-full sm:right-4 sm:mb-2 sm:w-[520px]">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 shadow-lg sm:absolute sm:bottom-full sm:right-4 sm:mb-2 sm:w-[520px]">
             <div className="grid gap-2 sm:grid-cols-3">
               <label className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white p-2 text-sm">
                 <span>Необходимые</span>
